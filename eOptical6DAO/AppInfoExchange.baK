@@ -1,0 +1,9 @@
+Attribute VB_Name = "AppInfoExchange"
+Option Explicit
+
+Public XchgCustomer As Control
+' Move target result into the Xchg Control
+Public Sub SetXchgCustomer(strCustomerName As String, strCustomerID As Long)
+    XchgCustomer.Text = strCustomerName
+    XchgCustomer.Tag = strCustomerID
+End Sub

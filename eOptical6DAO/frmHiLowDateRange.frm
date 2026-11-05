@@ -1,0 +1,422 @@
+VERSION 5.00
+Object = "{E8671A8B-E5DD-11CD-836C-0000C0C14E92}#1.0#0"; "SSCALA32.OCX"
+Begin VB.Form frmHiLowDateRange 
+   BorderStyle     =   3  'Fixed Dialog
+   Caption         =   "frmHiLowDateRange"
+   ClientHeight    =   3435
+   ClientLeft      =   495
+   ClientTop       =   2535
+   ClientWidth     =   7425
+   Icon            =   "frmHiLowDateRange.frx":0000
+   LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
+   MaxButton       =   0   'False
+   MinButton       =   0   'False
+   PaletteMode     =   1  'UseZOrder
+   ScaleHeight     =   3435
+   ScaleWidth      =   7425
+   ShowInTaskbar   =   0   'False
+   Begin VB.Frame Frame1 
+      Caption         =   "Select Date Range"
+      Height          =   1695
+      Left            =   240
+      TabIndex        =   0
+      Top             =   360
+      Width           =   3375
+      Begin SSCalendarWidgets_A.SSDateCombo SSDateTo 
+         Height          =   330
+         Left            =   1200
+         TabIndex        =   2
+         Top             =   1080
+         Width           =   1935
+         _Version        =   65537
+         _ExtentX        =   3413
+         _ExtentY        =   582
+         _StockProps     =   93
+         BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "MS Sans Serif"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         BeginProperty DropDownFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "MS Sans Serif"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+      End
+      Begin SSCalendarWidgets_A.SSDateCombo SSDateFrom 
+         Height          =   330
+         Left            =   1200
+         TabIndex        =   1
+         Top             =   400
+         Width           =   1935
+         _Version        =   65537
+         _ExtentX        =   3413
+         _ExtentY        =   582
+         _StockProps     =   93
+         BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "MS Sans Serif"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         BeginProperty DropDownFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "MS Sans Serif"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+      End
+      Begin VB.Label Label2 
+         Caption         =   "To Date:"
+         Height          =   255
+         Left            =   240
+         TabIndex        =   12
+         Top             =   1080
+         Width           =   855
+      End
+      Begin VB.Label Label1 
+         Caption         =   "From Date:"
+         Height          =   255
+         Left            =   240
+         TabIndex        =   11
+         Top             =   400
+         Width           =   855
+      End
+   End
+   Begin VB.Frame Frame4 
+      Caption         =   "Select Exceptional Sales Margin"
+      Height          =   1695
+      Left            =   3840
+      TabIndex        =   13
+      Top             =   360
+      Width           =   3255
+      Begin VB.TextBox txtPctAbove 
+         Height          =   330
+         Left            =   1900
+         TabIndex        =   4
+         Text            =   "80"
+         Top             =   1080
+         Width           =   800
+      End
+      Begin VB.TextBox txtPctBelow 
+         Height          =   330
+         Left            =   1900
+         TabIndex        =   3
+         Text            =   "30"
+         Top             =   400
+         Width           =   800
+      End
+      Begin VB.Label Label4 
+         Caption         =   "Margin % Above:"
+         Height          =   330
+         Left            =   360
+         TabIndex        =   15
+         Top             =   1080
+         Width           =   1335
+      End
+      Begin VB.Label Label3 
+         Caption         =   "Margin % Below:"
+         Height          =   330
+         Left            =   360
+         TabIndex        =   14
+         Top             =   400
+         Width           =   1335
+      End
+   End
+   Begin VB.Frame Frame3 
+      Caption         =   "Printer"
+      Height          =   735
+      Left            =   5400
+      TabIndex        =   10
+      Top             =   2400
+      Width           =   1695
+      Begin VB.CommandButton cmdPrnSetup 
+         Caption         =   "&Setup"
+         Height          =   330
+         Left            =   240
+         TabIndex        =   8
+         Top             =   240
+         Width           =   1200
+      End
+   End
+   Begin VB.Frame frame2 
+      Caption         =   "Command"
+      Height          =   735
+      Left            =   240
+      TabIndex        =   9
+      Top             =   2400
+      Width           =   4815
+      Begin VB.CommandButton cmdExit 
+         Caption         =   "&Exit"
+         Height          =   330
+         Left            =   3300
+         TabIndex        =   7
+         Top             =   240
+         Width           =   1200
+      End
+      Begin VB.CommandButton cmdReset 
+         Caption         =   "&Reset"
+         Height          =   330
+         Left            =   1800
+         TabIndex        =   6
+         Top             =   240
+         Width           =   1200
+      End
+      Begin VB.CommandButton cmdOK 
+         Caption         =   "&OK"
+         Height          =   330
+         Left            =   300
+         TabIndex        =   5
+         Top             =   240
+         Width           =   1200
+      End
+   End
+End
+Attribute VB_Name = "frmHiLowDateRange"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+
+
+
+
+Private Sub cmdExit_Click()
+
+    On Error GoTo cmdExit_Click_Err
+    Unload Me
+cmdExit_Click_Exit:       ' SDVB autocode
+    On Error Resume Next  ' SDVB autocode
+    Exit Sub              ' SDVB autocode
+cmdExit_Click_Err:        ' SDVB autocode
+    MsgBox Error          ' SDVB autocode
+    Resume cmdExit_Click_Exit
+
+End Sub
+
+
+Private Sub cmdOK_Click()
+
+    On Error GoTo cmdOK_Click_Err
+
+    Screen.MousePointer = vbArrowHourglass
+    
+    Dim VarDate As Date
+    Dim nOk As Integer
+    Dim IsRefresh As Boolean
+    
+    IsRefresh = False
+    
+    If Me.SSDateFrom.Date > Me.SSDateTo.Date Then
+        VarDate = Me.SSDateFrom.Date
+        Me.SSDateFrom.Date = Me.SSDateTo.Date
+        Me.SSDateTo.Date = VarDate
+        IsRefresh = True
+    End If
+    
+    If Val(Me.txtPctBelow) > Val(Me.txtPctAbove) Then
+        nOk = Val(Me.txtPctBelow)
+        Me.txtPctBelow = Me.txtPctAbove
+        Me.txtPctAbove = nOk
+        IsRefresh = True
+    End If
+            
+    If IsRefresh Then
+        frmHiLowDateRange.Refresh
+    End If
+    
+    
+    '   Set formulas
+    frmCtlCrw.CrystalReport1.Formulas(0) = "AskDateFrom = " & _
+            "Date(" & (Year(Me.SSDateFrom)) & "," & _
+                    (Month(Me.SSDateFrom)) & "," & _
+                    (Day(Me.SSDateFrom)) & ")"
+    frmCtlCrw.CrystalReport1.Formulas(1) = "AskDateTo = " & _
+            "Date(" & (Year(Me.SSDateTo)) & "," & _
+                    (Month(Me.SSDateTo)) & "," & _
+                    (Day(Me.SSDateTo)) & ")"
+    frmCtlCrw.CrystalReport1.Formulas(2) = "AskPctAbove = " & Me.txtPctAbove
+    frmCtlCrw.CrystalReport1.Formulas(3) = "AskPctBelow = " & Me.txtPctBelow
+    Screen.MousePointer = vbHourglass
+    Unload Me
+    frmCtlCrw.CrystalReport1.Action = 1
+    Screen.MousePointer = vbDefault
+
+cmdOK_Click_Exit:         ' SDVB autocode
+    On Error Resume Next  ' SDVB autocode
+    Exit Sub              ' SDVB autocode
+cmdOK_Click_Err:          ' SDVB autocode
+    Screen.MousePointer = vbDefault
+    MsgBox Error          ' SDVB autocode
+    Resume cmdOK_Click_Exit
+
+End Sub
+
+Private Sub cmdPrnSetup_Click()
+
+    On Error GoTo cmdPrnSetup_Click_Err
+
+    frmCtlCrw.CommonDialog1.Flags = &H40  'force the printers setup dialog box
+    frmCtlCrw.CommonDialog1.Action = 5    'run the printer setup
+
+cmdPrnSetup_Click_Exit:   ' SDVB autocode
+    On Error Resume Next  ' SDVB autocode
+    Exit Sub              ' SDVB autocode
+cmdPrnSetup_Click_Err:    ' SDVB autocode
+    MsgBox Error          ' SDVB autocode
+    Resume cmdPrnSetup_Click_Exit
+End Sub
+
+
+Private Sub cmdReset_Click()
+
+    On Error GoTo cdmReset_Click_Err
+    
+    '   Set start date 30 days ago today
+    Me.SSDateFrom.Date = (CurrentDate - 30)
+    Me.SSDateTo.Date = CurrentDate
+    Me.txtPctBelow = 30
+    Me.txtPctAbove = 80
+
+    Me.SSDateFrom.SetFocus
+
+cdmReset_Click_Exit:      ' SDVB autocode
+    On Error Resume Next  ' SDVB autocode
+    Exit Sub              ' SDVB autocode
+cdmReset_Click_Err:       ' SDVB autocode
+    MsgBox Error          ' SDVB autocode
+    Resume cdmReset_Click_Exit
+
+End Sub
+
+
+Private Sub Form_Load()
+    On Error GoTo Form_Load_Err
+    
+    Call ofx_CenterForm(Me)
+    Screen.MousePointer = vbDefault
+    Me.Caption = CrwRptName
+    Me.Icon = LoadPicture(SynergyIcon)
+ 
+    '   Set start date 30 days ago today
+    Me.SSDateFrom.Date = (CurrentDate - 30)
+  
+
+Form_Load_Exit:           ' SDVB autocode
+    On Error Resume Next  ' SDVB autocode
+    Exit Sub              ' SDVB autocode
+Form_Load_Err:            ' SDVB autocode
+    MsgBox Error          ' SDVB autocode
+    Resume Form_Load_Exit
+
+End Sub
+
+Private Sub txtPctAbove_Click()
+
+    On Error GoTo txtPctAbove_Click_Err
+
+    SendKeys "{home}+{end}", True
+
+txtPctAbove_Click_Exit:   ' SDVB autocode
+    On Error Resume Next  ' SDVB autocode
+    Exit Sub              ' SDVB autocode
+txtPctAbove_Click_Err:    ' SDVB autocode
+    MsgBox Error          ' SDVB autocode
+    Resume txtPctAbove_Click_Exit
+
+End Sub
+
+Private Sub txtPctAbove_GotFocus()
+
+    On Error GoTo txtPctAbove_GotFocus_Err
+
+   
+    SendKeys "{home}+{end}", True
+
+txtPctAbove_GotFocus_Exit:  ' SDVB autocode
+    On Error Resume Next    ' SDVB autocode
+    Exit Sub                ' SDVB autocode
+txtPctAbove_GotFocus_Err:   ' SDVB autocode
+    MsgBox Error            ' SDVB autocode
+    Resume txtPctAbove_GotFocus_Exit
+
+End Sub
+
+Private Sub txtPctAbove_KeyPress(KeyAscii As Integer)
+
+    On Error GoTo txtPctAbove_KeyPress_Err
+
+    KeyAscii = KeyNumbers(KeyAscii)
+
+txtPctAbove_KeyPress_Exit:  ' SDVB autocode
+    On Error Resume Next    ' SDVB autocode
+    Exit Sub                ' SDVB autocode
+txtPctAbove_KeyPress_Err:   ' SDVB autocode
+    MsgBox Error            ' SDVB autocode
+    Resume txtPctAbove_KeyPress_Exit
+
+End Sub
+
+
+Private Sub txtPctBelow_Click()
+
+    On Error GoTo txtPctBelow_Click_Err
+
+    SendKeys "{home}+{end}", True
+
+txtPctBelow_Click_Exit:   ' SDVB autocode
+    On Error Resume Next  ' SDVB autocode
+    Exit Sub              ' SDVB autocode
+txtPctBelow_Click_Err:    ' SDVB autocode
+    MsgBox Error          ' SDVB autocode
+    Resume txtPctBelow_Click_Exit
+
+End Sub
+
+Private Sub txtPctBelow_GotFocus()
+
+    On Error GoTo txtPctBelow_GotFocus_Err
+
+   
+    SendKeys "{home}+{end}", True
+
+txtPctBelow_GotFocus_Exit:  ' SDVB autocode
+    On Error Resume Next    ' SDVB autocode
+    Exit Sub                ' SDVB autocode
+txtPctBelow_GotFocus_Err:   ' SDVB autocode
+    MsgBox Error            ' SDVB autocode
+    Resume txtPctBelow_GotFocus_Exit
+
+End Sub
+
+Private Sub txtPctBelow_KeyPress(KeyAscii As Integer)
+
+    On Error GoTo txtPctBelow_KeyPress_Err
+
+    KeyAscii = KeyNumbers(KeyAscii)
+
+txtPctBelow_KeyPress_Exit:  ' SDVB autocode
+    On Error Resume Next    ' SDVB autocode
+    Exit Sub                ' SDVB autocode
+txtPctBelow_KeyPress_Err:   ' SDVB autocode
+    MsgBox Error            ' SDVB autocode
+    Resume txtPctBelow_KeyPress_Exit
+
+End Sub
+
+

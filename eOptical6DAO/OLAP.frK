@@ -1,0 +1,464 @@
+VERSION 4.00
+Begin VB.Form frmOLAP 
+   BorderStyle     =   1  'Fixed Single
+   Caption         =   "Synergy V - OLAP"
+   ClientHeight    =   5325
+   ClientLeft      =   105
+   ClientTop       =   1830
+   ClientWidth     =   6915
+   Height          =   5730
+   Icon            =   "OLAP.frx":0000
+   KeyPreview      =   -1  'True
+   Left            =   45
+   LinkTopic       =   "Form1"
+   Picture         =   "OLAP.frx":068A
+   ScaleHeight     =   5325
+   ScaleWidth      =   6915
+   Top             =   1485
+   Width           =   7035
+   Begin VB.Image imgLogo 
+      Height          =   915
+      Left            =   240
+      Picture         =   "OLAP.frx":288CA
+      Top             =   120
+      Width           =   930
+   End
+   Begin VB.Label lblButton 
+      Alignment       =   2  'Center
+      BackColor       =   &H00FFFFFF&
+      Caption         =   "E&xit"
+      BeginProperty Font 
+         name            =   "Times New Roman"
+         charset         =   0
+         weight          =   700
+         size            =   14.25
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      Height          =   330
+      Index           =   6
+      Left            =   210
+      TabIndex        =   16
+      Top             =   4170
+      Width           =   1500
+   End
+   Begin VB.Label lblButton 
+      Alignment       =   2  'Center
+      BackColor       =   &H00FFFFFF&
+      Caption         =   "&About"
+      BeginProperty Font 
+         name            =   "Times New Roman"
+         charset         =   0
+         weight          =   700
+         size            =   14.25
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      Height          =   330
+      Index           =   5
+      Left            =   210
+      TabIndex        =   12
+      Top             =   3540
+      Width           =   1500
+   End
+   Begin VB.Label lblButton 
+      Alignment       =   2  'Center
+      BackColor       =   &H00FFFFFF&
+      Caption         =   "&Play"
+      BeginProperty Font 
+         name            =   "Times New Roman"
+         charset         =   0
+         weight          =   700
+         size            =   14.25
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      Height          =   330
+      Index           =   4
+      Left            =   210
+      TabIndex        =   9
+      Top             =   3015
+      Width           =   1500
+   End
+   Begin VB.Label lblButton 
+      Alignment       =   2  'Center
+      BackColor       =   &H00FFFFFF&
+      Caption         =   "&Orders"
+      BeginProperty Font 
+         name            =   "Times New Roman"
+         charset         =   0
+         weight          =   700
+         size            =   14.25
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      Height          =   330
+      Index           =   2
+      Left            =   210
+      TabIndex        =   6
+      Top             =   2445
+      Width           =   1500
+   End
+   Begin VB.Label lblButton 
+      Alignment       =   2  'Center
+      BackColor       =   &H00FFFFFF&
+      Caption         =   "&Margin"
+      BeginProperty Font 
+         name            =   "Times New Roman"
+         charset         =   0
+         weight          =   700
+         size            =   14.25
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      Height          =   330
+      Index           =   1
+      Left            =   210
+      TabIndex        =   3
+      Top             =   1920
+      Width           =   1500
+   End
+   Begin VB.Label lblButton 
+      Alignment       =   2  'Center
+      BackColor       =   &H00FFFFFF&
+      Caption         =   "&Sales"
+      BeginProperty Font 
+         name            =   "Times New Roman"
+         charset         =   0
+         weight          =   700
+         size            =   14.25
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      Height          =   330
+      Index           =   0
+      Left            =   210
+      TabIndex        =   0
+      Top             =   1395
+      Width           =   1500
+   End
+   Begin VB.Label lblDesc 
+      BackColor       =   &H00FFFFFF&
+      BackStyle       =   0  'Transparent
+      Caption         =   "Experience The Power"
+      BeginProperty Font 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   12
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FF0000&
+      Height          =   420
+      Index           =   4
+      Left            =   1980
+      TabIndex        =   11
+      Top             =   3015
+      Width           =   4815
+   End
+   Begin VB.Label lblDesc 
+      BackColor       =   &H00800080&
+      BackStyle       =   0  'Transparent
+      Caption         =   "Done! Thank you"
+      BeginProperty Font 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   12
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FF0000&
+      Height          =   375
+      Index           =   6
+      Left            =   1980
+      TabIndex        =   18
+      Top             =   4170
+      Width           =   2190
+   End
+   Begin VB.Label lblDesc 
+      BackColor       =   &H00FFFFFF&
+      BackStyle       =   0  'Transparent
+      Caption         =   "More Information About Synergy V"
+      BeginProperty Font 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   12
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FF0000&
+      Height          =   420
+      Index           =   5
+      Left            =   1980
+      TabIndex        =   14
+      Top             =   3540
+      Width           =   4815
+   End
+   Begin VB.Label lblDesc 
+      BackColor       =   &H00800080&
+      BackStyle       =   0  'Transparent
+      Caption         =   "Orders in Progress"
+      BeginProperty Font 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   12
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FF0000&
+      Height          =   345
+      Index           =   2
+      Left            =   1980
+      TabIndex        =   8
+      Top             =   2445
+      Width           =   4815
+   End
+   Begin VB.Label lblDesc 
+      BackColor       =   &H00800080&
+      BackStyle       =   0  'Transparent
+      Caption         =   "Gross Margin of goods sold"
+      BeginProperty Font 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   12
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FF0000&
+      Height          =   360
+      Index           =   1
+      Left            =   1980
+      TabIndex        =   5
+      Top             =   1920
+      Width           =   4815
+   End
+   Begin VB.Label lblDesc 
+      BackColor       =   &H00800080&
+      BackStyle       =   0  'Transparent
+      Caption         =   "Product Sales"
+      BeginProperty Font 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   12
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FF0000&
+      Height          =   360
+      Index           =   0
+      Left            =   1980
+      TabIndex        =   2
+      Top             =   1395
+      Width           =   4815
+   End
+   Begin VB.Label lblShadow 
+      BackColor       =   &H00000000&
+      Height          =   330
+      Index           =   6
+      Left            =   315
+      TabIndex        =   17
+      Top             =   4275
+      Width           =   1500
+   End
+   Begin VB.Label lblShadow 
+      BackColor       =   &H00000000&
+      Height          =   330
+      Index           =   5
+      Left            =   315
+      TabIndex        =   13
+      Top             =   3645
+      Width           =   1500
+   End
+   Begin VB.Label lblShadow 
+      BackColor       =   &H00000000&
+      Height          =   330
+      Index           =   4
+      Left            =   315
+      TabIndex        =   10
+      Top             =   3120
+      Width           =   1500
+   End
+   Begin VB.Label lblShadow 
+      BackColor       =   &H00000000&
+      Height          =   330
+      Index           =   2
+      Left            =   315
+      TabIndex        =   7
+      Top             =   2550
+      Width           =   1500
+   End
+   Begin VB.Label lblShadow 
+      BackColor       =   &H00000000&
+      Height          =   330
+      Index           =   1
+      Left            =   315
+      TabIndex        =   4
+      Top             =   2025
+      Width           =   1500
+   End
+   Begin VB.Label lblShadow 
+      BackColor       =   &H00000000&
+      Height          =   330
+      Index           =   0
+      Left            =   315
+      TabIndex        =   1
+      Top             =   1500
+      Width           =   1500
+   End
+   Begin VB.Label lblCoName 
+      BackStyle       =   0  'Transparent
+      Caption         =   "The Optical "
+      BeginProperty Font 
+         name            =   "Arial"
+         charset         =   0
+         weight          =   400
+         size            =   36
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H0000FFFF&
+      Height          =   975
+      Index           =   2
+      Left            =   1920
+      TabIndex        =   19
+      Top             =   120
+      Width           =   4455
+   End
+   Begin VB.Label lblCoName 
+      BackStyle       =   0  'Transparent
+      Caption         =   "The Optical"
+      BeginProperty Font 
+         name            =   "Arial"
+         charset         =   0
+         weight          =   400
+         size            =   36
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00000000&
+      Height          =   885
+      Index           =   1
+      Left            =   2000
+      TabIndex        =   15
+      Top             =   130
+      Width           =   4365
+   End
+   Begin VB.Label lblDD 
+      BackStyle       =   0  'Transparent
+      Caption         =   "Synergy V"
+      BeginProperty Font 
+         name            =   "Arial"
+         charset         =   0
+         weight          =   400
+         size            =   24
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      ForeColor       =   &H00FFFFFF&
+      Height          =   540
+      Index           =   1
+      Left            =   3360
+      TabIndex        =   21
+      Top             =   4680
+      Width           =   3360
+   End
+   Begin VB.Label lblDD 
+      BackStyle       =   0  'Transparent
+      Caption         =   "Synergy V"
+      BeginProperty Font 
+         name            =   "Arial"
+         charset         =   0
+         weight          =   400
+         size            =   24
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      Height          =   540
+      Index           =   0
+      Left            =   3420
+      TabIndex        =   20
+      Top             =   4680
+      Width           =   3360
+   End
+End
+Attribute VB_Name = "frmOLAP"
+Attribute VB_Creatable = False
+Attribute VB_Exposed = False
+Option Explicit
+
+Private iTop As Integer
+Private iLeft As Integer
+
+
+Private Sub Form_Load()
+    Left = (Screen.Width - Width) / 2   ' Center form horizontally.
+    Top = (Screen.Height - Height) / 2  ' Center form vertically.
+End Sub
+
+Private Sub Form_Unload(Cancel As Integer)
+    Unload Me
+End Sub
+
+
+Private Sub imgLogo_Click()
+    frmAbout.Show 1
+End Sub
+
+Private Sub lblButton_Click(Index As Integer)
+Select Case Index
+    Case 0: frmSales.Show
+    Case 1: frmMargin.Show
+    Case 2: frmOrderInProgress.Show
+    Case 3:                         'frmStock.Show
+    Case 4: frmWizard.Show vbModal  ' frmPlay.Show
+    Case 5: frmAbout.Show vbModal
+    Case 6: Unload Me: End
+End Select
+End Sub
+
+
+Private Sub lblButton_MouseDown(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+    iTop = lblButton(Index).Top
+    iLeft = lblButton(Index).Left
+    lblButton(Index).Move lblShadow(Index).Left, lblShadow(Index).Top
+End Sub
+
+Private Sub lblButton_MouseUp(Index As Integer, Button As Integer, Shift As Integer, X As Single, Y As Single)
+    lblButton(Index).Move iLeft, iTop
+End Sub
+
+
+Private Sub lblDesc_Click(Index As Integer)
+Select Case Index
+    Case 0: frmSales.Show
+    Case 1: frmMargin.Show
+    Case 2: frmOrderInProgress.Show
+    Case 3:                         ' frmStock.Show
+    Case 4: frmWizard.Show vbModal  ' frmPlay.Show
+    Case 5: frmAbout.Show vbModal
+    Case 6: Unload Me: End
+    End Select
+End Sub
+

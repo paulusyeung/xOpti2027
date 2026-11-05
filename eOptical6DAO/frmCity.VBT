@@ -1,0 +1,573 @@
+VERSION 4.00
+Begin VB.Form frmCity 
+   Caption         =   "City"
+   ClientHeight    =   5700
+   ClientLeft      =   1635
+   ClientTop       =   2610
+   ClientWidth     =   8895
+   Height          =   6105
+   Left            =   1575
+   LinkTopic       =   "Form1"
+   ScaleHeight     =   5700
+   ScaleWidth      =   8895
+   Top             =   2265
+   Width           =   9015
+   Begin VB.TextBox txtLastProvinceCode 
+      Height          =   285
+      Left            =   5280
+      TabIndex        =   18
+      TabStop         =   0   'False
+      Top             =   1500
+      Visible         =   0   'False
+      Width           =   375
+   End
+   Begin VB.TextBox txtLastProvinceName 
+      Height          =   285
+      Left            =   4320
+      TabIndex        =   17
+      TabStop         =   0   'False
+      Top             =   1500
+      Visible         =   0   'False
+      Width           =   975
+   End
+   Begin VB.TextBox txtLastCountryCode 
+      Height          =   315
+      Left            =   5280
+      TabIndex        =   16
+      TabStop         =   0   'False
+      Top             =   1140
+      Visible         =   0   'False
+      Width           =   375
+   End
+   Begin VB.TextBox txtLastCountryName 
+      Height          =   315
+      Left            =   4320
+      TabIndex        =   15
+      TabStop         =   0   'False
+      Top             =   1140
+      Visible         =   0   'False
+      Width           =   975
+   End
+   Begin VB.TextBox txtCityCode 
+      BackColor       =   &H00C0C0C0&
+      DataField       =   "Code"
+      DataSource      =   "dtcCity"
+      Height          =   285
+      Left            =   1080
+      Locked          =   -1  'True
+      TabIndex        =   3
+      TabStop         =   0   'False
+      Top             =   1860
+      Width           =   615
+   End
+   Begin VB.Data dtcProvince 
+      Caption         =   "Province"
+      Connect         =   "Access"
+      DatabaseName    =   "SynergyV.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   5760
+      Options         =   0
+      ReadOnly        =   0   'False
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   "SELECT * FROM Province ORDER BY ProvinceName"
+      Top             =   2220
+      Visible         =   0   'False
+      Width           =   1215
+   End
+   Begin VB.Data dtcCountry 
+      Caption         =   "Country"
+      Connect         =   "Access"
+      DatabaseName    =   "SynergyV.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   5760
+      Options         =   0
+      ReadOnly        =   0   'False
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   "SELECT * FROM Country ORDER BY CountryName"
+      Top             =   1860
+      Visible         =   0   'False
+      Width           =   1215
+   End
+   Begin VB.TextBox txtPhoneCode 
+      DataField       =   "CityPhoneCode"
+      DataSource      =   "dtcCity"
+      Height          =   285
+      Left            =   1080
+      TabIndex        =   5
+      Top             =   2520
+      Width           =   615
+   End
+   Begin VB.Data dtcCity 
+      Caption         =   "City"
+      Connect         =   "Access"
+      DatabaseName    =   "Synergyv.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   5760
+      Options         =   0
+      ReadOnly        =   0   'False
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   "City"
+      Top             =   1440
+      Visible         =   0   'False
+      Width           =   1215
+   End
+   Begin VB.TextBox txtCityName 
+      DataField       =   "CityName"
+      DataSource      =   "dtcCity"
+      Height          =   285
+      Left            =   1080
+      TabIndex        =   4
+      Top             =   2160
+      Width           =   2415
+   End
+   Begin SSDesignerWidgetsToolbar.SSToolbar SSToolbar1 
+      Align           =   1  'Align Top
+      Height          =   1080
+      Left            =   0
+      TabIndex        =   0
+      TabStop         =   0   'False
+      Top             =   0
+      Width           =   8895
+      _Version        =   131073
+      _ExtentX        =   15690
+      _ExtentY        =   1906
+      _StockProps     =   69
+      BackColor       =   12632256
+      FloatingCaption =   "SSToolbar1"
+      AlreadyCreated  =   -1  'True
+      Outline         =   0   'False
+      ToolsetNumBtnStates=   3
+      Btns            =   9
+      ToolsetPicture  =   "frmCity.frx":0000
+      BC              =   9
+      BtnToolNum(0)   =   0
+      BtnPlaceHolder(0)=   0   'False
+      BtnToolNum(1)   =   1
+      BtnPlaceHolder(1)=   0   'False
+      BtnToolNum(2)   =   2
+      BtnPlaceHolder(2)=   0   'False
+      BtnToolNum(3)   =   3
+      BtnPlaceHolder(3)=   0   'False
+      BtnToolNum(4)   =   4
+      BtnPlaceHolder(4)=   0   'False
+      BtnToolNum(5)   =   5
+      BtnPlaceHolder(5)=   0   'False
+      BtnToolNum(6)   =   6
+      BtnPlaceHolder(6)=   0   'False
+      BtnToolNum(7)   =   7
+      BtnPlaceHolder(7)=   0   'False
+      BtnToolNum(8)   =   8
+      BtnPlaceHolder(8)=   0   'False
+      ToolsetNumTools =   9
+      ToolsetToolID(0)=   "ID_Add"
+      ToolsetToolHelp(0)=   "Add a new record"
+      ToolsetToolMnemonic(0)=   "a"
+      ToolsetToolGroup(0)=   1
+      ToolsetToolID(1)=   "ID_Delete"
+      ToolsetToolHelp(1)=   "Delete this record"
+      ToolsetToolMnemonic(1)=   "d"
+      ToolsetToolGroup(1)=   1
+      ToolsetToolID(2)=   "ID_Refresh"
+      ToolsetToolHelp(2)=   "Refresh this record"
+      ToolsetToolMnemonic(2)=   "r"
+      ToolsetToolGroup(2)=   1
+      ToolsetToolID(3)=   "ID_Save"
+      ToolsetToolHelp(3)=   "Save this record"
+      ToolsetToolMnemonic(3)=   "s"
+      ToolsetToolGroup(3)=   1
+      ToolsetToolID(4)=   "ID_Close"
+      ToolsetToolHelp(4)=   "Close and exit"
+      ToolsetToolMnemonic(4)=   "c"
+      ToolsetToolGroup(4)=   1
+      ToolsetToolID(5)=   "ID_First"
+      ToolsetToolHelp(5)=   "Goto first record"
+      ToolsetToolMnemonic(5)=   "f"
+      ToolsetToolGroup(5)=   2
+      ToolsetToolID(6)=   "ID_Next"
+      ToolsetToolHelp(6)=   "Next record"
+      ToolsetToolMnemonic(6)=   "x"
+      ToolsetToolGroup(6)=   2
+      ToolsetToolID(7)=   "ID_Previous"
+      ToolsetToolHelp(7)=   "Previous record"
+      ToolsetToolMnemonic(7)=   "p"
+      ToolsetToolGroup(7)=   2
+      ToolsetToolID(8)=   "ID_Last"
+      ToolsetToolHelp(8)=   "Goto last record"
+      ToolsetToolMnemonic(8)=   "l"
+      ToolsetToolGroup(8)=   2
+      MouseIcon       =   "frmCity.frx":1B452
+   End
+   Begin Threed.SSFrame SSFrame1 
+      Height          =   2775
+      Left            =   120
+      TabIndex        =   19
+      Top             =   2880
+      Width           =   6255
+      _Version        =   65536
+      _ExtentX        =   11033
+      _ExtentY        =   4895
+      _StockProps     =   14
+      Caption         =   "Lookup Wizard"
+      Begin TrueDBGrid.TDBGrid TDBGrid1 
+         Bindings        =   "frmCity.frx":1B46E
+         Height          =   1755
+         Left            =   120
+         OleObjectBlob   =   "frmCity.frx":1B47E
+         TabIndex        =   26
+         TabStop         =   0   'False
+         Top             =   900
+         Width           =   6015
+      End
+      Begin Threed.SSRibbon cmdCascadeProvince 
+         Height          =   315
+         Left            =   4800
+         TabIndex        =   25
+         Top             =   240
+         Width           =   375
+         _Version        =   65536
+         _ExtentX        =   661
+         _ExtentY        =   556
+         _StockProps     =   65
+         BackColor       =   12632256
+         GroupNumber     =   4
+         GroupAllowAllUp =   -1  'True
+         BevelWidth      =   1
+         Outline         =   0   'False
+         PictureUp       =   "frmCity.frx":1D1EC
+         PictureDn       =   "frmCity.frx":1D7BA
+      End
+      Begin Threed.SSRibbon cmdCascadeCountry 
+         Height          =   315
+         Left            =   2040
+         TabIndex        =   24
+         Top             =   240
+         Width           =   375
+         _Version        =   65536
+         _ExtentX        =   661
+         _ExtentY        =   556
+         _StockProps     =   65
+         BackColor       =   12632256
+         GroupNumber     =   3
+         GroupAllowAllUp =   -1  'True
+         BevelWidth      =   1
+         Outline         =   0   'False
+         PictureUp       =   "frmCity.frx":1DD9C
+         PictureDn       =   "frmCity.frx":1E36A
+      End
+      Begin MSDBCtls.DBCombo dbcSelProvince 
+         Bindings        =   "frmCity.frx":1E94C
+         Height          =   315
+         Left            =   2760
+         TabIndex        =   23
+         TabStop         =   0   'False
+         Top             =   540
+         Width           =   2415
+         _Version        =   65536
+         _ExtentX        =   4260
+         _ExtentY        =   556
+         _StockProps     =   77
+         ForeColor       =   0
+         BackColor       =   16777215
+         ListField       =   "ProvinceName"
+         BoundColumn     =   "ProvinceCode"
+      End
+      Begin MSDBCtls.DBCombo dbcSelCountry 
+         Bindings        =   "frmCity.frx":1E960
+         Height          =   315
+         Left            =   120
+         TabIndex        =   22
+         TabStop         =   0   'False
+         Top             =   540
+         Width           =   2295
+         _Version        =   65536
+         _ExtentX        =   4048
+         _ExtentY        =   556
+         _StockProps     =   77
+         ForeColor       =   0
+         BackColor       =   16777215
+         ListField       =   "CountryName"
+         BoundColumn     =   "CountryCode"
+      End
+      Begin VB.Label Label7 
+         Caption         =   "Province"
+         Height          =   255
+         Left            =   2760
+         TabIndex        =   21
+         Top             =   300
+         Width           =   735
+      End
+      Begin VB.Label Label6 
+         Caption         =   "Country"
+         Height          =   255
+         Left            =   120
+         TabIndex        =   20
+         Top             =   300
+         Width           =   615
+      End
+   End
+   Begin Threed.SSRibbon cmdLockProvince 
+      Height          =   315
+      Left            =   3480
+      TabIndex        =   14
+      Top             =   1500
+      Width           =   375
+      _Version        =   65536
+      _ExtentX        =   661
+      _ExtentY        =   556
+      _StockProps     =   65
+      BackColor       =   12632256
+      GroupNumber     =   2
+      GroupAllowAllUp =   -1  'True
+      BevelWidth      =   1
+      Outline         =   0   'False
+      PictureUp       =   "frmCity.frx":1E973
+      PictureDn       =   "frmCity.frx":1EED5
+   End
+   Begin Threed.SSRibbon cmdLockCountry 
+      Height          =   315
+      Left            =   3480
+      TabIndex        =   13
+      Top             =   1140
+      Width           =   375
+      _Version        =   65536
+      _ExtentX        =   661
+      _ExtentY        =   556
+      _StockProps     =   65
+      BackColor       =   12632256
+      GroupAllowAllUp =   -1  'True
+      BevelWidth      =   1
+      Outline         =   0   'False
+      PictureUp       =   "frmCity.frx":1F427
+      PictureDn       =   "frmCity.frx":1F989
+   End
+   Begin Threed.SSCommand SSCommand2 
+      Height          =   315
+      Left            =   3840
+      TabIndex        =   12
+      TabStop         =   0   'False
+      Top             =   1500
+      Width           =   375
+      _Version        =   65536
+      _ExtentX        =   661
+      _ExtentY        =   556
+      _StockProps     =   78
+      BevelWidth      =   1
+      Outline         =   0   'False
+      Picture         =   "frmCity.frx":1FEDB
+   End
+   Begin Threed.SSCommand SSCommand1 
+      Height          =   315
+      Left            =   3840
+      TabIndex        =   11
+      TabStop         =   0   'False
+      Top             =   1140
+      Width           =   375
+      _Version        =   65536
+      _ExtentX        =   661
+      _ExtentY        =   556
+      _StockProps     =   78
+      BevelWidth      =   1
+      Outline         =   0   'False
+      Picture         =   "frmCity.frx":204A9
+   End
+   Begin MSDBCtls.DBCombo dbcProvince 
+      Bindings        =   "frmCity.frx":20A77
+      DataField       =   "ProvinceCode"
+      DataSource      =   "dtcCity"
+      Height          =   315
+      Left            =   1080
+      TabIndex        =   2
+      Top             =   1500
+      Width           =   2415
+      _Version        =   65536
+      _ExtentX        =   4260
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "ProvinceName"
+      BoundColumn     =   "ProvinceCode"
+   End
+   Begin VB.Label Label5 
+      Caption         =   "Province"
+      Height          =   255
+      Left            =   120
+      TabIndex        =   10
+      Top             =   1500
+      Width           =   735
+   End
+   Begin MSDBCtls.DBCombo dbcCountry 
+      Bindings        =   "frmCity.frx":20A8B
+      DataField       =   "CountryCode"
+      DataSource      =   "dtcCity"
+      Height          =   315
+      Left            =   1080
+      TabIndex        =   1
+      Top             =   1140
+      Width           =   2415
+      _Version        =   65536
+      _ExtentX        =   4260
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "CountryName"
+      BoundColumn     =   "CountryCode"
+   End
+   Begin VB.Label Label4 
+      Caption         =   "Country"
+      Height          =   255
+      Left            =   120
+      TabIndex        =   9
+      Top             =   1140
+      Width           =   615
+   End
+   Begin VB.Label Label3 
+      Caption         =   "Phone Code"
+      Height          =   255
+      Left            =   120
+      TabIndex        =   8
+      Top             =   2520
+      Width           =   975
+   End
+   Begin VB.Label Label2 
+      Caption         =   "City"
+      Height          =   255
+      Left            =   120
+      TabIndex        =   7
+      Top             =   2160
+      Width           =   855
+   End
+   Begin VB.Label Label1 
+      Caption         =   "City Code"
+      Height          =   255
+      Left            =   120
+      TabIndex        =   6
+      Top             =   1860
+      Width           =   855
+   End
+End
+Attribute VB_Name = "frmCity"
+Attribute VB_Creatable = False
+Attribute VB_Exposed = False
+
+Private Sub cmdLockCountry_Click(Value As Integer)
+  VBCP_Update 63, "cmdLockCountry_Click", 1
+    Select Case Value
+    Case True   ' Lock the Country Info
+  VBCP_Update 63, "cmdLockCountry_Click", 2
+        ' Set button background color to white
+        cmdLockCountry.BackColor = &HFFFFFF
+  VBCP_Update 63, "cmdLockCountry_Click", 3
+        ' Lock the last Country Code & Country Name
+        txtLastCountryName.Text = dbcCountry.Text
+  VBCP_Update 63, "cmdLockCountry_Click", 4
+        txtLastCountryCode.Text = dbcCountry.BoundText
+  VBCP_Update 63, "cmdLockCountry_Click", 5
+        ' Disable the dbcCountry
+        dbcCountry.Enabled = False
+  VBCP_Update 63, "cmdLockCountry_Click", 6
+    Case False  ' Unlock the Country Info
+  VBCP_Update 63, "cmdLockCountry_Click", 7
+        ' Set button background color to gray
+        cmdLockCountry.BackColor = &HC0C0C0      ' Gray
+  VBCP_Update 63, "cmdLockCountry_Click", 8
+        ' Enable the dbcCountry
+        dbcCountry.Enabled = True
+  VBCP_Update 63, "cmdLockCountry_Click", 9
+    End Select
+
+End Sub
+
+Private Sub cmdLockProvince_Click(Value As Integer)
+  VBCP_Update 63, "cmdLockProvince_Click", 1
+    Select Case Value
+    Case True   ' Lock the Province Info
+  VBCP_Update 63, "cmdLockProvince_Click", 2
+        ' Set button background color to white
+        cmdLockProvince.BackColor = &HFFFFFF
+  VBCP_Update 63, "cmdLockProvince_Click", 3
+        ' Lock the last Province Code & Province Name
+        txtLastProvinceName.Text = dbcProvince.Text
+  VBCP_Update 63, "cmdLockProvince_Click", 4
+        txtLastProvinceCode.Text = dbcProvince.BoundText
+  VBCP_Update 63, "cmdLockProvince_Click", 5
+        ' Disable the dbcProvince
+        dbcProvince.Enabled = False
+  VBCP_Update 63, "cmdLockProvince_Click", 6
+    Case False  ' Unlock the Province Info
+  VBCP_Update 63, "cmdLockProvince_Click", 7
+        ' Set button background color to gray
+        cmdLockProvince.BackColor = &HC0C0C0      ' Gray
+  VBCP_Update 63, "cmdLockProvince_Click", 8
+        ' Enable the dbcProvince
+        dbcProvince.Enabled = True
+  VBCP_Update 63, "cmdLockProvince_Click", 9
+    End Select
+
+End Sub
+
+Private Sub dbcSelCountry_Click(intArea As Integer)
+  VBCP_Update 63, "dbcSelCountry_Click", 1
+    If intArea = dbcAreaList And VBCP_UpdateIf(63, "dbcSelCountry_Click", 2) Then
+        ' Lookup dtcCity
+        If cmdCascadeCountry.Value And VBCP_UpdateIf(63, "dbcSelCountry_Click", 3) Then    ' Cascade selected
+            LookupByCascade
+  VBCP_Update 63, "dbcSelCountry_Click", 4
+        Else                            ' No cascade
+            strSQL = "SELECT * FROM City " _
+                & "WHERE CountryCode = '" & dbcSelCountry.BoundText & "' " _
+                & "ORDER BY CityName"
+  VBCP_Update 63, "dbcSelCountry_Click", 5
+            dtcCity.RecordSource = strSQL
+            dtcCity.Refresh
+  VBCP_Update 63, "dbcSelCountry_Click", 6
+            dtcCity.UpdateControls
+  VBCP_Update 63, "dbcSelCountry_Click", 7
+        End If
+    End If
+
+End Sub
+
+Private Sub dbcSelProvince_Click(intArea As Integer)
+  VBCP_Update 63, "dbcSelProvince_Click", 1
+    If intArea = dbcAreaList And VBCP_UpdateIf(63, "dbcSelProvince_Click", 2) Then
+        ' Lookup dtcCity
+        If cmdCascadeProvince.Value And VBCP_UpdateIf(63, "dbcSelProvince_Click", 3) Then    ' Cascade selected
+            LookupByCascade
+  VBCP_Update 63, "dbcSelProvince_Click", 4
+        Else                            ' No cascade
+            strSQL = "SELECT * FROM City " _
+                & "WHERE ProvinceCode = '" & dbcSelProvince.BoundText & "' " _
+                & "ORDER BY CityName"
+  VBCP_Update 63, "dbcSelProvince_Click", 5
+            dtcCity.RecordSource = strSQL
+            dtcCity.Refresh
+  VBCP_Update 63, "dbcSelProvince_Click", 6
+            dtcCity.UpdateControls
+  VBCP_Update 63, "dbcSelProvince_Click", 7
+        End If
+    End If
+
+End Sub
+
+Private Sub Form_Activate()
+  VBCP_Update 63, "Form_Activate", 1
+    Screen.MousePointer = vbDefault
+  VBCP_Update 63, "Form_Activate", 2
+
+End Sub
+
+Private Sub Form_Load()
+  VBCP_Update 63, "Form_Load", 1
+    Call ofx_CenterForm(Me)
+  VBCP_Update 63, "Form_Load", 2
+End Sub
+
+
+Private Sub SSCommand1_Click()
+  VBCP_Update 63, "SSCommand1_Click", 1
+    If ofx_IsFormLoaded(frmCountry) Then _

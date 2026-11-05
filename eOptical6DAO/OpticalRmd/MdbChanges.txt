@@ -1,0 +1,5 @@
+UPDATE TxDetails SET TxDetails.RowNo = ((TxDetails.RowNo - 1) * 10)
+WHERE (((TxDetails.RowNo)>1 And (TxDetails.RowNo)<2));
+
+UPDATE TxSOrderAdd SET TxSOrderAdd.LineNumber = ((TxSOrderAdd.LineNumber - 1) * 10)
+WHERE (((TxSOrderAdd.LineNumber)>1 And (TxSOrderAdd.LineNumber)<2));

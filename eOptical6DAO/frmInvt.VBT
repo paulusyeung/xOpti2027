@@ -1,0 +1,2019 @@
+VERSION 4.00
+Begin VB.Form frmInvt 
+   Caption         =   "Inventory"
+   ClientHeight    =   7200
+   ClientLeft      =   345
+   ClientTop       =   1290
+   ClientWidth     =   11295
+   Height          =   7605
+   Left            =   285
+   LinkTopic       =   "Form1"
+   ScaleHeight     =   7200
+   ScaleWidth      =   11295
+   Top             =   945
+   Width           =   11415
+   Begin VB.Data dtcSelSupplier 
+      Caption         =   "SelSupplier"
+      Connect         =   "Access"
+      DatabaseName    =   "SynergyV.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   6360
+      Options         =   0
+      ReadOnly        =   0   'False
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   "SELECT SupplierCode, SupplierName FROM Supplier ORDER BY SupplierName"
+      Top             =   4380
+      Visible         =   0   'False
+      Width           =   1140
+   End
+   Begin VB.Data dtcSelBrand 
+      Caption         =   "SelBrand"
+      Connect         =   "Access"
+      DatabaseName    =   "SynergyV.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   8400
+      Options         =   0
+      ReadOnly        =   0   'False
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   "SELECT * FROM Brand ORDER BY BrandDescription"
+      Top             =   4380
+      Visible         =   0   'False
+      Width           =   1140
+   End
+   Begin VB.TextBox txtSelModel 
+      Height          =   285
+      Left            =   9600
+      MaxLength       =   30
+      TabIndex        =   79
+      Top             =   4560
+      Width           =   1215
+   End
+   Begin VB.TextBox txtReorderQty 
+      DataField       =   "ReOrderQty"
+      DataSource      =   "dtcInventory"
+      Height          =   285
+      Left            =   8640
+      TabIndex        =   22
+      Top             =   3840
+      Width           =   375
+   End
+   Begin VB.TextBox txtReorderLevel 
+      DataField       =   "ReOrderLevel"
+      DataSource      =   "dtcInventory"
+      Height          =   285
+      Left            =   8640
+      TabIndex        =   21
+      Top             =   3480
+      Width           =   375
+   End
+   Begin VB.TextBox txtBaseCurve 
+      DataField       =   "BaseCurve"
+      DataSource      =   "dtcInventory"
+      Height          =   285
+      Left            =   5640
+      TabIndex        =   15
+      Top             =   3720
+      Width           =   615
+   End
+   Begin VB.TextBox txtDiameter 
+      DataField       =   "Diameter"
+      DataSource      =   "dtcInventory"
+      Height          =   285
+      Left            =   5640
+      TabIndex        =   14
+      Top             =   3360
+      Width           =   615
+   End
+   Begin VB.TextBox txtCylinder 
+      DataField       =   "Cylinder"
+      DataSource      =   "dtcInventory"
+      Height          =   285
+      Left            =   5640
+      TabIndex        =   13
+      Top             =   3000
+      Width           =   615
+   End
+   Begin VB.TextBox txtSphere 
+      DataField       =   "Sphere"
+      DataSource      =   "dtcInventory"
+      Height          =   285
+      Left            =   5640
+      TabIndex        =   12
+      Top             =   2640
+      Width           =   615
+   End
+   Begin VB.TextBox txtTemple 
+      DataField       =   "Temple"
+      DataSource      =   "dtcInventory"
+      Height          =   285
+      Left            =   5640
+      MaxLength       =   4
+      TabIndex        =   11
+      Top             =   2280
+      Width           =   615
+   End
+   Begin VB.TextBox txtBridge 
+      BackColor       =   &H00FFFFFF&
+      DataField       =   "Bridge"
+      DataSource      =   "dtcInventory"
+      Height          =   285
+      Left            =   5640
+      MaxLength       =   4
+      TabIndex        =   10
+      Top             =   1920
+      Width           =   615
+   End
+   Begin VB.TextBox txtLastBrandCode 
+      Height          =   285
+      Left            =   5040
+      TabIndex        =   76
+      Text            =   "LastBrandCode"
+      Top             =   3960
+      Visible         =   0   'False
+      Width           =   375
+   End
+   Begin VB.TextBox txtLastBrandName 
+      Height          =   285
+      Left            =   3720
+      TabIndex        =   75
+      Text            =   "LastBrandName"
+      Top             =   3960
+      Visible         =   0   'False
+      Width           =   1335
+   End
+   Begin VB.TextBox txtLastSupplierCode 
+      Height          =   285
+      Left            =   3240
+      TabIndex        =   73
+      Text            =   "LastSupplierCode"
+      Top             =   3960
+      Visible         =   0   'False
+      Width           =   375
+   End
+   Begin VB.TextBox txtLastSupplierName 
+      Height          =   285
+      Left            =   1920
+      TabIndex        =   72
+      Text            =   "LastSupplierName"
+      Top             =   3900
+      Visible         =   0   'False
+      Width           =   1335
+   End
+   Begin VB.TextBox txtLastCategoryCode 
+      Height          =   285
+      Left            =   3240
+      TabIndex        =   71
+      Text            =   "LatCategoryCode"
+      Top             =   3720
+      Visible         =   0   'False
+      Width           =   375
+   End
+   Begin VB.TextBox txtLastCategoryName 
+      Height          =   285
+      Left            =   1920
+      TabIndex        =   70
+      Text            =   "LastCategoryName"
+      Top             =   3720
+      Visible         =   0   'False
+      Width           =   1335
+   End
+   Begin VB.TextBox txtLastClassCode 
+      Height          =   285
+      Left            =   1440
+      TabIndex        =   69
+      Text            =   "LastClassCode"
+      Top             =   3900
+      Visible         =   0   'False
+      Width           =   375
+   End
+   Begin VB.TextBox txtLastClassName 
+      Height          =   285
+      Left            =   120
+      TabIndex        =   68
+      Text            =   "LastClassName"
+      Top             =   3900
+      Visible         =   0   'False
+      Width           =   1335
+   End
+   Begin VB.TextBox txtLastDeptCode 
+      Height          =   285
+      Left            =   1440
+      TabIndex        =   67
+      Text            =   "LastDeptCode"
+      Top             =   3720
+      Visible         =   0   'False
+      Width           =   375
+   End
+   Begin VB.TextBox txtLastDeptName 
+      Height          =   285
+      Left            =   120
+      TabIndex        =   66
+      Text            =   "LastDeptName"
+      Top             =   3720
+      Visible         =   0   'False
+      Width           =   1335
+   End
+   Begin VB.TextBox txtModel 
+      DataField       =   "Model"
+      DataSource      =   "dtcInventory"
+      Height          =   285
+      Left            =   1200
+      MaxLength       =   30
+      TabIndex        =   6
+      Top             =   3000
+      Width           =   2415
+   End
+   Begin VB.Data dtcRetailPrice 
+      Caption         =   "RetailPrice"
+      Connect         =   "Access"
+      DatabaseName    =   "Synergyv.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   9480
+      Options         =   0
+      ReadOnly        =   0   'False
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   ""
+      Top             =   2280
+      Visible         =   0   'False
+      Width           =   1815
+   End
+   Begin VB.Data dtcMaterial 
+      Caption         =   "Material"
+      Connect         =   "Access"
+      DatabaseName    =   "Synergyv.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   9480
+      Options         =   0
+      ReadOnly        =   0   'False
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   "Material"
+      Top             =   3960
+      Visible         =   0   'False
+      Width           =   1815
+   End
+   Begin VB.Data dtcBrand 
+      Caption         =   "Brand"
+      Connect         =   "Access"
+      DatabaseName    =   "Synergyv.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   9480
+      Options         =   0
+      ReadOnly        =   0   'False
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   "SELECT BrandCode, BrandDescription FROM Brand ORDER BY BrandDescription"
+      Top             =   3000
+      Visible         =   0   'False
+      Width           =   1815
+   End
+   Begin VB.Data dtcSupplier 
+      Caption         =   "Supplier"
+      Connect         =   "Access"
+      DatabaseName    =   "Synergyv.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   9480
+      Options         =   0
+      ReadOnly        =   0   'False
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   "SELECT SupplierCode, SupplierName FROM Supplier ORDER BY SupplierName"
+      Top             =   3720
+      Visible         =   0   'False
+      Width           =   1815
+   End
+   Begin VB.Data dtcCategory 
+      Caption         =   "Category"
+      Connect         =   "Access"
+      DatabaseName    =   "Synergyv.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   9480
+      Options         =   0
+      ReadOnly        =   0   'False
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   "SELECT DISTINCT CategoryCode, CategoryName FROM Category ORDER BY CAtegoryName"
+      Top             =   3480
+      Visible         =   0   'False
+      Width           =   1815
+   End
+   Begin VB.Data dtcClass 
+      Caption         =   "Class"
+      Connect         =   "Access"
+      DatabaseName    =   "Synergyv.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   9480
+      Options         =   0
+      ReadOnly        =   -1  'True
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   "SELECT DISTINCT ClassCode, ClassName FROM Class ORDER BY ClassName"
+      Top             =   3240
+      Visible         =   0   'False
+      Width           =   1815
+   End
+   Begin VB.Data dtcDepartment 
+      Caption         =   "Department"
+      Connect         =   "Access"
+      DatabaseName    =   "Synergyv.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   9480
+      Options         =   0
+      ReadOnly        =   -1  'True
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   "Department"
+      Top             =   2760
+      Visible         =   0   'False
+      Width           =   1815
+   End
+   Begin VB.Data dtcInventory 
+      Caption         =   "Inventory"
+      Connect         =   ""
+      DatabaseName    =   "Synergyv.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   9480
+      Options         =   0
+      ReadOnly        =   0   'False
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   ""
+      Top             =   2520
+      Visible         =   0   'False
+      Width           =   1815
+   End
+   Begin VB.TextBox txtFields 
+      DataField       =   "Remarks"
+      DataSource      =   "dtcInventory"
+      Height          =   675
+      Index           =   17
+      Left            =   8640
+      MultiLine       =   -1  'True
+      ScrollBars      =   2  'Vertical
+      TabIndex        =   17
+      Top             =   1560
+      Width           =   2535
+   End
+   Begin SSDesignerWidgetsToolbar.SSToolbar SSToolbar1 
+      Align           =   1  'Align Top
+      Height          =   1080
+      Left            =   0
+      TabIndex        =   38
+      TabStop         =   0   'False
+      Top             =   0
+      Width           =   11295
+      _Version        =   131073
+      _ExtentX        =   19923
+      _ExtentY        =   1906
+      _StockProps     =   69
+      BackColor       =   12632256
+      FloatingCaption =   "SSToolbar1"
+      AlreadyCreated  =   -1  'True
+      Outline         =   0   'False
+      ToolsetNumBtnStates=   3
+      Btns            =   9
+      ToolsetPicture  =   "frmInvt.frx":0000
+      BC              =   9
+      BtnToolNum(0)   =   0
+      BtnPlaceHolder(0)=   0   'False
+      BtnToolNum(1)   =   1
+      BtnPlaceHolder(1)=   0   'False
+      BtnToolNum(2)   =   2
+      BtnPlaceHolder(2)=   0   'False
+      BtnToolNum(3)   =   3
+      BtnPlaceHolder(3)=   0   'False
+      BtnToolNum(4)   =   4
+      BtnPlaceHolder(4)=   0   'False
+      BtnToolNum(5)   =   5
+      BtnPlaceHolder(5)=   0   'False
+      BtnToolNum(6)   =   6
+      BtnPlaceHolder(6)=   0   'False
+      BtnToolNum(7)   =   7
+      BtnPlaceHolder(7)=   0   'False
+      BtnToolNum(8)   =   8
+      BtnPlaceHolder(8)=   0   'False
+      ToolsetNumTools =   9
+      ToolsetToolID(0)=   "ID_Add"
+      ToolsetToolHelp(0)=   "Add a new record"
+      ToolsetToolMnemonic(0)=   "a"
+      ToolsetToolGroup(0)=   1
+      ToolsetToolID(1)=   "ID_Delete"
+      ToolsetToolHelp(1)=   "Delete this record"
+      ToolsetToolMnemonic(1)=   "d"
+      ToolsetToolGroup(1)=   1
+      ToolsetToolID(2)=   "ID_Refresh"
+      ToolsetToolHelp(2)=   "Refresh this record"
+      ToolsetToolMnemonic(2)=   "r"
+      ToolsetToolGroup(2)=   1
+      ToolsetToolID(3)=   "ID_Save"
+      ToolsetToolHelp(3)=   "Save this record"
+      ToolsetToolMnemonic(3)=   "s"
+      ToolsetToolGroup(3)=   1
+      ToolsetToolID(4)=   "ID_Close"
+      ToolsetToolHelp(4)=   "Close and exit"
+      ToolsetToolMnemonic(4)=   "c"
+      ToolsetToolGroup(4)=   1
+      ToolsetToolID(5)=   "ID_First"
+      ToolsetToolHelp(5)=   "Goto first record"
+      ToolsetToolMnemonic(5)=   "f"
+      ToolsetToolGroup(5)=   2
+      ToolsetToolID(6)=   "ID_Next"
+      ToolsetToolHelp(6)=   "Next record"
+      ToolsetToolMnemonic(6)=   "x"
+      ToolsetToolGroup(6)=   2
+      ToolsetToolID(7)=   "ID_Previous"
+      ToolsetToolHelp(7)=   "Previous record"
+      ToolsetToolMnemonic(7)=   "p"
+      ToolsetToolGroup(7)=   2
+      ToolsetToolID(8)=   "ID_Last"
+      ToolsetToolHelp(8)=   "Goto last record"
+      ToolsetToolMnemonic(8)=   "l"
+      ToolsetToolGroup(8)=   2
+      MouseIcon       =   "frmInvt.frx":1B452
+   End
+   Begin Threed.SSFrame SSFrame1 
+      Height          =   30
+      Left            =   120
+      TabIndex        =   50
+      Top             =   4200
+      Width           =   11055
+      _Version        =   65536
+      _ExtentX        =   19500
+      _ExtentY        =   53
+      _StockProps     =   14
+      Caption         =   "SSFrame1"
+   End
+   Begin Threed.SSCommand cmdFindModel 
+      Height          =   315
+      Left            =   10800
+      TabIndex        =   80
+      Top             =   4560
+      Width           =   375
+      _Version        =   65536
+      _ExtentX        =   661
+      _ExtentY        =   556
+      _StockProps     =   78
+      BevelWidth      =   1
+      Outline         =   0   'False
+      Picture         =   "frmInvt.frx":1B46E
+   End
+   Begin VB.Label Label13 
+      Caption         =   "Model/Style"
+      Height          =   255
+      Left            =   9600
+      TabIndex        =   78
+      Top             =   4320
+      Width           =   855
+   End
+   Begin Threed.SSCommand SSCommand11 
+      Height          =   285
+      Left            =   9360
+      TabIndex        =   77
+      TabStop         =   0   'False
+      Top             =   2280
+      Width           =   315
+      _Version        =   65536
+      _ExtentX        =   556
+      _ExtentY        =   503
+      _StockProps     =   78
+      BevelWidth      =   1
+      Outline         =   0   'False
+      AutoSize        =   2
+      Picture         =   "frmInvt.frx":1BA14
+   End
+   Begin MSMask.MaskEdBox mskMarkdown 
+      DataField       =   "RetailMarkDownAmt"
+      DataSource      =   "dtcRetailPrice"
+      Height          =   255
+      Left            =   8640
+      TabIndex        =   19
+      Top             =   2640
+      Width           =   735
+      _Version        =   65536
+      _ExtentX        =   1296
+      _ExtentY        =   450
+      _StockProps     =   109
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      Format          =   "$#,##0.00"
+   End
+   Begin MSMask.MaskEdBox mskLeastSellingPrice 
+      DataField       =   "LeastSellingPrice"
+      DataSource      =   "dtcRetailPrice"
+      Height          =   255
+      Left            =   8640
+      TabIndex        =   20
+      Top             =   3000
+      Width           =   735
+      _Version        =   65536
+      _ExtentX        =   1296
+      _ExtentY        =   450
+      _StockProps     =   109
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      PromptInclude   =   0   'False
+      Format          =   "$#,##0.00"
+   End
+   Begin MSMask.MaskEdBox mskRetailPrice 
+      DataField       =   "RetailPrice"
+      DataSource      =   "dtcRetailPrice"
+      Height          =   255
+      Left            =   8640
+      TabIndex        =   18
+      Top             =   2280
+      Width           =   735
+      _Version        =   65536
+      _ExtentX        =   1296
+      _ExtentY        =   450
+      _StockProps     =   109
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      Format          =   "$#,##0.00"
+   End
+   Begin Threed.SSRibbon cmdLockBrand 
+      Height          =   315
+      Left            =   3600
+      TabIndex        =   74
+      Top             =   2640
+      Width           =   375
+      _Version        =   65536
+      _ExtentX        =   661
+      _ExtentY        =   556
+      _StockProps     =   65
+      BackColor       =   12632256
+      GroupNumber     =   5
+      GroupAllowAllUp =   -1  'True
+      BevelWidth      =   1
+      Outline         =   0   'False
+      PictureUp       =   "frmInvt.frx":1BF92
+      PictureDn       =   "frmInvt.frx":1C4F4
+   End
+   Begin Threed.SSRibbon cmdLockSupplier 
+      Height          =   315
+      Left            =   3600
+      TabIndex        =   65
+      Top             =   2280
+      Width           =   375
+      _Version        =   65536
+      _ExtentX        =   661
+      _ExtentY        =   556
+      _StockProps     =   65
+      BackColor       =   12632256
+      GroupNumber     =   4
+      GroupAllowAllUp =   -1  'True
+      BevelWidth      =   1
+      Outline         =   0   'False
+      PictureUp       =   "frmInvt.frx":1CA46
+      PictureDn       =   "frmInvt.frx":1CFA8
+   End
+   Begin Threed.SSRibbon cmdLockCategory 
+      Height          =   315
+      Left            =   3600
+      TabIndex        =   64
+      Top             =   1920
+      Width           =   375
+      _Version        =   65536
+      _ExtentX        =   661
+      _ExtentY        =   556
+      _StockProps     =   65
+      BackColor       =   12632256
+      GroupNumber     =   3
+      GroupAllowAllUp =   -1  'True
+      BevelWidth      =   1
+      Outline         =   0   'False
+      PictureUp       =   "frmInvt.frx":1D4FA
+      PictureDn       =   "frmInvt.frx":1DA5C
+   End
+   Begin Threed.SSRibbon cmdLockClass 
+      Height          =   315
+      Left            =   3600
+      TabIndex        =   63
+      Top             =   1560
+      Width           =   375
+      _Version        =   65536
+      _ExtentX        =   661
+      _ExtentY        =   556
+      _StockProps     =   65
+      BackColor       =   12632256
+      GroupNumber     =   2
+      GroupAllowAllUp =   -1  'True
+      BevelWidth      =   1
+      Outline         =   0   'False
+      PictureUp       =   "frmInvt.frx":1DFAE
+      PictureDn       =   "frmInvt.frx":1E510
+   End
+   Begin Threed.SSRibbon cmdLockDept 
+      Height          =   315
+      Left            =   3600
+      TabIndex        =   62
+      Top             =   1200
+      Width           =   375
+      _Version        =   65536
+      _ExtentX        =   661
+      _ExtentY        =   556
+      _StockProps     =   65
+      BackColor       =   12632256
+      BevelWidth      =   1
+      Outline         =   0   'False
+      PictureUp       =   "frmInvt.frx":1EA62
+      PictureDn       =   "frmInvt.frx":1EFC4
+   End
+   Begin MSDBCtls.DBCombo dbcSelBrand 
+      Bindings        =   "frmInvt.frx":1F516
+      Height          =   315
+      Left            =   7680
+      TabIndex        =   61
+      TabStop         =   0   'False
+      Top             =   4560
+      Width           =   1695
+      _Version        =   65536
+      _ExtentX        =   2990
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "BrandDescription"
+      BoundColumn     =   "BrandCode"
+   End
+   Begin VB.Label Label12 
+      Caption         =   "Brand"
+      Height          =   255
+      Left            =   7680
+      TabIndex        =   60
+      Top             =   4320
+      Width           =   495
+   End
+   Begin VB.Label Label11 
+      Caption         =   "Markdown"
+      Height          =   255
+      Left            =   7560
+      TabIndex        =   59
+      Top             =   2640
+      Width           =   975
+   End
+   Begin VB.Label Label10 
+      Caption         =   "Least Selling Price"
+      Height          =   375
+      Left            =   7560
+      TabIndex        =   58
+      Top             =   3000
+      Width           =   975
+   End
+   Begin VB.Label Label9 
+      Caption         =   "Reorder Qty"
+      Height          =   255
+      Left            =   7560
+      TabIndex        =   57
+      Top             =   3840
+      Width           =   975
+   End
+   Begin VB.Label Label8 
+      Caption         =   "Reorder Level"
+      Height          =   255
+      Left            =   7560
+      TabIndex        =   56
+      Top             =   3480
+      Width           =   1095
+   End
+   Begin VB.Label Label7 
+      Caption         =   "Retail Price"
+      Height          =   255
+      Left            =   7560
+      TabIndex        =   55
+      Top             =   2280
+      Width           =   855
+   End
+   Begin VB.Label Label6 
+      Caption         =   "Temple"
+      Height          =   255
+      Left            =   4680
+      TabIndex        =   54
+      Top             =   2280
+      Width           =   615
+   End
+   Begin VB.Label Label5 
+      Caption         =   "Bridge"
+      Height          =   255
+      Left            =   4680
+      TabIndex        =   53
+      Top             =   1920
+      Width           =   615
+   End
+   Begin MSMask.MaskEdBox mskSKU 
+      DataField       =   "SKU"
+      DataSource      =   "dtcInventory"
+      Height          =   255
+      Left            =   8640
+      TabIndex        =   16
+      Top             =   1200
+      Width           =   1575
+      _Version        =   65536
+      _ExtentX        =   2778
+      _ExtentY        =   450
+      _StockProps     =   109
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      PromptInclude   =   0   'False
+      MaxLength       =   13
+      Mask            =   "#############"
+   End
+   Begin MSDBCtls.DBCombo dbcSelSupplier 
+      Bindings        =   "frmInvt.frx":1F52A
+      Height          =   315
+      Left            =   5520
+      TabIndex        =   52
+      TabStop         =   0   'False
+      Top             =   4560
+      Width           =   1935
+      _Version        =   65536
+      _ExtentX        =   3413
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "SupplierName"
+      BoundColumn     =   "SupplierCode"
+   End
+   Begin VB.Label Label4 
+      Caption         =   "Supplier"
+      Height          =   255
+      Left            =   5520
+      TabIndex        =   51
+      Top             =   4320
+      Width           =   615
+   End
+   Begin MSDBCtls.DBCombo dbcSelCategory 
+      Bindings        =   "frmInvt.frx":1F541
+      Height          =   315
+      Left            =   3600
+      TabIndex        =   49
+      TabStop         =   0   'False
+      Top             =   4560
+      Width           =   1695
+      _Version        =   65536
+      _ExtentX        =   2990
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "CategoryName"
+      BoundColumn     =   "CategoryCode"
+   End
+   Begin MSDBCtls.DBCombo dbcSelClass 
+      Bindings        =   "frmInvt.frx":1F555
+      Height          =   315
+      Left            =   1800
+      TabIndex        =   48
+      TabStop         =   0   'False
+      Top             =   4560
+      Width           =   1575
+      _Version        =   65536
+      _ExtentX        =   2778
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "ClassName"
+      BoundColumn     =   "ClassCode"
+   End
+   Begin MSDBCtls.DBCombo dbcSelDepartment 
+      Bindings        =   "frmInvt.frx":1F566
+      Height          =   315
+      Left            =   120
+      TabIndex        =   47
+      TabStop         =   0   'False
+      Top             =   4560
+      Width           =   1455
+      _Version        =   65536
+      _ExtentX        =   2566
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "DepartmentName"
+      BoundColumn     =   "DepartmentCode"
+   End
+   Begin VB.Label Label3 
+      Caption         =   "Category"
+      Height          =   255
+      Left            =   3600
+      TabIndex        =   46
+      Top             =   4320
+      Width           =   735
+   End
+   Begin VB.Label Label2 
+      Caption         =   "Class"
+      Height          =   255
+      Left            =   1800
+      TabIndex        =   45
+      Top             =   4320
+      Width           =   495
+   End
+   Begin VB.Label Label1 
+      Caption         =   "Department"
+      Height          =   255
+      Left            =   120
+      TabIndex        =   44
+      Top             =   4320
+      Width           =   855
+   End
+   Begin Threed.SSCommand SSCommand6 
+      Height          =   315
+      Left            =   3600
+      TabIndex        =   43
+      TabStop         =   0   'False
+      Top             =   3360
+      Width           =   360
+      _Version        =   65536
+      _ExtentX        =   635
+      _ExtentY        =   556
+      _StockProps     =   78
+      BevelWidth      =   1
+      Outline         =   0   'False
+      Picture         =   "frmInvt.frx":1F57C
+   End
+   Begin Threed.SSCommand SSCommand4 
+      Height          =   315
+      Left            =   3960
+      TabIndex        =   42
+      TabStop         =   0   'False
+      Top             =   2640
+      Width           =   360
+      _Version        =   65536
+      _ExtentX        =   635
+      _ExtentY        =   556
+      _StockProps     =   78
+      BevelWidth      =   1
+      Outline         =   0   'False
+      Picture         =   "frmInvt.frx":1FB4A
+   End
+   Begin Threed.SSCommand SSCommand3 
+      Height          =   315
+      Left            =   3960
+      TabIndex        =   41
+      TabStop         =   0   'False
+      Top             =   2280
+      Width           =   360
+      _Version        =   65536
+      _ExtentX        =   635
+      _ExtentY        =   556
+      _StockProps     =   78
+      BevelWidth      =   1
+      Outline         =   0   'False
+      Picture         =   "frmInvt.frx":20118
+   End
+   Begin Threed.SSCommand SSCommand2 
+      Height          =   300
+      Left            =   10200
+      TabIndex        =   40
+      TabStop         =   0   'False
+      Top             =   1200
+      Width           =   300
+      _Version        =   65536
+      _ExtentX        =   529
+      _ExtentY        =   529
+      _StockProps     =   78
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   400
+         size            =   12
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      BevelWidth      =   0
+      Outline         =   0   'False
+      AutoSize        =   2
+      Picture         =   "frmInvt.frx":206E6
+   End
+   Begin Threed.SSCommand SSCommand1 
+      Height          =   315
+      Left            =   3960
+      TabIndex        =   39
+      TabStop         =   0   'False
+      Top             =   1920
+      Width           =   360
+      _Version        =   65536
+      _ExtentX        =   635
+      _ExtentY        =   556
+      _StockProps     =   78
+      BevelWidth      =   1
+      Outline         =   0   'False
+      Picture         =   "frmInvt.frx":20C38
+   End
+   Begin MSMask.MaskEdBox mskSize 
+      DataField       =   "Size"
+      DataSource      =   "dtcInventory"
+      Height          =   255
+      Left            =   5640
+      TabIndex        =   9
+      Top             =   1560
+      Width           =   855
+      _Version        =   65536
+      _ExtentX        =   1508
+      _ExtentY        =   450
+      _StockProps     =   109
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      PromptInclude   =   0   'False
+      ClipMode        =   1
+      MaxLength       =   6
+      Mask            =   ">aaaaaa"
+   End
+   Begin MSMask.MaskEdBox mskColor 
+      DataField       =   "Color"
+      DataSource      =   "dtcInventory"
+      Height          =   255
+      Left            =   5640
+      TabIndex        =   8
+      Top             =   1200
+      Width           =   975
+      _Version        =   65536
+      _ExtentX        =   1720
+      _ExtentY        =   450
+      _StockProps     =   109
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      PromptInclude   =   0   'False
+      ClipMode        =   1
+      MaxLength       =   8
+      Mask            =   ">CCCCCCCC"
+   End
+   Begin TrueDBGrid.TDBGrid TDBGrid1 
+      Bindings        =   "frmInvt.frx":21206
+      Height          =   2175
+      Left            =   120
+      OleObjectBlob   =   "frmInvt.frx":2121B
+      TabIndex        =   37
+      TabStop         =   0   'False
+      Top             =   4920
+      Width           =   11055
+   End
+   Begin MSDBCtls.DBCombo dbcMaterial 
+      Bindings        =   "frmInvt.frx":25449
+      DataField       =   "MaterialCode"
+      DataSource      =   "dtcInventory"
+      Height          =   315
+      Left            =   1200
+      TabIndex        =   7
+      Top             =   3360
+      Width           =   2415
+      _Version        =   65536
+      _ExtentX        =   4260
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "MaterialDescription"
+      BoundColumn     =   "MaterialCode"
+   End
+   Begin MSDBCtls.DBCombo dbcBrand 
+      Bindings        =   "frmInvt.frx":2545D
+      DataField       =   "BrandCode"
+      DataSource      =   "dtcInventory"
+      Height          =   315
+      Left            =   1200
+      TabIndex        =   5
+      Top             =   2640
+      Width           =   2415
+      _Version        =   65536
+      _ExtentX        =   4260
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "BrandDescription"
+      BoundColumn     =   "BrandCode"
+   End
+   Begin MSDBCtls.DBCombo dbcSupplier 
+      Bindings        =   "frmInvt.frx":2546E
+      DataField       =   "SupplierCode"
+      DataSource      =   "dtcInventory"
+      Height          =   315
+      Left            =   1200
+      TabIndex        =   4
+      Top             =   2280
+      Width           =   2415
+      _Version        =   65536
+      _ExtentX        =   4260
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "SupplierName"
+      BoundColumn     =   "SupplierCode"
+   End
+   Begin MSDBCtls.DBCombo dbcCategory 
+      Bindings        =   "frmInvt.frx":25482
+      DataField       =   "CategoryCode"
+      DataSource      =   "dtcInventory"
+      Height          =   315
+      Left            =   1200
+      TabIndex        =   3
+      Top             =   1920
+      Width           =   2415
+      _Version        =   65536
+      _ExtentX        =   4260
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "CategoryName"
+      BoundColumn     =   "CategoryCode"
+   End
+   Begin MSDBCtls.DBCombo dbcClass 
+      Bindings        =   "frmInvt.frx":25496
+      DataField       =   "ClassCode"
+      DataSource      =   "dtcInventory"
+      Height          =   315
+      Left            =   1200
+      TabIndex        =   2
+      Top             =   1560
+      Width           =   2415
+      _Version        =   65536
+      _ExtentX        =   4260
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "ClassName"
+      BoundColumn     =   "ClassCode"
+   End
+   Begin MSDBCtls.DBCombo dbcDepartment 
+      Bindings        =   "frmInvt.frx":254A7
+      DataField       =   "DepartmentCode"
+      DataSource      =   "dtcInventory"
+      Height          =   315
+      Left            =   1200
+      TabIndex        =   1
+      Top             =   1200
+      Width           =   2415
+      _Version        =   65536
+      _ExtentX        =   4260
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "DepartmentName"
+      BoundColumn     =   "DepartmentCode"
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Remarks:"
+      Height          =   255
+      Index           =   17
+      Left            =   7560
+      TabIndex        =   36
+      Top             =   1560
+      Width           =   735
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "SKU:"
+      Height          =   255
+      Index           =   14
+      Left            =   7560
+      TabIndex        =   35
+      Top             =   1200
+      Width           =   615
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Base Curve:"
+      Height          =   255
+      Index           =   13
+      Left            =   4680
+      TabIndex        =   34
+      Top             =   3720
+      Width           =   975
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Diameter"
+      Height          =   255
+      Index           =   12
+      Left            =   4680
+      TabIndex        =   33
+      Top             =   3360
+      Width           =   855
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Cylinder:"
+      Height          =   255
+      Index           =   11
+      Left            =   4680
+      TabIndex        =   32
+      Top             =   3000
+      Width           =   615
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Sphere:"
+      Height          =   255
+      Index           =   10
+      Left            =   4680
+      TabIndex        =   31
+      Top             =   2655
+      Width           =   735
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Material:"
+      Height          =   255
+      Index           =   9
+      Left            =   120
+      TabIndex        =   30
+      Top             =   3360
+      Width           =   855
+   End
+   Begin VB.Label lblSize 
+      Caption         =   "Size:"
+      Height          =   255
+      Index           =   7
+      Left            =   4680
+      TabIndex        =   29
+      Top             =   1560
+      Width           =   615
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Color:"
+      Height          =   255
+      Index           =   6
+      Left            =   4680
+      TabIndex        =   28
+      Top             =   1200
+      Width           =   615
+   End
+   Begin VB.Label lblModel 
+      Caption         =   "Model:"
+      Height          =   255
+      Index           =   5
+      Left            =   120
+      TabIndex        =   27
+      Top             =   3000
+      Width           =   975
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Brand:"
+      Height          =   255
+      Index           =   4
+      Left            =   120
+      TabIndex        =   26
+      Top             =   2640
+      Width           =   855
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Supplier:"
+      Height          =   255
+      Index           =   3
+      Left            =   120
+      TabIndex        =   25
+      Top             =   2280
+      Width           =   855
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Category:"
+      Height          =   255
+      Index           =   2
+      Left            =   120
+      TabIndex        =   24
+      Top             =   1920
+      Width           =   855
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Class:"
+      Height          =   255
+      Index           =   1
+      Left            =   120
+      TabIndex        =   23
+      Top             =   1575
+      Width           =   975
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Department:"
+      Height          =   255
+      Index           =   0
+      Left            =   120
+      TabIndex        =   0
+      Top             =   1200
+      Width           =   975
+   End
+End
+Attribute VB_Name = "frmInvt"
+Attribute VB_Creatable = False
+Attribute VB_Exposed = False
+Option Explicit
+
+Dim strLens         As String
+Dim strFrame        As String
+Dim strContactLens  As String
+Dim strService      As String
+
+Dim intBrand        As Integer
+Dim intMaterial     As Integer
+Dim intModel        As Integer
+Dim intColor        As Integer
+Dim intSize         As Integer
+Dim intBridge       As Integer
+Dim intTemple       As Integer
+Dim intCylinder     As Integer
+Dim intSphere       As Integer
+Dim intBaseCurve    As Integer
+Dim intDiameter     As Integer
+
+
+
+
+Private Sub cmdFindModel_Click()
+  VBCP_Update 89, "cmdFindModel_Click", 1
+        Dim strSQL As String
+        
+        Screen.MousePointer = vbHourglass
+  VBCP_Update 89, "cmdFindModel_Click", 2
+        strSQL = "SELECT * FROM Inventory " _
+            & "WHERE Model LIKE '" & txtSelModel.Text & "' " _
+            & "ORDER BY DepartmentCode, ClassCode, CategoryCode"
+  VBCP_Update 89, "cmdFindModel_Click", 3
+        dtcInventory.RecordSource = strSQL
+        dtcInventory.Refresh
+  VBCP_Update 89, "cmdFindModel_Click", 4
+        dtcInventory.UpdateControls
+  VBCP_Update 89, "cmdFindModel_Click", 5
+        Screen.MousePointer = vbDefault
+  VBCP_Update 89, "cmdFindModel_Click", 6
+        
+        ' RePaint the grid
+        Call Mode_Standard
+  VBCP_Update 89, "cmdFindModel_Click", 7
+
+End Sub
+
+
+Private Sub cmdLockBrand_Click(Value As Integer)
+  VBCP_Update 89, "cmdLockBrand_Click", 1
+    Select Case Value
+    Case True   ' Lock the Brand Info
+  VBCP_Update 89, "cmdLockBrand_Click", 2
+        ' Set button background color to white
+        cmdLockBrand.BackColor = &HFFFFFF
+  VBCP_Update 89, "cmdLockBrand_Click", 3
+        ' Lock the last Brand Code & Brand Name
+        txtLastBrandName.Text = dbcBrand.Text
+  VBCP_Update 89, "cmdLockBrand_Click", 4
+        txtLastBrandCode.Text = dbcBrand.BoundText
+  VBCP_Update 89, "cmdLockBrand_Click", 5
+        ' Disable the dbcSupplier
+        dbcBrand.Enabled = False
+  VBCP_Update 89, "cmdLockBrand_Click", 6
+    Case False  ' Unlock the Brand Info
+  VBCP_Update 89, "cmdLockBrand_Click", 7
+        ' Set button background color to gray
+        cmdLockBrand.BackColor = &HC0C0C0      ' Gray
+  VBCP_Update 89, "cmdLockBrand_Click", 8
+        ' Enable the dbcBrand
+        dbcBrand.Enabled = True
+  VBCP_Update 89, "cmdLockBrand_Click", 9
+    End Select
+
+End Sub
+
+
+Private Sub cmdLockCategory_Click(Value As Integer)
+  VBCP_Update 89, "cmdLockCategory_Click", 1
+    Select Case Value
+    Case True   ' Lock the Category Info
+  VBCP_Update 89, "cmdLockCategory_Click", 2
+        ' Set button background color to white
+        cmdLockCategory.BackColor = &HFFFFFF
+  VBCP_Update 89, "cmdLockCategory_Click", 3
+        ' Lock the last Category Code & Class Name
+        txtLastCategoryName.Text = dbcCategory.Text
+  VBCP_Update 89, "cmdLockCategory_Click", 4
+        txtLastCategoryCode.Text = dbcCategory.BoundText
+  VBCP_Update 89, "cmdLockCategory_Click", 5
+        ' Disable the dbcCategory
+        dbcCategory.Enabled = False
+  VBCP_Update 89, "cmdLockCategory_Click", 6
+    Case False  ' Unlock the Category Info
+  VBCP_Update 89, "cmdLockCategory_Click", 7
+        ' Set button background color to gray
+        cmdLockCategory.BackColor = &HC0C0C0      ' Gray
+  VBCP_Update 89, "cmdLockCategory_Click", 8
+        ' Enable the dbcCategory
+        dbcCategory.Enabled = True
+  VBCP_Update 89, "cmdLockCategory_Click", 9
+    End Select
+
+End Sub
+
+
+Private Sub cmdLockClass_Click(Value As Integer)
+  VBCP_Update 89, "cmdLockClass_Click", 1
+    Select Case Value
+    Case True   ' Lock the Class Info
+  VBCP_Update 89, "cmdLockClass_Click", 2
+        ' Set button background color to white
+        cmdLockClass.BackColor = &HFFFFFF
+  VBCP_Update 89, "cmdLockClass_Click", 3
+        ' Lock the last Class Code & Class Name
+        txtLastClassName.Text = dbcClass.Text
+  VBCP_Update 89, "cmdLockClass_Click", 4
+        txtLastClassCode.Text = dbcClass.BoundText
+  VBCP_Update 89, "cmdLockClass_Click", 5
+        ' Disable the dbcClass
+        dbcClass.Enabled = False
+  VBCP_Update 89, "cmdLockClass_Click", 6
+    Case False  ' Unlock the Class Info
+  VBCP_Update 89, "cmdLockClass_Click", 7
+        ' Set button background color to gray
+        cmdLockClass.BackColor = &HC0C0C0      ' Gray
+  VBCP_Update 89, "cmdLockClass_Click", 8
+        ' Enable the dbcClass
+        dbcClass.Enabled = True
+  VBCP_Update 89, "cmdLockClass_Click", 9
+    End Select
+
+End Sub
+
+
+Private Sub cmdLockDept_Click(Value As Integer)
+  VBCP_Update 89, "cmdLockDept_Click", 1
+    Select Case Value
+    Case True   ' Lock the Dept Info
+  VBCP_Update 89, "cmdLockDept_Click", 2
+        ' Set button background color to white
+        cmdLockDept.BackColor = &HFFFFFF
+  VBCP_Update 89, "cmdLockDept_Click", 3
+        ' Lock the last Dept Code & Dept Name
+        txtLastDeptName.Text = dbcDepartment.Text
+  VBCP_Update 89, "cmdLockDept_Click", 4
+        txtLastDeptCode.Text = dbcDepartment.BoundText
+  VBCP_Update 89, "cmdLockDept_Click", 5
+        ' Disable dbcDepartment
+        dbcDepartment.Enabled = False
+  VBCP_Update 89, "cmdLockDept_Click", 6
+    Case False  ' Unlock the Dept Info
+  VBCP_Update 89, "cmdLockDept_Click", 7
+        ' Set button background color to gray
+        cmdLockDept.BackColor = &HC0C0C0
+  VBCP_Update 89, "cmdLockDept_Click", 8
+        ' Enable dbcDepartment
+        dbcDepartment.Enabled = True
+  VBCP_Update 89, "cmdLockDept_Click", 9
+    End Select
+
+End Sub
+
+
+Private Sub cmdLockSupplier_Click(Value As Integer)
+  VBCP_Update 89, "cmdLockSupplier_Click", 1
+    Select Case Value
+    Case True   ' Lock the Supplier Info
+  VBCP_Update 89, "cmdLockSupplier_Click", 2
+        ' Set button background color to white
+        cmdLockSupplier.BackColor = &HFFFFFF
+  VBCP_Update 89, "cmdLockSupplier_Click", 3
+        ' Lock the last Category Code & Class Name
+        txtLastSupplierName.Text = dbcSupplier.Text
+  VBCP_Update 89, "cmdLockSupplier_Click", 4
+        txtLastSupplierCode.Text = dbcSupplier.BoundText
+  VBCP_Update 89, "cmdLockSupplier_Click", 5
+        ' Disable the dbcSupplier
+        dbcSupplier.Enabled = False
+  VBCP_Update 89, "cmdLockSupplier_Click", 6
+    Case False  ' Unlock the Supplier Info
+  VBCP_Update 89, "cmdLockSupplier_Click", 7
+        ' Set button background color to gray
+        cmdLockSupplier.BackColor = &HC0C0C0      ' Gray
+  VBCP_Update 89, "cmdLockSupplier_Click", 8
+        ' Enable the dbcCategory
+        dbcSupplier.Enabled = True
+  VBCP_Update 89, "cmdLockSupplier_Click", 9
+    End Select
+
+End Sub
+
+Private Sub dbcClass_Click(intArea As Integer)
+  VBCP_Update 89, "dbcClass_Click", 1
+
+    On Error GoTo dbcClass_Click_Err
+
+    If intArea = dbcAreaList And VBCP_UpdateIf(89, "dbcClass_Click", 2) Then
+        ' RePaint input screen
+        Select Case dbcClass.BoundText
+        Case Is = strFrame
+  VBCP_Update 89, "dbcClass_Click", 3
+            Call Mode_Frame
+  VBCP_Update 89, "dbcClass_Click", 4
+        Case Is = strLens
+  VBCP_Update 89, "dbcClass_Click", 5
+            Call Mode_Lens
+  VBCP_Update 89, "dbcClass_Click", 6
+        Case Is = strContactLens
+  VBCP_Update 89, "dbcClass_Click", 7
+            Call Mode_ContactLens
+  VBCP_Update 89, "dbcClass_Click", 8
+        Case Is = strService
+  VBCP_Update 89, "dbcClass_Click", 9
+            Call Mode_Service
+  VBCP_Update 89, "dbcClass_Click", 10
+        Case Else
+  VBCP_Update 89, "dbcClass_Click", 11
+            Call Mode_Else
+  VBCP_Update 89, "dbcClass_Click", 12
+        End Select
+        
+        ' When Class was selected,
+        ' Category DBCombo contains only those with the same Class Code, Dept Code
+        Dim strSQL As String
+        strSQL = "SELECT * FROM Category " _
+            & "WHERE DepartmentCode = '" & dbcDepartment.BoundText & "' AND " _
+            & "ClassCode = '" & dbcClass.BoundText & "' " _
+            & "ORDER BY CategoryName"
+  VBCP_Update 89, "dbcClass_Click", 13
+        dtcCategory.RecordSource = strSQL
+        dtcCategory.Refresh
+  VBCP_Update 89, "dbcClass_Click", 14
+        dtcCategory.UpdateControls
+  VBCP_Update 89, "dbcClass_Click", 15
+    End If
+
+dbcClass_Click_Exit:                                ' Tutorial Autocode
+  VBCP_Update 89, "dbcClass_Click", 16
+    On Error Resume Next                            ' Tutorial Autocode
+    Exit Sub                                        ' Tutorial Autocode
+  VBCP_Update 89, "dbcClass_Click", 17
+dbcClass_Click_Err:                                 ' Tutorial Autocode
+  VBCP_Update 89, "dbcClass_Click", 18
+    Call ofx_GenericError("dbcClass_Click()", Err)  ' Tutorial Autocode
+  VBCP_Update 89, "dbcClass_Click", 19
+    Resume dbcClass_Click_Exit
+  VBCP_Update 89, "dbcClass_Click", 20
+
+End Sub
+
+Private Sub dbcDepartment_Change()
+  VBCP_Update 89, "dbcDepartment_Change", 1
+    ' When Dept was selected,
+    ' Class DBCombo contains only those with the same Dept Code
+        Dim strSQL As String
+        strSQL = "SELECT * FROM Class " _
+            & "WHERE Department = '" & dbcDepartment.BoundText & "' " _
+            & "ORDER BY ClassName"
+  VBCP_Update 89, "dbcDepartment_Change", 2
+        dtcClass.RecordSource = strSQL
+        dtcClass.Refresh
+  VBCP_Update 89, "dbcDepartment_Change", 3
+        dtcClass.UpdateControls
+  VBCP_Update 89, "dbcDepartment_Change", 4
+
+End Sub
+
+Private Sub dbcDepartment_Click(intArea As Integer)
+  VBCP_Update 89, "dbcDepartment_Click", 1
+    ' When Dept was selected,
+    ' Class DBCombo contains only those with the same Dept Code
+    If intArea = dbcAreaList And VBCP_UpdateIf(89, "dbcDepartment_Click", 2) Then
+        Dim strSQL As String
+        strSQL = "SELECT * FROM Class " _
+            & "WHERE Department = '" & dbcDepartment.BoundText & "' " _
+            & "ORDER BY ClassName"
+  VBCP_Update 89, "dbcDepartment_Click", 3
+        dtcClass.RecordSource = strSQL
+        dtcClass.Refresh
+  VBCP_Update 89, "dbcDepartment_Click", 4
+        dtcClass.UpdateControls
+  VBCP_Update 89, "dbcDepartment_Click", 5
+    End If
+
+End Sub
+
+Private Sub dbcSelBrand_Click(intArea As Integer)
+  VBCP_Update 89, "dbcSelBrand_Click", 1
+
+    On Error GoTo dbcSelBrand_Click_Err
+
+
+    If intArea = dbcAreaList And VBCP_UpdateIf(89, "dbcSelBrand_Click", 2) Then
+        dbcSelDepartment.Text = ""  ' Set selected department to null
+  VBCP_Update 89, "dbcSelBrand_Click", 3
+        dbcSelClass.Text = ""       ' Set selected class to null
+  VBCP_Update 89, "dbcSelBrand_Click", 4
+        dbcSelCategory.Text = ""    ' Set selected category to null
+  VBCP_Update 89, "dbcSelBrand_Click", 5
+        dbcSelSupplier.Text = ""    ' Set selected supplier to null
+  VBCP_Update 89, "dbcSelBrand_Click", 6
+        Dim strSQL As String
+        strSQL = "SELECT * FROM Inventory " _
+            & "WHERE BrandCode = '" & dbcSelBrand.BoundText & "' " _
+            & "ORDER BY DepartmentCode, ClassCode, CategoryCode"
+  VBCP_Update 89, "dbcSelBrand_Click", 7
+        dtcInventory.RecordSource = strSQL
+        dtcInventory.Refresh
+  VBCP_Update 89, "dbcSelBrand_Click", 8
+        dtcInventory.UpdateControls
+  VBCP_Update 89, "dbcSelBrand_Click", 9
+        
+        ' RePaint the grid
+        Call Mode_Standard
+  VBCP_Update 89, "dbcSelBrand_Click", 10
+    End If
+
+
+dbcSelBrand_Click_Exit:                                ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelBrand_Click", 11
+    On Error Resume Next                               ' Tutorial Autocode
+    Exit Sub                                           ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelBrand_Click", 12
+dbcSelBrand_Click_Err:                                 ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelBrand_Click", 13
+    Call ofx_GenericError("dbcSelBrand_Click()", Err)  ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelBrand_Click", 14
+    Resume dbcSelBrand_Click_Exit
+  VBCP_Update 89, "dbcSelBrand_Click", 15
+
+End Sub
+
+Private Sub dbcSelCategory_Click(intArea As Integer)
+  VBCP_Update 89, "dbcSelCategory_Click", 1
+
+    On Error GoTo dbcSelCategory_Click_Err
+
+    If intArea = dbcAreaList And VBCP_UpdateIf(89, "dbcSelCategory_Click", 2) Then
+        dbcSelSupplier.Text = ""    ' Set selected supplier to null
+  VBCP_Update 89, "dbcSelCategory_Click", 3
+        dbcSelBrand.Text = ""       ' Set selected brand to null
+  VBCP_Update 89, "dbcSelCategory_Click", 4
+        Dim strSQL As String
+        strSQL = "SELECT * FROM Inventory " _
+            & "WHERE DepartmentCode = '" & dbcSelDepartment.BoundText & "' AND " _
+                  & "ClassCode = '" & dbcSelClass.BoundText & "' AND " _
+                  & "CategoryCode = '" & dbcSelCategory.BoundText & "' " _
+            & "ORDER BY DepartmentCode, ClassCode, CategoryCode"
+  VBCP_Update 89, "dbcSelCategory_Click", 5
+        dtcInventory.RecordSource = strSQL
+        dtcInventory.Refresh
+  VBCP_Update 89, "dbcSelCategory_Click", 6
+        dtcInventory.UpdateControls
+  VBCP_Update 89, "dbcSelCategory_Click", 7
+    End If
+
+dbcSelCategory_Click_Exit:                                ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelCategory_Click", 8
+    On Error Resume Next                                 ' Tutorial Autocode
+    Exit Sub                                             ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelCategory_Click", 9
+dbcSelCategory_Click_Err:                                 ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelCategory_Click", 10
+    Call ofx_GenericError("dbcSelCategory_Click()", Err)  ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelCategory_Click", 11
+    Resume dbcSelCategory_Click_Exit
+  VBCP_Update 89, "dbcSelCategory_Click", 12
+
+End Sub
+
+Private Sub dbcSelClass_Click(intArea As Integer)
+  VBCP_Update 89, "dbcSelClass_Click", 1
+
+    On Error GoTo dbcSelClass_Click_Err
+
+    If intArea = dbcAreaList And VBCP_UpdateIf(89, "dbcSelClass_Click", 2) Then
+        dbcSelCategory.Text = ""    ' Set selected category to null
+  VBCP_Update 89, "dbcSelClass_Click", 3
+        dbcSelSupplier.Text = ""    ' Set selected supplier to null
+  VBCP_Update 89, "dbcSelClass_Click", 4
+        dbcSelBrand.Text = ""       ' Set selected brand to null
+  VBCP_Update 89, "dbcSelClass_Click", 5
+        Dim strSQL As String
+        ' Sync Category DAO with SelDepartment & SelClass
+        strSQL = "SELECT * FROM Category " _
+            & "WHERE DepartmentCode = '" & dbcSelDepartment.BoundText & "' AND " _
+            & "ClassCode = '" & dbcSelClass.BoundText & "' " _
+            & "ORDER BY CategoryName"
+  VBCP_Update 89, "dbcSelClass_Click", 6
+        dtcCategory.RecordSource = strSQL
+        dtcCategory.Refresh
+  VBCP_Update 89, "dbcSelClass_Click", 7
+        dtcCategory.UpdateControls
+  VBCP_Update 89, "dbcSelClass_Click", 8
+        ' Sync Inventory DAO Contents
+        strSQL = "SELECT * FROM Inventory " _
+            & "WHERE DepartmentCode = '" & dbcSelDepartment.BoundText & "' AND " _
+                  & "ClassCode = '" & dbcSelClass.BoundText & "' " _
+            & "ORDER BY DepartmentCode, ClassCode, CategoryCode"
+  VBCP_Update 89, "dbcSelClass_Click", 9
+        dtcInventory.RecordSource = strSQL
+        dtcInventory.Refresh
+  VBCP_Update 89, "dbcSelClass_Click", 10
+        dtcInventory.UpdateControls
+  VBCP_Update 89, "dbcSelClass_Click", 11
+        
+        Select Case dbcSelClass.BoundText
+        Case Is = strFrame
+  VBCP_Update 89, "dbcSelClass_Click", 12
+            Call Mode_Frame
+  VBCP_Update 89, "dbcSelClass_Click", 13
+        Case Is = strLens
+  VBCP_Update 89, "dbcSelClass_Click", 14
+            Call Mode_Lens
+  VBCP_Update 89, "dbcSelClass_Click", 15
+        Case Is = strContactLens
+  VBCP_Update 89, "dbcSelClass_Click", 16
+            Call Mode_ContactLens
+  VBCP_Update 89, "dbcSelClass_Click", 17
+        Case Is = strService
+  VBCP_Update 89, "dbcSelClass_Click", 18
+            Call Mode_Service
+  VBCP_Update 89, "dbcSelClass_Click", 19
+        Case Else
+  VBCP_Update 89, "dbcSelClass_Click", 20
+            Call Mode_Else
+  VBCP_Update 89, "dbcSelClass_Click", 21
+        End Select
+        
+    End If
+
+dbcSelClass_Click_Exit:                                ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelClass_Click", 22
+    On Error Resume Next                                 ' Tutorial Autocode
+    Exit Sub                                             ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelClass_Click", 23
+dbcSelClass_Click_Err:                                 ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelClass_Click", 24
+    Call ofx_GenericError("dbcSelClass_Click()", Err)  ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelClass_Click", 25
+    Resume dbcSelClass_Click_Exit
+  VBCP_Update 89, "dbcSelClass_Click", 26
+
+
+End Sub
+
+Private Sub dbcSelDepartment_Click(intArea As Integer)
+  VBCP_Update 89, "dbcSelDepartment_Click", 1
+
+    On Error GoTo dbcSelDepartment_Click_Err
+
+    If intArea = dbcAreaList And VBCP_UpdateIf(89, "dbcSelDepartment_Click", 2) Then
+        dbcSelClass.Text = ""       ' Set selected category to null
+  VBCP_Update 89, "dbcSelDepartment_Click", 3
+        dbcSelCategory.Text = ""    ' Set selected category to null
+  VBCP_Update 89, "dbcSelDepartment_Click", 4
+        dbcSelSupplier.Text = ""    ' Set selected supplier to null
+  VBCP_Update 89, "dbcSelDepartment_Click", 5
+        dbcSelBrand.Text = ""       ' Set selected brand to null
+  VBCP_Update 89, "dbcSelDepartment_Click", 6
+        Dim strSQL As String
+        ' Sync Class DAO Contents with the same Dept Code
+        strSQL = "SELECT * FROM Class " _
+            & "WHERE Department = '" & dbcSelDepartment.BoundText & "' " _
+            & "ORDER BY ClassName"
+  VBCP_Update 89, "dbcSelDepartment_Click", 7
+        dtcClass.RecordSource = strSQL
+        dtcClass.Refresh
+  VBCP_Update 89, "dbcSelDepartment_Click", 8
+        dtcClass.UpdateControls
+  VBCP_Update 89, "dbcSelDepartment_Click", 9
+        ' Sync Inventory DAO Contents
+        strSQL = "SELECT * FROM Inventory " _
+            & "WHERE DepartmentCode = '" & dbcSelDepartment.BoundText & "' " _
+            & "ORDER BY DepartmentCode, ClassCode, CategoryCode"
+  VBCP_Update 89, "dbcSelDepartment_Click", 10
+        dtcInventory.RecordSource = strSQL
+        dtcInventory.Refresh
+  VBCP_Update 89, "dbcSelDepartment_Click", 11
+        dtcInventory.UpdateControls
+  VBCP_Update 89, "dbcSelDepartment_Click", 12
+        ' Skip this if dtcInventory has no record:
+        If dtcInventory.Recordset.EOF And dtcInventory.Recordset.BOF And VBCP_UpdateIf(89, "dbcSelDepartment_Click", 13) Then
+            strSQL = "SELECT * FROM RetailPrice " _
+                & "WHERE SKU = ' '"
+  VBCP_Update 89, "dbcSelDepartment_Click", 14
+            dtcRetailPrice.RecordSource = strSQL
+            dtcRetailPrice.Refresh
+  VBCP_Update 89, "dbcSelDepartment_Click", 15
+            dtcRetailPrice.UpdateControls
+  VBCP_Update 89, "dbcSelDepartment_Click", 16
+        End If
+    End If
+
+dbcSelDepartment_Click_Exit:                                ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelDepartment_Click", 17
+    On Error Resume Next                                 ' Tutorial Autocode
+    Exit Sub                                             ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelDepartment_Click", 18
+dbcSelDepartment_Click_Err:                                 ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelDepartment_Click", 19
+    Call ofx_GenericError("dbcSelDepartment_Click()", Err)  ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelDepartment_Click", 20
+    Resume dbcSelDepartment_Click_Exit
+  VBCP_Update 89, "dbcSelDepartment_Click", 21
+
+End Sub
+
+Private Sub dbcSelSupplier_Click(intArea As Integer)
+  VBCP_Update 89, "dbcSelSupplier_Click", 1
+
+    On Error GoTo dbcSelSupplier_Click_Err
+
+    If intArea = dbcAreaList And VBCP_UpdateIf(89, "dbcSelSupplier_Click", 2) Then
+        dbcSelDepartment.Text = ""  ' Set selected department to null
+  VBCP_Update 89, "dbcSelSupplier_Click", 3
+        dbcSelClass.Text = ""       ' Set selected class to null
+  VBCP_Update 89, "dbcSelSupplier_Click", 4
+        dbcSelCategory.Text = ""    ' Set selected category to null
+  VBCP_Update 89, "dbcSelSupplier_Click", 5
+        dbcSelBrand.Text = ""       ' Set selected brand to null
+  VBCP_Update 89, "dbcSelSupplier_Click", 6
+        Dim strSQL As String
+        strSQL = "SELECT * FROM Inventory " _
+            & "WHERE SupplierCode = '" & dbcSelSupplier.BoundText & "' " _
+            & "ORDER BY DepartmentCode, ClassCode, CategoryCode"
+  VBCP_Update 89, "dbcSelSupplier_Click", 7
+        dtcInventory.RecordSource = strSQL
+        dtcInventory.Refresh
+  VBCP_Update 89, "dbcSelSupplier_Click", 8
+        dtcInventory.UpdateControls
+  VBCP_Update 89, "dbcSelSupplier_Click", 9
+        
+        ' RePaint the grid
+        Call Mode_Standard
+  VBCP_Update 89, "dbcSelSupplier_Click", 10
+        
+    End If
+
+dbcSelSupplier_Click_Exit:                                ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelSupplier_Click", 11
+    On Error Resume Next                                 ' Tutorial Autocode
+    Exit Sub                                             ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelSupplier_Click", 12
+dbcSelSupplier_Click_Err:                                 ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelSupplier_Click", 13
+    Call ofx_GenericError("dbcSelSupplier_Click()", Err)  ' Tutorial Autocode
+  VBCP_Update 89, "dbcSelSupplier_Click", 14
+    Resume dbcSelSupplier_Click_Exit
+  VBCP_Update 89, "dbcSelSupplier_Click", 15
+
+End Sub
+
+Private Sub dtcInventory_Reposition()
+  VBCP_Update 89, "dtcInventory_Reposition", 1
+
+    On Error GoTo dtcInventory_Reposition_Err
+
+    Dim strSQL As String
+    
+    ' Synchronize the record position of RetailPrice to Inventory
+    ' by SKU
+    If dtcInventory.Recordset.BOF Or _
+       dtcInventory.Recordset.EOF And VBCP_UpdateIf(89, "dtcInventory_Reposition", 2) Then
+    Else
+        strSQL = "SELECT * FROM RetailPrice WHERE SKU = '" & _
+                  dtcInventory.Recordset.Fields("SKU") & "'"
+  VBCP_Update 89, "dtcInventory_Reposition", 3
+        dtcRetailPrice.RecordSource = strSQL
+        dtcRetailPrice.Refresh
+  VBCP_Update 89, "dtcInventory_Reposition", 4
+        dtcRetailPrice.UpdateControls
+  VBCP_Update 89, "dtcInventory_Reposition", 5
+    End If
+    
+dtcInventory_Reposition_Exit:                                ' Tutorial Autocode
+  VBCP_Update 89, "dtcInventory_Reposition", 6
+    On Error Resume Next                                     ' Tutorial Autocode
+    Exit Sub                                                 ' Tutorial Autocode
+  VBCP_Update 89, "dtcInventory_Reposition", 7
+dtcInventory_Reposition_Err:                                 ' Tutorial Autocode
+  VBCP_Update 89, "dtcInventory_Reposition", 8
+    Call ofx_GenericError("dtcInventory_Reposition()", Err)  ' Tutorial Autocode
+  VBCP_Update 89, "dtcInventory_Reposition", 9
+    Resume dtcInventory_Reposition_Exit
+  VBCP_Update 89, "dtcInventory_Reposition", 10
+
+End Sub
+
+Private Sub Form_Activate()
+  VBCP_Update 89, "Form_Activate", 1
+
+    On Error GoTo Form_Activate_Err
+
+    Screen.MousePointer = vbDefault
+  VBCP_Update 89, "Form_Activate", 2
+    
+    'Initialize the dbcDepartment
+    dbcSelDepartment.SetFocus
+  VBCP_Update 89, "Form_Activate", 3
+    SendKeys "{F4}{Enter}", True
+  VBCP_Update 89, "Form_Activate", 4
+    Call dbcSelDepartment_Click(2)
+  VBCP_Update 89, "Form_Activate", 5
+    
+    ' Goto dbcDepartment
+    dbcSelDepartment.SetFocus
+  VBCP_Update 89, "Form_Activate", 6
+
+Form_Activate_Exit:                                ' Tutorial Autocode
+  VBCP_Update 89, "Form_Activate", 7
+    On Error Resume Next                           ' Tutorial Autocode
+    Exit Sub                                       ' Tutorial Autocode
+  VBCP_Update 89, "Form_Activate", 8
+Form_Activate_Err:                                 ' Tutorial Autocode
+  VBCP_Update 89, "Form_Activate", 9
+    Call ofx_GenericError("Form_Activate()", Err)  ' Tutorial Autocode
+  VBCP_Update 89, "Form_Activate", 10
+    Resume Form_Activate_Exit
+  VBCP_Update 89, "Form_Activate", 11
+
+
+End Sub
+
+Private Sub Form_Load()
+  VBCP_Update 89, "Form_Load", 1
+
+    On Error GoTo Form_Load_Err
+    
+    Call ofx_CenterForm(Me)
+  VBCP_Update 89, "Form_Load", 2
+
+    ' Set grid column captions
+    intBrand = 4
+  VBCP_Update 89, "Form_Load", 3
+    intMaterial = 6
+  VBCP_Update 89, "Form_Load", 4
+    intModel = 5
+  VBCP_Update 89, "Form_Load", 5
+    intColor = 7
+  VBCP_Update 89, "Form_Load", 6
+    intSize = 8
+  VBCP_Update 89, "Form_Load", 7
+    intBridge = 9
+  VBCP_Update 89, "Form_Load", 8
+    intTemple = 10
+  VBCP_Update 89, "Form_Load", 9
+    intCylinder = 12
+  VBCP_Update 89, "Form_Load", 10
+    intSphere = 11
+  VBCP_Update 89, "Form_Load", 11
+    intBaseCurve = 14
+  VBCP_Update 89, "Form_Load", 12
+    intDiameter = 13
+  VBCP_Update 89, "Form_Load", 13
+    
+    ' Retrieve the Default Class Code for Lens, frame, Contact Lens.
+    strLens = GetDefaultClass_Lens
+  VBCP_Update 89, "Form_Load", 14
+    strFrame = GetDefaultClass_Frame
+  VBCP_Update 89, "Form_Load", 15
+    strContactLens = GetDefaultClass_ContactLens
+  VBCP_Update 89, "Form_Load", 16
+    strService = GetDefaultClass_Service
+  VBCP_Update 89, "Form_Load", 17
+    
+
+Form_Load_Exit:                                ' Tutorial Autocode
+  VBCP_Update 89, "Form_Load", 18
+    On Error Resume Next                       ' Tutorial Autocode
+    Exit Sub                                   ' Tutorial Autocode
+  VBCP_Update 89, "Form_Load", 19
+Form_Load_Err:                                 ' Tutorial Autocode
+  VBCP_Update 89, "Form_Load", 20
+    Call ofx_GenericError("Form_Load()", Err)  ' Tutorial Autocode
+  VBCP_Update 89, "Form_Load", 21
+    Resume Form_Load_Exit
+  VBCP_Update 89, "Form_Load", 22
+
+End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Private Sub mskColor_GotFocus()
+  VBCP_Update 89, "mskColor_GotFocus", 1
+    Call AutoSelect(mskColor)
+  VBCP_Update 89, "mskColor_GotFocus", 2
+End Sub
+
+Private Sub mskLeastSellingPrice_Change()
+  VBCP_Update 89, "mskLeastSellingPrice_Change", 1
+
+    If Not IsDecimal(mskLeastSellingPrice, 2, True) Or _
+       Not IsPositive(mskLeastSellingPrice, True) And VBCP_UpdateIf(89, "mskLeastSellingPrice_Change", 2) Then
+        mskLeastSellingPrice.SetFocus
+    End If
+
+End Sub
+
+Private Sub mskLeastSellingPrice_GotFocus()
+  VBCP_Update 89, "mskLeastSellingPrice_GotFocus", 1
+    Call AutoSelect(mskLeastSellingPrice)
+  VBCP_Update 89, "mskLeastSellingPrice_GotFocus", 2
+End Sub
+
+Private Sub mskLeastSellingPrice_LostFocus()
+  VBCP_Update 89, "mskLeastSellingPrice_LostFocus", 1
+
+    If ofx_CCur(mskLeastSellingPrice.Text) = 0 And VBCP_UpdateIf(89, "mskLeastSellingPrice_LostFocus", 2) Then Exit Sub  ' Ignor Zero Null ""
+    If Not IsDecimal(mskLeastSellingPrice, 2, True) Or _
+       Not IsPositive(mskLeastSellingPrice, True) Or _
+       Not IsA_LT_B(mskLeastSellingPrice, mskRetailPrice, True) And VBCP_UpdateIf(89, "mskLeastSellingPrice_LostFocus", 3) Then
+        mskLeastSellingPrice.SetFocus
+    End If
+
+End Sub
+
+Private Sub mskMarkdown_Change()
+  VBCP_Update 89, "mskMarkdown_Change", 1
+
+    If Not IsDecimal(mskMarkdown, 2, True) Or _
+       Not IsPositive(mskMarkdown, True) And VBCP_UpdateIf(89, "mskMarkdown_Change", 2) Then
+        mskMarkdown.SetFocus
+    End If
+
+End Sub
+
+Private Sub mskMarkdown_GotFocus()
+  VBCP_Update 89, "mskMarkdown_GotFocus", 1
+    Call AutoSelect(mskMarkdown)
+  VBCP_Update 89, "mskMarkdown_GotFocus", 2
+    
+End Sub
+
+Private Sub mskMarkdown_LostFocus()
+  VBCP_Update 89, "mskMarkdown_LostFocus", 1
+
+    If ofx_CCur(mskMarkdown.Text) = 0 And VBCP_UpdateIf(89, "mskMarkdown_LostFocus", 2) Then Exit Sub  ' Ignor Zero Null ""
+    If Not IsDecimal(mskMarkdown, 2, True) Or _
+       Not IsPositive(mskMarkdown, True) Or _
+       Not IsA_LE_BMinusC(mskMarkdown, mskRetailPrice, mskLeastSellingPrice, True) And VBCP_UpdateIf(89, "mskMarkdown_LostFocus", 3) Then
+        mskMarkdown.SetFocus
+    End If
+
+End Sub
+
+Private Sub mskRetailPrice_Change()
+  VBCP_Update 89, "mskRetailPrice_Change", 1
+
+    If Not IsDecimal(mskRetailPrice, 2, True) Or _
+       Not IsPositive(mskRetailPrice, True) And VBCP_UpdateIf(89, "mskRetailPrice_Change", 2) Then
+        mskRetailPrice.SetFocus
+    End If
+
+End Sub
+
+Private Sub mskRetailPrice_GotFocus()
+  VBCP_Update 89, "mskRetailPrice_GotFocus", 1
+    Call AutoSelect(mskRetailPrice)
+  VBCP_Update 89, "mskRetailPrice_GotFocus", 2
+End Sub
+
+Private Sub mskRetailPrice_LostFocus()
+  VBCP_Update 89, "mskRetailPrice_LostFocus", 1
+    
+    If Not IsDecimal(mskRetailPrice, 2, True) Or _
+       Not IsPositive(mskRetailPrice, True) And VBCP_UpdateIf(89, "mskRetailPrice_LostFocus", 2) Then
+        mskRetailPrice.SetFocus
+    End If
+
+End Sub
+
+Private Sub mskSize_GotFocus()
+  VBCP_Update 89, "mskSize_GotFocus", 1
+    ' Auto-select the whole window
+    Call AutoSelect(mskSize)
+  VBCP_Update 89, "mskSize_GotFocus", 2
+'    mskSize.SelStart = 0
+'    mskSize.SelLength = Len(mskSize.Text)
+End Sub
+
+
+
+
+
+
+
+Private Sub mskSKU_GotFocus()
+  VBCP_Update 89, "mskSKU_GotFocus", 1
+    Call AutoSelect(mskSKU)
+  VBCP_Update 89, "mskSKU_GotFocus", 2
+End Sub
+
+Private Sub SSCommand1_Click()
+  VBCP_Update 89, "SSCommand1_Click", 1
+
+    On Error GoTo SSCommand1_Click_Err
+
+    If ofx_IsFormLoaded(frmCategory) Then _

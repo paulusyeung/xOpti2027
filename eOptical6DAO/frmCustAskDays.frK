@@ -1,0 +1,324 @@
+VERSION 4.00
+Begin VB.Form frmCustAskDays 
+   BorderStyle     =   3  'Fixed Dialog
+   Caption         =   "Customer Ask Days"
+   ClientHeight    =   3660
+   ClientLeft      =   1260
+   ClientTop       =   1620
+   ClientWidth     =   7065
+   Height          =   4065
+   Left            =   1200
+   LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
+   MaxButton       =   0   'False
+   MinButton       =   0   'False
+   ScaleHeight     =   3660
+   ScaleWidth      =   7065
+   ShowInTaskbar   =   0   'False
+   Top             =   1275
+   Width           =   7185
+   Begin VB.CommandButton cmdPrnSetup 
+      Caption         =   "&Setup"
+      Height          =   330
+      Left            =   5280
+      TabIndex        =   7
+      Top             =   2880
+      Width           =   1200
+   End
+   Begin VB.OptionButton optNo 
+      Caption         =   "No"
+      Height          =   375
+      Left            =   5520
+      TabIndex        =   1
+      Top             =   600
+      Width           =   735
+   End
+   Begin VB.OptionButton optYes 
+      Caption         =   "Yes"
+      Height          =   375
+      Left            =   4080
+      TabIndex        =   0
+      Top             =   600
+      Value           =   -1  'True
+      Width           =   855
+   End
+   Begin VB.CommandButton cmdCancel 
+      Caption         =   "&Exit"
+      Height          =   330
+      Left            =   3480
+      TabIndex        =   6
+      Top             =   2880
+      Width           =   1200
+   End
+   Begin VB.CommandButton cmdReset 
+      Caption         =   "&Reset"
+      Height          =   330
+      Left            =   2040
+      TabIndex        =   4
+      Top             =   2880
+      Width           =   1200
+   End
+   Begin VB.TextBox txtDays 
+      Height          =   330
+      Left            =   4440
+      TabIndex        =   2
+      Text            =   "30"
+      Top             =   1560
+      Width           =   855
+   End
+   Begin VB.CommandButton cmdOK 
+      Caption         =   "&OK "
+      Height          =   330
+      Left            =   600
+      TabIndex        =   3
+      Top             =   2880
+      Width           =   1200
+   End
+   Begin VB.Frame Frame1 
+      Caption         =   "Including customer with zero purchasing amount:"
+      Height          =   735
+      Left            =   480
+      TabIndex        =   8
+      Top             =   360
+      Width           =   6015
+   End
+   Begin VB.Frame Frame3 
+      Caption         =   "Printer "
+      Height          =   735
+      Left            =   5160
+      TabIndex        =   10
+      Top             =   2640
+      Width           =   1455
+   End
+   Begin VB.Frame Frame2 
+      Caption         =   "Command"
+      Height          =   735
+      Left            =   480
+      TabIndex        =   9
+      Top             =   2640
+      Width           =   4335
+   End
+   Begin VB.Label Label2 
+      Caption         =   "Enter days in between today for printing the report:"
+      Height          =   330
+      Left            =   480
+      TabIndex        =   5
+      Top             =   1560
+      Width           =   3735
+   End
+End
+Attribute VB_Name = "frmCustAskDays"
+Attribute VB_Creatable = False
+Attribute VB_Exposed = False
+
+
+
+Private Sub cmdPrnSetup_Click()
+
+    On Error GoTo cmdPrnSetup_Click_Err
+
+    frmCtlCrw.CommonDialog1.Flags = &H40  'force the printers setup dialog box
+    frmCtlCrw.CommonDialog1.Action = 5    'run the printer setup
+
+cmdPrnSetup_Click_Exit:   ' SDVB autocode
+    On Error Resume Next  ' SDVB autocode
+    Exit Sub              ' SDVB autocode
+cmdPrnSetup_Click_Err:    ' SDVB autocode
+    MsgBox Error          ' SDVB autocode
+    Resume cmdPrnSetup_Click_Exit
+
+End Sub
+
+
+
+Private Sub cmdCancel_Click()
+
+    On Error GoTo cmdCancel_Click_Err
+    Unload Me
+cmdCancel_Click_Exit:     ' SDVB autocode
+    On Error Resume Next  ' SDVB autocode
+    Exit Sub              ' SDVB autocode
+cmdCancel_Click_Err:      ' SDVB autocode
+    MsgBox Error          ' SDVB autocode
+    Resume cmdCancel_Click_Exit
+End Sub
+
+Private Sub cmdOK_Click()
+
+    On Error GoTo cmdOK_Click_Err
+   
+    Screen.MousePointer = 13
+    ' check range of me.txtdays
+    If InRange(Me.txtDays, "Days", 180, 1, True) Then
+        '   Birthday Reminder
+        If CrwRptName = "Birthday Reminder" Then
+            frmCtlCrw.CrystalReport1.Formulas(0) = "AskDays =" & Me.txtDays
+            'MsgBox frmCtlCrw.crystalReport1.Formulas(0)
+            frmCtlCrw.CrystalReport1.Formulas(1) = "AskZeroPurchase = " & Me.optYes
+            'MsgBox frmCtlCrw.crystalReport1.Formulas(1)
+            frmCtlCrw.CrystalReport1.SelectionFormula = "Month ({Customer.Birthday})" & _
+            " In Month(currentdate-" & Me.txtDays & ")" & _
+            " To Month(currentdate+" & Me.txtDays & ")"
+            'Debug.Print me.optYes, me.optNo
+            If Me.optNo Then
+                frmCtlCrw.CrystalReport1.SelectionFormula = frmCtlCrw.CrystalReport1.SelectionFormula & _
+                " AND ({CustomerAccounts.YTDAmtPurchased}-{CustomerAccounts.YTDAmtRefund}) > 0"
+            End If
+        '
+        ElseIf CrwRptName = "Customer Listing (Active)" Then
+            frmCtlCrw.CrystalReport1.Formulas(0) = "AskDays =" & Me.txtDays
+            frmCtlCrw.CrystalReport1.Formulas(1) = "AskZeroPurchase = " & Me.optYes
+            frmCtlCrw.CrystalReport1.SelectionFormula = "({CustomerAccounts.LastPurchaseDate}+ " _
+                & Me.txtDays & ") >= currentdate"
+            If Me.optNo Then
+                frmCtlCrw.CrystalReport1.SelectionFormula = frmCtlCrw.CrystalReport1.SelectionFormula & _
+                " AND ({CustomerAccounts.YTDAmtPurchased}-{CustomerAccounts.YTDAmtRefund}) > 0"
+            End If
+        '
+        ElseIf CrwRptName = "Customer Listing (Inactive)" Then
+            frmCtlCrw.CrystalReport1.Formulas(0) = "AskDays =" & Me.txtDays
+            frmCtlCrw.CrystalReport1.Formulas(1) = "AskZeroPurchase = " & Me.optYes
+            frmCtlCrw.CrystalReport1.SelectionFormula = "({CustomerAccounts.LastPurchaseDate}+ " _
+                & Me.txtDays & ") <= currentdate"
+            If Me.optYes Then
+                frmCtlCrw.CrystalReport1.SelectionFormula = frmCtlCrw.CrystalReport1.SelectionFormula & _
+                " OR ({CustomerAccounts.YTDAmtPurchased}-{CustomerAccounts.YTDAmtRefund}) <= 0"
+            End If
+        ElseIf CrwRptName = "VIP Listing (Inactive)" Then
+            frmCtlCrw.CrystalReport1.Formulas(0) = "AskDays =" & Me.txtDays
+            frmCtlCrw.CrystalReport1.Formulas(1) = "AskZeroPurchase = " & Me.optYes
+            frmCtlCrw.CrystalReport1.SelectionFormula = "not isnull({Customer.VIPCode})" & _
+               " AND ({CustomerAccounts.LastPurchaseDate}+ " _
+                & Me.txtDays & ") <= currentdate"
+            If Me.optYes Then
+                frmCtlCrw.CrystalReport1.SelectionFormula = frmCtlCrw.CrystalReport1.SelectionFormula & _
+                " OR ({CustomerAccounts.YTDAmtPurchased}-{CustomerAccounts.YTDAmtRefund}) <= 0"
+            End If
+        ElseIf CrwRptName = "Insurance Reminder" Then
+            frmCtlCrw.CrystalReport1.Formulas(0) = "AskDays =" & Me.txtDays
+            frmCtlCrw.CrystalReport1.Formulas(1) = "AskZeroPurchase = " & Me.optYes
+        End If
+        'MsgBox frmCtlCrw.crystalReport1.SelectionFormula
+        Screen.MousePointer = 11
+        frmCtlCrw.CrystalReport1.Action = 1
+        Screen.MousePointer = 0
+    Else
+        Call cmdReset_Click
+    End If
+
+cmdOK_Click_Exit:         ' SDVB autocode
+    On Error Resume Next  ' SDVB autocode
+    Exit Sub              ' SDVB autocode
+cmdOK_Click_Err:          ' SDVB autocode
+    Screen.MousePointer = 0
+    MsgBox Error          ' SDVB autocode
+    Resume cmdOK_Click_Exit
+
+End Sub
+
+
+Private Sub cmdReset_Click()
+
+    On Error GoTo cmdReset_Click_Err
+
+    Me.optYes = True
+    Me.optNo = False
+    Me.txtDays = 30
+    Me.optYes.SetFocus
+
+cmdReset_Click_Exit:      ' SDVB autocode
+    On Error Resume Next  ' SDVB autocode
+    Exit Sub              ' SDVB autocode
+cmdReset_Click_Err:       ' SDVB autocode
+    MsgBox Error          ' SDVB autocode
+    Resume cmdReset_Click_Exit
+
+End Sub
+
+Private Sub Form_Load()
+
+    On Error GoTo Form_Load_Err
+  
+    Screen.MousePointer = 0
+    Left = (Screen.Width - Width) / 2   ' Center form horizontally.
+    Top = (Screen.Height - Height) / 2  ' Center form vertically.
+    
+    Me.Caption = CrwRptName
+
+Form_Load_Exit:           ' SDVB autocode
+    On Error Resume Next  ' SDVB autocode
+    Exit Sub              ' SDVB autocode
+Form_Load_Err:            ' SDVB autocode
+    MsgBox Error          ' SDVB autocode
+    Resume Form_Load_Exit
+
+End Sub
+
+
+
+
+
+
+
+
+Private Sub optNo_Click()
+
+    On Error GoTo optNo_Click_Err
+
+optNo_Click_Exit:         ' SDVB autocode
+    On Error Resume Next  ' SDVB autocode
+    Exit Sub              ' SDVB autocode
+optNo_Click_Err:          ' SDVB autocode
+    MsgBox Error          ' SDVB autocode
+    Resume optNo_Click_Exit
+
+End Sub
+
+Private Sub optYes_Click()
+
+    On Error GoTo optYes_Click_Err
+
+optYes_Click_Exit:        ' SDVB autocode
+    On Error Resume Next  ' SDVB autocode
+    Exit Sub              ' SDVB autocode
+optYes_Click_Err:         ' SDVB autocode
+    MsgBox Error          ' SDVB autocode
+    Resume optYes_Click_Exit
+
+End Sub
+
+Private Sub txtDays_Click()
+    SendKeys "{home}+{end}", True
+End Sub
+
+Private Sub txtDays_GotFocus()
+
+    On Error GoTo txtDays_GotFocus_Err
+   
+    SendKeys "{home}+{end}", True
+    
+txtDays_GotFocus_Exit:    ' SDVB autocode
+    On Error Resume Next  ' SDVB autocode
+    Exit Sub              ' SDVB autocode
+txtDays_GotFocus_Err:     ' SDVB autocode
+    MsgBox Error          ' SDVB autocode
+    Resume txtDays_GotFocus_Exit
+
+End Sub
+
+Private Sub txtDays_KeyPress(KeyAscii As Integer)
+
+    On Error GoTo txtDays_KeyPress_Err
+
+    KeyAscii = KeyNumbers(KeyAscii)
+
+txtDays_KeyPress_Exit:    ' SDVB autocode
+    On Error Resume Next  ' SDVB autocode
+    Exit Sub              ' SDVB autocode
+txtDays_KeyPress_Err:     ' SDVB autocode
+    MsgBox Error          ' SDVB autocode
+    Resume txtDays_KeyPress_Exit
+
+End Sub
+
+

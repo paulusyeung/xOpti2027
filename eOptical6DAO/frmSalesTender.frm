@@ -1,0 +1,101 @@
+VERSION 5.00
+Object = "{E79FB9BF-ECDA-11CD-956C-0000C04E4C0A}#2.0#0"; "SSDOCK32.OCX"
+Object = "{00028C4A-0000-0000-0000-000000000046}#5.0#0"; "TDBG5.OCX"
+Begin VB.Form frmSalesTender 
+   BorderStyle     =   1  'Fixed Single
+   Caption         =   "Tender"
+   ClientHeight    =   1500
+   ClientLeft      =   5490
+   ClientTop       =   390
+   ClientWidth     =   6420
+   LinkTopic       =   "Form1"
+   MaxButton       =   0   'False
+   MinButton       =   0   'False
+   PaletteMode     =   1  'UseZOrder
+   ScaleHeight     =   1500
+   ScaleWidth      =   6420
+   Visible         =   0   'False
+   Begin TrueDBGrid50.TDBGrid TDBGrid1 
+      Height          =   855
+      Left            =   120
+      OleObjectBlob   =   "frmSalesTender.frx":0000
+      TabIndex        =   1
+      Top             =   600
+      Width           =   6255
+   End
+   Begin SSDesignerWidgetsToolbar.SSToolbar SSToolbar1 
+      Height          =   600
+      Left            =   0
+      TabIndex        =   0
+      Top             =   0
+      Width           =   4875
+      _Version        =   131073
+      _ExtentX        =   8599
+      _ExtentY        =   1059
+      _StockProps     =   69
+      BackColor       =   12632256
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "MS Sans Serif"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      FloatingCaption =   "SSToolbar1"
+      AlreadyCreated  =   -1  'True
+      Outline         =   0   'False
+      ToolsetNumBtnStates=   3
+      Btns            =   10
+      ToolsetPicture  =   "frmSalesTender.frx":20A8
+      BC              =   10
+      BtnToolNum(0)   =   0
+      BtnPlaceHolder(0)=   0   'False
+      BtnToolNum(1)   =   1
+      BtnPlaceHolder(1)=   0   'False
+      BtnToolNum(2)   =   2
+      BtnPlaceHolder(2)=   0   'False
+      BtnToolNum(3)   =   3
+      BtnPlaceHolder(3)=   0   'False
+      BtnToolNum(4)   =   4
+      BtnPlaceHolder(4)=   0   'False
+      BtnToolNum(5)   =   5
+      BtnPlaceHolder(5)=   0   'False
+      BtnToolNum(6)   =   6
+      BtnPlaceHolder(6)=   0   'False
+      BtnToolNum(7)   =   7
+      BtnPlaceHolder(7)=   0   'False
+      BtnToolNum(8)   =   8
+      BtnPlaceHolder(8)=   0   'False
+      BtnToolNum(9)   =   9
+      BtnPlaceHolder(9)=   0   'False
+      ToolsetNumTools =   10
+      ToolsetToolID(0)=   "TOOL0000"
+      ToolsetToolGroup(0)=   1
+      ToolsetToolID(1)=   "TOOL0001"
+      ToolsetToolGroup(1)=   1
+      ToolsetToolID(2)=   "TOOL0002"
+      ToolsetToolGroup(2)=   1
+      ToolsetToolID(3)=   "TOOL0003"
+      ToolsetToolGroup(3)=   1
+      ToolsetToolID(4)=   "TOOL0004"
+      ToolsetToolGroup(4)=   1
+      ToolsetToolID(5)=   "TOOL0005"
+      ToolsetToolGroup(5)=   1
+      ToolsetToolID(6)=   "TOOL0006"
+      ToolsetToolGroup(6)=   1
+      ToolsetToolID(7)=   "TOOL0007"
+      ToolsetToolGroup(7)=   1
+      ToolsetToolID(8)=   "TOOL0008"
+      ToolsetToolGroup(8)=   1
+      ToolsetToolID(9)=   "TOOL0009"
+      ToolsetToolGroup(9)=   1
+      MouseIcon       =   "frmSalesTender.frx":9CFA
+   End
+End
+Attribute VB_Name = "frmSalesTender"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False

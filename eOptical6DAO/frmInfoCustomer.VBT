@@ -1,0 +1,2875 @@
+VERSION 4.00
+Begin VB.Form frmInfoCustomer 
+   Caption         =   "Customer Information"
+   ClientHeight    =   7470
+   ClientLeft      =   330
+   ClientTop       =   780
+   ClientWidth     =   11535
+   Height          =   7875
+   Left            =   270
+   LinkTopic       =   "Form1"
+   ScaleHeight     =   7470
+   ScaleWidth      =   11535
+   Top             =   435
+   Width           =   11655
+   Begin SSDesignerWidgetsToolbar.SSToolbar SSToolbar1 
+      Align           =   1  'Align Top
+      Height          =   1080
+      Left            =   0
+      TabIndex        =   0
+      Top             =   0
+      Width           =   11535
+      _Version        =   131073
+      _ExtentX        =   20346
+      _ExtentY        =   1906
+      _StockProps     =   69
+      BackColor       =   12632256
+      FloatingCaption =   "SSToolbar1"
+      AlreadyCreated  =   -1  'True
+      Outline         =   0   'False
+      ToolsetNumBtnStates=   3
+      Btns            =   8
+      ToolsetPicture  =   "frmInfoCustomer.frx":0000
+      BC              =   8
+      BtnToolNum(0)   =   0
+      BtnPlaceHolder(0)=   0   'False
+      BtnToolNum(1)   =   1
+      BtnPlaceHolder(1)=   0   'False
+      BtnToolNum(2)   =   2
+      BtnPlaceHolder(2)=   0   'False
+      BtnToolNum(3)   =   3
+      BtnPlaceHolder(3)=   0   'False
+      BtnToolNum(4)   =   4
+      BtnPlaceHolder(4)=   0   'False
+      BtnToolNum(5)   =   5
+      BtnPlaceHolder(5)=   0   'False
+      BtnToolNum(6)   =   6
+      BtnPlaceHolder(6)=   0   'False
+      BtnToolNum(7)   =   7
+      BtnPlaceHolder(7)=   0   'False
+      ToolsetNumTools =   8
+      ToolsetToolID(0)=   "ID_Close"
+      ToolsetToolHelp(0)=   "Close & Exit"
+      ToolsetToolMnemonic(0)=   "c"
+      ToolsetToolGroup(0)=   1
+      ToolsetToolID(1)=   "ID_First"
+      ToolsetToolHelp(1)=   "First Record"
+      ToolsetToolMnemonic(1)=   "f"
+      ToolsetToolGroup(1)=   2
+      ToolsetToolID(2)=   "ID_Next"
+      ToolsetToolHelp(2)=   "Next record"
+      ToolsetToolMnemonic(2)=   "x"
+      ToolsetToolGroup(2)=   2
+      ToolsetToolID(3)=   "ID_Previous"
+      ToolsetToolHelp(3)=   "Previous record"
+      ToolsetToolMnemonic(3)=   "p"
+      ToolsetToolGroup(3)=   2
+      ToolsetToolID(4)=   "ID_Last"
+      ToolsetToolHelp(4)=   "Last record"
+      ToolsetToolMnemonic(4)=   "l"
+      ToolsetToolGroup(4)=   2
+      ToolsetToolID(5)=   "ID_Copy"
+      ToolsetToolHelp(5)=   "Copy current record"
+      ToolsetToolMnemonic(5)=   "y"
+      ToolsetToolGroup(5)=   3
+      ToolsetToolID(6)=   "ID_Append"
+      ToolsetToolHelp(6)=   "Append the selected SKU"
+      ToolsetToolMnemonic(6)=   "d"
+      ToolsetToolGroup(6)=   3
+      ToolsetToolID(7)=   "ID_Add"
+      ToolsetToolMnemonic(7)=   "a"
+      ToolsetToolGroup(7)=   3
+      MouseIcon       =   "frmInfoCustomer.frx":18452
+   End
+   Begin Threed.SSFrame SSFrame1 
+      Height          =   3255
+      Left            =   120
+      TabIndex        =   1
+      Top             =   1080
+      Width           =   11295
+      _Version        =   65536
+      _ExtentX        =   19923
+      _ExtentY        =   5741
+      _StockProps     =   14
+      Caption         =   "Lookup Wizard"
+      Begin VB.Data dtcDoctor 
+         Caption         =   "Doctor"
+         Connect         =   "Access"
+         DatabaseName    =   "SynergyV.mdb"
+         Exclusive       =   0   'False
+         Height          =   300
+         Left            =   2160
+         Options         =   4
+         ReadOnly        =   0   'False
+         RecordsetType   =   1  'Dynaset
+         RecordSource    =   "SELECT ID, DoctorName FROM Doctor ORDER BY DoctorName"
+         Top             =   1260
+         Visible         =   0   'False
+         Width           =   1140
+      End
+      Begin VB.Data dtcCusPresLens 
+         Caption         =   "CusPresLens"
+         Connect         =   "Access"
+         DatabaseName    =   "SynergyV.mdb"
+         Exclusive       =   0   'False
+         Height          =   300
+         Left            =   1440
+         Options         =   4
+         ReadOnly        =   0   'False
+         RecordsetType   =   1  'Dynaset
+         RecordSource    =   "CustomerPresLens"
+         Top             =   1200
+         Visible         =   0   'False
+         Width           =   1140
+      End
+      Begin VB.Data dtcCusPresCont 
+         Caption         =   "CusPresCont"
+         Connect         =   "Access"
+         DatabaseName    =   "SynergyV.mdb"
+         Exclusive       =   0   'False
+         Height          =   300
+         Left            =   240
+         Options         =   4
+         ReadOnly        =   0   'False
+         RecordsetType   =   1  'Dynaset
+         RecordSource    =   "CustomerPresContact"
+         Top             =   1260
+         Visible         =   0   'False
+         Width           =   1140
+      End
+      Begin VB.Data dtcCusMedical 
+         Caption         =   "CusMedical"
+         Connect         =   "Access"
+         DatabaseName    =   "SynergyV.mdb"
+         Exclusive       =   0   'False
+         Height          =   300
+         Left            =   1440
+         Options         =   4
+         ReadOnly        =   0   'False
+         RecordsetType   =   1  'Dynaset
+         RecordSource    =   "CustomerMedical"
+         Top             =   960
+         Visible         =   0   'False
+         Width           =   1140
+      End
+      Begin VB.Data dtcCusAccount 
+         Caption         =   "CusAccount"
+         Connect         =   "Access"
+         DatabaseName    =   "SynergyV.mdb"
+         Exclusive       =   0   'False
+         Height          =   300
+         Left            =   240
+         Options         =   4
+         ReadOnly        =   0   'False
+         RecordsetType   =   1  'Dynaset
+         RecordSource    =   "CustomerAccounts"
+         Top             =   960
+         Visible         =   0   'False
+         Width           =   1140
+      End
+      Begin VB.Data dtcSelCountry 
+         Caption         =   "SelCountry"
+         Connect         =   "Access"
+         DatabaseName    =   "SynergyV.mdb"
+         Exclusive       =   0   'False
+         Height          =   300
+         Left            =   4320
+         Options         =   4
+         ReadOnly        =   0   'False
+         RecordsetType   =   1  'Dynaset
+         RecordSource    =   "SELECT * FROM Country ORDER BY CountryName"
+         Top             =   360
+         Visible         =   0   'False
+         Width           =   1140
+      End
+      Begin VB.Data dtcSelProvince 
+         Caption         =   "SelProvince"
+         Connect         =   "Access"
+         DatabaseName    =   "SynergyV.mdb"
+         Exclusive       =   0   'False
+         Height          =   300
+         Left            =   4320
+         Options         =   4
+         ReadOnly        =   0   'False
+         RecordsetType   =   1  'Dynaset
+         RecordSource    =   "SELECT * FROM Province ORDER BY ProvinceName"
+         Top             =   720
+         Visible         =   0   'False
+         Width           =   1140
+      End
+      Begin VB.Data dtcSelCity 
+         Caption         =   "SelCity"
+         Connect         =   "Access"
+         DatabaseName    =   "SynergyV.mdb"
+         Exclusive       =   0   'False
+         Height          =   300
+         Left            =   4320
+         Options         =   4
+         ReadOnly        =   0   'False
+         RecordsetType   =   1  'Dynaset
+         RecordSource    =   "SELECT * FROM City ORDER BY CityName"
+         Top             =   1080
+         Visible         =   0   'False
+         Width           =   1140
+      End
+      Begin VB.Data dtcHomeCity 
+         Caption         =   "SelHomeCity"
+         Connect         =   "Access"
+         DatabaseName    =   "SynergyV.mdb"
+         Exclusive       =   0   'False
+         Height          =   300
+         Left            =   8880
+         Options         =   4
+         ReadOnly        =   0   'False
+         RecordsetType   =   1  'Dynaset
+         RecordSource    =   "qryCityFullList"
+         Top             =   2520
+         Visible         =   0   'False
+         Width           =   1140
+      End
+      Begin VB.Data dtcJobTitle 
+         Caption         =   "JobTitle"
+         Connect         =   "Access"
+         DatabaseName    =   "SynergyV.mdb"
+         Exclusive       =   0   'False
+         Height          =   300
+         Left            =   7320
+         Options         =   4
+         ReadOnly        =   0   'False
+         RecordsetType   =   1  'Dynaset
+         RecordSource    =   "JobTitle"
+         Top             =   2220
+         Visible         =   0   'False
+         Width           =   1140
+      End
+      Begin VB.Data dtcBizCity 
+         Caption         =   "BizCity"
+         Connect         =   "Access"
+         DatabaseName    =   "SynergyV.mdb"
+         Exclusive       =   0   'False
+         Height          =   300
+         Left            =   8880
+         Options         =   4
+         ReadOnly        =   0   'False
+         RecordsetType   =   1  'Dynaset
+         RecordSource    =   "qryCityFullList"
+         Top             =   2220
+         Visible         =   0   'False
+         Width           =   1140
+      End
+      Begin VB.Data dtcSelID 
+         Caption         =   "SelID"
+         Connect         =   "Access"
+         DatabaseName    =   "SynergyV.mdb"
+         Exclusive       =   0   'False
+         Height          =   300
+         Left            =   1800
+         Options         =   4
+         ReadOnly        =   0   'False
+         RecordsetType   =   1  'Dynaset
+         RecordSource    =   "SELECT ID FROM Customer"
+         Top             =   660
+         Visible         =   0   'False
+         Width           =   1140
+      End
+      Begin VB.Data dtcCustomer 
+         Caption         =   "Customer"
+         Connect         =   "Access"
+         DatabaseName    =   "SynergyV.mdb"
+         Exclusive       =   0   'False
+         Height          =   300
+         Left            =   5040
+         Options         =   4
+         ReadOnly        =   0   'False
+         RecordsetType   =   1  'Dynaset
+         RecordSource    =   ""
+         Top             =   2220
+         Visible         =   0   'False
+         Width           =   1140
+      End
+      Begin VB.TextBox txtSelVIPCode 
+         DataField       =   "VIPCode"
+         DataSource      =   "dtcCustomer"
+         Height          =   285
+         Left            =   120
+         TabIndex        =   30
+         Top             =   540
+         Width           =   1095
+      End
+      Begin Threed.SSFrame SSFrame2 
+         Height          =   1335
+         Left            =   9000
+         TabIndex        =   4
+         Top             =   120
+         Width           =   2175
+         _Version        =   65536
+         _ExtentX        =   3836
+         _ExtentY        =   2355
+         _StockProps     =   14
+         Caption         =   "Phone Numbers"
+         Begin VB.TextBox txtSelCellular 
+            DataField       =   "Cellular"
+            DataSource      =   "dtcCustomer"
+            Height          =   285
+            Left            =   840
+            TabIndex        =   10
+            Top             =   960
+            Width           =   855
+         End
+         Begin VB.TextBox txtSelHomePhone 
+            DataField       =   "HomePhone"
+            DataSource      =   "dtcCustomer"
+            Height          =   285
+            Left            =   840
+            TabIndex        =   9
+            Top             =   600
+            Width           =   855
+         End
+         Begin VB.TextBox txtSelBizPhone 
+            DataField       =   "BizPhone"
+            DataSource      =   "dtcCustomer"
+            Height          =   285
+            Left            =   840
+            TabIndex        =   8
+            Top             =   240
+            Width           =   855
+         End
+         Begin Threed.SSCommand cmdFindCellular 
+            Height          =   315
+            Left            =   1680
+            TabIndex        =   13
+            TabStop         =   0   'False
+            Top             =   960
+            Width           =   315
+            _Version        =   65536
+            _ExtentX        =   556
+            _ExtentY        =   556
+            _StockProps     =   78
+            BevelWidth      =   1
+            Outline         =   0   'False
+            AutoSize        =   2
+            Picture         =   "frmInfoCustomer.frx":1846E
+         End
+         Begin Threed.SSCommand cmdFindHomePhone 
+            Height          =   315
+            Left            =   1680
+            TabIndex        =   12
+            TabStop         =   0   'False
+            Top             =   600
+            Width           =   315
+            _Version        =   65536
+            _ExtentX        =   556
+            _ExtentY        =   556
+            _StockProps     =   78
+            BevelWidth      =   1
+            Outline         =   0   'False
+            AutoSize        =   2
+            Picture         =   "frmInfoCustomer.frx":18A14
+         End
+         Begin Threed.SSCommand cmdFindBizPhone 
+            Height          =   315
+            Left            =   1680
+            TabIndex        =   11
+            TabStop         =   0   'False
+            Top             =   240
+            Width           =   315
+            _Version        =   65536
+            _ExtentX        =   556
+            _ExtentY        =   556
+            _StockProps     =   78
+            BevelWidth      =   1
+            Outline         =   0   'False
+            AutoSize        =   2
+            Picture         =   "frmInfoCustomer.frx":18FBA
+         End
+         Begin VB.Label Label11 
+            Caption         =   "Cellular"
+            Height          =   195
+            Left            =   120
+            TabIndex        =   7
+            Top             =   960
+            Width           =   735
+         End
+         Begin VB.Label Label10 
+            Caption         =   "Home"
+            Height          =   195
+            Left            =   120
+            TabIndex        =   6
+            Top             =   600
+            Width           =   495
+         End
+         Begin VB.Label Label9 
+            Caption         =   "Business"
+            Height          =   195
+            Left            =   120
+            TabIndex        =   5
+            Top             =   240
+            Width           =   735
+         End
+      End
+      Begin Threed.SSFrame SSFrame3 
+         Height          =   1335
+         Left            =   5760
+         TabIndex        =   16
+         Top             =   120
+         Width           =   3135
+         _Version        =   65536
+         _ExtentX        =   5530
+         _ExtentY        =   2355
+         _StockProps     =   14
+         Caption         =   "Customer Name"
+         Begin VB.Data dtcSelFullName 
+            Caption         =   "SelFullName"
+            Connect         =   "Access"
+            DatabaseName    =   "SynergyV.mdb"
+            Exclusive       =   0   'False
+            Height          =   300
+            Left            =   1920
+            Options         =   4
+            ReadOnly        =   0   'False
+            RecordsetType   =   1  'Dynaset
+            RecordSource    =   "SELECT DISTINCT FullName FROM Customer ORDER BY FullName"
+            Top             =   1020
+            Visible         =   0   'False
+            Width           =   1140
+         End
+         Begin VB.Data dtcSelLastName 
+            Caption         =   "SelLastName"
+            Connect         =   "Access"
+            DatabaseName    =   "SynergyV.mdb"
+            Exclusive       =   0   'False
+            Height          =   300
+            Left            =   1920
+            Options         =   4
+            ReadOnly        =   0   'False
+            RecordsetType   =   1  'Dynaset
+            RecordSource    =   "SELECT DISTINCT LastName FROM Customer ORDER BY LastName"
+            Top             =   660
+            Visible         =   0   'False
+            Width           =   1140
+         End
+         Begin VB.Data dtcSelFirstName 
+            Caption         =   "SelFirstName"
+            Connect         =   "Access"
+            DatabaseName    =   "SynergyV.mdb"
+            Exclusive       =   0   'False
+            Height          =   300
+            Left            =   1920
+            Options         =   4
+            ReadOnly        =   0   'False
+            RecordsetType   =   1  'Dynaset
+            RecordSource    =   "SELECT DISTINCT FirstName FROM Customer ORDER BY FirstName"
+            Top             =   300
+            Visible         =   0   'False
+            Width           =   1140
+         End
+         Begin MSDBCtls.DBCombo dbcSelFullName 
+            Bindings        =   "frmInfoCustomer.frx":19560
+            Height          =   315
+            Left            =   960
+            TabIndex        =   22
+            Top             =   960
+            Width           =   2055
+            _Version        =   65536
+            _ExtentX        =   3625
+            _ExtentY        =   556
+            _StockProps     =   77
+            ForeColor       =   0
+            BackColor       =   16777215
+            ListField       =   "FullName"
+            BoundColumn     =   "FullName"
+         End
+         Begin MSDBCtls.DBCombo dbcSelLastName 
+            Bindings        =   "frmInfoCustomer.frx":19577
+            Height          =   315
+            Left            =   960
+            TabIndex        =   21
+            Top             =   600
+            Width           =   1575
+            _Version        =   65536
+            _ExtentX        =   2778
+            _ExtentY        =   556
+            _StockProps     =   77
+            ForeColor       =   0
+            BackColor       =   16777215
+            ListField       =   "LastName"
+            BoundColumn     =   "LastName"
+         End
+         Begin MSDBCtls.DBCombo dbcSelFirstName 
+            Bindings        =   "frmInfoCustomer.frx":1958E
+            Height          =   315
+            Left            =   960
+            TabIndex        =   20
+            Top             =   240
+            Width           =   1575
+            _Version        =   65536
+            _ExtentX        =   2778
+            _ExtentY        =   556
+            _StockProps     =   77
+            ForeColor       =   0
+            BackColor       =   16777215
+            ListField       =   "FirstName"
+            BoundColumn     =   "FirstName"
+         End
+         Begin VB.Label Label6 
+            Caption         =   "Full Name"
+            Height          =   195
+            Left            =   120
+            TabIndex        =   19
+            Top             =   960
+            Width           =   735
+         End
+         Begin VB.Label Label5 
+            Caption         =   "Last Name"
+            Height          =   195
+            Left            =   120
+            TabIndex        =   18
+            Top             =   600
+            Width           =   855
+         End
+         Begin VB.Label Label4 
+            Caption         =   "Fisrt Name"
+            Height          =   195
+            Left            =   120
+            TabIndex        =   17
+            Top             =   240
+            Width           =   855
+         End
+      End
+      Begin Threed.SSFrame SSFrame4 
+         Height          =   1335
+         Left            =   3000
+         TabIndex        =   23
+         Top             =   120
+         Width           =   2655
+         _Version        =   65536
+         _ExtentX        =   4683
+         _ExtentY        =   2355
+         _StockProps     =   14
+         Caption         =   "Home Address"
+         Begin MSDBCtls.DBCombo dbcSelCity 
+            Bindings        =   "frmInfoCustomer.frx":195A6
+            Height          =   315
+            Left            =   840
+            TabIndex        =   29
+            Top             =   960
+            Width           =   1695
+            _Version        =   65536
+            _ExtentX        =   2990
+            _ExtentY        =   556
+            _StockProps     =   77
+            ForeColor       =   0
+            BackColor       =   16777215
+            ListField       =   "CityName"
+            BoundColumn     =   "Code"
+         End
+         Begin MSDBCtls.DBCombo dbcSelProvince 
+            Bindings        =   "frmInfoCustomer.frx":195B9
+            Height          =   315
+            Left            =   840
+            TabIndex        =   28
+            Top             =   600
+            Width           =   1695
+            _Version        =   65536
+            _ExtentX        =   2990
+            _ExtentY        =   556
+            _StockProps     =   77
+            ForeColor       =   0
+            BackColor       =   16777215
+            ListField       =   "ProvinceName"
+            BoundColumn     =   "ProvinceCode"
+         End
+         Begin MSDBCtls.DBCombo dbcSelCountry 
+            Bindings        =   "frmInfoCustomer.frx":195D0
+            Height          =   315
+            Left            =   840
+            TabIndex        =   27
+            Top             =   240
+            Width           =   1695
+            _Version        =   65536
+            _ExtentX        =   2990
+            _ExtentY        =   556
+            _StockProps     =   77
+            ForeColor       =   0
+            BackColor       =   16777215
+            ListField       =   "CountryName"
+            BoundColumn     =   "CountryCode"
+         End
+         Begin VB.Label Label3 
+            Caption         =   "City"
+            Height          =   195
+            Left            =   120
+            TabIndex        =   26
+            Top             =   960
+            Width           =   375
+         End
+         Begin VB.Label Label2 
+            Caption         =   "Province"
+            Height          =   195
+            Left            =   120
+            TabIndex        =   25
+            Top             =   600
+            Width           =   735
+         End
+         Begin VB.Label Label1 
+            Caption         =   "Country"
+            Height          =   195
+            Left            =   120
+            TabIndex        =   24
+            Top             =   240
+            Width           =   615
+         End
+      End
+      Begin MSDBCtls.DBCombo dbcSelID 
+         Bindings        =   "frmInfoCustomer.frx":195E6
+         Height          =   315
+         Left            =   1440
+         TabIndex        =   32
+         Top             =   540
+         Width           =   1335
+         _Version        =   65536
+         _ExtentX        =   2355
+         _ExtentY        =   556
+         _StockProps     =   77
+         ForeColor       =   0
+         BackColor       =   16777215
+         ListField       =   "ID"
+         BoundColumn     =   "ID"
+      End
+      Begin Threed.SSCommand cmdFindVIP 
+         Height          =   315
+         Left            =   960
+         TabIndex        =   31
+         TabStop         =   0   'False
+         Top             =   240
+         Width           =   315
+         _Version        =   65536
+         _ExtentX        =   556
+         _ExtentY        =   556
+         _StockProps     =   78
+         BevelWidth      =   1
+         Outline         =   0   'False
+         AutoSize        =   2
+         Picture         =   "frmInfoCustomer.frx":195F7
+      End
+      Begin TrueDBGrid.TDBGrid TDBGrid1 
+         Bindings        =   "frmInfoCustomer.frx":19B9D
+         Height          =   1575
+         Left            =   120
+         OleObjectBlob   =   "frmInfoCustomer.frx":19BB1
+         TabIndex        =   14
+         Top             =   1560
+         Width           =   11055
+      End
+      Begin VB.Label Label8 
+         Caption         =   "Customer No."
+         Height          =   255
+         Left            =   1440
+         TabIndex        =   3
+         Top             =   300
+         Width           =   975
+      End
+      Begin VB.Label Label7 
+         Caption         =   "VIP No."
+         Height          =   255
+         Left            =   120
+         TabIndex        =   2
+         Top             =   300
+         Width           =   615
+      End
+   End
+   Begin SSDesignerWidgetsTabs.SSIndexTab SSIndexTab1 
+      Height          =   3015
+      Left            =   120
+      TabIndex        =   15
+      Top             =   4380
+      Width           =   11295
+      _Version        =   131077
+      _ExtentX        =   19923
+      _ExtentY        =   5318
+      _StockProps     =   9
+      CoverAllowClose =   0   'False
+      CoverMarginX    =   200
+      CoverMarginY    =   200
+      RingHoleMargin  =   500
+      RingMarginTop   =   100
+      RingMarginBottom=   100
+      RingSeparator   =   200
+      RingSize        =   1000
+      RingWidth       =   300
+      ActualTTO       =   500
+      GutterWidth     =   100
+      PageAnimationFrames=   20
+      Tab             =   4
+      TabDefault      =   0
+      TabVisibleLast  =   4
+      TabShape        =   6
+      TabsPerRow      =   12
+      RingCount       =   9
+      RingGroups      =   3
+      PageTabOrientation=   0
+      PageAlignmentCaption=   7
+      PageAlignmentPicture=   1
+      BeginProperty FontSub {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   400
+         size            =   8.25
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      BeginProperty PageFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   400
+         size            =   8.25
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      BeginProperty ActiveTabFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   8.25
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      BeginProperty ActivePageFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   700
+         size            =   8.25
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      TabsNum         =   5
+      Tabs(IC).PictureMetaWidth=   0
+      Tabs(IC).PictureMetaHeight=   0
+      Tabs(IC).Page   =   0
+      Tabs(IC).ControlCount=   0
+      Tabs(IC).ControlEnabled=   0   'False
+      Tabs(IC).Pages(0).PictureMetaWidth=   0
+      Tabs(IC).Pages(0).PictureMetaHeight=   0
+      Tabs(IC).Pages(0).Tag=   ""
+      Tabs(IC).Pages(0).Caption=   "Page 0"
+      Tabs(IC).Pages(0).Name=   "page 0"
+      Tabs(IC).Pages(0).CtlCount=   0
+      Tabs(IC).Pages(0).CtlEnabled=   0   'False
+      Tabs(IC).Tag    =   ""
+      Tabs(IC).Caption=   ""
+      Tabs(IC).Name   =   ""
+      Tabs(0).PictureMetaWidth=   0
+      Tabs(0).PictureMetaHeight=   0
+      Tabs(0).Page    =   0
+      Tabs(0).ControlCount=   0
+      Tabs(0).ControlEnabled=   0   'False
+      Tabs(0).Pages(0).PictureMetaWidth=   0
+      Tabs(0).Pages(0).PictureMetaHeight=   0
+      Tabs(0).Pages(0).Tag=   ""
+      Tabs(0).Pages(0).Caption=   "Page 0"
+      Tabs(0).Pages(0).Name=   "page 0"
+      Tabs(0).Pages(0).CtlCount=   2
+      Tabs(0).Pages(0).CtlEnabled=   0   'False
+      Tabs(0).Pages(0).Ctl(0)=   "SSFrame6"
+      Tabs(0).Pages(0).Ctl(1)=   "SSFrame5"
+      Tabs(0).Tag     =   ""
+      Tabs(0).Caption =   "General"
+      Tabs(0).Name    =   "tab 0"
+      Tabs(1).PictureMetaWidth=   0
+      Tabs(1).PictureMetaHeight=   0
+      Tabs(1).Page    =   0
+      Tabs(1).ControlCount=   0
+      Tabs(1).ControlEnabled=   0   'False
+      Tabs(1).Pages(0).PictureMetaWidth=   0
+      Tabs(1).Pages(0).PictureMetaHeight=   0
+      Tabs(1).Pages(0).Tag=   ""
+      Tabs(1).Pages(0).Caption=   "Page 0"
+      Tabs(1).Pages(0).Name=   "page 0"
+      Tabs(1).Pages(0).CtlCount=   2
+      Tabs(1).Pages(0).CtlEnabled=   0   'False
+      Tabs(1).Pages(0).Ctl(0)=   "SSFrame8"
+      Tabs(1).Pages(0).Ctl(1)=   "SSFrame7"
+      Tabs(1).Tag     =   ""
+      Tabs(1).Caption =   "Personal"
+      Tabs(1).Name    =   "tab 1"
+      Tabs(2).PictureMetaWidth=   0
+      Tabs(2).PictureMetaHeight=   0
+      Tabs(2).Page    =   0
+      Tabs(2).ControlCount=   0
+      Tabs(2).ControlEnabled=   0   'False
+      Tabs(2).Pages(0).PictureMetaWidth=   0
+      Tabs(2).Pages(0).PictureMetaHeight=   0
+      Tabs(2).Pages(0).Tag=   ""
+      Tabs(2).Pages(0).Caption=   "Page 0"
+      Tabs(2).Pages(0).Name=   "page 0"
+      Tabs(2).Pages(0).CtlCount=   3
+      Tabs(2).Pages(0).CtlEnabled=   0   'False
+      Tabs(2).Pages(0).Ctl(0)=   "SSFrame11"
+      Tabs(2).Pages(0).Ctl(1)=   "SSFrame10"
+      Tabs(2).Pages(0).Ctl(2)=   "SSFrame9"
+      Tabs(2).Tag     =   ""
+      Tabs(2).Caption =   "Pres(Cont)"
+      Tabs(2).Name    =   "tab 2"
+      Tabs(3).PictureMetaWidth=   0
+      Tabs(3).PictureMetaHeight=   0
+      Tabs(3).Page    =   0
+      Tabs(3).ControlCount=   0
+      Tabs(3).ControlEnabled=   0   'False
+      Tabs(3).Pages(0).PictureMetaWidth=   0
+      Tabs(3).Pages(0).PictureMetaHeight=   0
+      Tabs(3).Pages(0).Tag=   ""
+      Tabs(3).Pages(0).Caption=   "Page 0"
+      Tabs(3).Pages(0).Name=   "page 0"
+      Tabs(3).Pages(0).CtlCount=   2
+      Tabs(3).Pages(0).CtlEnabled=   0   'False
+      Tabs(3).Pages(0).Ctl(0)=   "SSFrame13"
+      Tabs(3).Pages(0).Ctl(1)=   "SSFrame12"
+      Tabs(3).Tag     =   ""
+      Tabs(3).Caption =   "Pres(Lens)"
+      Tabs(3).Name    =   "tab 3"
+      Tabs(4).PictureMetaWidth=   0
+      Tabs(4).PictureMetaHeight=   0
+      Tabs(4).Page    =   0
+      Tabs(4).ControlCount=   0
+      Tabs(4).ControlEnabled=   0   'False
+      Tabs(4).Pages(0).PictureMetaWidth=   0
+      Tabs(4).Pages(0).PictureMetaHeight=   0
+      Tabs(4).Pages(0).Tag=   ""
+      Tabs(4).Pages(0).Caption=   "Page 0"
+      Tabs(4).Pages(0).Name=   "page 0"
+      Tabs(4).Pages(0).CtlCount=   2
+      Tabs(4).Pages(0).CtlEnabled=   -1  'True
+      Tabs(4).Pages(0).Ctl(0)=   "SSFrame15"
+      Tabs(4).Pages(0).Ctl(1)=   "SSFrame14"
+      Tabs(4).Tag     =   ""
+      Tabs(4).Caption =   "Orders"
+      Tabs(4).Name    =   "tab 4"
+      Templates(0).PictureMetaWidth=   0
+      Templates(0).PictureMetaHeight=   0
+      Templates(0).Tag=   ""
+      Templates(0).Caption=   "Page 0"
+      Templates(0).Name=   "page 0"
+      Templates(0).CtlCount=   0
+      Templates(0).CtlEnabled=   -1  'True
+      Templates(1).PictureMetaWidth=   0
+      Templates(1).PictureMetaHeight=   0
+      Templates(1).Tag=   ""
+      Templates(1).Caption=   "Page 1"
+      Templates(1).Name=   "page 1"
+      Templates(1).CtlCount=   0
+      Templates(1).CtlEnabled=   0   'False
+      Begin VB.Data dtcQrySOrderSimple 
+         Caption         =   "qrySOrderSimple"
+         Connect         =   "Access"
+         DatabaseName    =   "SynergyV.mdb"
+         Exclusive       =   0   'False
+         Height          =   300
+         Left            =   6960
+         Options         =   4
+         ReadOnly        =   0   'False
+         RecordsetType   =   1  'Dynaset
+         RecordSource    =   "qrySOrderSimple"
+         Top             =   1140
+         Visible         =   0   'False
+         Width           =   1215
+      End
+      Begin Threed.SSFrame SSFrame5 
+         Height          =   2595
+         Left            =   -74880
+         TabIndex        =   33
+         Top             =   300
+         Width           =   5535
+         _Version        =   65536
+         _ExtentX        =   9763
+         _ExtentY        =   4577
+         _StockProps     =   14
+         Caption         =   "Home"
+         Begin VB.TextBox Text5 
+            DataField       =   "HomePostalCode"
+            DataSource      =   "dtcCustomer"
+            Height          =   285
+            Left            =   1080
+            Locked          =   -1  'True
+            TabIndex        =   44
+            TabStop         =   0   'False
+            Top             =   1680
+            Width           =   735
+         End
+         Begin VB.TextBox Text4 
+            DataField       =   "CountryName"
+            DataSource      =   "dtcHomeCity"
+            Height          =   285
+            Left            =   1080
+            Locked          =   -1  'True
+            TabIndex        =   43
+            TabStop         =   0   'False
+            Top             =   1380
+            Width           =   2295
+         End
+         Begin VB.TextBox Text3 
+            DataField       =   "ProvinceName"
+            DataSource      =   "dtcHomeCity"
+            Height          =   285
+            Left            =   1080
+            Locked          =   -1  'True
+            TabIndex        =   42
+            TabStop         =   0   'False
+            Top             =   1080
+            Width           =   2295
+         End
+         Begin VB.TextBox Text2 
+            DataField       =   "CityName"
+            DataSource      =   "dtcHomeCity"
+            Height          =   285
+            Left            =   1080
+            Locked          =   -1  'True
+            TabIndex        =   41
+            TabStop         =   0   'False
+            Top             =   780
+            Width           =   2295
+         End
+         Begin VB.TextBox Text1 
+            DataField       =   "HomeAddress"
+            DataSource      =   "dtcCustomer"
+            Height          =   555
+            Left            =   1080
+            Locked          =   -1  'True
+            MultiLine       =   -1  'True
+            TabIndex        =   40
+            TabStop         =   0   'False
+            Top             =   240
+            Width           =   2295
+         End
+         Begin Threed.SSPanel SSPanel1 
+            Height          =   2235
+            Left            =   3480
+            TabIndex        =   58
+            Top             =   240
+            Width           =   1935
+            _Version        =   65536
+            _ExtentX        =   3413
+            _ExtentY        =   3942
+            _StockProps     =   15
+            Caption         =   "Phone:"
+            BackColor       =   12632256
+            BevelOuter      =   1
+            Alignment       =   0
+            Begin VB.TextBox Text14 
+               DataField       =   "CityPhoneCode"
+               DataSource      =   "dtcHomeCity"
+               Height          =   285
+               Left            =   720
+               Locked          =   -1  'True
+               TabIndex        =   65
+               TabStop         =   0   'False
+               Top             =   540
+               Width           =   495
+            End
+            Begin VB.TextBox Text13 
+               DataField       =   "CountryPhoneCode"
+               DataSource      =   "dtcHomeCity"
+               Height          =   285
+               Left            =   720
+               Locked          =   -1  'True
+               TabIndex        =   64
+               TabStop         =   0   'False
+               Top             =   240
+               Width           =   495
+            End
+            Begin MSMask.MaskEdBox MaskEdBox3 
+               DataField       =   "Cellular"
+               DataSource      =   "dtcCustomer"
+               Height          =   255
+               Left            =   720
+               TabIndex        =   68
+               TabStop         =   0   'False
+               Top             =   1440
+               Width           =   1095
+               _Version        =   65536
+               _ExtentX        =   1931
+               _ExtentY        =   450
+               _StockProps     =   109
+               ForeColor       =   -2147483640
+               BackColor       =   -2147483643
+               BorderStyle     =   1
+               PromptInclude   =   0   'False
+               MaxLength       =   9
+               Mask            =   "### #####"
+            End
+            Begin MSMask.MaskEdBox MaskEdBox2 
+               DataField       =   "HomeFax"
+               DataSource      =   "dtcCustomer"
+               Height          =   255
+               Left            =   720
+               TabIndex        =   67
+               TabStop         =   0   'False
+               Top             =   1140
+               Width           =   1095
+               _Version        =   65536
+               _ExtentX        =   1931
+               _ExtentY        =   450
+               _StockProps     =   109
+               ForeColor       =   -2147483640
+               BackColor       =   -2147483643
+               BorderStyle     =   1
+               PromptInclude   =   0   'False
+               MaxLength       =   9
+               Mask            =   "### #####"
+            End
+            Begin MSMask.MaskEdBox MaskEdBox1 
+               DataField       =   "HomePhone"
+               DataSource      =   "dtcCustomer"
+               Height          =   255
+               Left            =   720
+               TabIndex        =   66
+               TabStop         =   0   'False
+               Top             =   840
+               Width           =   1095
+               _Version        =   65536
+               _ExtentX        =   1931
+               _ExtentY        =   450
+               _StockProps     =   109
+               ForeColor       =   -2147483640
+               BackColor       =   16777215
+               BorderStyle     =   1
+               PromptInclude   =   0   'False
+               MaxLength       =   9
+               Mask            =   "### #####"
+            End
+            Begin VB.Label Label28 
+               Caption         =   "Cellular"
+               Height          =   195
+               Left            =   120
+               TabIndex        =   63
+               Top             =   1440
+               Width           =   615
+            End
+            Begin VB.Label Label27 
+               Caption         =   "Fax"
+               Height          =   195
+               Left            =   120
+               TabIndex        =   62
+               Top             =   1140
+               Width           =   375
+            End
+            Begin VB.Label Label26 
+               Caption         =   "Voice"
+               Height          =   195
+               Left            =   120
+               TabIndex        =   61
+               Top             =   840
+               Width           =   495
+            End
+            Begin VB.Label Label25 
+               Caption         =   "City"
+               Height          =   195
+               Left            =   120
+               TabIndex        =   60
+               Top             =   540
+               Width           =   375
+            End
+            Begin VB.Label Label24 
+               Caption         =   "Country"
+               Height          =   195
+               Left            =   120
+               TabIndex        =   59
+               Top             =   240
+               Width           =   615
+            End
+         End
+         Begin VB.Label Label16 
+            Caption         =   "Postal Code"
+            Height          =   195
+            Left            =   120
+            TabIndex        =   39
+            Top             =   1680
+            Width           =   855
+         End
+         Begin VB.Label Label15 
+            Caption         =   "Country"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   38
+            Top             =   1380
+            Width           =   615
+         End
+         Begin VB.Label Label14 
+            Caption         =   "Province"
+            Height          =   195
+            Left            =   120
+            TabIndex        =   37
+            Top             =   1080
+            Width           =   735
+         End
+         Begin VB.Label Label13 
+            Caption         =   "City"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   36
+            Top             =   780
+            Width           =   375
+         End
+         Begin VB.Label Label12 
+            Caption         =   "Address"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   35
+            Top             =   240
+            Width           =   735
+         End
+      End
+      Begin Threed.SSFrame SSFrame6 
+         Height          =   2595
+         Left            =   -69240
+         TabIndex        =   34
+         Top             =   300
+         Width           =   5415
+         _Version        =   65536
+         _ExtentX        =   9551
+         _ExtentY        =   4577
+         _StockProps     =   14
+         Caption         =   "Work"
+         Begin VB.TextBox Text12 
+            DataField       =   "BizPostalCode"
+            DataSource      =   "dtcCustomer"
+            Height          =   285
+            Left            =   1080
+            Locked          =   -1  'True
+            TabIndex        =   57
+            TabStop         =   0   'False
+            Top             =   2220
+            Width           =   855
+         End
+         Begin VB.TextBox Text11 
+            DataField       =   "CountryName"
+            DataSource      =   "dtcBizCity"
+            Height          =   285
+            Left            =   1080
+            Locked          =   -1  'True
+            TabIndex        =   56
+            TabStop         =   0   'False
+            Top             =   1920
+            Width           =   2295
+         End
+         Begin VB.TextBox Text10 
+            DataField       =   "ProvinceName"
+            DataSource      =   "dtcBizCity"
+            Height          =   285
+            Left            =   1080
+            Locked          =   -1  'True
+            TabIndex        =   55
+            TabStop         =   0   'False
+            Top             =   1620
+            Width           =   2295
+         End
+         Begin VB.TextBox Text9 
+            DataField       =   "CityName"
+            DataSource      =   "dtcBizCity"
+            Height          =   285
+            Left            =   1080
+            Locked          =   -1  'True
+            TabIndex        =   54
+            TabStop         =   0   'False
+            Top             =   1320
+            Width           =   2295
+         End
+         Begin VB.TextBox Text8 
+            DataField       =   "BizAddress"
+            DataSource      =   "dtcCustomer"
+            Height          =   495
+            Left            =   1080
+            Locked          =   -1  'True
+            MultiLine       =   -1  'True
+            TabIndex        =   53
+            TabStop         =   0   'False
+            Top             =   840
+            Width           =   2295
+         End
+         Begin VB.TextBox Text6 
+            DataField       =   "BizCompanyName"
+            DataSource      =   "dtcCustomer"
+            Height          =   285
+            Left            =   1080
+            Locked          =   -1  'True
+            TabIndex        =   52
+            TabStop         =   0   'False
+            Top             =   240
+            Width           =   2295
+         End
+         Begin Threed.SSPanel SSPanel2 
+            Height          =   2295
+            Left            =   3480
+            TabIndex        =   69
+            Top             =   180
+            Width           =   1815
+            _Version        =   65536
+            _ExtentX        =   3201
+            _ExtentY        =   4048
+            _StockProps     =   15
+            Caption         =   "Phone:"
+            BackColor       =   12632256
+            BevelOuter      =   1
+            Alignment       =   0
+            Begin VB.TextBox Text16 
+               DataField       =   "CityPhoneCode"
+               DataSource      =   "dtcBizCity"
+               Height          =   285
+               Left            =   720
+               Locked          =   -1  'True
+               TabIndex        =   75
+               TabStop         =   0   'False
+               Top             =   540
+               Width           =   495
+            End
+            Begin VB.TextBox Text15 
+               DataField       =   "CountryPhoneCode"
+               DataSource      =   "dtcBizCity"
+               Height          =   285
+               Left            =   720
+               Locked          =   -1  'True
+               TabIndex        =   74
+               TabStop         =   0   'False
+               Top             =   240
+               Width           =   495
+            End
+            Begin MSMask.MaskEdBox MaskEdBox5 
+               DataField       =   "BizFax"
+               DataSource      =   "dtcCustomer"
+               Height          =   255
+               Left            =   720
+               TabIndex        =   77
+               TabStop         =   0   'False
+               Top             =   1140
+               Width           =   975
+               _Version        =   65536
+               _ExtentX        =   1720
+               _ExtentY        =   450
+               _StockProps     =   109
+               ForeColor       =   -2147483640
+               BackColor       =   -2147483643
+               BorderStyle     =   1
+               PromptInclude   =   0   'False
+               MaxLength       =   9
+               Mask            =   "### #####"
+            End
+            Begin MSMask.MaskEdBox MaskEdBox4 
+               DataField       =   "BizPhone"
+               DataSource      =   "dtcCustomer"
+               Height          =   255
+               Left            =   720
+               TabIndex        =   76
+               TabStop         =   0   'False
+               Top             =   840
+               Width           =   975
+               _Version        =   65536
+               _ExtentX        =   1720
+               _ExtentY        =   450
+               _StockProps     =   109
+               ForeColor       =   -2147483640
+               BackColor       =   -2147483643
+               BorderStyle     =   1
+               PromptInclude   =   0   'False
+               MaxLength       =   9
+               Mask            =   "### #####"
+            End
+            Begin VB.Label Label32 
+               Caption         =   "Fax"
+               Height          =   195
+               Left            =   120
+               TabIndex        =   73
+               Top             =   1140
+               Width           =   375
+            End
+            Begin VB.Label Label31 
+               Caption         =   "Voice"
+               Height          =   255
+               Left            =   120
+               TabIndex        =   72
+               Top             =   840
+               Width           =   495
+            End
+            Begin VB.Label Label30 
+               Caption         =   "City"
+               Height          =   195
+               Left            =   120
+               TabIndex        =   71
+               Top             =   540
+               Width           =   375
+            End
+            Begin VB.Label Label29 
+               Caption         =   "Country"
+               Height          =   195
+               Left            =   120
+               TabIndex        =   70
+               Top             =   240
+               Width           =   615
+            End
+         End
+         Begin MSDBCtls.DBCombo DBCombo1 
+            Bindings        =   "frmInfoCustomer.frx":1C327
+            DataField       =   "BizJobTitle"
+            DataSource      =   "dtcCustomer"
+            Height          =   315
+            Left            =   1080
+            TabIndex        =   78
+            Top             =   540
+            Width           =   2295
+            _Version        =   65536
+            _ExtentX        =   4048
+            _ExtentY        =   556
+            _StockProps     =   77
+            ForeColor       =   0
+            BackColor       =   16777215
+            Locked          =   -1  'True
+            Style           =   1
+            ListField       =   "JobTitle"
+            BoundColumn     =   "JobTitleCode"
+         End
+         Begin VB.Label Label23 
+            Caption         =   "Postal Code"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   51
+            Top             =   2220
+            Width           =   975
+         End
+         Begin VB.Label Label22 
+            Caption         =   "Country"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   50
+            Top             =   1920
+            Width           =   615
+         End
+         Begin VB.Label Label21 
+            Caption         =   "Province"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   49
+            Top             =   1620
+            Width           =   735
+         End
+         Begin VB.Label Label20 
+            Caption         =   "City"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   48
+            Top             =   1320
+            Width           =   375
+         End
+         Begin VB.Label Label19 
+            Caption         =   "Address"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   47
+            Top             =   840
+            Width           =   615
+         End
+         Begin VB.Label Label18 
+            Caption         =   "Job Title"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   46
+            Top             =   540
+            Width           =   735
+         End
+         Begin VB.Label Label17 
+            Caption         =   "Company"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   45
+            Top             =   240
+            Width           =   735
+         End
+      End
+      Begin Threed.SSFrame SSFrame7 
+         Height          =   2595
+         Left            =   -74880
+         TabIndex        =   79
+         Top             =   300
+         Width           =   3735
+         _Version        =   65536
+         _ExtentX        =   6588
+         _ExtentY        =   4577
+         _StockProps     =   14
+         Caption         =   "General"
+         Begin VB.TextBox Text18 
+            DataField       =   "Salutation"
+            DataSource      =   "dtcCustomer"
+            Height          =   285
+            Left            =   1440
+            Locked          =   -1  'True
+            TabIndex        =   96
+            TabStop         =   0   'False
+            Text            =   "Text18"
+            Top             =   240
+            Width           =   615
+         End
+         Begin VB.TextBox Text7 
+            DataField       =   "VIPMarkDownPct"
+            DataSource      =   "dtcCustomer"
+            Height          =   285
+            Left            =   1440
+            Locked          =   -1  'True
+            TabIndex        =   90
+            TabStop         =   0   'False
+            Text            =   "Text7"
+            Top             =   960
+            Width           =   735
+         End
+         Begin SSCalendarWidgets_A.SSDateCombo calJointDate 
+            DataField       =   "JointDate"
+            DataSource      =   "dtcCusAccount"
+            Height          =   315
+            Left            =   1440
+            TabIndex        =   91
+            TabStop         =   0   'False
+            Top             =   1320
+            Width           =   2175
+            _Version        =   65536
+            _ExtentX        =   3836
+            _ExtentY        =   556
+            _StockProps     =   77
+         End
+         Begin SSCalendarWidgets_A.SSDateCombo calBirthday 
+            DataField       =   "Birthday"
+            DataSource      =   "dtcCustomer"
+            Height          =   315
+            Left            =   1440
+            TabIndex        =   89
+            TabStop         =   0   'False
+            Top             =   600
+            Width           =   2175
+            _Version        =   65536
+            _ExtentX        =   3836
+            _ExtentY        =   556
+            _StockProps     =   77
+         End
+         Begin VB.Label Label36 
+            Caption         =   "Joint Date"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   84
+            Top             =   1320
+            Width           =   855
+         End
+         Begin VB.Label Label35 
+            Caption         =   "VIP Discount (%)"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   83
+            Top             =   960
+            Width           =   1215
+         End
+         Begin VB.Label Label34 
+            Caption         =   "Birthday"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   82
+            Top             =   600
+            Width           =   735
+         End
+         Begin VB.Label Label33 
+            Caption         =   "Salutation"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   81
+            Top             =   240
+            Width           =   855
+         End
+      End
+      Begin Threed.SSFrame SSFrame8 
+         Height          =   2595
+         Left            =   -71040
+         TabIndex        =   80
+         Top             =   300
+         Width           =   4335
+         _Version        =   65536
+         _ExtentX        =   7646
+         _ExtentY        =   4577
+         _StockProps     =   14
+         Caption         =   "Medical"
+         Begin VB.TextBox Text17 
+            DataField       =   "CareCardType"
+            DataSource      =   "dtcCusMedical"
+            Height          =   285
+            Left            =   2040
+            Locked          =   -1  'True
+            TabIndex        =   95
+            TabStop         =   0   'False
+            Text            =   "Text17"
+            Top             =   1200
+            Width           =   735
+         End
+         Begin MSMask.MaskEdBox MaskEdBox7 
+            DataField       =   "CareCardValidPeriod"
+            DataSource      =   "dtcCusMedical"
+            Height          =   255
+            Left            =   2040
+            TabIndex        =   94
+            TabStop         =   0   'False
+            Top             =   900
+            Width           =   735
+            _Version        =   65536
+            _ExtentX        =   1296
+            _ExtentY        =   450
+            _StockProps     =   109
+            ForeColor       =   -2147483640
+            BackColor       =   -2147483643
+            BorderStyle     =   1
+            PromptInclude   =   0   'False
+            MaxLength       =   5
+            Mask            =   "##/##"
+         End
+         Begin MSMask.MaskEdBox MaskEdBox6 
+            DataField       =   "CareCardNo"
+            DataSource      =   "dtcCusMedical"
+            Height          =   255
+            Left            =   2040
+            TabIndex        =   93
+            TabStop         =   0   'False
+            Top             =   600
+            Width           =   1215
+            _Version        =   65536
+            _ExtentX        =   2143
+            _ExtentY        =   450
+            _StockProps     =   109
+            ForeColor       =   -2147483640
+            BackColor       =   -2147483643
+            BorderStyle     =   1
+            PromptInclude   =   0   'False
+            MaxLength       =   11
+            Mask            =   "### ### ###"
+         End
+         Begin SSCalendarWidgets_A.SSDateCombo calInsMaturityDate 
+            DataField       =   "InsMaturityDate"
+            DataSource      =   "dtcCusMedical"
+            Height          =   315
+            Left            =   2040
+            TabIndex        =   92
+            TabStop         =   0   'False
+            Top             =   240
+            Width           =   2175
+            _Version        =   65536
+            _ExtentX        =   3836
+            _ExtentY        =   556
+            _StockProps     =   77
+         End
+         Begin VB.Label Label40 
+            Caption         =   "Care Card Type"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   88
+            Top             =   1200
+            Width           =   1215
+         End
+         Begin VB.Label Label39 
+            Caption         =   "Care Card Valid Period"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   87
+            Top             =   900
+            Width           =   1695
+         End
+         Begin VB.Label Label38 
+            Caption         =   "Care Card Number"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   86
+            Top             =   600
+            Width           =   1455
+         End
+         Begin VB.Label Label37 
+            Caption         =   "Insurance Maturity Date"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   85
+            Top             =   240
+            Width           =   1815
+         End
+      End
+      Begin Threed.SSFrame SSFrame9 
+         Height          =   915
+         Left            =   -74880
+         TabIndex        =   97
+         Top             =   300
+         Width           =   6255
+         _Version        =   65536
+         _ExtentX        =   11033
+         _ExtentY        =   1614
+         _StockProps     =   14
+         Begin MSDBCtls.DBCombo dbcPresContDr 
+            Bindings        =   "frmInfoCustomer.frx":1C33B
+            DataField       =   "IssuedByDr"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   315
+            Left            =   2160
+            TabIndex        =   140
+            TabStop         =   0   'False
+            Top             =   480
+            Width           =   2535
+            _Version        =   65536
+            _ExtentX        =   4471
+            _ExtentY        =   556
+            _StockProps     =   77
+            ForeColor       =   0
+            BackColor       =   16777215
+            Locked          =   -1  'True
+            ListField       =   "DoctorName"
+            BoundColumn     =   "ID"
+         End
+         Begin SSCalendarWidgets_A.SSDateCombo calPresContDate 
+            DataField       =   "IssuedOn"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   315
+            Left            =   120
+            TabIndex        =   123
+            TabStop         =   0   'False
+            Top             =   480
+            Width           =   1815
+            _Version        =   65536
+            _ExtentX        =   3201
+            _ExtentY        =   556
+            _StockProps     =   77
+            SpinButton      =   0
+         End
+         Begin VB.Label Label42 
+            Caption         =   "Issued by Dr."
+            Height          =   255
+            Left            =   2160
+            TabIndex        =   101
+            Top             =   240
+            Width           =   1095
+         End
+         Begin VB.Label Label41 
+            Caption         =   "Issued on"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   100
+            Top             =   240
+            Width           =   735
+         End
+      End
+      Begin Threed.SSFrame SSFrame10 
+         Height          =   1635
+         Left            =   -74880
+         TabIndex        =   98
+         Top             =   1260
+         Width           =   6255
+         _Version        =   65536
+         _ExtentX        =   11033
+         _ExtentY        =   2884
+         _StockProps     =   14
+         Begin VB.TextBox Text41 
+            DataField       =   "LeftPupil"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   5160
+            Locked          =   -1  'True
+            TabIndex        =   139
+            TabStop         =   0   'False
+            Text            =   "Text41"
+            Top             =   720
+            Width           =   615
+         End
+         Begin VB.TextBox Text40 
+            DataField       =   "LeftCorn"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   4560
+            Locked          =   -1  'True
+            TabIndex        =   138
+            TabStop         =   0   'False
+            Text            =   "Text40"
+            Top             =   720
+            Width           =   615
+         End
+         Begin VB.TextBox Text39 
+            DataField       =   "LeftPalp"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   3960
+            Locked          =   -1  'True
+            TabIndex        =   137
+            TabStop         =   0   'False
+            Text            =   "Text39"
+            Top             =   720
+            Width           =   615
+         End
+         Begin VB.TextBox Text38 
+            DataField       =   "LeftKReadingH"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   3240
+            Locked          =   -1  'True
+            TabIndex        =   136
+            TabStop         =   0   'False
+            Text            =   "Text38"
+            Top             =   720
+            Width           =   735
+         End
+         Begin VB.TextBox Text37 
+            DataField       =   "LeftKReadingV"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   2400
+            Locked          =   -1  'True
+            TabIndex        =   135
+            TabStop         =   0   'False
+            Text            =   "Text37"
+            Top             =   720
+            Width           =   735
+         End
+         Begin VB.TextBox Text36 
+            DataField       =   "LeftAxis"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   1920
+            Locked          =   -1  'True
+            TabIndex        =   134
+            TabStop         =   0   'False
+            Text            =   "Text36"
+            Top             =   720
+            Width           =   495
+         End
+         Begin VB.TextBox Text35 
+            DataField       =   "LeftCylinder"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   1200
+            Locked          =   -1  'True
+            TabIndex        =   133
+            TabStop         =   0   'False
+            Text            =   "Text35"
+            Top             =   720
+            Width           =   735
+         End
+         Begin VB.TextBox Text34 
+            DataField       =   "LeftSphere"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   480
+            Locked          =   -1  'True
+            TabIndex        =   132
+            TabStop         =   0   'False
+            Text            =   "Text34"
+            Top             =   720
+            Width           =   735
+         End
+         Begin VB.TextBox Text33 
+            DataField       =   "RightPupil"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   5160
+            Locked          =   -1  'True
+            TabIndex        =   131
+            TabStop         =   0   'False
+            Text            =   "Text33"
+            Top             =   420
+            Width           =   615
+         End
+         Begin VB.TextBox Text32 
+            DataField       =   "RightCorn"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   4560
+            Locked          =   -1  'True
+            TabIndex        =   130
+            TabStop         =   0   'False
+            Text            =   "Text32"
+            Top             =   420
+            Width           =   615
+         End
+         Begin VB.TextBox Text31 
+            DataField       =   "RightPalp"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   3960
+            Locked          =   -1  'True
+            TabIndex        =   129
+            TabStop         =   0   'False
+            Text            =   "Text31"
+            Top             =   420
+            Width           =   615
+         End
+         Begin VB.TextBox Text30 
+            DataField       =   "RightKReadingH"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   3240
+            Locked          =   -1  'True
+            TabIndex        =   128
+            TabStop         =   0   'False
+            Text            =   "Text30"
+            Top             =   420
+            Width           =   735
+         End
+         Begin VB.TextBox Text29 
+            DataField       =   "RightKReadingV"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   2400
+            Locked          =   -1  'True
+            TabIndex        =   127
+            TabStop         =   0   'False
+            Text            =   "Text29"
+            Top             =   420
+            Width           =   735
+         End
+         Begin VB.TextBox Text28 
+            DataField       =   "RightAxis"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   1920
+            Locked          =   -1  'True
+            TabIndex        =   126
+            TabStop         =   0   'False
+            Text            =   "Text28"
+            Top             =   420
+            Width           =   495
+         End
+         Begin VB.TextBox Text27 
+            DataField       =   "RightCylinder"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   1200
+            Locked          =   -1  'True
+            TabIndex        =   125
+            TabStop         =   0   'False
+            Text            =   "Text27"
+            Top             =   420
+            Width           =   735
+         End
+         Begin VB.TextBox Text26 
+            DataField       =   "RightSphere"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   480
+            Locked          =   -1  'True
+            TabIndex        =   124
+            TabStop         =   0   'False
+            Text            =   "Text26"
+            Top             =   420
+            Width           =   735
+         End
+         Begin VB.Label Label51 
+            Caption         =   "L"
+            Height          =   255
+            Left            =   240
+            TabIndex        =   110
+            Top             =   780
+            Width           =   135
+         End
+         Begin VB.Label Label50 
+            Caption         =   "R"
+            Height          =   255
+            Left            =   240
+            TabIndex        =   109
+            Top             =   420
+            Width           =   135
+         End
+         Begin VB.Label Label49 
+            Caption         =   "Pupil"
+            Height          =   255
+            Left            =   5280
+            TabIndex        =   108
+            Top             =   180
+            Width           =   495
+         End
+         Begin VB.Label Label48 
+            Caption         =   "Corn"
+            Height          =   255
+            Left            =   4680
+            TabIndex        =   107
+            Top             =   180
+            Width           =   375
+         End
+         Begin VB.Label Label47 
+            Caption         =   "Palp"
+            Height          =   255
+            Left            =   4080
+            TabIndex        =   106
+            Top             =   180
+            Width           =   495
+         End
+         Begin VB.Label Label46 
+            Caption         =   "K-reading"
+            Height          =   255
+            Left            =   2880
+            TabIndex        =   105
+            Top             =   180
+            Width           =   855
+         End
+         Begin VB.Label Label45 
+            Caption         =   "Axis"
+            Height          =   255
+            Left            =   2040
+            TabIndex        =   104
+            Top             =   180
+            Width           =   375
+         End
+         Begin VB.Label Label44 
+            Caption         =   "Cylinder"
+            Height          =   255
+            Left            =   1320
+            TabIndex        =   103
+            Top             =   180
+            Width           =   615
+         End
+         Begin VB.Label Label43 
+            Caption         =   "Sphere"
+            Height          =   255
+            Left            =   600
+            TabIndex        =   102
+            Top             =   180
+            Width           =   615
+         End
+      End
+      Begin Threed.SSFrame SSFrame11 
+         Height          =   2595
+         Left            =   -68520
+         TabIndex        =   99
+         Top             =   300
+         Width           =   4695
+         _Version        =   65536
+         _ExtentX        =   8281
+         _ExtentY        =   4577
+         _StockProps     =   14
+         Begin VB.TextBox Text24 
+            DataField       =   "Test"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   960
+            Locked          =   -1  'True
+            TabIndex        =   122
+            TabStop         =   0   'False
+            Text            =   "Text24"
+            Top             =   1800
+            Width           =   3615
+         End
+         Begin VB.TextBox Text23 
+            DataField       =   "Evaluation"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   960
+            Locked          =   -1  'True
+            TabIndex        =   121
+            TabStop         =   0   'False
+            Text            =   "Text23"
+            Top             =   1500
+            Width           =   3615
+         End
+         Begin VB.TextBox Text22 
+            DataField       =   "Reason"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   315
+            Left            =   960
+            Locked          =   -1  'True
+            TabIndex        =   120
+            TabStop         =   0   'False
+            Text            =   "Text22"
+            Top             =   1140
+            Width           =   3615
+         End
+         Begin VB.TextBox Text21 
+            DataField       =   "Allergy"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   960
+            Locked          =   -1  'True
+            TabIndex        =   119
+            TabStop         =   0   'False
+            Text            =   "Text21"
+            Top             =   840
+            Width           =   3615
+         End
+         Begin VB.TextBox Text20 
+            DataField       =   "Medical"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   285
+            Left            =   960
+            Locked          =   -1  'True
+            TabIndex        =   118
+            TabStop         =   0   'False
+            Text            =   "Text20"
+            Top             =   540
+            Width           =   3615
+         End
+         Begin VB.TextBox Text19 
+            DataField       =   "History"
+            DataSource      =   "dtcCusPresCont"
+            Height          =   315
+            Left            =   960
+            Locked          =   -1  'True
+            TabIndex        =   117
+            TabStop         =   0   'False
+            Text            =   "Text19"
+            Top             =   180
+            Width           =   3615
+         End
+         Begin VB.Label Label57 
+            Caption         =   "Test"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   116
+            Top             =   1800
+            Width           =   375
+         End
+         Begin VB.Label Label56 
+            Caption         =   "Evaluation"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   115
+            Top             =   1500
+            Width           =   855
+         End
+         Begin VB.Label Label55 
+            Caption         =   "Reason"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   114
+            Top             =   1140
+            Width           =   615
+         End
+         Begin VB.Label Label54 
+            Caption         =   "Allergy"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   113
+            Top             =   840
+            Width           =   615
+         End
+         Begin VB.Label Label53 
+            Caption         =   "Medical"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   112
+            Top             =   540
+            Width           =   615
+         End
+         Begin VB.Label Label52 
+            Caption         =   "History"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   111
+            Top             =   180
+            Width           =   615
+         End
+      End
+      Begin Threed.SSFrame SSFrame12 
+         Height          =   915
+         Left            =   -74880
+         TabIndex        =   141
+         Top             =   300
+         Width           =   6255
+         _Version        =   65536
+         _ExtentX        =   11033
+         _ExtentY        =   1614
+         _StockProps     =   14
+         Begin MSDBCtls.DBCombo dbcPresLensDr 
+            Bindings        =   "frmInfoCustomer.frx":1C34D
+            DataField       =   "IssuedByDr"
+            DataSource      =   "dtcCusPresLens"
+            Height          =   315
+            Left            =   2160
+            TabIndex        =   155
+            Top             =   480
+            Width           =   2535
+            _Version        =   65536
+            _ExtentX        =   4471
+            _ExtentY        =   556
+            _StockProps     =   77
+            ForeColor       =   0
+            BackColor       =   16777215
+            Style           =   1
+            ListField       =   "DoctorName"
+            BoundColumn     =   "ID"
+         End
+         Begin SSCalendarWidgets_A.SSDateCombo calPresLensDate 
+            DataField       =   "IssuedOn"
+            DataSource      =   "dtcCusPresLens"
+            Height          =   315
+            Left            =   120
+            TabIndex        =   154
+            TabStop         =   0   'False
+            Top             =   480
+            Width           =   1815
+            _Version        =   65536
+            _ExtentX        =   3201
+            _ExtentY        =   556
+            _StockProps     =   77
+            SpinButton      =   0
+         End
+         Begin VB.Label Label59 
+            Caption         =   "Issued by Dr."
+            Height          =   255
+            Left            =   2160
+            TabIndex        =   144
+            Top             =   240
+            Width           =   1095
+         End
+         Begin VB.Label Label58 
+            Caption         =   "Issued on"
+            Height          =   255
+            Left            =   120
+            TabIndex        =   143
+            Top             =   240
+            Width           =   975
+         End
+      End
+      Begin Threed.SSFrame SSFrame13 
+         Height          =   1635
+         Left            =   -74880
+         TabIndex        =   142
+         Top             =   1260
+         Width           =   6255
+         _Version        =   65536
+         _ExtentX        =   11033
+         _ExtentY        =   2884
+         _StockProps     =   14
+         Begin VB.TextBox Text54 
+            DataField       =   "LeftAdd"
+            DataSource      =   "dtcCusPresLens"
+            Height          =   285
+            Left            =   4800
+            Locked          =   -1  'True
+            TabIndex        =   169
+            TabStop         =   0   'False
+            Text            =   "Text54"
+            Top             =   720
+            Width           =   495
+         End
+         Begin VB.TextBox Text53 
+            DataField       =   "LeftPrism"
+            DataSource      =   "dtcCusPresLens"
+            Height          =   285
+            Left            =   4200
+            Locked          =   -1  'True
+            TabIndex        =   168
+            TabStop         =   0   'False
+            Text            =   "Text53"
+            Top             =   720
+            Width           =   615
+         End
+         Begin VB.TextBox Text52 
+            DataField       =   "LeftPdNear"
+            DataSource      =   "dtcCusPresLens"
+            Height          =   285
+            Left            =   3360
+            Locked          =   -1  'True
+            TabIndex        =   167
+            TabStop         =   0   'False
+            Text            =   "Text52"
+            Top             =   720
+            Width           =   855
+         End
+         Begin VB.TextBox Text51 
+            DataField       =   "LeftPdDist"
+            DataSource      =   "dtcCusPresLens"
+            Height          =   285
+            Left            =   2640
+            Locked          =   -1  'True
+            TabIndex        =   166
+            TabStop         =   0   'False
+            Text            =   "Text51"
+            Top             =   720
+            Width           =   735
+         End
+         Begin VB.TextBox Text50 
+            DataField       =   "LeftAxis"
+            DataSource      =   "dtcCusPresLens"
+            Height          =   285
+            Left            =   2160
+            Locked          =   -1  'True
+            TabIndex        =   165
+            TabStop         =   0   'False
+            Text            =   "Text50"
+            Top             =   720
+            Width           =   495
+         End
+         Begin VB.TextBox Text49 
+            DataField       =   "LeftCylinder"
+            DataSource      =   "dtcCusPresLens"
+            Height          =   285
+            Left            =   1440
+            Locked          =   -1  'True
+            TabIndex        =   164
+            TabStop         =   0   'False
+            Text            =   "Text49"
+            Top             =   720
+            Width           =   735
+         End
+         Begin VB.TextBox Text48 
+            DataField       =   "LeftSphere"
+            DataSource      =   "dtcCusPresLens"
+            Height          =   285
+            Left            =   720
+            Locked          =   -1  'True
+            TabIndex        =   163
+            TabStop         =   0   'False
+            Text            =   "Text48"
+            Top             =   720
+            Width           =   735
+         End
+         Begin VB.TextBox Text47 
+            DataField       =   "RightAdd"
+            DataSource      =   "dtcCusPresLens"
+            Height          =   285
+            Left            =   4800
+            Locked          =   -1  'True
+            TabIndex        =   162
+            TabStop         =   0   'False
+            Text            =   "Text47"
+            Top             =   420
+            Width           =   495
+         End
+         Begin VB.TextBox Text46 
+            DataField       =   "RightPrism"
+            DataSource      =   "dtcCusPresLens"
+            Height          =   285
+            Left            =   4200
+            Locked          =   -1  'True
+            TabIndex        =   161
+            TabStop         =   0   'False
+            Text            =   "Text46"
+            Top             =   420
+            Width           =   615
+         End
+         Begin VB.TextBox Text45 
+            DataField       =   "RightPdNear"
+            DataSource      =   "dtcCusPresLens"
+            Height          =   285
+            Left            =   3360
+            Locked          =   -1  'True
+            TabIndex        =   160
+            TabStop         =   0   'False
+            Text            =   "Text45"
+            Top             =   420
+            Width           =   855
+         End
+         Begin VB.TextBox Text44 
+            DataField       =   "RightPdDist"
+            DataSource      =   "dtcCusPresLens"
+            Height          =   285
+            Left            =   2640
+            Locked          =   -1  'True
+            TabIndex        =   159
+            TabStop         =   0   'False
+            Text            =   "Text44"
+            Top             =   420
+            Width           =   735
+         End
+         Begin VB.TextBox Text43 
+            DataField       =   "RightAxis"
+            DataSource      =   "dtcCusPresLens"
+            Height          =   285
+            Left            =   2160
+            Locked          =   -1  'True
+            TabIndex        =   158
+            TabStop         =   0   'False
+            Text            =   "Text43"
+            Top             =   420
+            Width           =   495
+         End
+         Begin VB.TextBox Text42 
+            DataField       =   "RightCylinder"
+            DataSource      =   "dtcCusPresLens"
+            Height          =   285
+            Left            =   1440
+            Locked          =   -1  'True
+            TabIndex        =   157
+            TabStop         =   0   'False
+            Text            =   "Text42"
+            Top             =   420
+            Width           =   735
+         End
+         Begin VB.TextBox Text25 
+            DataField       =   "RightSphere"
+            DataSource      =   "dtcCusPresLens"
+            Height          =   285
+            Left            =   720
+            Locked          =   -1  'True
+            TabIndex        =   156
+            TabStop         =   0   'False
+            Text            =   "Text25"
+            Top             =   420
+            Width           =   735
+         End
+         Begin VB.Label Label68 
+            Caption         =   "L"
+            Height          =   255
+            Left            =   480
+            TabIndex        =   153
+            Top             =   900
+            Width           =   135
+         End
+         Begin VB.Label Label67 
+            Caption         =   "R"
+            Height          =   255
+            Left            =   480
+            TabIndex        =   152
+            Top             =   480
+            Width           =   135
+         End
+         Begin VB.Label Label66 
+            Caption         =   "Add"
+            Height          =   255
+            Left            =   4920
+            TabIndex        =   151
+            Top             =   180
+            Width           =   375
+         End
+         Begin VB.Label Label65 
+            Caption         =   "Prism"
+            Height          =   255
+            Left            =   4320
+            TabIndex        =   150
+            Top             =   180
+            Width           =   495
+         End
+         Begin VB.Label Label64 
+            Caption         =   "PD Near"
+            Height          =   255
+            Left            =   3480
+            TabIndex        =   149
+            Top             =   180
+            Width           =   735
+         End
+         Begin VB.Label Label63 
+            Caption         =   "PD Dist"
+            Height          =   255
+            Left            =   2760
+            TabIndex        =   148
+            Top             =   180
+            Width           =   615
+         End
+         Begin VB.Label Label62 
+            Caption         =   "Axis"
+            Height          =   255
+            Left            =   2280
+            TabIndex        =   147
+            Top             =   180
+            Width           =   375
+         End
+         Begin VB.Label Label61 
+            Caption         =   "Cylinder"
+            Height          =   255
+            Left            =   1560
+            TabIndex        =   146
+            Top             =   180
+            Width           =   615
+         End
+         Begin VB.Label Label60 
+            Caption         =   "Sphere"
+            Height          =   255
+            Left            =   840
+            TabIndex        =   145
+            Top             =   180
+            Width           =   615
+         End
+      End
+      Begin TrueDBGrid.TDBGrid dbgOrders 
+         Bindings        =   "frmInfoCustomer.frx":1C35F
+         Height          =   2535
+         Left            =   120
+         OleObjectBlob   =   "frmInfoCustomer.frx":1C37A
+         TabIndex        =   170
+         Top             =   360
+         Width           =   11055
+      End
+   End
+End
+Attribute VB_Name = "frmInfoCustomer"
+Attribute VB_Creatable = False
+Attribute VB_Exposed = False
+
+Private Sub cmdFindBizPhone_Click()
+  VBCP_Update 94, "cmdFindBizPhone_Click", 1
+
+    On Error GoTo cmdFindBizPhone_Click_Err
+
+
+    If txtSelBizPhone <> "" And VBCP_UpdateIf(94, "cmdFindBizPhone_Click", 2) Then
+        ' Lookup dtcCustomer
+        strSQL = "SELECT * FROM Customer " _
+               & "WHERE BizPhone LIKE '" & txtSelBizPhone.Text & "' " _
+               & "ORDER BY FullName"
+  VBCP_Update 94, "cmdFindBizPhone_Click", 3
+        dtcCustomer.RecordSource = strSQL
+        dtcCustomer.Refresh
+  VBCP_Update 94, "cmdFindBizPhone_Click", 4
+        dtcCustomer.UpdateControls
+  VBCP_Update 94, "cmdFindBizPhone_Click", 5
+    End If
+
+
+cmdFindBizPhone_Click_Exit:                                ' Tutorial Autocode
+  VBCP_Update 94, "cmdFindBizPhone_Click", 6
+    On Error Resume Next                                   ' Tutorial Autocode
+    Exit Sub                                               ' Tutorial Autocode
+  VBCP_Update 94, "cmdFindBizPhone_Click", 7
+cmdFindBizPhone_Click_Err:                                 ' Tutorial Autocode
+  VBCP_Update 94, "cmdFindBizPhone_Click", 8
+    Call ofx_GenericError("cmdFindBizPhone_Click()", Err)  ' Tutorial Autocode
+  VBCP_Update 94, "cmdFindBizPhone_Click", 9
+    Resume cmdFindBizPhone_Click_Exit
+  VBCP_Update 94, "cmdFindBizPhone_Click", 10
+
+End Sub
+
+Private Sub cmdFindCellular_Click()
+  VBCP_Update 94, "cmdFindCellular_Click", 1
+
+    On Error GoTo cmdFindCellular_Click_Err
+
+
+    If txtSelCellular <> "" And VBCP_UpdateIf(94, "cmdFindCellular_Click", 2) Then
+        ' Lookup dtcCustomer
+        strSQL = "SELECT * FROM Customer " _
+               & "WHERE Cellular LIKE '" & txtSelCellular.Text & "' " _
+               & "ORDER BY FullName"
+  VBCP_Update 94, "cmdFindCellular_Click", 3
+        dtcCustomer.RecordSource = strSQL
+        dtcCustomer.Refresh
+  VBCP_Update 94, "cmdFindCellular_Click", 4
+        dtcCustomer.UpdateControls
+  VBCP_Update 94, "cmdFindCellular_Click", 5
+    End If
+
+
+cmdFindCellular_Click_Exit:                                ' Tutorial Autocode
+  VBCP_Update 94, "cmdFindCellular_Click", 6
+    On Error Resume Next                                   ' Tutorial Autocode
+    Exit Sub                                               ' Tutorial Autocode
+  VBCP_Update 94, "cmdFindCellular_Click", 7
+cmdFindCellular_Click_Err:                                 ' Tutorial Autocode
+  VBCP_Update 94, "cmdFindCellular_Click", 8
+    Call ofx_GenericError("cmdFindCellular_Click()", Err)  ' Tutorial Autocode
+  VBCP_Update 94, "cmdFindCellular_Click", 9
+    Resume cmdFindCellular_Click_Exit
+  VBCP_Update 94, "cmdFindCellular_Click", 10
+
+End Sub
+
+
+Private Sub cmdFindHomePhone_Click()
+  VBCP_Update 94, "cmdFindHomePhone_Click", 1
+
+    On Error GoTo cmdFindHomePhone_Click_Err
+
+
+    If txtSelHomePhone <> "" And VBCP_UpdateIf(94, "cmdFindHomePhone_Click", 2) Then
+        ' Lookup dtcCustomer
+        strSQL = "SELECT * FROM Customer " _
+               & "WHERE HomePhone LIKE '" & txtSelHomePhone.Text & "' " _
+               & "ORDER BY FullName"
+  VBCP_Update 94, "cmdFindHomePhone_Click", 3
+        dtcCustomer.RecordSource = strSQL
+        dtcCustomer.Refresh
+  VBCP_Update 94, "cmdFindHomePhone_Click", 4
+        dtcCustomer.UpdateControls
+  VBCP_Update 94, "cmdFindHomePhone_Click", 5
+    End If
+
+
+cmdFindHomePhone_Click_Exit:                                ' Tutorial Autocode
+  VBCP_Update 94, "cmdFindHomePhone_Click", 6
+    On Error Resume Next                                    ' Tutorial Autocode
+    Exit Sub                                                ' Tutorial Autocode
+  VBCP_Update 94, "cmdFindHomePhone_Click", 7
+cmdFindHomePhone_Click_Err:                                 ' Tutorial Autocode
+  VBCP_Update 94, "cmdFindHomePhone_Click", 8
+    Call ofx_GenericError("cmdFindHomePhone_Click()", Err)  ' Tutorial Autocode
+  VBCP_Update 94, "cmdFindHomePhone_Click", 9
+    Resume cmdFindHomePhone_Click_Exit
+  VBCP_Update 94, "cmdFindHomePhone_Click", 10
+
+End Sub
+
+
+
+Private Sub cmdFindVIP_Click()
+  VBCP_Update 94, "cmdFindVIP_Click", 1
+
+    On Error GoTo cmdFindVIP_Click_Err
+
+
+    If txtSelVIPCode <> "" And VBCP_UpdateIf(94, "cmdFindVIP_Click", 2) Then
+        ' Lookup dtcCustomer
+        strSQL = "SELECT * FROM Customer " _
+               & "WHERE VIPCode LIKE '" & txtSelVIPCode.Text & "' " _
+               & "ORDER BY FullName"
+  VBCP_Update 94, "cmdFindVIP_Click", 3
+        dtcCustomer.RecordSource = strSQL
+        dtcCustomer.Refresh
+  VBCP_Update 94, "cmdFindVIP_Click", 4
+        dtcCustomer.UpdateControls
+  VBCP_Update 94, "cmdFindVIP_Click", 5
+    End If
+
+
+cmdFindVIP_Click_Exit:                                ' Tutorial Autocode
+  VBCP_Update 94, "cmdFindVIP_Click", 6
+    On Error Resume Next                              ' Tutorial Autocode
+    Exit Sub                                          ' Tutorial Autocode
+  VBCP_Update 94, "cmdFindVIP_Click", 7
+cmdFindVIP_Click_Err:                                 ' Tutorial Autocode
+  VBCP_Update 94, "cmdFindVIP_Click", 8
+    Call ofx_GenericError("cmdFindVIP_Click()", Err)  ' Tutorial Autocode
+  VBCP_Update 94, "cmdFindVIP_Click", 9
+    Resume cmdFindVIP_Click_Exit
+  VBCP_Update 94, "cmdFindVIP_Click", 10
+
+End Sub
+
+Private Sub dbcSelCity_Click(intArea As Integer)
+  VBCP_Update 94, "dbcSelCity_Click", 1
+
+    On Error GoTo dbcSelCity_Click_Err
+
+
+    If intArea = dbcAreaList And VBCP_UpdateIf(94, "dbcSelCity_Click", 2) Then
+        ' Lookup dtcCustomer
+        strSQL = "SELECT * FROM Customer " _
+               & "WHERE HomeCity = " & dbcSelCity.BoundText & " " _
+               & "ORDER BY FullName"
+  VBCP_Update 94, "dbcSelCity_Click", 3
+        dtcCustomer.RecordSource = strSQL
+        dtcCustomer.Refresh
+  VBCP_Update 94, "dbcSelCity_Click", 4
+        dtcCustomer.UpdateControls
+  VBCP_Update 94, "dbcSelCity_Click", 5
+    End If
+
+
+dbcSelCity_Click_Exit:                                ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelCity_Click", 6
+    On Error Resume Next                              ' Tutorial Autocode
+    Exit Sub                                          ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelCity_Click", 7
+dbcSelCity_Click_Err:                                 ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelCity_Click", 8
+    Call ofx_GenericError("dbcSelCity_Click()", Err)  ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelCity_Click", 9
+    Resume dbcSelCity_Click_Exit
+  VBCP_Update 94, "dbcSelCity_Click", 10
+
+End Sub
+
+Private Sub dbcSelCountry_Click(intArea As Integer)
+  VBCP_Update 94, "dbcSelCountry_Click", 1
+
+    On Error GoTo dbcSelCountry_Click_Err
+
+
+    If intArea = dbcAreaList And VBCP_UpdateIf(94, "dbcSelCountry_Click", 2) Then
+        ' Lookup dtcCustomer
+        strSQL = "SELECT * FROM Customer " _
+               & "WHERE HomeCountry = '" & dbcSelCountry.BoundText & "' " _
+               & "ORDER BY FullName"
+  VBCP_Update 94, "dbcSelCountry_Click", 3
+        dtcCustomer.RecordSource = strSQL
+        dtcCustomer.Refresh
+  VBCP_Update 94, "dbcSelCountry_Click", 4
+        dtcCustomer.UpdateControls
+  VBCP_Update 94, "dbcSelCountry_Click", 5
+    End If
+
+
+dbcSelCountry_Click_Exit:                                ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelCountry_Click", 6
+    On Error Resume Next                                 ' Tutorial Autocode
+    Exit Sub                                             ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelCountry_Click", 7
+dbcSelCountry_Click_Err:                                 ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelCountry_Click", 8
+    Call ofx_GenericError("dbcSelCountry_Click()", Err)  ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelCountry_Click", 9
+    Resume dbcSelCountry_Click_Exit
+  VBCP_Update 94, "dbcSelCountry_Click", 10
+
+End Sub
+
+Private Sub dbcSelFirstName_Click(intArea As Integer)
+  VBCP_Update 94, "dbcSelFirstName_Click", 1
+
+    On Error GoTo dbcSelFirstName_Click_Err
+
+
+    If intArea = dbcAreaList And VBCP_UpdateIf(94, "dbcSelFirstName_Click", 2) Then
+        ' Lookup dtcCustomer
+        strSQL = "SELECT * FROM Customer " _
+               & "WHERE FirstName = '" & dbcSelFirstName.BoundText & "' " _
+               & "ORDER BY FullName"
+  VBCP_Update 94, "dbcSelFirstName_Click", 3
+        dtcCustomer.RecordSource = strSQL
+        dtcCustomer.Refresh
+  VBCP_Update 94, "dbcSelFirstName_Click", 4
+        dtcCustomer.UpdateControls
+  VBCP_Update 94, "dbcSelFirstName_Click", 5
+    End If
+
+
+dbcSelFirstName_Click_Exit:                                ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelFirstName_Click", 6
+    On Error Resume Next                                   ' Tutorial Autocode
+    Exit Sub                                               ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelFirstName_Click", 7
+dbcSelFirstName_Click_Err:                                 ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelFirstName_Click", 8
+    Call ofx_GenericError("dbcSelFirstName_Click()", Err)  ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelFirstName_Click", 9
+    Resume dbcSelFirstName_Click_Exit
+  VBCP_Update 94, "dbcSelFirstName_Click", 10
+
+End Sub
+
+Private Sub dbcSelFullName_Click(intArea As Integer)
+  VBCP_Update 94, "dbcSelFullName_Click", 1
+
+    On Error GoTo dbcSelFullName_Click_Err
+
+
+    If intArea = dbcAreaList And VBCP_UpdateIf(94, "dbcSelFullName_Click", 2) Then
+        ' Lookup dtcCustomer
+        strSQL = "SELECT * FROM Customer " _
+               & "WHERE FullName = '" & dbcSelFullName.BoundText & "' " _
+               & "ORDER BY FullName"
+  VBCP_Update 94, "dbcSelFullName_Click", 3
+        dtcCustomer.RecordSource = strSQL
+        dtcCustomer.Refresh
+  VBCP_Update 94, "dbcSelFullName_Click", 4
+        dtcCustomer.UpdateControls
+  VBCP_Update 94, "dbcSelFullName_Click", 5
+    End If
+
+
+dbcSelFullName_Click_Exit:                                ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelFullName_Click", 6
+    On Error Resume Next                                  ' Tutorial Autocode
+    Exit Sub                                              ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelFullName_Click", 7
+dbcSelFullName_Click_Err:                                 ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelFullName_Click", 8
+    Call ofx_GenericError("dbcSelFullName_Click()", Err)  ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelFullName_Click", 9
+    Resume dbcSelFullName_Click_Exit
+  VBCP_Update 94, "dbcSelFullName_Click", 10
+
+End Sub
+
+Private Sub dbcSelID_Click(intArea As Integer)
+  VBCP_Update 94, "dbcSelID_Click", 1
+
+    On Error GoTo dbcSelID_Click_Err
+
+
+    If intArea = dbcAreaList And VBCP_UpdateIf(94, "dbcSelID_Click", 2) Then
+        ' Lookup dtcCustomer
+        strSQL = "SELECT * FROM Customer " _
+               & "WHERE ID = " & dbcSelID.BoundText & " " _
+               & "ORDER BY FullName"
+  VBCP_Update 94, "dbcSelID_Click", 3
+        dtcCustomer.RecordSource = strSQL
+        dtcCustomer.Refresh
+  VBCP_Update 94, "dbcSelID_Click", 4
+        dtcCustomer.UpdateControls
+  VBCP_Update 94, "dbcSelID_Click", 5
+    End If
+
+
+dbcSelID_Click_Exit:                                ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelID_Click", 6
+    On Error Resume Next                            ' Tutorial Autocode
+    Exit Sub                                        ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelID_Click", 7
+dbcSelID_Click_Err:                                 ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelID_Click", 8
+    Call ofx_GenericError("dbcSelID_Click()", Err)  ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelID_Click", 9
+    Resume dbcSelID_Click_Exit
+  VBCP_Update 94, "dbcSelID_Click", 10
+
+End Sub
+
+Private Sub dbcSelLastName_Click(intArea As Integer)
+  VBCP_Update 94, "dbcSelLastName_Click", 1
+
+    On Error GoTo dbcSelLastName_Click_Err
+
+
+    If intArea = dbcAreaList And VBCP_UpdateIf(94, "dbcSelLastName_Click", 2) Then
+        ' Lookup dtcCustomer
+        strSQL = "SELECT * FROM Customer " _
+               & "WHERE LastName = '" & dbcSelLastName.BoundText & "' " _
+               & "ORDER BY FullName"
+  VBCP_Update 94, "dbcSelLastName_Click", 3
+        dtcCustomer.RecordSource = strSQL
+        dtcCustomer.Refresh
+  VBCP_Update 94, "dbcSelLastName_Click", 4
+        dtcCustomer.UpdateControls
+  VBCP_Update 94, "dbcSelLastName_Click", 5
+    End If
+
+
+dbcSelLastName_Click_Exit:                                ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelLastName_Click", 6
+    On Error Resume Next                                  ' Tutorial Autocode
+    Exit Sub                                              ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelLastName_Click", 7
+dbcSelLastName_Click_Err:                                 ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelLastName_Click", 8
+    Call ofx_GenericError("dbcSelLastName_Click()", Err)  ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelLastName_Click", 9
+    Resume dbcSelLastName_Click_Exit
+  VBCP_Update 94, "dbcSelLastName_Click", 10
+
+End Sub
+
+Private Sub dbcSelProvince_Click(intArea As Integer)
+  VBCP_Update 94, "dbcSelProvince_Click", 1
+
+    On Error GoTo dbcSelProvince_Click_Err
+
+
+    If intArea = dbcAreaList And VBCP_UpdateIf(94, "dbcSelProvince_Click", 2) Then
+        ' Lookup dtcCustomer
+        strSQL = "SELECT * FROM Customer " _
+               & "WHERE HomeProvince = '" & dbcSelProvince.BoundText & "' " _
+               & "ORDER BY FullName"
+  VBCP_Update 94, "dbcSelProvince_Click", 3
+        dtcCustomer.RecordSource = strSQL
+        dtcCustomer.Refresh
+  VBCP_Update 94, "dbcSelProvince_Click", 4
+        dtcCustomer.UpdateControls
+  VBCP_Update 94, "dbcSelProvince_Click", 5
+    End If
+
+
+dbcSelProvince_Click_Exit:                                ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelProvince_Click", 6
+    On Error Resume Next                                  ' Tutorial Autocode
+    Exit Sub                                              ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelProvince_Click", 7
+dbcSelProvince_Click_Err:                                 ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelProvince_Click", 8
+    Call ofx_GenericError("dbcSelProvince_Click()", Err)  ' Tutorial Autocode
+  VBCP_Update 94, "dbcSelProvince_Click", 9
+    Resume dbcSelProvince_Click_Exit
+  VBCP_Update 94, "dbcSelProvince_Click", 10
+
+End Sub
+
+
+
+Private Sub dbgOrders_DblClick()
+  VBCP_Update 94, "dbgOrders_DblClick", 1
+    Dim strTxNumber As String
+    
+    strTxNumber = ofx_CStr(dbgOrders.Columns("Order Number").Value)
+  VBCP_Update 94, "dbgOrders_DblClick", 2
+    If strTxNumber <> "" And VBCP_UpdateIf(94, "dbgOrders_DblClick", 3) Then
+        RptTxNumberFrom = strTxNumber
+  VBCP_Update 94, "dbgOrders_DblClick", 4
+        Screen.MousePointer = vbHourGlasses
+  VBCP_Update 94, "dbgOrders_DblClick", 5
+        Call PrintOrder(1, 0)
+  VBCP_Update 94, "dbgOrders_DblClick", 6
+    End If
+End Sub
+
+
+Private Sub dbgOrders_GotFocus()
+  VBCP_Update 94, "dbgOrders_GotFocus", 1
+    Screen.MousePointer = vbArrowQuestion
+  VBCP_Update 94, "dbgOrders_GotFocus", 2
+End Sub
+
+
+Private Sub dbgOrders_LostFocus()
+  VBCP_Update 94, "dbgOrders_LostFocus", 1
+    Screen.MousePointer = vbDefault
+  VBCP_Update 94, "dbgOrders_LostFocus", 2
+End Sub
+
+Private Sub dtcCustomer_Reposition()
+  VBCP_Update 94, "dtcCustomer_Reposition", 1
+
+    On Error GoTo dtcCustomer_Reposition_Err
+
+
+    Dim strTarget As String
+    If Not (dtcCustomer.Recordset.EOF Or dtcCustomer.Recordset.BOF) And VBCP_UpdateIf(94, "dtcCustomer_Reposition", 2) Then
+        ' Sync Home Address
+        If dtcCustomer.Recordset!HomeCity <> "" And VBCP_UpdateIf(94, "dtcCustomer_Reposition", 3) Then
+            strTarget = "SELECT * FROM qryCityFullList WHERE Code = " & dtcCustomer.Recordset!HomeCity
+  VBCP_Update 94, "dtcCustomer_Reposition", 4
+        Else
+            strTarget = "SELECT * FROM qryCityFullList WHERE Code = 0"
+  VBCP_Update 94, "dtcCustomer_Reposition", 5
+        End If
+        dtcHomeCity.RecordSource = strTarget
+  VBCP_Update 94, "dtcCustomer_Reposition", 6
+        dtcHomeCity.Refresh
+  VBCP_Update 94, "dtcCustomer_Reposition", 7
+        dtcHomeCity.UpdateControls
+  VBCP_Update 94, "dtcCustomer_Reposition", 8
+        ' Sync Biz Address
+        If dtcCustomer.Recordset!BizCity <> "" And VBCP_UpdateIf(94, "dtcCustomer_Reposition", 9) Then
+            strTarget = "SELECT * FROM qryCityFullList WHERE Code = " & dtcCustomer.Recordset!BizCity
+  VBCP_Update 94, "dtcCustomer_Reposition", 10
+        Else
+            strTarget = "SELECT * FROM qryCityFullList WHERE Code = 0"
+  VBCP_Update 94, "dtcCustomer_Reposition", 11
+        End If
+        dtcBizCity.RecordSource = strTarget
+  VBCP_Update 94, "dtcCustomer_Reposition", 12
+        dtcBizCity.Refresh
+  VBCP_Update 94, "dtcCustomer_Reposition", 13
+        dtcBizCity.UpdateControls
+  VBCP_Update 94, "dtcCustomer_Reposition", 14
+        ' Sync Customer Medical Table
+        strTarget = "SELECT * FROM CustomerMedical WHERE CustomerID = " & dtcCustomer.Recordset!ID
+  VBCP_Update 94, "dtcCustomer_Reposition", 15
+        dtcCusMedical.RecordSource = strTarget
+  VBCP_Update 94, "dtcCustomer_Reposition", 16
+        dtcCusMedical.Refresh
+  VBCP_Update 94, "dtcCustomer_Reposition", 17
+        dtcCusMedical.UpdateControls
+  VBCP_Update 94, "dtcCustomer_Reposition", 18
+        ' Sync Customer Prescription (Lens) Table
+        strTarget = "SELECT * FROM CustomerPresLens WHERE CustomerID = " & dtcCustomer.Recordset!ID
+  VBCP_Update 94, "dtcCustomer_Reposition", 19
+        dtcCusPresLens.RecordSource = strTarget
+  VBCP_Update 94, "dtcCustomer_Reposition", 20
+        dtcCusPresLens.Refresh
+  VBCP_Update 94, "dtcCustomer_Reposition", 21
+        dtcCusPresLens.UpdateControls
+  VBCP_Update 94, "dtcCustomer_Reposition", 22
+        ' Sync Customer Prescription (Contact Lens)Table
+        strTarget = "SELECT * FROM CustomerPresContact WHERE CustomerID = " & dtcCustomer.Recordset!ID
+  VBCP_Update 94, "dtcCustomer_Reposition", 23
+        dtcCusPresCont.RecordSource = strTarget
+  VBCP_Update 94, "dtcCustomer_Reposition", 24
+        dtcCusPresCont.Refresh
+  VBCP_Update 94, "dtcCustomer_Reposition", 25
+        dtcCusPresCont.UpdateControls
+  VBCP_Update 94, "dtcCustomer_Reposition", 26
+        
+        ' Sync qrySOrderSimple Table
+        strTarget = "SELECT * FROM qrySOrderSimple WHERE CustomerID = " & dtcCustomer.Recordset!ID
+  VBCP_Update 94, "dtcCustomer_Reposition", 27
+        dtcQrySOrderSimple.RecordSource = strTarget
+  VBCP_Update 94, "dtcCustomer_Reposition", 28
+        dtcQrySOrderSimple.Refresh
+  VBCP_Update 94, "dtcCustomer_Reposition", 29
+        dtcQrySOrderSimple.UpdateControls
+  VBCP_Update 94, "dtcCustomer_Reposition", 30
+        
+        ' The following lines are added because the Sheriden's Calendar DateCombo
+        ' could not handle DataBound with Null value properly.
+        If Not IsNull(dtcCustomer.Recordset!Birthday) Then _

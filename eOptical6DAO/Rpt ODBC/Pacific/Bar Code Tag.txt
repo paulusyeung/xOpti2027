@@ -1,0 +1,41 @@
+0.1, 0.4 : 1.7 x 0.3	Arial Narrow	12	THE OPTICAL CENTRE
+
+0.1, 0.8 : 1.7 x 0.2	Verdana		12	Inventory.SKU
+
+0.1, 1.3 : 1.8 x 0.2	3 of 9 Barcode	20	@ToBarCode
+
+0.1, 1.6 : 0.6 x 0.1	Verdana		7	Inventory.SKU
+0.6, 1.6 : 1.3 x 0.1	Verdana		7	Brand.BrandDescription
+
+0.1, 1.7 : 1.2 x 0.1	Verdana		7	Class.ClassName
+1.3, 1.7 : 0.6 x 0.1	Verdana		7	Inventory.Color
+
+0.1, 1.8 : 1.2 x 0.1	Verdana		7	Inventory.Model
+1.3, 1.8 : 0.6 x 0.1	Verdana		7	Inventory.Size
+
+0.1, 1.9 : 0.9 x 0.1	Verdana		7	RetailPrice.RetailPrice
+
+
+Top Margin	0.63
+Left Margin	0.40
+Bottom Margin	0.20
+Right Margin	0.16
+
+SQL:
+SELECT
+    Inventory.`Model`, Inventory.`Color`, Inventory.`Size`, Inventory.`SKU`,
+    Brand.`BrandDescription`,
+    RetailPrice.`RetailPrice`,
+    Class.`ClassName`
+FROM
+    (((`Inventory` Inventory INNER JOIN `RetailPrice` RetailPrice ON
+        Inventory.`SKU` = RetailPrice.`SKU`)
+     INNER JOIN `Category` Category ON
+        Inventory.`DepartmentCode` = Category.`DepartmentCode` AND
+    Inventory.`ClassCode` = Category.`ClassCode` AND
+    Inventory.`CategoryCode` = Category.`CategoryCode`)
+     INNER JOIN `Brand` Brand ON
+        Inventory.`BrandCode` = Brand.`BrandCode`)
+     INNER JOIN `Class` Class ON
+        Category.`DepartmentCode` = Class.`Department` AND
+    Category.`ClassCode` = Class.`ClassCode`

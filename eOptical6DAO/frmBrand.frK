@@ -1,0 +1,222 @@
+VERSION 4.00
+Begin VB.Form frmBrand 
+   Caption         =   "Brand"
+   ClientHeight    =   4575
+   ClientLeft      =   1395
+   ClientTop       =   2985
+   ClientWidth     =   8925
+   Height          =   4980
+   Left            =   1335
+   LinkTopic       =   "Form1"
+   ScaleHeight     =   4575
+   ScaleWidth      =   8925
+   Top             =   2640
+   Width           =   9045
+   Begin VB.TextBox Text1 
+      DataField       =   "BrandDescription"
+      DataSource      =   "dtcBrand"
+      Height          =   285
+      Left            =   1560
+      TabIndex        =   5
+      Text            =   "Text1"
+      Top             =   1680
+      Width           =   3255
+   End
+   Begin VB.Data dtcBrand 
+      Caption         =   "dtcBrand"
+      Connect         =   "Access"
+      DatabaseName    =   "C:\StartDev\Projects\Optical\Synergyv.mdb"
+      Exclusive       =   0   'False
+      Height          =   375
+      Left            =   7080
+      Options         =   0
+      ReadOnly        =   0   'False
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   "Brand"
+      Top             =   1680
+      Visible         =   0   'False
+      Width           =   1695
+   End
+   Begin SSDesignerWidgetsToolbar.SSToolbar SSToolbar1 
+      Align           =   1  'Align Top
+      Height          =   1080
+      Left            =   0
+      TabIndex        =   0
+      Top             =   0
+      Width           =   8925
+      _Version        =   131073
+      _ExtentX        =   15743
+      _ExtentY        =   1906
+      _StockProps     =   69
+      BackColor       =   12632256
+      FloatingCaption =   "SSToolbar1"
+      AlreadyCreated  =   -1  'True
+      Outline         =   0   'False
+      ToolsetNumBtnStates=   3
+      Btns            =   9
+      ToolsetPicture  =   "frmBrand.frx":0000
+      BC              =   9
+      BtnToolNum(0)   =   0
+      BtnPlaceHolder(0)=   0   'False
+      BtnToolNum(1)   =   1
+      BtnPlaceHolder(1)=   0   'False
+      BtnToolNum(2)   =   2
+      BtnPlaceHolder(2)=   0   'False
+      BtnToolNum(3)   =   3
+      BtnPlaceHolder(3)=   0   'False
+      BtnToolNum(4)   =   4
+      BtnPlaceHolder(4)=   0   'False
+      BtnToolNum(5)   =   5
+      BtnPlaceHolder(5)=   0   'False
+      BtnToolNum(6)   =   6
+      BtnPlaceHolder(6)=   0   'False
+      BtnToolNum(7)   =   7
+      BtnPlaceHolder(7)=   0   'False
+      BtnToolNum(8)   =   8
+      BtnPlaceHolder(8)=   0   'False
+      ToolsetNumTools =   9
+      ToolsetToolID(0)=   "ID_Add"
+      ToolsetToolHelp(0)=   "Add a new record"
+      ToolsetToolMnemonic(0)=   "a"
+      ToolsetToolGroup(0)=   1
+      ToolsetToolID(1)=   "ID_Delete"
+      ToolsetToolHelp(1)=   "Delete this record"
+      ToolsetToolMnemonic(1)=   "d"
+      ToolsetToolGroup(1)=   1
+      ToolsetToolID(2)=   "ID_Refresh"
+      ToolsetToolHelp(2)=   "Refresh this record"
+      ToolsetToolMnemonic(2)=   "r"
+      ToolsetToolGroup(2)=   1
+      ToolsetToolID(3)=   "ID_Save"
+      ToolsetToolHelp(3)=   "Save this record"
+      ToolsetToolMnemonic(3)=   "s"
+      ToolsetToolGroup(3)=   1
+      ToolsetToolID(4)=   "ID_Close"
+      ToolsetToolHelp(4)=   "Close and exit"
+      ToolsetToolMnemonic(4)=   "c"
+      ToolsetToolGroup(4)=   1
+      ToolsetToolID(5)=   "ID_First"
+      ToolsetToolHelp(5)=   "Goto first record"
+      ToolsetToolMnemonic(5)=   "f"
+      ToolsetToolGroup(5)=   2
+      ToolsetToolID(6)=   "ID_Next"
+      ToolsetToolHelp(6)=   "Next record"
+      ToolsetToolMnemonic(6)=   "x"
+      ToolsetToolGroup(6)=   2
+      ToolsetToolID(7)=   "ID_Previous"
+      ToolsetToolHelp(7)=   "Previous record"
+      ToolsetToolMnemonic(7)=   "p"
+      ToolsetToolGroup(7)=   2
+      ToolsetToolID(8)=   "ID_Last"
+      ToolsetToolHelp(8)=   "Goto last record"
+      ToolsetToolMnemonic(8)=   "l"
+      ToolsetToolGroup(8)=   2
+      MouseIcon       =   "frmBrand.frx":1B452
+   End
+   Begin MSMask.MaskEdBox mskBrandCode 
+      DataField       =   "BrandCode"
+      DataSource      =   "dtcBrand"
+      Height          =   255
+      Left            =   1560
+      TabIndex        =   4
+      Top             =   1200
+      Width           =   735
+      _Version        =   65536
+      _ExtentX        =   1296
+      _ExtentY        =   450
+      _StockProps     =   109
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      PromptInclude   =   0   'False
+      MaxLength       =   4
+      Mask            =   ">aaaa"
+   End
+   Begin VB.Label Label2 
+      Caption         =   "Brand Description:"
+      Height          =   255
+      Left            =   120
+      TabIndex        =   3
+      Top             =   1680
+      Width           =   1335
+   End
+   Begin VB.Label Label1 
+      Caption         =   "Brand Code:"
+      Height          =   255
+      Left            =   120
+      TabIndex        =   2
+      Top             =   1200
+      Width           =   975
+   End
+   Begin TrueDBGrid.TDBGrid TDBGrid1 
+      Bindings        =   "frmBrand.frx":1B46E
+      Height          =   2175
+      Left            =   120
+      OleObjectBlob   =   "frmBrand.frx":1B47F
+      TabIndex        =   1
+      TabStop         =   0   'False
+      Top             =   2280
+      Width           =   5535
+   End
+End
+Attribute VB_Name = "frmBrand"
+Attribute VB_Creatable = False
+Attribute VB_Exposed = False
+Private Sub dbcBrandDescription_Click(intArea As Integer)
+    If intArea = dbcAreaList Then
+        Dim strSQL As String
+        strSQL = "BrandDescription = '" & _
+            dbcBrandDescription.Text & "'"
+        dtcBrand.Recordset.FindFirst strSQL
+        dtcBrand.UpdateControls
+    End If
+End Sub
+
+Private Sub SSToolbar1_Click(ToolID As String, ToolNum As Integer, Btn As Integer, Value As Integer)
+
+    On Error GoTo SSToolbar1_Click_Err
+
+    Select Case ToolID
+        Case "ID_Add"
+            dtcBrand.Recordset.AddNew
+            mskBrandCode.SetFocus
+        Case "ID_Delete"
+            dtcBrand.Recordset.Delete
+            dtcBrand.Recordset.MoveNext
+        Case "ID_Refresh"
+            dtcBrand.Refresh
+        Case "ID_Save"
+            dtcBrand.UpdateRecord
+            dtcBrand.Recordset.Bookmark = dtcBrand.Recordset.LastModified
+            dtcBrand.Refresh
+        Case "ID_Close"
+            Unload Me
+        Case "ID_First"
+            dtcBrand.Recordset.MoveFirst
+        Case "ID_Next"
+            dtcBrand.Recordset.MoveNext
+            If dtcBrand.Recordset.EOF Then
+                Beep
+                dtcBrand.Recordset.MoveLast
+            End If
+        Case "ID_Previous"
+            dtcBrand.Recordset.MovePrevious
+            ' Prevent the Blank Record
+            If dtcBrand.Recordset.BOF Then
+                Beep
+                dtcBrand.Recordset.MoveFirst
+            End If
+        Case "ID_Last"
+            dtcBrand.Recordset.MoveLast
+    End Select
+
+SSToolbar1_Click_Exit:                                ' Tutorial Autocode
+    On Error Resume Next                              ' Tutorial Autocode
+    Exit Sub                                          ' Tutorial Autocode
+SSToolbar1_Click_Err:                                 ' Tutorial Autocode
+    Call ofx_GenericError("SSToolbar1_Click()", Err)  ' Tutorial Autocode
+    Resume SSToolbar1_Click_Exit
+
+End Sub
+
+

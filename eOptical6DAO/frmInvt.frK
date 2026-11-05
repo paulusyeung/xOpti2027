@@ -1,0 +1,1590 @@
+VERSION 4.00
+Begin VB.Form frmInvt 
+   Caption         =   "Inventory"
+   ClientHeight    =   7200
+   ClientLeft      =   315
+   ClientTop       =   1290
+   ClientWidth     =   11295
+   Height          =   7605
+   Left            =   255
+   LinkTopic       =   "Form1"
+   ScaleHeight     =   7200
+   ScaleWidth      =   11295
+   Top             =   945
+   Width           =   11415
+   Begin VB.Data dtcRetailPrice 
+      Caption         =   "RetailPrice"
+      Connect         =   "Access"
+      DatabaseName    =   "Synergyv.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   9480
+      Options         =   0
+      ReadOnly        =   0   'False
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   ""
+      Top             =   2280
+      Visible         =   0   'False
+      Width           =   1740
+   End
+   Begin VB.TextBox txtReorderQty 
+      DataField       =   "ReOrderQty"
+      DataSource      =   "dtcInventory"
+      Height          =   285
+      Left            =   8640
+      TabIndex        =   22
+      Top             =   3840
+      Width           =   735
+   End
+   Begin VB.TextBox txtReorderLevel 
+      DataField       =   "ReOrderLevel"
+      DataSource      =   "dtcInventory"
+      Height          =   285
+      Left            =   8640
+      TabIndex        =   21
+      Top             =   3480
+      Width           =   735
+   End
+   Begin VB.TextBox txtMarkdown 
+      DataField       =   "RetailMarkDownAmt"
+      DataSource      =   "dtcRetailPrice"
+      Height          =   285
+      Left            =   8640
+      TabIndex        =   20
+      Top             =   3120
+      Width           =   735
+   End
+   Begin VB.TextBox txtLeastSellingPrice 
+      DataField       =   "LeastSellingPrice"
+      DataSource      =   "dtcRetailPrice"
+      Height          =   285
+      Left            =   8640
+      TabIndex        =   19
+      Top             =   2640
+      Width           =   735
+   End
+   Begin VB.TextBox txtRetailPrice 
+      DataField       =   "RetailPrice"
+      DataSource      =   "dtcRetailPrice"
+      Height          =   285
+      Left            =   8640
+      TabIndex        =   18
+      Top             =   2280
+      Width           =   735
+   End
+   Begin VB.Data dtcMaterial 
+      Caption         =   "Material"
+      Connect         =   "Access"
+      DatabaseName    =   "Synergyv.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   9480
+      Options         =   0
+      ReadOnly        =   0   'False
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   "Material"
+      Top             =   3960
+      Visible         =   0   'False
+      Width           =   1815
+   End
+   Begin VB.Data dtcBrand 
+      Caption         =   "Brand"
+      Connect         =   "Access"
+      DatabaseName    =   "Synergyv.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   9480
+      Options         =   0
+      ReadOnly        =   0   'False
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   "Brand"
+      Top             =   3000
+      Visible         =   0   'False
+      Width           =   1815
+   End
+   Begin VB.Data dtcSupplier 
+      Caption         =   "Supplier"
+      Connect         =   "Access"
+      DatabaseName    =   "Synergyv.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   9480
+      Options         =   0
+      ReadOnly        =   0   'False
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   "SELECT SupplierCode, SupplierName FROM Supplier ORDER BY SupplierName"
+      Top             =   3720
+      Visible         =   0   'False
+      Width           =   1815
+   End
+   Begin VB.Data dtcCategory 
+      Caption         =   "Category"
+      Connect         =   "Access"
+      DatabaseName    =   "Synergyv.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   9480
+      Options         =   0
+      ReadOnly        =   0   'False
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   "SELECT DISTINCT CategoryCode, CategoryName FROM Category ORDER BY CAtegoryName"
+      Top             =   3480
+      Visible         =   0   'False
+      Width           =   1815
+   End
+   Begin VB.Data dtcClass 
+      Caption         =   "Class"
+      Connect         =   "Access"
+      DatabaseName    =   "Synergyv.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   9480
+      Options         =   0
+      ReadOnly        =   -1  'True
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   "SELECT DISTINCT ClassCode, ClassName FROM Class ORDER BY ClassName"
+      Top             =   3240
+      Visible         =   0   'False
+      Width           =   1815
+   End
+   Begin VB.Data dtcDepartment 
+      Caption         =   "Department"
+      Connect         =   "Access"
+      DatabaseName    =   "Synergyv.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   9480
+      Options         =   0
+      ReadOnly        =   -1  'True
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   "Department"
+      Top             =   2760
+      Visible         =   0   'False
+      Width           =   1815
+   End
+   Begin VB.Data dtcInventory 
+      Caption         =   "Inventory"
+      Connect         =   ""
+      DatabaseName    =   "Synergyv.mdb"
+      Exclusive       =   0   'False
+      Height          =   300
+      Left            =   9480
+      Options         =   0
+      ReadOnly        =   0   'False
+      RecordsetType   =   1  'Dynaset
+      RecordSource    =   ""
+      Top             =   2520
+      Visible         =   0   'False
+      Width           =   1815
+   End
+   Begin VB.TextBox txtFields 
+      DataField       =   "Remarks"
+      DataSource      =   "dtcInventory"
+      Height          =   675
+      Index           =   17
+      Left            =   8640
+      MultiLine       =   -1  'True
+      ScrollBars      =   2  'Vertical
+      TabIndex        =   17
+      Top             =   1560
+      Width           =   2535
+   End
+   Begin SSDesignerWidgetsToolbar.SSToolbar SSToolbar1 
+      Align           =   1  'Align Top
+      Height          =   1080
+      Left            =   0
+      TabIndex        =   38
+      TabStop         =   0   'False
+      Top             =   0
+      Width           =   11295
+      _Version        =   131073
+      _ExtentX        =   19923
+      _ExtentY        =   1906
+      _StockProps     =   69
+      BackColor       =   12632256
+      FloatingCaption =   "SSToolbar1"
+      AlreadyCreated  =   -1  'True
+      Outline         =   0   'False
+      ToolsetNumBtnStates=   3
+      Btns            =   9
+      ToolsetPicture  =   "frmInvt.frx":0000
+      BC              =   9
+      BtnToolNum(0)   =   0
+      BtnPlaceHolder(0)=   0   'False
+      BtnToolNum(1)   =   1
+      BtnPlaceHolder(1)=   0   'False
+      BtnToolNum(2)   =   2
+      BtnPlaceHolder(2)=   0   'False
+      BtnToolNum(3)   =   3
+      BtnPlaceHolder(3)=   0   'False
+      BtnToolNum(4)   =   4
+      BtnPlaceHolder(4)=   0   'False
+      BtnToolNum(5)   =   5
+      BtnPlaceHolder(5)=   0   'False
+      BtnToolNum(6)   =   6
+      BtnPlaceHolder(6)=   0   'False
+      BtnToolNum(7)   =   7
+      BtnPlaceHolder(7)=   0   'False
+      BtnToolNum(8)   =   8
+      BtnPlaceHolder(8)=   0   'False
+      ToolsetNumTools =   9
+      ToolsetToolID(0)=   "ID_Add"
+      ToolsetToolHelp(0)=   "Add a new record"
+      ToolsetToolMnemonic(0)=   "a"
+      ToolsetToolGroup(0)=   1
+      ToolsetToolID(1)=   "ID_Delete"
+      ToolsetToolHelp(1)=   "Delete this record"
+      ToolsetToolMnemonic(1)=   "d"
+      ToolsetToolGroup(1)=   1
+      ToolsetToolID(2)=   "ID_Refresh"
+      ToolsetToolHelp(2)=   "Refresh this record"
+      ToolsetToolMnemonic(2)=   "r"
+      ToolsetToolGroup(2)=   1
+      ToolsetToolID(3)=   "ID_Save"
+      ToolsetToolHelp(3)=   "Save this record"
+      ToolsetToolMnemonic(3)=   "s"
+      ToolsetToolGroup(3)=   1
+      ToolsetToolID(4)=   "ID_Close"
+      ToolsetToolHelp(4)=   "Close and exit"
+      ToolsetToolMnemonic(4)=   "c"
+      ToolsetToolGroup(4)=   1
+      ToolsetToolID(5)=   "ID_First"
+      ToolsetToolHelp(5)=   "Goto first record"
+      ToolsetToolMnemonic(5)=   "f"
+      ToolsetToolGroup(5)=   2
+      ToolsetToolID(6)=   "ID_Next"
+      ToolsetToolHelp(6)=   "Next record"
+      ToolsetToolMnemonic(6)=   "x"
+      ToolsetToolGroup(6)=   2
+      ToolsetToolID(7)=   "ID_Previous"
+      ToolsetToolHelp(7)=   "Previous record"
+      ToolsetToolMnemonic(7)=   "p"
+      ToolsetToolGroup(7)=   2
+      ToolsetToolID(8)=   "ID_Last"
+      ToolsetToolHelp(8)=   "Goto last record"
+      ToolsetToolMnemonic(8)=   "l"
+      ToolsetToolGroup(8)=   2
+      MouseIcon       =   "frmInvt.frx":1B452
+   End
+   Begin Threed.SSFrame SSFrame1 
+      Height          =   30
+      Left            =   120
+      TabIndex        =   53
+      Top             =   4200
+      Width           =   11055
+      _Version        =   65536
+      _ExtentX        =   19500
+      _ExtentY        =   53
+      _StockProps     =   14
+      Caption         =   "SSFrame1"
+   End
+   Begin MSDBCtls.DBCombo dbcSelBrand 
+      Bindings        =   "frmInvt.frx":1B46E
+      Height          =   315
+      Left            =   9720
+      TabIndex        =   66
+      TabStop         =   0   'False
+      Top             =   4560
+      Width           =   1455
+      _Version        =   65536
+      _ExtentX        =   2566
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "BrandDescription"
+      BoundColumn     =   "BrandCode"
+   End
+   Begin Threed.SSCommand SSCommand5 
+      Height          =   315
+      Left            =   9360
+      TabIndex        =   65
+      TabStop         =   0   'False
+      Top             =   4560
+      Width           =   315
+      _Version        =   65536
+      _ExtentX        =   556
+      _ExtentY        =   556
+      _StockProps     =   78
+      Enabled         =   0   'False
+      BevelWidth      =   1
+      Outline         =   0   'False
+      AutoSize        =   2
+      Picture         =   "frmInvt.frx":1B47F
+   End
+   Begin VB.Label Label12 
+      Caption         =   "Brand"
+      Height          =   255
+      Left            =   9360
+      TabIndex        =   64
+      Top             =   4320
+      Width           =   495
+   End
+   Begin VB.Label Label11 
+      Caption         =   "Markdown"
+      Height          =   255
+      Left            =   7560
+      TabIndex        =   63
+      Top             =   3120
+      Width           =   975
+   End
+   Begin VB.Label Label10 
+      Caption         =   "Least Selling Price"
+      Height          =   375
+      Left            =   7560
+      TabIndex        =   62
+      Top             =   2640
+      Width           =   975
+   End
+   Begin VB.Label Label9 
+      Caption         =   "Reorder Qty"
+      Height          =   255
+      Left            =   7560
+      TabIndex        =   61
+      Top             =   3840
+      Width           =   975
+   End
+   Begin VB.Label Label8 
+      Caption         =   "Reorder Level"
+      Height          =   255
+      Left            =   7560
+      TabIndex        =   60
+      Top             =   3480
+      Width           =   1095
+   End
+   Begin VB.Label Label7 
+      Caption         =   "Retail Price"
+      Height          =   255
+      Left            =   7560
+      TabIndex        =   59
+      Top             =   2280
+      Width           =   855
+   End
+   Begin MSMask.MaskEdBox mskTemple 
+      Height          =   255
+      Left            =   5640
+      TabIndex        =   11
+      Top             =   2280
+      Width           =   855
+      _Version        =   65536
+      _ExtentX        =   1508
+      _ExtentY        =   450
+      _StockProps     =   109
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      MaxLength       =   4
+      Mask            =   "####"
+   End
+   Begin MSMask.MaskEdBox mskBridge 
+      Height          =   255
+      Left            =   5640
+      TabIndex        =   10
+      Top             =   1920
+      Width           =   855
+      _Version        =   65536
+      _ExtentX        =   1508
+      _ExtentY        =   450
+      _StockProps     =   109
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      MaxLength       =   4
+      Mask            =   "####"
+   End
+   Begin VB.Label Label6 
+      Caption         =   "Temple"
+      Height          =   255
+      Left            =   4680
+      TabIndex        =   58
+      Top             =   2280
+      Width           =   615
+   End
+   Begin VB.Label Label5 
+      Caption         =   "Bridge"
+      Height          =   255
+      Left            =   4680
+      TabIndex        =   57
+      Top             =   1920
+      Width           =   615
+   End
+   Begin MSMask.MaskEdBox mskSKU 
+      DataField       =   "SKU"
+      DataSource      =   "dtcInventory"
+      Height          =   255
+      Left            =   8640
+      TabIndex        =   16
+      Top             =   1200
+      Width           =   1575
+      _Version        =   65536
+      _ExtentX        =   2778
+      _ExtentY        =   450
+      _StockProps     =   109
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      PromptInclude   =   0   'False
+      MaxLength       =   13
+      Mask            =   "#############"
+   End
+   Begin Threed.SSCommand SSCommand10 
+      Height          =   315
+      Left            =   6960
+      TabIndex        =   56
+      TabStop         =   0   'False
+      Top             =   4560
+      Width           =   315
+      _Version        =   65536
+      _ExtentX        =   556
+      _ExtentY        =   556
+      _StockProps     =   78
+      Enabled         =   0   'False
+      BevelWidth      =   1
+      Outline         =   0   'False
+      AutoSize        =   2
+      Picture         =   "frmInvt.frx":1BA25
+   End
+   Begin MSDBCtls.DBCombo dbcSelSupplier 
+      Bindings        =   "frmInvt.frx":1BFCB
+      Height          =   315
+      Left            =   7320
+      TabIndex        =   55
+      TabStop         =   0   'False
+      Top             =   4560
+      Width           =   1575
+      _Version        =   65536
+      _ExtentX        =   2778
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "SupplierName"
+      BoundColumn     =   "SupplierCode"
+   End
+   Begin VB.Label Label4 
+      Caption         =   "Supplier"
+      Height          =   255
+      Left            =   6960
+      TabIndex        =   54
+      Top             =   4320
+      Width           =   615
+   End
+   Begin Threed.SSCommand SSCommand9 
+      Height          =   315
+      Left            =   4680
+      TabIndex        =   52
+      TabStop         =   0   'False
+      Top             =   4560
+      Width           =   315
+      _Version        =   65536
+      _ExtentX        =   556
+      _ExtentY        =   556
+      _StockProps     =   78
+      Enabled         =   0   'False
+      BevelWidth      =   1
+      Outline         =   0   'False
+      AutoSize        =   2
+      Picture         =   "frmInvt.frx":1BFDF
+   End
+   Begin Threed.SSCommand SSCommand8 
+      Height          =   315
+      Left            =   2400
+      TabIndex        =   51
+      TabStop         =   0   'False
+      Top             =   4560
+      Width           =   315
+      _Version        =   65536
+      _ExtentX        =   556
+      _ExtentY        =   556
+      _StockProps     =   78
+      Enabled         =   0   'False
+      BevelWidth      =   1
+      Outline         =   0   'False
+      AutoSize        =   2
+      Picture         =   "frmInvt.frx":1C585
+   End
+   Begin Threed.SSCommand SSCommand7 
+      Height          =   315
+      Left            =   120
+      TabIndex        =   50
+      TabStop         =   0   'False
+      Top             =   4560
+      Width           =   315
+      _Version        =   65536
+      _ExtentX        =   556
+      _ExtentY        =   556
+      _StockProps     =   78
+      Enabled         =   0   'False
+      BevelWidth      =   1
+      Outline         =   0   'False
+      AutoSize        =   2
+      Picture         =   "frmInvt.frx":1CB2B
+   End
+   Begin MSDBCtls.DBCombo dbcSelCategory 
+      Bindings        =   "frmInvt.frx":1D0D1
+      Height          =   315
+      Left            =   5040
+      TabIndex        =   49
+      TabStop         =   0   'False
+      Top             =   4560
+      Width           =   1455
+      _Version        =   65536
+      _ExtentX        =   2566
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "CategoryName"
+      BoundColumn     =   "CategoryCode"
+   End
+   Begin MSDBCtls.DBCombo dbcSelClass 
+      Bindings        =   "frmInvt.frx":1D0E5
+      Height          =   315
+      Left            =   2760
+      TabIndex        =   48
+      TabStop         =   0   'False
+      Top             =   4560
+      Width           =   1455
+      _Version        =   65536
+      _ExtentX        =   2566
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "ClassName"
+      BoundColumn     =   "ClassCode"
+   End
+   Begin MSDBCtls.DBCombo dbcSelDepartment 
+      Bindings        =   "frmInvt.frx":1D0F6
+      Height          =   315
+      Left            =   480
+      TabIndex        =   47
+      TabStop         =   0   'False
+      Top             =   4560
+      Width           =   1455
+      _Version        =   65536
+      _ExtentX        =   2566
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "DepartmentName"
+      BoundColumn     =   "DepartmentCode"
+   End
+   Begin VB.Label Label3 
+      Caption         =   "Category"
+      Height          =   255
+      Left            =   4680
+      TabIndex        =   46
+      Top             =   4320
+      Width           =   735
+   End
+   Begin VB.Label Label2 
+      Caption         =   "Class"
+      Height          =   255
+      Left            =   2400
+      TabIndex        =   45
+      Top             =   4320
+      Width           =   495
+   End
+   Begin VB.Label Label1 
+      Caption         =   "Department"
+      Height          =   255
+      Left            =   120
+      TabIndex        =   44
+      Top             =   4320
+      Width           =   855
+   End
+   Begin Threed.SSCommand SSCommand6 
+      Height          =   345
+      Left            =   3360
+      TabIndex        =   43
+      TabStop         =   0   'False
+      Top             =   3360
+      Width           =   360
+      _Version        =   65536
+      _ExtentX        =   635
+      _ExtentY        =   609
+      _StockProps     =   78
+      BevelWidth      =   1
+      Outline         =   0   'False
+      AutoSize        =   2
+      Picture         =   "frmInvt.frx":1D10C
+   End
+   Begin Threed.SSCommand SSCommand4 
+      Height          =   345
+      Left            =   3360
+      TabIndex        =   42
+      TabStop         =   0   'False
+      Top             =   2640
+      Width           =   360
+      _Version        =   65536
+      _ExtentX        =   635
+      _ExtentY        =   609
+      _StockProps     =   78
+      BevelWidth      =   1
+      Outline         =   0   'False
+      AutoSize        =   2
+      Picture         =   "frmInvt.frx":1D6DA
+   End
+   Begin Threed.SSCommand SSCommand3 
+      Height          =   345
+      Left            =   3360
+      TabIndex        =   41
+      TabStop         =   0   'False
+      Top             =   2280
+      Width           =   360
+      _Version        =   65536
+      _ExtentX        =   635
+      _ExtentY        =   609
+      _StockProps     =   78
+      BevelWidth      =   1
+      Outline         =   0   'False
+      AutoSize        =   2
+      Picture         =   "frmInvt.frx":1DCA8
+   End
+   Begin Threed.SSCommand SSCommand2 
+      Height          =   300
+      Left            =   10200
+      TabIndex        =   40
+      TabStop         =   0   'False
+      Top             =   1200
+      Width           =   300
+      _Version        =   65536
+      _ExtentX        =   529
+      _ExtentY        =   529
+      _StockProps     =   78
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         name            =   "MS Sans Serif"
+         charset         =   0
+         weight          =   400
+         size            =   12
+         underline       =   0   'False
+         italic          =   0   'False
+         strikethrough   =   0   'False
+      EndProperty
+      BevelWidth      =   0
+      Outline         =   0   'False
+      AutoSize        =   2
+      Picture         =   "frmInvt.frx":1E276
+   End
+   Begin Threed.SSCommand SSCommand1 
+      Height          =   345
+      Left            =   3360
+      TabIndex        =   39
+      TabStop         =   0   'False
+      Top             =   1920
+      Width           =   360
+      _Version        =   65536
+      _ExtentX        =   635
+      _ExtentY        =   609
+      _StockProps     =   78
+      BevelWidth      =   1
+      Outline         =   0   'False
+      AutoSize        =   2
+      Picture         =   "frmInvt.frx":1E7C8
+   End
+   Begin MSMask.MaskEdBox mskModel 
+      DataField       =   "Model"
+      DataSource      =   "dtcInventory"
+      Height          =   255
+      Left            =   1200
+      TabIndex        =   6
+      Top             =   3000
+      Width           =   2175
+      _Version        =   65536
+      _ExtentX        =   3836
+      _ExtentY        =   450
+      _StockProps     =   109
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      PromptInclude   =   0   'False
+   End
+   Begin MSMask.MaskEdBox mskBaseCurve 
+      DataField       =   "BaseCurve"
+      DataSource      =   "dtcInventory"
+      Height          =   255
+      Left            =   5640
+      TabIndex        =   15
+      Top             =   3720
+      Width           =   615
+      _Version        =   65536
+      _ExtentX        =   1085
+      _ExtentY        =   450
+      _StockProps     =   109
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      PromptInclude   =   0   'False
+      MaxLength       =   5
+      Mask            =   "##.##"
+   End
+   Begin MSMask.MaskEdBox mskDiameter 
+      DataField       =   "Axis"
+      DataSource      =   "dtcInventory"
+      Height          =   255
+      Left            =   5640
+      TabIndex        =   14
+      Top             =   3360
+      Width           =   615
+      _Version        =   65536
+      _ExtentX        =   1085
+      _ExtentY        =   450
+      _StockProps     =   109
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      PromptInclude   =   0   'False
+      MaxLength       =   5
+      Mask            =   "##.##"
+   End
+   Begin MSMask.MaskEdBox mskCylinder 
+      DataField       =   "Cylinder"
+      DataSource      =   "dtcInventory"
+      Height          =   255
+      Left            =   5640
+      TabIndex        =   13
+      Top             =   3000
+      Width           =   615
+      _Version        =   65536
+      _ExtentX        =   1085
+      _ExtentY        =   450
+      _StockProps     =   109
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      PromptInclude   =   0   'False
+      MaxLength       =   5
+      Mask            =   "##.##"
+   End
+   Begin MSMask.MaskEdBox mskSphere 
+      DataField       =   "Sphere"
+      DataSource      =   "dtcInventory"
+      Height          =   255
+      Left            =   5640
+      TabIndex        =   12
+      Top             =   2640
+      Width           =   615
+      _Version        =   65536
+      _ExtentX        =   1085
+      _ExtentY        =   450
+      _StockProps     =   109
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      PromptInclude   =   0   'False
+      MaxLength       =   5
+      Mask            =   "##.##"
+   End
+   Begin MSMask.MaskEdBox mskSize 
+      DataField       =   "Size"
+      DataSource      =   "dtcInventory"
+      Height          =   255
+      Left            =   5640
+      TabIndex        =   9
+      Top             =   1560
+      Width           =   855
+      _Version        =   65536
+      _ExtentX        =   1508
+      _ExtentY        =   450
+      _StockProps     =   109
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      MaxLength       =   6
+      Mask            =   "######"
+   End
+   Begin MSMask.MaskEdBox mskColor 
+      DataField       =   "Color"
+      DataSource      =   "dtcInventory"
+      Height          =   255
+      Left            =   5640
+      TabIndex        =   8
+      Top             =   1200
+      Width           =   975
+      _Version        =   65536
+      _ExtentX        =   1720
+      _ExtentY        =   450
+      _StockProps     =   109
+      ForeColor       =   -2147483640
+      BackColor       =   -2147483643
+      BorderStyle     =   1
+      PromptInclude   =   0   'False
+      MaxLength       =   8
+      Mask            =   "########"
+   End
+   Begin TrueDBGrid.TDBGrid TDBGrid1 
+      Bindings        =   "frmInvt.frx":1ED96
+      Height          =   2175
+      Left            =   120
+      OleObjectBlob   =   "frmInvt.frx":1EDAB
+      TabIndex        =   37
+      TabStop         =   0   'False
+      Top             =   4920
+      Width           =   11055
+   End
+   Begin MSDBCtls.DBCombo dbcMaterial 
+      Bindings        =   "frmInvt.frx":22FC9
+      DataField       =   "MaterialCode"
+      DataSource      =   "dtcInventory"
+      Height          =   315
+      Left            =   1200
+      TabIndex        =   7
+      Top             =   3360
+      Width           =   2175
+      _Version        =   65536
+      _ExtentX        =   3836
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "MaterialDescription"
+      BoundColumn     =   "MaterialCode"
+   End
+   Begin MSDBCtls.DBCombo dbcBrand 
+      Bindings        =   "frmInvt.frx":22FDD
+      DataField       =   "BrandCode"
+      DataSource      =   "dtcInventory"
+      Height          =   315
+      Left            =   1200
+      TabIndex        =   5
+      Top             =   2640
+      Width           =   2175
+      _Version        =   65536
+      _ExtentX        =   3836
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "BrandDescription"
+      BoundColumn     =   "BrandCode"
+   End
+   Begin MSDBCtls.DBCombo dbcSupplier 
+      Bindings        =   "frmInvt.frx":22FEE
+      DataField       =   "SupplierCode"
+      DataSource      =   "dtcInventory"
+      Height          =   315
+      Left            =   1200
+      TabIndex        =   4
+      Top             =   2280
+      Width           =   2175
+      _Version        =   65536
+      _ExtentX        =   3836
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "SupplierName"
+      BoundColumn     =   "SupplierCode"
+   End
+   Begin MSDBCtls.DBCombo dbcCategory 
+      Bindings        =   "frmInvt.frx":23002
+      DataField       =   "CategoryCode"
+      DataSource      =   "dtcInventory"
+      Height          =   315
+      Left            =   1200
+      TabIndex        =   3
+      Top             =   1920
+      Width           =   2175
+      _Version        =   65536
+      _ExtentX        =   3836
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "CategoryName"
+      BoundColumn     =   "CategoryCode"
+   End
+   Begin MSDBCtls.DBCombo dbcClass 
+      Bindings        =   "frmInvt.frx":23016
+      DataField       =   "ClassCode"
+      DataSource      =   "dtcInventory"
+      Height          =   315
+      Left            =   1200
+      TabIndex        =   2
+      Top             =   1560
+      Width           =   2175
+      _Version        =   65536
+      _ExtentX        =   3836
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "ClassName"
+      BoundColumn     =   "ClassCode"
+   End
+   Begin MSDBCtls.DBCombo dbcDepartment 
+      Bindings        =   "frmInvt.frx":23027
+      DataField       =   "DepartmentCode"
+      DataSource      =   "dtcInventory"
+      Height          =   315
+      Left            =   1200
+      TabIndex        =   1
+      Top             =   1200
+      Width           =   2175
+      _Version        =   65536
+      _ExtentX        =   3836
+      _ExtentY        =   556
+      _StockProps     =   77
+      ForeColor       =   0
+      BackColor       =   16777215
+      ListField       =   "DepartmentName"
+      BoundColumn     =   "DepartmentCode"
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Remarks:"
+      Height          =   255
+      Index           =   17
+      Left            =   7560
+      TabIndex        =   36
+      Top             =   1560
+      Width           =   735
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "SKU:"
+      Height          =   255
+      Index           =   14
+      Left            =   7560
+      TabIndex        =   35
+      Top             =   1200
+      Width           =   615
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Base Curve:"
+      Height          =   255
+      Index           =   13
+      Left            =   4680
+      TabIndex        =   34
+      Top             =   3720
+      Width           =   975
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Diameter"
+      Height          =   255
+      Index           =   12
+      Left            =   4680
+      TabIndex        =   33
+      Top             =   3360
+      Width           =   855
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Cylinder:"
+      Height          =   255
+      Index           =   11
+      Left            =   4680
+      TabIndex        =   32
+      Top             =   3000
+      Width           =   615
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Sphere:"
+      Height          =   255
+      Index           =   10
+      Left            =   4680
+      TabIndex        =   31
+      Top             =   2655
+      Width           =   735
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Material:"
+      Height          =   255
+      Index           =   9
+      Left            =   120
+      TabIndex        =   30
+      Top             =   3360
+      Width           =   855
+   End
+   Begin VB.Label lblSize 
+      Caption         =   "Size:"
+      Height          =   255
+      Index           =   7
+      Left            =   4680
+      TabIndex        =   29
+      Top             =   1560
+      Width           =   615
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Color:"
+      Height          =   255
+      Index           =   6
+      Left            =   4680
+      TabIndex        =   28
+      Top             =   1200
+      Width           =   615
+   End
+   Begin VB.Label lblModel 
+      Caption         =   "Model:"
+      Height          =   255
+      Index           =   5
+      Left            =   120
+      TabIndex        =   27
+      Top             =   3000
+      Width           =   975
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Brand:"
+      Height          =   255
+      Index           =   4
+      Left            =   120
+      TabIndex        =   26
+      Top             =   2640
+      Width           =   855
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Supplier:"
+      Height          =   255
+      Index           =   3
+      Left            =   120
+      TabIndex        =   25
+      Top             =   2280
+      Width           =   855
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Category:"
+      Height          =   255
+      Index           =   2
+      Left            =   120
+      TabIndex        =   24
+      Top             =   1920
+      Width           =   855
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Class:"
+      Height          =   255
+      Index           =   1
+      Left            =   120
+      TabIndex        =   23
+      Top             =   1575
+      Width           =   975
+   End
+   Begin VB.Label lblLabels 
+      Caption         =   "Department:"
+      Height          =   255
+      Index           =   0
+      Left            =   120
+      TabIndex        =   0
+      Top             =   1200
+      Width           =   975
+   End
+End
+Attribute VB_Name = "frmInvt"
+Attribute VB_Creatable = False
+Attribute VB_Exposed = False
+Option Explicit
+
+Dim strLens         As String
+Dim strFrame        As String
+Dim strContactLens  As String
+Dim strService      As String
+
+Dim intBrand        As Integer
+Dim intMaterial     As Integer
+Dim intModel        As Integer
+Dim intColor        As Integer
+Dim intSize         As Integer
+Dim intBridge       As Integer
+Dim intTemple       As Integer
+Dim intCylinder     As Integer
+Dim intSphere       As Integer
+Dim intBaseCurve    As Integer
+Dim intDiameter     As Integer
+
+
+
+
+Private Sub dbcClass_Click(intArea As Integer)
+
+    If intArea = dbcAreaList Then
+        
+        Select Case dbcClass.BoundText
+        Case Is = strFrame
+            Call Mode_Frame
+        Case Is = strLens
+            Call Mode_Lens
+        Case Is = strContactLens
+            Call Mode_ContactLens
+        Case Is = strService
+            Call Mode_Service
+        Case Else
+            Call Mode_Else
+        End Select
+        
+    End If
+
+End Sub
+
+Private Sub dbcSelBrand_Click(intArea As Integer)
+
+    If intArea = dbcAreaList Then
+        dbcSelDepartment.Text = ""  ' Set selected department to null
+        dbcSelClass.Text = ""       ' Set selected class to null
+        dbcSelCategory.Text = ""    ' Set selected category to null
+        dbcSelSupplier.Text = ""    ' Set selected supplier to null
+        Dim strSQL As String
+        strSQL = "SELECT * FROM Inventory " _
+            & "WHERE BrandCode = '" & dbcSelBrand.BoundText & "' " _
+            & "ORDER BY DepartmentCode, ClassCode, CategoryCode"
+        dtcInventory.RecordSource = strSQL
+        dtcInventory.Refresh
+        dtcInventory.UpdateControls
+        
+        ' RePaint the grid
+        Call Mode_Standard
+    End If
+
+End Sub
+
+Private Sub dbcSelCategory_Click(intArea As Integer)
+
+    On Error GoTo dbcSelCategory_Click_Err
+
+    If intArea = dbcAreaList Then
+        dbcSelSupplier.Text = ""    ' Set selected supplier to null
+        dbcSelBrand.Text = ""       ' Set selected brand to null
+        Dim strSQL As String
+        strSQL = "SELECT * FROM Inventory " _
+            & "WHERE DepartmentCode = '" & dbcSelDepartment.BoundText & "' AND " _
+                  & "ClassCode = '" & dbcSelClass.BoundText & "' AND " _
+                  & "CategoryCode = '" & dbcSelCategory.BoundText & "' " _
+            & "ORDER BY DepartmentCode, ClassCode, CategoryCode"
+        dtcInventory.RecordSource = strSQL
+        dtcInventory.Refresh
+        dtcInventory.UpdateControls
+    End If
+
+dbcSelCategory_Click_Exit:                                ' Tutorial Autocode
+    On Error Resume Next                                 ' Tutorial Autocode
+    Exit Sub                                             ' Tutorial Autocode
+dbcSelCategory_Click_Err:                                 ' Tutorial Autocode
+    Call ofx_GenericError("dbcSelCategory_Click()", Err)  ' Tutorial Autocode
+    Resume dbcSelCategory_Click_Exit
+
+End Sub
+
+Private Sub dbcSelClass_Click(intArea As Integer)
+
+    On Error GoTo dbcSelClass_Click_Err
+
+    If intArea = dbcAreaList Then
+        dbcSelCategory.Text = ""    ' Set selected category to null
+        dbcSelSupplier.Text = ""    ' Set selected supplier to null
+        dbcSelBrand.Text = ""       ' Set selected brand to null
+        Dim strSQL As String
+        strSQL = "SELECT * FROM Inventory " _
+            & "WHERE DepartmentCode = '" & dbcSelDepartment.BoundText & "' AND " _
+                  & "ClassCode = '" & dbcSelClass.BoundText & "' " _
+            & "ORDER BY DepartmentCode, ClassCode, CategoryCode"
+        dtcInventory.RecordSource = strSQL
+        dtcInventory.Refresh
+        dtcInventory.UpdateControls
+        
+        Select Case dbcSelClass.BoundText
+        Case Is = strFrame
+            Call Mode_Frame
+        Case Is = strLens
+            Call Mode_Lens
+        Case Is = strContactLens
+            Call Mode_ContactLens
+        Case Is = strService
+            Call Mode_Service
+        Case Else
+            Call Mode_Else
+        End Select
+        
+    End If
+
+dbcSelClass_Click_Exit:                                ' Tutorial Autocode
+    On Error Resume Next                                 ' Tutorial Autocode
+    Exit Sub                                             ' Tutorial Autocode
+dbcSelClass_Click_Err:                                 ' Tutorial Autocode
+    Call ofx_GenericError("dbcSelClass_Click()", Err)  ' Tutorial Autocode
+    Resume dbcSelClass_Click_Exit
+
+
+End Sub
+
+Private Sub dbcSelDepartment_Click(intArea As Integer)
+
+    On Error GoTo dbcSelDepartment_Click_Err
+
+    If intArea = dbcAreaList Then
+        dbcSelClass.Text = ""       ' Set selected category to null
+        dbcSelCategory.Text = ""    ' Set selected category to null
+        dbcSelSupplier.Text = ""    ' Set selected supplier to null
+        dbcSelBrand.Text = ""       ' Set selected brand to null
+        Dim strSQL As String
+        strSQL = "SELECT * FROM Inventory " _
+            & "WHERE DepartmentCode = '" & dbcSelDepartment.BoundText & "' " _
+            & "ORDER BY DepartmentCode, ClassCode, CategoryCode"
+        dtcInventory.RecordSource = strSQL
+        dtcInventory.Refresh
+        dtcInventory.UpdateControls
+    End If
+
+dbcSelDepartment_Click_Exit:                                ' Tutorial Autocode
+    On Error Resume Next                                 ' Tutorial Autocode
+    Exit Sub                                             ' Tutorial Autocode
+dbcSelDepartment_Click_Err:                                 ' Tutorial Autocode
+    Call ofx_GenericError("dbcSelDepartment_Click()", Err)  ' Tutorial Autocode
+    Resume dbcSelDepartment_Click_Exit
+
+End Sub
+
+Private Sub dbcSelSupplier_Click(intArea As Integer)
+
+    On Error GoTo dbcSelSupplier_Click_Err
+
+    If intArea = dbcAreaList Then
+        dbcSelDepartment.Text = ""  ' Set selected department to null
+        dbcSelClass.Text = ""       ' Set selected class to null
+        dbcSelCategory.Text = ""    ' Set selected category to null
+        dbcSelBrand.Text = ""       ' Set selected brand to null
+        Dim strSQL As String
+        strSQL = "SELECT * FROM Inventory " _
+            & "WHERE SupplierCode = '" & dbcSelSupplier.BoundText & "' " _
+            & "ORDER BY DepartmentCode, ClassCode, CategoryCode"
+        dtcInventory.RecordSource = strSQL
+        dtcInventory.Refresh
+        dtcInventory.UpdateControls
+        
+        ' RePaint the grid
+        Call Mode_Standard
+        
+    End If
+
+dbcSelSupplier_Click_Exit:                                ' Tutorial Autocode
+    On Error Resume Next                                 ' Tutorial Autocode
+    Exit Sub                                             ' Tutorial Autocode
+dbcSelSupplier_Click_Err:                                 ' Tutorial Autocode
+    Call ofx_GenericError("dbcSelSupplier_Click()", Err)  ' Tutorial Autocode
+    Resume dbcSelSupplier_Click_Exit
+
+End Sub
+
+Private Sub dtcInventory_Reposition()
+
+    Dim strSQL As String
+    
+    If Not dtcInventory.Recordset.RecordCount = 0 Then
+        strSQL = "SELECT * FROM RetailPrice WHERE SKU = '" & _
+                  dtcInventory.Recordset.Fields("SKU") & "'"
+        dtcRetailPrice.RecordSource = strSQL
+        dtcRetailPrice.Refresh
+        dtcRetailPrice.UpdateControls
+    End If
+    
+End Sub
+
+Private Sub Form_Activate()
+
+    On Error GoTo Form_Activate_Err
+
+    'Initialize the dbcDepartment
+    ' dbcSelDepartment.SetFocus
+    ' SendKeys "{F4}{Enter}", True
+    ' Call dbcSelDepartment_Click(2)
+    
+    ' Goto dbcDepartment
+    dbcSelDepartment.SetFocus
+
+Form_Activate_Exit:                                ' Tutorial Autocode
+    On Error Resume Next                           ' Tutorial Autocode
+    Exit Sub                                       ' Tutorial Autocode
+Form_Activate_Err:                                 ' Tutorial Autocode
+    Call ofx_GenericError("Form_Activate()", Err)  ' Tutorial Autocode
+    Resume Form_Activate_Exit
+
+
+End Sub
+
+Private Sub Form_Load()
+
+    ' Set grid column captions
+    intBrand = 4
+    intMaterial = 6
+    intModel = 5
+    intColor = 7
+    intSize = 8
+    intBridge = 9
+    intTemple = 10
+    intCylinder = 12
+    intSphere = 11
+    intBaseCurve = 14
+    intDiameter = 13
+    
+    ' Retrieve the Default Class Code for Lens, frame, Contact Lens.
+    strLens = GetDefaultClass_Lens
+    strFrame = GetDefaultClass_Frame
+    strContactLens = GetDefaultClass_ContactLens
+    strService = GetDefaultClass_Service
+    
+End Sub
+
+Private Sub SSCommand1_Click()
+    frmCategory.Show 1
+End Sub
+
+Private Sub SSCommand2_Click()
+    mskSKU.Text = GetSKUNumber()
+End Sub
+
+Private Sub SSCommand3_Click()
+    frmSupplier.Show 1
+End Sub
+
+Private Sub SSCommand4_Click()
+    frmBrand.Show 1
+End Sub
+
+Private Sub SSCommand5_Click()
+    frmAdd.Show 1
+End Sub
+
+Private Sub SSCommand6_Click()
+    frmMaterial.Show 1
+End Sub
+
+Private Sub SSToolbar1_Click(ToolID As String, ToolNum As Integer, Btn As Integer, Value As Integer)
+
+    On Error GoTo SSToolbar1_Click_Err
+
+    Select Case ToolID
+        Case "ID_Add"
+            dtcInventory.Recordset.AddNew
+            dtcRetailPrice.Recordset.AddNew
+            dbcDepartment.SetFocus
+        Case "ID_Delete"
+            'this may produce an error if you delete the last
+            'record or the only record in the recordset
+            dtcInventory.Recordset.Delete
+            dtcRetailPrice.Recordset.Delete
+            dtcInventory.Recordset.MoveNext
+        Case "ID_Refresh"
+            'this is really only needed for multi user apps
+            dtcInventory.Refresh
+
+        Case "ID_Save"
+            If IsNull(dtcRetailPrice.Recordset.Fields("SKU")) Then
+                dtcRetailPrice.Recordset.Fields("SKU") = mskSKU.Text
+            End If
+            dtcRetailPrice.UpdateRecord
+            dtcRetailPrice.Recordset.Bookmark = dtcRetailPrice.Recordset.LastModified
+            dtcRetailPrice.UpdateControls
+            dtcInventory.UpdateRecord
+            dtcInventory.Recordset.Bookmark = dtcInventory.Recordset.LastModified
+            dtcInventory.UpdateControls
+        Case "ID_Close"
+            Unload Me
+        Case "ID_First"
+            dtcInventory.Recordset.MoveFirst
+        Case "ID_Next"
+            dtcInventory.Recordset.MoveNext
+            ' Prevent the Blank Record
+            If dtcInventory.Recordset.EOF Then
+                Beep
+                dtcInventory.Recordset.MoveLast
+            End If
+        Case "ID_Previous"
+            dtcInventory.Recordset.MovePrevious
+            ' Prevent the Blank Record
+            If dtcInventory.Recordset.BOF Then
+                Beep
+                dtcInventory.Recordset.MoveFirst
+            End If
+        Case "ID_Last"
+            dtcInventory.Recordset.MoveLast
+    End Select
+
+SSToolbar1_Click_Exit:                                ' Tutorial Autocode
+    On Error Resume Next                              ' Tutorial Autocode
+    Exit Sub                                          ' Tutorial Autocode
+SSToolbar1_Click_Err:                                 ' Tutorial Autocode
+    Call ofx_GenericError("SSToolbar1_Click()", Err)  ' Tutorial Autocode
+    Resume SSToolbar1_Click_Exit
+
+
+End Sub
+
+
+
+Private Sub Mode_Lens()
+
+    ' RePaint the form
+    dbcBrand.Enabled = True
+    dbcMaterial.Enabled = True
+    lblModel(5).Caption = "Lens Style"
+    mskModel.Enabled = True
+    mskColor.Enabled = True
+    mskSize.Enabled = False
+    mskBridge.Enabled = False
+    mskTemple.Enabled = False
+    mskCylinder.Enabled = True
+    mskSphere.Enabled = True
+    mskBaseCurve.Enabled = False
+    mskDiameter.Enabled = True
+
+    ' RePaint the grid
+    TDBGrid1.Columns(intBrand).Visible = True
+    TDBGrid1.Columns(intMaterial).Visible = True
+    TDBGrid1.Columns(intModel).Visible = True
+    TDBGrid1.Columns(intModel).Caption = "Lens Style"
+    TDBGrid1.Columns(intColor).Visible = True
+    TDBGrid1.Columns(intSize).Visible = False
+    TDBGrid1.Columns(intBridge).Visible = False
+    TDBGrid1.Columns(intTemple).Visible = False
+    TDBGrid1.Columns(intCylinder).Visible = True
+    TDBGrid1.Columns(intSphere).Visible = True
+    TDBGrid1.Columns(intBaseCurve).Visible = False
+    TDBGrid1.Columns(intDiameter).Visible = True
+
+End Sub
+
+Private Sub Mode_Frame()
+
+    ' RePaint the form
+    dbcBrand.Enabled = True
+    dbcMaterial.Enabled = True
+    lblModel(5).Caption = "Model"
+    mskModel.Enabled = True
+    mskColor.Enabled = True
+    lblSize(7).Caption = "Eye Size"
+    mskSize.Enabled = True
+    mskBridge.Enabled = True
+    mskTemple.Enabled = True
+    mskCylinder.Enabled = False
+    mskSphere.Enabled = False
+    mskBaseCurve.Enabled = False
+    mskDiameter.Enabled = False
+
+    ' RePaint the grid
+    TDBGrid1.Columns(intBrand).Visible = True
+    TDBGrid1.Columns(intMaterial).Visible = True
+    TDBGrid1.Columns(intModel).Visible = True
+    TDBGrid1.Columns(intModel).Caption = "Model"
+    TDBGrid1.Columns(intColor).Visible = True
+    TDBGrid1.Columns(intSize).Visible = True
+    TDBGrid1.Columns(intSize).Caption = "EyeSize"
+    TDBGrid1.Columns(intBridge).Visible = True
+    TDBGrid1.Columns(intTemple).Visible = True
+    TDBGrid1.Columns(intCylinder).Visible = False
+    TDBGrid1.Columns(intSphere).Visible = False
+    TDBGrid1.Columns(intBaseCurve).Visible = False
+    TDBGrid1.Columns(intDiameter).Visible = False
+
+End Sub
+
+Private Sub Mode_ContactLens()
+
+    ' RePaint the form
+    dbcBrand.Enabled = True
+    dbcMaterial.Enabled = True
+    lblModel(5).Caption = "Lens Style"
+    mskModel.Enabled = True
+    mskColor.Enabled = True
+    mskSize.Enabled = False
+    mskBridge.Enabled = False
+    mskTemple.Enabled = False
+    mskCylinder.Enabled = True
+    mskSphere.Enabled = True
+    mskBaseCurve.Enabled = True
+    mskDiameter.Enabled = True
+
+    ' RePaint the grid
+    TDBGrid1.Columns(intBrand).Visible = True
+    TDBGrid1.Columns(intMaterial).Visible = True
+    TDBGrid1.Columns(intModel).Visible = True
+    TDBGrid1.Columns(intModel).Caption = "Lens Style"
+    TDBGrid1.Columns(intColor).Visible = True
+    TDBGrid1.Columns(intSize).Visible = False
+    TDBGrid1.Columns(intBridge).Visible = False
+    TDBGrid1.Columns(intTemple).Visible = False
+    TDBGrid1.Columns(intCylinder).Visible = True
+    TDBGrid1.Columns(intSphere).Visible = True
+    TDBGrid1.Columns(intBaseCurve).Visible = True
+    TDBGrid1.Columns(intDiameter).Visible = True
+    
+End Sub
+
+Private Sub Mode_Service()
+
+    ' RePaint the form
+    dbcBrand.Enabled = False
+    dbcMaterial.Enabled = False
+    mskModel.Enabled = False
+    mskColor.Enabled = False
+    mskSize.Enabled = False
+    mskBridge.Enabled = False
+    mskTemple.Enabled = False
+    mskCylinder.Enabled = False
+    mskSphere.Enabled = False
+    mskBaseCurve.Enabled = False
+    mskDiameter.Enabled = False
+
+    ' RePaint the grid
+    TDBGrid1.Columns(intBrand).Visible = False
+    TDBGrid1.Columns(intMaterial).Visible = False
+    TDBGrid1.Columns(intModel).Visible = False
+    TDBGrid1.Columns(intColor).Visible = False
+    TDBGrid1.Columns(intSize).Visible = False
+    TDBGrid1.Columns(intBridge).Visible = False
+    TDBGrid1.Columns(intTemple).Visible = False
+    TDBGrid1.Columns(intCylinder).Visible = False
+    TDBGrid1.Columns(intSphere).Visible = False
+    TDBGrid1.Columns(intBaseCurve).Visible = False
+    TDBGrid1.Columns(intDiameter).Visible = False
+
+End Sub
+
+Private Sub Mode_Else()
+
+    ' RePaint the form
+    dbcBrand.Enabled = True
+    dbcMaterial.Enabled = True
+    mskModel.Enabled = True
+    lblModel(5).Caption = "Model"
+    mskColor.Enabled = True
+    mskSize.Enabled = True
+    lblSize(7).Caption = "Size"
+    mskBridge.Enabled = False
+    mskTemple.Enabled = False
+    mskCylinder.Enabled = False
+    mskSphere.Enabled = False
+    mskBaseCurve.Enabled = False
+    mskDiameter.Enabled = False
+
+    ' RePaint the grid
+    TDBGrid1.Columns(intBrand).Visible = True
+    TDBGrid1.Columns(intMaterial).Visible = True
+    TDBGrid1.Columns(intModel).Visible = True
+    TDBGrid1.Columns(intModel).Caption = "Model"
+    TDBGrid1.Columns(intColor).Visible = True
+    TDBGrid1.Columns(intSize).Visible = True
+    TDBGrid1.Columns(intSize).Caption = "Size"
+    TDBGrid1.Columns(intBridge).Visible = False
+    TDBGrid1.Columns(intTemple).Visible = False
+    TDBGrid1.Columns(intCylinder).Visible = False
+    TDBGrid1.Columns(intSphere).Visible = False
+    TDBGrid1.Columns(intBaseCurve).Visible = False
+    TDBGrid1.Columns(intDiameter).Visible = False
+
+End Sub
+
+Private Sub Mode_Standard()
+
+    ' RePaint the grid
+    TDBGrid1.Columns(intBrand).Visible = True
+    TDBGrid1.Columns(intMaterial).Visible = True
+    TDBGrid1.Columns(intModel).Visible = True
+    TDBGrid1.Columns(intModel).Caption = "Model"
+    TDBGrid1.Columns(intColor).Visible = True
+    TDBGrid1.Columns(intSize).Visible = True
+    TDBGrid1.Columns(intSize).Caption = "Size"
+    TDBGrid1.Columns(intBridge).Visible = True
+    TDBGrid1.Columns(intTemple).Visible = True
+    TDBGrid1.Columns(intCylinder).Visible = True
+    TDBGrid1.Columns(intSphere).Visible = True
+    TDBGrid1.Columns(intBaseCurve).Visible = True
+    TDBGrid1.Columns(intDiameter).Visible = True
+
+End Sub

@@ -1,0 +1,367 @@
+VERSION 4.00
+Begin VB.Form frmUtilCheckTable 
+   Caption         =   "Check Table Integrity"
+   ClientHeight    =   5145
+   ClientLeft      =   2235
+   ClientTop       =   2685
+   ClientWidth     =   9105
+   Height          =   5550
+   Left            =   2175
+   LinkTopic       =   "Form1"
+   ScaleHeight     =   5145
+   ScaleWidth      =   9105
+   Top             =   2340
+   Width           =   9225
+   Begin Threed.SSFrame SSFrame1 
+      Height          =   2775
+      Left            =   3480
+      TabIndex        =   0
+      Top             =   600
+      Width           =   4815
+      _Version        =   65536
+      _ExtentX        =   8493
+      _ExtentY        =   4895
+      _StockProps     =   14
+      Caption         =   "Select Which Table to Check"
+      Begin VB.CheckBox chkPayment 
+         Caption         =   "Payment"
+         Height          =   255
+         Left            =   3360
+         TabIndex        =   9
+         Top             =   660
+         Width           =   1095
+      End
+      Begin VB.CheckBox chkBranch 
+         Caption         =   "Branch"
+         Height          =   255
+         Left            =   3360
+         TabIndex        =   8
+         Top             =   360
+         Width           =   975
+      End
+      Begin VB.CheckBox chkStaff 
+         Caption         =   "Staff"
+         Height          =   255
+         Left            =   1920
+         TabIndex        =   7
+         Top             =   960
+         Width           =   855
+      End
+      Begin VB.CheckBox chkSupplier 
+         Caption         =   "Supplier"
+         Height          =   255
+         Left            =   1920
+         TabIndex        =   6
+         Top             =   660
+         Width           =   975
+      End
+      Begin VB.CheckBox chkCustomer 
+         Caption         =   "Customer"
+         Height          =   255
+         Left            =   1920
+         TabIndex        =   5
+         Top             =   360
+         Width           =   1095
+      End
+      Begin VB.CheckBox chkInventory 
+         Caption         =   "Inventory"
+         ForeColor       =   &H00000000&
+         Height          =   255
+         Left            =   240
+         TabIndex        =   4
+         Top             =   1260
+         Width           =   1095
+      End
+      Begin VB.CheckBox chkCategory 
+         Caption         =   "Category"
+         Height          =   255
+         Left            =   240
+         TabIndex        =   3
+         Top             =   960
+         Width           =   1095
+      End
+      Begin VB.CheckBox chkClass 
+         Caption         =   "Class"
+         Height          =   255
+         Left            =   240
+         TabIndex        =   2
+         Top             =   660
+         Width           =   1095
+      End
+      Begin VB.CheckBox chkDept 
+         Caption         =   "Department"
+         Height          =   255
+         Left            =   240
+         TabIndex        =   1
+         Top             =   360
+         Width           =   1215
+      End
+      Begin Threed.SSCommand cmdCancel 
+         Height          =   375
+         Left            =   3600
+         TabIndex        =   12
+         Top             =   2220
+         Width           =   975
+         _Version        =   65536
+         _ExtentX        =   1720
+         _ExtentY        =   661
+         _StockProps     =   78
+         Caption         =   "Cancel"
+         BevelWidth      =   1
+         Outline         =   0   'False
+      End
+      Begin Threed.SSCommand cmdOK 
+         Height          =   375
+         Left            =   2400
+         TabIndex        =   11
+         Top             =   2220
+         Width           =   975
+         _Version        =   65536
+         _ExtentX        =   1720
+         _ExtentY        =   661
+         _StockProps     =   78
+         Caption         =   "OK"
+         BevelWidth      =   1
+         Outline         =   0   'False
+      End
+      Begin Threed.SSCommand cmdReset 
+         Height          =   375
+         Left            =   1200
+         TabIndex        =   10
+         Top             =   2220
+         Width           =   975
+         _Version        =   65536
+         _ExtentX        =   1720
+         _ExtentY        =   661
+         _StockProps     =   78
+         Caption         =   "Reset"
+         BevelWidth      =   1
+         Outline         =   0   'False
+      End
+   End
+   Begin Threed.SSFrame fraProgress 
+      Height          =   1575
+      Left            =   840
+      TabIndex        =   13
+      Top             =   3480
+      Visible         =   0   'False
+      Width           =   7455
+      _Version        =   65536
+      _ExtentX        =   13150
+      _ExtentY        =   2778
+      _StockProps     =   14
+      Caption         =   "Progress"
+      Begin VB.TextBox txtOperation 
+         Height          =   285
+         Left            =   120
+         Locked          =   -1  'True
+         TabIndex        =   17
+         TabStop         =   0   'False
+         Top             =   540
+         Width           =   1935
+      End
+      Begin VB.TextBox txtTable 
+         Height          =   285
+         Left            =   120
+         Locked          =   -1  'True
+         TabIndex        =   16
+         TabStop         =   0   'False
+         Top             =   1140
+         Width           =   1935
+      End
+      Begin GaugeLib.Gauge gauProgress 
+         Height          =   270
+         Left            =   2880
+         TabIndex        =   20
+         Top             =   555
+         Width           =   4335
+         _Version        =   65536
+         _ExtentX        =   7646
+         _ExtentY        =   476
+         _StockProps     =   73
+         ForeColor       =   16711680
+         BackColor       =   16776960
+         NeedleWidth     =   1
+         Picture         =   "frmUtilCheckTable.frx":0000
+      End
+      Begin GaugeLib.Gauge Gauge1 
+         Height          =   270
+         Left            =   2895
+         TabIndex        =   21
+         Top             =   1170
+         Width           =   4335
+         _Version        =   65536
+         _ExtentX        =   7646
+         _ExtentY        =   476
+         _StockProps     =   73
+         BackColor       =   16776960
+         NeedleWidth     =   1
+      End
+      Begin VB.Label Label6 
+         Caption         =   "Overall"
+         Height          =   255
+         Left            =   2880
+         TabIndex        =   23
+         Top             =   300
+         Width           =   615
+      End
+      Begin VB.Label Label5 
+         Caption         =   "Current Table"
+         Height          =   255
+         Left            =   2880
+         TabIndex        =   22
+         Top             =   900
+         Width           =   1095
+      End
+      Begin VB.Label Label4 
+         Caption         =   "Operation"
+         Height          =   255
+         Left            =   120
+         TabIndex        =   15
+         Top             =   300
+         Width           =   735
+      End
+      Begin VB.Label Label1 
+         Caption         =   "Table Name"
+         Height          =   255
+         Left            =   120
+         TabIndex        =   14
+         Top             =   900
+         Width           =   975
+      End
+   End
+   Begin Threed.SSPanel SSPanel1 
+      Height          =   2835
+      Left            =   840
+      TabIndex        =   18
+      Top             =   600
+      Width           =   2535
+      _Version        =   65536
+      _ExtentX        =   4471
+      _ExtentY        =   5001
+      _StockProps     =   15
+      Caption         =   "Warning"
+      ForeColor       =   0
+      BackColor       =   255
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "MS Sans Serif"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      BevelOuter      =   1
+      BevelInner      =   1
+      Alignment       =   6
+      Begin VB.TextBox Text5 
+         Appearance      =   0  'Flat
+         BackColor       =   &H000000FF&
+         BorderStyle     =   0  'None
+         Height          =   2175
+         Left            =   240
+         Locked          =   -1  'True
+         MultiLine       =   -1  'True
+         TabIndex        =   19
+         TabStop         =   0   'False
+         Text            =   "frmUtilCheckTable.frx":001C
+         Top             =   360
+         Width           =   2055
+      End
+   End
+End
+Attribute VB_Name = "frmUtilCheckTable"
+Attribute VB_Creatable = False
+Attribute VB_Exposed = False
+
+Private Sub cmdCancel_Click()
+    Unload Me
+End Sub
+
+
+Private Sub cmdOK_Click()
+
+    ' Disable command buttoms
+    cmdReset.Enabled = False
+    cmdOK.Enabled = False
+    cmdCancel.Enabled = False
+    ' Show progress panel
+    fraProgress.Visible = True
+    '
+    GoCheckTable
+    '
+    MsgBox "Done!" & Chr$(13) & _
+           "Thanks for waiting."
+    ' Hide progress panel
+    fraProgress.Visible = False
+    ' Enable command buttons
+    cmdReset.Enabled = True
+    cmdOK.Enabled = True
+    cmdCancel.Enabled = True
+    ' Reset selected items
+    Call cmdReset_Click
+
+End Sub
+
+Private Sub cmdReset_Click()
+    chkDept.Value = False
+    chkClass.Value = False
+    chkCategory.Value = False
+    chkInventory.Value = False
+    chkCustomer.Value = False
+    chkSupplier.Value = False
+    chkStaff.Value = False
+    chkBranch.Value = False
+    chkPayment.Value = False
+End Sub
+
+Private Sub Form_Activate()
+    Screen.MousePointer = vbDefault
+End Sub
+
+Private Sub Form_Load()
+    Call ofx_CenterForm(Me)
+End Sub
+
+
+
+
+
+
+
+Private Sub GoCheckTable()
+    If chkDept.Value Then GoCheck_Dept
+    If chkClass.Value Then GoCheck_Class
+    If chkCategory.Value Then GoCheck_Category
+    If chkInventory.Value Then GoCheck_Inventory
+    If chkCustomer.Value Then GoCheck_Customer
+    If chkSupplier.Value Then GoCheck_Supplier
+    If chkStaff.Value Then GoCheck_Staff
+    If chkBranch.Value Then GoCheck_Branch
+    If chkPayment.Value Then GoCheck_Payment
+End Sub
+
+Private Sub GoCheck_Dept()
+
+End Sub
+
+Private Sub GoCheck_Class()
+
+End Sub
+
+Private Sub GoCheck_Category()
+
+End Sub
+
+'------------------------------
+' Procedure:  GoCheck_Customer
+' Purpose:    TBD
+' Params:
+' Returns:    N/A
+'------------------------------
+Private Sub GoCheck_Customer()
+
+    ' TODO: Your code here
+
+End Sub
