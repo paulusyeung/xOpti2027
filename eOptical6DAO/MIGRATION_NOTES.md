@@ -84,6 +84,22 @@ In the rewrite:
 - Use a separate `analytics` schema/star model or a BI tool for OLAP; do not carry the report complexity into the OLTP schema.
 - Preserve legacy identifiers for traceability: `legacy_id`, `legacy_control_number`, `legacy_tx_number`; generate new surrogate keys alongside them.
 
+### Deployment OS and device compatibility
+
+Linux is the approved server platform and is a good fit: .NET 10, PostgreSQL, nginx, Caddy, QuestPDF, and the WebPivotTable bundle all run on Linux, and `mdbtools` is native there. The risks are at the Windows-shaped edges of the system, not in the server stack itself.
+
+- **POS peripherals are the largest risk.** The legacy application talks to hardware through Windows drivers, COM/OPOS, and printer drivers. Moving the server to Linux does not change client device access. Prefer network-attached ESC/POS printers and semi-integrated payment terminals over USB/serial where possible; USB/serial receipt printers, cash drawers, customer displays, and signature pads may require a local device/print agent. Confirm whether the POS terminals remain Windows.
+- **Printing and fonts.** Verify CUPS driver availability for each receipt and label printer. QuestPDF is cross-platform but needs fontconfig/freetype in the container and bundled fonts (for example `3of9.TTF`) for deterministic output; confirm the licence permits embedding any Windows fonts required for report parity.
+- **Collation and case sensitivity.** Access/Jet is case-insensitive; PostgreSQL on Linux is case-sensitive and locale-dependent. Customer/SKU searches and report ordering can change silently. Use ICU collation, `citext`, or normalized search columns, and define sort semantics explicitly.
+- **File paths.** Windows is case-insensitive and accepts backslashes; Linux is not. Normalize legacy image and attachment paths during migration and validate lookups on a case-sensitive filesystem.
+- **Migration fallback.** `mdbtools` works on Linux, but the Access/ODBC fallback is effectively Windows-only because there is no Microsoft Access ODBC driver on Linux. Keep a Windows VM for fallback extraction and for running the legacy application and Crystal Reports as a comparison reference.
+- **Crystal Reports reference.** `.rpt` files cannot render on Linux. Retain a Windows reference VM so old and new report output can be compared during parity sign-off.
+- **Operations.** An on-prem Linux host requires ownership of patching, Docker, PostgreSQL, backups, and certificate distribution. Confirm the customer has that capability, or deliver a supported appliance with runbooks and remote support.
+- **Architecture.** If the host is ARM64, validate native dependencies (SkiaSharp/QuestPDF, pgBackRest, and so on) and build multi-arch images.
+- **Locale and time zone.** Set the host/container `TZ` and culture (`en-CA`) explicitly, and test DST boundaries with `timestamptz`.
+
+Record this as a short ADR plus a device matrix in Phase 0. The matrix should capture the approved server distribution/architecture/container runtime, supported client OS and browser, and each peripheral's interface (network/USB/serial/HID) with its verified Linux status.
+
 ## Report Parity
 
 The report folders are **layered overrides**, not three independent report sets:
@@ -246,7 +262,7 @@ With 2-4 developers and report work overlapping, realistically **15-20 months**;
 | Report parity with QuestPDF | Catalogue, fixed framework, dedicated capacity; consider a designer-based tool if the date slips |
 | Inventory costing semantics (LIFO/average/FIFO) | Define cost-layer behavior and reconcile against legacy before POS work |
 | Historical data anomalies | Reconciliation suite and explicit exception handling |
-| POS hardware (receipt/label printers, scanners, payment terminals) | Inventory in Phase 0; plan a local device/print agent if browser APIs fall short |
+| POS hardware (receipt/label printers, scanners, payment terminals) | Inventory and test each device on the target OS in Phase 0 (see Deployment OS and device compatibility); plan a local device/print agent if browser APIs fall short |
 | Permission mapping from `SecurityLevel` | Explicit permission matrix; never expose cost/margin unintentionally |
 | Hard-cutover downtime | Rehearse, measure, and communicate the freeze window |
 | WebPivotTable licensing and bundle size | Confirm commercial/self-hosted tier in Phase 0; lazy-load the component; keep it out of the initial bundle |
@@ -271,12 +287,16 @@ With 2-4 developers and report work overlapping, realistically **15-20 months**;
 5. Produce the permission matrix from `AppValidation.bas` and `AppUser.bas`.
 6. Prototype WebPivotTable in `xOpti.Web` against a `OlapSales` export to validate Vue 3 integration, locale self-hosting, and saved-view persistence.
 7. Confirm team size and target go-live so the roadmap can be compressed or staffed accordingly.
+8. Confirm the approved Linux distribution and host architecture, the supported client OS/browser, and the peripheral compatibility matrix (interface plus verified Linux status).
 
 ## Open Items
 
 - Which database file is the production source?
 - Team size and target go-live date?
-- Which POS hardware and payment terminals must be supported?
+- Which POS hardware and payment terminals must be supported, and what is each device's interface and verified Linux status?
+- Which Linux distribution and host architecture is approved, and does the customer have the capability to operate the on-prem Linux/Docker host?
+- Which client OS and browser must the POS terminals run?
+- Is a Windows reference VM approved for fallback extraction, legacy application access, and Crystal Reports comparison?
 - QuestPDF licensing tier?
 - WebPivotTable license tier (Developer vs Team) and confirmation that the npm bundle may be self-hosted in an on-prem deployment?
 - Highcharts commercial license, since WPT does not include it?
