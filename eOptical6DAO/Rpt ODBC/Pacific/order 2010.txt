@@ -1,0 +1,650 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: The Optical Centre, Richmond - Order
+	Version: 5.0
+
+2.0 Record Sort Fields
+	A - {TxDetails.RowNo}
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@InitPayment}
+	Formula: WhilePrintingRecords;
+	StringVar PaymentDetail := ""  // "Deposit = " + Totext({TxHeader.PreviousPaid},2)
+
+	Name: {@GetHomePhone}
+	Formula: StringVar PhoneNo:="";
+	
+	if isnull({Customer.HomePhone}) then
+	  PhoneNo
+	else
+	  (if trim({Customer.HomePhone})="" then
+	     PhoneNo
+	   else
+	     {@BuildHomePhone});
+
+	Name: {@GetHomePhone}
+	Formula: StringVar PhoneNo:="";
+	
+	if isnull({Customer.HomePhone}) then
+	  PhoneNo
+	else
+	  (if trim({Customer.HomePhone})="" then
+	     PhoneNo
+	   else
+	     {@BuildHomePhone});
+
+	Name: {@GetBalance}
+	Formula: WhilePrintingRecords;
+	{TxHeader.TotalAmount} - {TxHeader.ThisPaid}
+
+	Name: {@GetDescription}
+	Formula:  {Brand.BrandDescription} + " - " + {Inventory.Model}
+
+	Name: {@GetNetUnitPrice}
+	Formula: ({TxDetails.UnitAmount}-{TxDetails.MarkDownAmount})
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	Sale Order
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	 Date:
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{TxDetails.DateofEntry}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Long Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	 Order No.:
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{TxDetails.TxNumber}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@InitPayment}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.2 Page Footer Section
+	Hidden, New Page After, Keep Together, Print At Bottom of Page
+
+5.3 Report Header Section
+	Hidden, New Page Before
+
+5.4 Report Footer Section
+	Hidden, New Page After, Print At Bottom of Page
+
+5.5 Group Header Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Subsection.3 
+		Visible, Keep Together
+
+	Subsection.4 
+		Visible, Keep Together
+
+	 Sold To:
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	 Ship To:
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{Customer.FullName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Customer.HomeAddress}
+		Memo, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{City.CityName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetHomePhone}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Customer.FullName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Customer.HomeAddress}
+		Memo, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{City.CityName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetHomePhone}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	 VIP No.
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Reference No.
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	 Sales Person
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	 Order Date
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Required Date
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	 Terms
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{Staff.StaffFullName}
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	 C.O.D.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{Customer.VIPCode}
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{TxDetails.DateofEntry}
+		Date, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Long Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	{TxHeader.SecondDate}
+		Date, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Long Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	{TxHeader.RefNumber}
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Qty
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	SKU  Code
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Type
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Description
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Tax
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Unit Price
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Amount 
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	 Line No.
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together
+
+
+
+5.6 Group Footer Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together, Print At Bottom of Page
+
+	Net Sales:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	G.S.T.:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Deposit:
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{TxHeader.TotalSale}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxHeader.TaxB}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxHeader.TaxA}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Balance:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{TxHeader.GrossSale}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Gross Sales:
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	P.S.T.:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	OrderPayment
+		Subreport, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+		Subreport begins
+
+		1.0 File Information
+
+			Report File: 		OrderPayment
+			Version: 		5.0
+
+		2.0 Record Sort Fields
+
+		3.0 Group Sort Fields
+
+		4.0 Formulas
+
+		4.1 Record Selection Formula
+			{TxPayment.TxNumber}={?Pm-TxPayment.TxNumber}
+
+		4.2 Group Selection Formula
+			
+
+		4.3 Other Formulas
+
+			Name: {@GetCardDetails}
+			Formula: if isnull({TxPayment.CardNumber}) then
+			  "" 
+			else {TxPayment.CardNumber} + " / " + {TxPayment.AuthorizationCode};
+
+		5.0 Sectional Information
+
+		5.1 Report Header Section
+			Visible, New Page Before
+
+			CardNumber/Authorization
+				String, Visible, Right Alignment, Top Alignment, 
+				Keep Together
+
+
+
+			 Type
+				String, Visible, Right Alignment, Top Alignment, 
+				Keep Together
+
+
+
+			Tender
+				String, Visible, Right Alignment, Top Alignment, 
+				Keep Together
+
+
+
+			Rate
+				String, Visible, Right Alignment, Top Alignment, 
+				Keep Together
+
+
+
+			Amounts
+				String, Visible, Right Alignment, Top Alignment, 
+				Keep Together
+
+
+
+			THIS PAYMENT DETAILS
+				String, Visible, Horizontal Centre Alignment, Top Alignment, 
+				Keep Together
+
+
+
+			Canadian
+				String, Visible, Right Alignment, Top Alignment, 
+				Keep Together
+
+
+
+			Exchange
+				String, Visible, Right Alignment, Top Alignment, 
+				Keep Together
+
+
+
+		5.2 Report Footer Section
+			Visible, New Page After
+
+			Subsection.1 
+				Hidden, Keep Together
+
+			Subsection.2 
+				Hidden, Keep Together
+
+		5.3 Group Header Section
+			Visible
+
+		5.4 Group Footer Section
+			Visible
+
+			Sum ({TxPayment.EqAmount}, {TxPayment.TxNumber})
+				Numeric, Visible, Default Alignment, Top Alignment, 
+				Keep Together, Using System Default Formatting, 
+				Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+				Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+		5.5 Details Section
+			Visible
+
+			Subsection.1 
+				Visible, Keep Together
+
+			{TxPayment.AmountTender}
+				Numeric, Visible, Default Alignment, Top Alignment, 
+				Keep Together, Using System Default Formatting, 
+				Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+				Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+			{TxPayment.ExchangeRate}
+				Numeric, Visible, Default Alignment, Top Alignment, 
+				Keep Together, 
+				Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+				Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+			{PaymentMethods.PaymentNameLong}
+				String, Visible, Default Alignment, Top Alignment, 
+				Keep Together, Using System Default Formatting, Word Wrap
+
+
+			{@GetCardDetails}
+				String, Visible, Default Alignment, Top Alignment, 
+				Keep Together, Using System Default Formatting, Word Wrap
+
+
+			{TxPayment.EqAmount}
+				Numeric, Visible, Default Alignment, Top Alignment, 
+				Keep Together, Using System Default Formatting, 
+				Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+				Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+		Subreport ends
+
+	{TxHeader.ThisPaid}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@GetBalance}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Change:
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: {TxHeader.Change}=0
+		
+
+	{TxHeader.Change}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+		Object Format Formulas -
+		Visible: {TxHeader.Change}=0
+		
+	G.S.T. NO. 870912 920 RT0001
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	THE OPTICAL CENTRE PACIFIC MALL             CANADIAN EYE-CARE & BEAUTY CENTRE INC.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Unit C-52, 4300 Steeles Ave. East, Markham, Ontario  L3R 0Y5
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Phone: (905) 946-8846            Fax: (905) 946-0297
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	NO CASH REFUNDS, EXCHANGES WITH RECEIPT ONLY.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	30 DAYS WARRANTY ON CONTACT LENSES.  90 DAYS WARRANTY ON ALL OTHER PRESCRIPTION ITEMS.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	 
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+	PrintDate
+		Date, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+	    
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+	PrintTime
+		Time, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand, Time Base: 12 Hour, AM/PM Type: AM/PM After, Hour Type: Numeric, Minute Type: Numeric, Second Type: Numeric, AM String: 'AM', PM String: 'PM', Hour Minute Separator: ':', Minute  Second Separator: ':'
+
+
+5.7 Details Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Background Color: //if Remainder(RecordNumber, 2)<>0 then Silver else NoColor
+	{TxDetails.Qty}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxDetails.SKU}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{TxDetails.RowNo}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 1 Decimal Places, Rounding: 0.1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@GetDescription}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{TxDetails.TaxCode}
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{TxDetails.Amount}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@GetNetUnitPrice}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{Inventory.CategoryCode}
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+

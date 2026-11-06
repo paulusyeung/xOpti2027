@@ -1,0 +1,457 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: THE OPTICAL CENTRE - Pacific Mall - Receipts Report
+	Version: 5.0
+
+2.0 Record Sort Fields
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	{TxHeader.DateOfEntry} in {@AskDateFrom} to {@AskDateTo}
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@GetSubTitle}
+	Formula: StringVar SubTitle := "Date between " +
+	    Totext ({@AskDateFrom},"MMMM dd, yyyy") + " and " + 
+	    Totext ({@AskDateTo},"MMMM dd, yyyy");
+
+	Name: {@GetInvoiceNumber}
+	Formula: if {TxHeader.TxType} like "*C" then
+	  "* " +{TxHeader.TxNumber}
+	else if {TxHeader.RefNumber} like "*C*" then
+	  "   " + {TxHeader.RefNumber}
+	else
+	  " ";     // others are N/A
+
+	Name: {@GetOrderNumber}
+	Formula: if {TxHeader.TxType} = "SA" then
+	  "* "+ {TxHeader.TxNumber}
+	else if {TxHeader.RefNumber} like "SA*" then
+	 "   " + {TxHeader.RefNumber}
+	else
+	  " ";
+
+	Name: {@GetParticulars}
+	Formula: if ({TxHeader.TxType} = "RS" and {TxHeader.RefNumber} like "*C*") then
+	 "Refund Invoice as per " + {TxHeader.TxNumber}
+	else if ({TxHeader.TxType} = "RS" and {TxHeader.RefNumber} like "SA*") then
+	 "Void Order as per " + {TxHeader.TxNumber}
+	else if {TxHeader.PaymentLink} > 1 then
+	  "Spilt payment of " + totext({TxPayment.PaymentLineNo},0) +
+	   "/" + totext({TxHeader.PaymentLink},0)
+	else
+	  " ";
+	  
+
+	Name: {@GetDepositToSales}
+	Formula: if {TxHeader.TxType} like "*C" then
+	  // This is a invoice and pervious deposit back to Sales
+	  (if isnull({TxPayment.PaymentLineNo}) then
+	      0
+	  else if ({TxPayment.PaymentLineNo} = 1) then     // This is 1st Split
+	      {TxHeader.PreviousPaid}
+	  else
+	      0);
+	
+
+	Name: {@GetBalanceReceived}
+	Formula: if isnull({TxPayment.TotalThisPay}) then
+	  0
+	else if {TxHeader.PaymentLink} =0 then
+	  // This is zero payment due to fully paid on order
+	  0
+	else if {TxHeader.TxType} like "*C" then
+	  // This is a invoice
+	     {TxPayment.TotalThisPay}
+	else if ({TxHeader.TxType} = "RS" and {TxHeader.RefNumber} like "*C*") then
+	  // This is a refund
+	  {TxPayment.TotalThisPay}
+	else
+	  0;
+
+	Name: {@GetDepositReceived}
+	Formula: if isnull({TxPayment.TotalThisPay}) then
+	  0
+	else if {TxHeader.TxType} = "SA"  then 
+	   // This is a deposit
+	    {TxPayment.TotalThisPay}
+	else if ({TxHeader.TxType} = "RS" and {TxHeader.RefNumber} like "SA*") then
+	  // This is a void order
+	     {TxPayment.TotalThisPay}
+	//else if {TxHeader.TxNumber} like "*C*" then
+	  // This is a invoice 
+	//  -{TxHeader.PreviousPaid}
+	else
+	  0;
+
+	Name: {@GetRowTotal}
+	Formula: {@GetDepositReceived}+{@GetBalanceReceived};    // +{@GetDepositToSales}
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: WhilePrintingRecords;
+not OnFirstRecord and OnLastRecord
+		
+	Subsection.3 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: WhilePrintingRecords;
+not OnLastRecord
+		
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetSubTitle}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Order
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Number
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Invoice
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Number
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Particulars
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Deposit
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	To Sales
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Received
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Received
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Total
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Deposit
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Balance
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	(Change Amounts)
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Net Equivalent Tender
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Original Tender
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Equivalent Amounts
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+5.2 Page Footer Section
+	Hidden, New Page After, Print At Bottom of Page
+
+5.3 Report Header Section
+	Visible, New Page Before
+
+5.4 Report Footer Section
+	Visible, New Page After
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, New Page Before, Keep Together
+
+		Format Formulas
+
+		Visible: not OnLastRecord;
+		
+	Sum ({@GetDepositToSales})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	Sum ({@GetBalanceReceived})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	Sum ({@GetDepositReceived})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	Sum ({@GetRowTotal})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+5.5 Group Header Section #1
+	Visible
+
+	GroupName ({TxHeader.DateOfEntry}, "daily")
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.6 Group Footer Section #1
+	Visible
+
+	Sum ({@GetDepositToSales}, {TxHeader.DateOfEntry}, "daily")
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	Sum ({@GetBalanceReceived}, {TxHeader.DateOfEntry}, "daily")
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	Sum ({@GetDepositReceived}, {TxHeader.DateOfEntry}, "daily")
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	Sum ({@GetRowTotal}, {TxHeader.DateOfEntry}, "daily")
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	GroupName ({TxHeader.DateOfEntry}, "daily")
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.7 Group Header Section #2
+	Hidden
+
+	GroupName ({PaymentMethods.PaymentNameLong})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.8 Group Footer Section #2
+	Visible
+
+	Sum ({@GetRowTotal}, {PaymentMethods.PaymentNameLong})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	Sum ({@GetDepositReceived}, {PaymentMethods.PaymentNameLong})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	Sum ({@GetBalanceReceived}, {PaymentMethods.PaymentNameLong})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	Sum ({@GetDepositToSales}, {PaymentMethods.PaymentNameLong})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	GroupName ({PaymentMethods.PaymentNameLong})
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.9 Group Header Section #3
+	Hidden
+
+	GroupName ({TxHeader.TxNumber})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.10 Group Footer Section #3
+	Hidden
+
+5.11 Details Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+	{@GetInvoiceNumber}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetOrderNumber}
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetParticulars}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetDepositToSales}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+		Object Format Formulas -
+		Visible: {TxPayment.PaymentLineNo} > 1   // For split payment
+		
+	{@GetBalanceReceived}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@GetDepositReceived}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@GetRowTotal}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+

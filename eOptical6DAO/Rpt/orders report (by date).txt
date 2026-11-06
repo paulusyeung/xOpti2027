@@ -1,0 +1,813 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: The Optical Centre, Robson - Orders Report (By Date)
+	Version: 5.0
+
+2.0 Record Sort Fields
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@GetSubTitle}
+	Formula: StringVar SubTitle := "Date between " +
+	    Totext ({@AskDateFrom},"MMMM dd, yyyy") + " and " + Totext ({@AskDateTo},"MMMM dd, yyyy");
+
+	Name: {@InitialGrandData}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar GrandGross :=0;
+	CurrencyVar GrandDeposit :=0;
+	CurrencyVar GrandDue :=0;
+	CurrencyVar GrandSaleGross :=0;
+	CurrencyVar GrandSaleDeposit :=0;
+	
+	NumberVar OrderCounts :=0;
+
+	Name: {@InitialRunData}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar RunningGross :=0;
+	CurrencyVar RunningDeposit :=0;
+	CurrencyVar RunningDue :=0;
+	CurrencyVar RunSaleGross :=0;
+	CurrencyVar RunSaleDeposit :=0;
+
+	Name: {@DispGrandGross}
+	Formula: WhilePrintingRecords;
+	CurrencyVar GrandGross;
+	
+
+	Name: {@DispGrandDeposit}
+	Formula: WhilePrintingRecords;
+	CurrencyVar GrandDeposit;
+	
+
+	Name: {@DispGrandDue}
+	Formula: WhilePrintingRecords;
+	CurrencyVar GrandDue;
+	
+
+	Name: {@DispGrandSaleGross}
+	Formula: WhilePrintingRecords;
+	CurrencyVar GrandSaleGross;
+
+	Name: {@DispGrandSaleDeposit}
+	Formula: WhilePrintingRecords;
+	CurrencyVar GrandSaleDeposit;
+
+	Name: {@DispGrossSalesPerOrder}
+	Formula: WhilePrintingRecords;
+	CurrencyVar GrandGross;
+	CurrencyVar GrandSaleGross;
+	
+	NumberVar OrderCounts;
+	
+	StringVar MsgStr:=  "Order(s)  counted : " + Totext (OrderCounts,0)
+	                               + chr(10) +  "Void Order(s) counted: " + Totext(({@GetRecordsPrinted}-OrderCounts),0);
+	
+	
+	if OrderCounts<>0 then
+	  MsgStr:= MsgStr + chr(10) + "Average Gross Sales per Order : " +
+	                  Totext (((GrandGross + GrandSaleGross)/ OrderCounts),2);
+	
+	MsgStr;
+
+	Name: {@DispOIPSales}
+	Formula: WhilePrintingRecords;
+	CurrencyVar GrandGross;
+	CurrencyVar GrandSaleGross;
+	
+	"Gross Sales Total (Order In Progress + Sales) : "
+	+ ToText (( GrandGross + GrandSaleGross),2)
+
+	Name: {@BuildGrand and Sale}
+	Formula: WhilePrintingRecords;
+	
+	
+	CurrencyVar RunningGross;
+	CurrencyVar RunningDeposit;
+	CurrencyVar RunningDue;
+	
+	  // Add Grand Value
+	CurrencyVar GrandGross := GrandGross + RunningGross;
+	CurrencyVar GrandDeposit := GrandDeposit + RunningDeposit;
+	CurrencyVar GrandDue := GrandDue + RunningDue;
+	CurrencyVar RunSaleGross;
+	CurrencyVar RunSaleDeposit;
+	CurrencyVar GrandSaleGross := GrandSaleGross + RunSaleGross;
+	CurrencyVar GrandSaleDeposit := GrandSaleDeposit + RunSaleDeposit;
+
+	Name: {@DispRunDue}
+	Formula: WhilePrintingRecords;
+	CurrencyVar RunningDue;
+
+	Name: {@DispRunSaleGross}
+	Formula: WhilePrintingRecords;
+	CurrencyVar RunSaleGross;
+
+	Name: {@DispRunSaleDeposit}
+	Formula: WhilePrintingRecords;
+	CurrencyVar RunSaleDeposit;
+
+	Name: {@DispRunDeposit}
+	Formula: WhilePrintingRecords;
+	CurrencyVar RunningDeposit;
+
+	Name: {@DispRunGross}
+	Formula: WhilePrintingRecords;
+	CurrencyVar RunningGross;
+
+	Name: {@InitialRunData}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar RunningGross :=0;
+	CurrencyVar RunningDeposit :=0;
+	CurrencyVar RunningDue :=0;
+	CurrencyVar RunSaleGross :=0;
+	CurrencyVar RunSaleDeposit :=0;
+
+	Name: {@InitSKU&PayMethod}
+	Formula: WhilePrintingRecords;
+	StringVar SKUs := "";
+	StringVar PayMethods := "";
+
+	Name: {@GetGrossSales}
+	Formula: // 0 = Draft
+	// 1 = Confirmed
+	// 2 = Cancelled
+	// 3 = Invoiced
+	if ({TxHeader.Status} = "1" or  {TxHeader.Status}="3" ) then
+	  {TxHeader.TotalAmount}
+	else 0;
+
+	Name: {@GetDepositAmount}
+	Formula: // 0 = Draft
+	// 1 = Confirmed
+	// 2 = Cancelled
+	// 3 = Invoiced
+	if ({TxHeader.Status}="1" or {TxHeader.Status}="3") then
+	 {TxHeader.PreviousPaid}+{TxHeader.ThisPaid}
+	else 0;
+
+	Name: {@GetGrossSales}
+	Formula: // 0 = Draft
+	// 1 = Confirmed
+	// 2 = Cancelled
+	// 3 = Invoiced
+	if ({TxHeader.Status} = "1" or  {TxHeader.Status}="3" ) then
+	  {TxHeader.TotalAmount}
+	else 0;
+
+	Name: {@GetDepositAmount}
+	Formula: // 0 = Draft
+	// 1 = Confirmed
+	// 2 = Cancelled
+	// 3 = Invoiced
+	if ({TxHeader.Status}="1" or {TxHeader.Status}="3") then
+	 {TxHeader.PreviousPaid}+{TxHeader.ThisPaid}
+	else 0;
+
+	Name: {@GetBalanceDue}
+	Formula: // 0 = Draft
+	// 1 = Confirmed
+	// 2 = Cancelled
+	// 3 = Invoiced
+	if ({TxHeader.Status}="1" or {TxHeader.Status}="3") then
+	 {TxHeader.TotalAmount}-{@GetDepositAmount}
+	else 0;
+
+	Name: {@GetSKU}
+	Formula: WhilePrintingRecords;
+	StringVar SKUs;
+
+	Name: {@GetPayMethod}
+	Formula: WhilePrintingRecords;
+	StringVar PayMethods;
+
+	Name: {@GetOrderNumber}
+	Formula: if {TxHeader.Status} = "2" then
+	  {TxHeader.TxNumber} + chr(10) + "  * Void *"
+	else
+	  {TxHeader.TxNumber};
+
+	Name: {@GetRunDue}
+	Formula: // 0 = Draft
+	// 1 = Confirmed
+	// 2 = Cancelled
+	// 3 = Invoiced
+	if ({TxHeader.Status}="1") then
+	 {TxHeader.TotalAmount}-{@GetDepositAmount}
+	else 0;
+
+	Name: {@GetRunDeposit}
+	Formula: // 0 = Draft
+	// 1 = Confirmed
+	// 2 = Cancelled
+	// 3 = Invoiced
+	if ({TxHeader.Status}="1") then
+	 {TxHeader.PreviousPaid}+{TxHeader.ThisPaid}
+	else 0;
+
+	Name: {@GetSalesDeposit}
+	Formula: // 0 = Draft
+	// 1 = Confirmed
+	// 2 = Cancelled
+	// 3 = Invoiced
+	if ({TxHeader.Status}="3") then
+	 {TxHeader.PreviousPaid}+{TxHeader.ThisPaid}
+	else 0;
+
+	Name: {@GetRunGross}
+	Formula: // 0 = Draft
+	// 1 = Confirmed
+	// 2 = Cancelled
+	// 3 = Invoiced
+	if ({TxHeader.Status} = "1") then
+	  {TxHeader.TotalAmount}
+	else 0;
+
+	Name: {@GetSalesGross}
+	Formula: // 0 = Draft
+	// 1 = Confirmed
+	// 2 = Cancelled
+	// 3 = Invoiced
+	if ({TxHeader.Status}="3" ) then
+	  {TxHeader.TotalAmount}
+	else 0;
+
+	Name: {@BuildRunning and Sale}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar RunningGross;
+	CurrencyVar RunningDeposit;
+	CurrencyVar RunningDue;
+	CurrencyVar RunSaleGross;
+	CurrencyVar RunSaleDeposit;
+	
+	NumberVar OrderCounts := OrderCounts + {@GetOrderCounts};
+	
+	if ({TxHeader.Status} <> "3")  then
+	  (RunningGross := RunningGross + {@GetGrossSales};
+	  RunningDeposit  := RunningDeposit + {@GetDepositAmount};
+	  RunningDue := RunningDue + {@GetBalanceDue};)
+	else
+	 (RunSaleGross := RunSaleGross + {@GetGrossSales};
+	  RunSaleDeposit := RunSaleDeposit + {@GetDepositAmount};)
+	
+	
+
+	Name: {@BuildSKU}
+	Formula: WhilePrintingRecords;
+	StringVar SKUs;
+	StringVar TmpStr;
+	
+	if {TxHeader.Status} = "2"  then // Cancelled order
+	  SKUs := "N/A"
+	else
+	(if not isnull ({TxDetails.SKU}) then 
+	  (TmpStr:=" &" + chr(10)  + {TxDetails.SKU};
+	   if (length(SKUs) + length(TmpStr)) <= 254 then
+	     (if SKUs <> "" then 
+	        SKUs := SKUs + TmpStr
+	     else
+	       SKUs := {TxDetails.SKU});
+	   if not isnull ({Brand.BrandDescription}) then 
+	   (TmpStr:= "/" + {Brand.BrandDescription};
+	   if (length(SKUs) + length(TmpStr)) <= 254 then
+	     SKUs := SKUs + TmpStr)));
+	  
+
+	Name: {@BuildPayMethod}
+	Formula: WhilePrintingRecords;
+	StringVar PayMethods;
+	
+	if {TxHeader.Status} = "2" then
+	  PayMethods := "N/A"
+	else if not isnull ({PaymentMethods.PaymentNameLong}) then 
+	  if PayMethods <> "" and not ({PaymentMethods.PaymentNameLong} in PayMethods) then 
+	       PayMethods := PayMethods + " &"  + chr(10) + {PaymentMethods.PaymentNameLong}
+	  else
+	  PayMethods :={PaymentMethods.PaymentNameLong};
+	
+	PayMethods;  
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Subsection.3 
+		Visible, Keep Together
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetSubTitle}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	- - - -  -  Orders   in   Progress    - - - - -
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	- - - - - - -    Transfered   to   Sales   - - - - - - - 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Only
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Deposit
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	 Sales
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Invoice
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Number
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Deposit +
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Order
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Deposit
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Balance
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Due
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Received
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Order
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Amount
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Method
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Deposit
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	- - - - - - - - Particular - - - - - - - -
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Number
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Staff
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Code
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+5.2 Page Footer Section
+	Visible, New Page After, Keep Together, Print At Bottom of Page
+
+5.3 Report Header Section
+	Hidden, New Page Before
+
+	{@InitialGrandData}
+		Numeric, Hidden, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@InitialRunData}
+		Currency, Hidden, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+5.4 Report Footer Section
+	Visible, New Page After
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Grand Total:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@DispGrandGross}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispGrandDeposit}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispGrandDue}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispGrandSaleGross}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispGrandSaleDeposit}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispGrossSalesPerOrder}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@DispOIPSales}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.5 Group Header Section #1
+	Hidden
+
+	GroupName ({TxHeader.TxType})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.6 Group Footer Section #1
+	Hidden
+
+5.7 Group Header Section #2
+	Visible
+
+	{TxDetails.DateofEntry}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+5.8 Group Footer Section #2
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Hidden, Keep Together
+
+	{@BuildGrand and Sale}
+		Currency, Hidden, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispRunDue}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispRunSaleGross}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispRunSaleDeposit}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispRunDeposit}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispRunGross}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{TxDetails.DateofEntry}
+		Date, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	{@InitialRunData}
+		Currency, Hidden, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+5.9 Group Header Section #3
+	Hidden
+
+	GroupName ({TxHeader.TxNumber})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@InitSKU&PayMethod}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.10 Group Footer Section #3
+	Visible
+
+	Subsection.1 
+		Hidden, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Subsection.3 
+		Hidden, Keep Together
+
+	{@GetGrossSales}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@GetDepositAmount}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@GetGrossSales}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@GetDepositAmount}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@GetBalanceDue}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@GetSKU}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+
+	{@GetPayMethod}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+
+	{TxHeader.RefNumber}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetOrderNumber}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+
+	{@GetRunDue}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+		Object Format Formulas -
+		Visible: {TxHeader.Status} IN "023"
+		
+	{@GetRunDeposit}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+		Object Format Formulas -
+		Visible: {TxHeader.Status} IN "023"
+		
+	{@GetSalesDeposit}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+		Object Format Formulas -
+		Visible: {TxHeader.Status} IN "012"
+		
+	{@GetRunGross}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+		Object Format Formulas -
+		Visible: {TxHeader.Status} IN "023"
+		
+	{@GetSalesGross}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+		Object Format Formulas -
+		Visible: {TxHeader.Status} IN "012"
+		
+	{Staff.StaffCode}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@BuildRunning and Sale}
+		Currency, Hidden, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+5.11 Details Section
+	Hidden
+
+	Subsection.1 
+		Hidden, Keep Together
+
+	{@BuildSKU}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+
+	{@BuildPayMethod}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+

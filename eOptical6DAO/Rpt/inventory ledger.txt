@@ -1,0 +1,912 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: The Optical Centre, Robson - Inventory Ledger
+	Version: 5.0
+
+2.0 Record Sort Fields
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@GetSubTitle}
+	Formula: Whileprintingrecords;
+	Stringvar strSubTitle := "Department Code like '" + {@AskDept} + "' and " +
+	      "Class Code  like '" + {@AskClass} + "' and " +
+	      "Category Code like '" +{@AskCat} + "'    (" +
+	      "Date on or after " + totext({@AskLedgerDateFrom},"MMMM dd, yyyy") + ")"; 
+	
+	if {@AskXcludeZeroQty} then
+	  strSubTitle := strSubTitle + "   (Excluding items with zero balance)"
+	else
+	  strSubTitle;
+	
+
+	Name: {@InitialControl}
+	Formula: WhilePrintingRecords;
+	BooleanVar XBFPrint :=False;
+	NumberVar BFPrintCount :=0;
+	CurrencyVar SKUAmt :=0;
+	CurrencyVar GrandAmt :=0;
+	NumberVar SKUQty :=0;
+	CurrencyVar SKUBFAmt :=0;
+	NumberVar SKUBFQty :=0;
+
+	Name: {@DispGrandAmt}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar GrandAmt;
+
+	Name: {@ResetSKUData}
+	Formula: WhilePrintingRecords;
+	CurrencyVar SKUAmt;
+	NumberVar SKUQty;
+	BooleanVar XBFPrint;
+	NumberVar BFPrintCount;
+	NumberVar SKUBFQty;
+	CurrencyVar SKUBFAmt;
+	// Reset
+	XBFPrint := False;
+	BFPrintCount :=0;
+	SKUQty :=0;
+	SKUAmt :=0;
+	SKUBFAmt :=0;
+	SKUBFQty :=0;
+	
+
+	Name: {@DispBFDate}
+	Formula: WhilePrintingRecords;
+	DateVar BFDate;
+
+	Name: {@DispSKUBFQty}
+	Formula: WhilePrintingRecords;
+	
+	NumberVar SKUBFQty;
+	
+
+	Name: {@DispSKUBFAvCost}
+	Formula: WhilePrintingRecords;
+	
+	if {@DispSKUBFQty} <> 0 then
+	  Abs({@DispSKUBFAmt}) / Abs({@DispSKUBFQty})
+	else 
+	  0;
+
+	Name: {@DispSKUBFAmt}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar SKUBFAmt;
+	
+
+	Name: {@BuildGrandData}
+	Formula: WhilePrintingRecords;
+	CurrencyVar SKUAmt;
+	CurrencyVar GrandAmt;
+	
+	// Update GrandAmt
+	GrandAmt := GrandAmt + SKUAmt;
+
+	Name: {@GetInventoryCost}
+	Formula: {Inventory.AverageCost} * {Inventory.QtyTotalOnHand};
+
+	Name: {@BuildSKUData}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar SKUAmt;
+	CurrencyVar SKUBFAmt;
+	NumberVar  SKUQty;
+	NumberVar SKUBFQty;
+	CurrencyVar GrandAmt;
+	BooleanVar XBFPrint;
+	NumberVar BFPrintCount;
+	DateVar BFDate;
+	
+	XBFPrint :=({TxDetails.DateofEntry} >= {@AskLedgerDateFrom} and BFPrintCount = 0 );
+	
+	SKUAmt := SKUAmt +
+	  (abs({@GetTransCost}) * {@GetTransQty});
+	SKUQty := SKUQty + {@GetTransQty};
+	
+	// Updated SKUBF Data
+	if XBFPrint then BFPrintCount := BFPrintCount + 1;
+	if BFPrintCount=0 then
+	  (SKUBFAmt := SKUBFAmt + (abs({@GetTransCost}) * {@GetTransQty});
+	   BFDate :={TxDetails.DateofEntry};
+	   SKUBFQty := SKUBFQty + {@GetTransQty});
+	
+	
+
+	Name: {@DispSKUBFQty}
+	Formula: WhilePrintingRecords;
+	
+	NumberVar SKUBFQty;
+	
+
+	Name: {@DispSKUBFAmt}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar SKUBFAmt;
+	
+
+	Name: {@DispSKUBFAvCost}
+	Formula: WhilePrintingRecords;
+	
+	if {@DispSKUBFQty} <> 0 then
+	  Abs({@DispSKUBFAmt}) / Abs({@DispSKUBFQty})
+	else 
+	  0;
+
+	Name: {@DispBFDate}
+	Formula: WhilePrintingRecords;
+	DateVar BFDate;
+
+	Name: {@DispSKUQty}
+	Formula: WhilePrintingRecords;
+	NumberVar SKUQty;
+	
+
+	Name: {@DispSKUAvCost}
+	Formula: if {@DispSKUQty} <> 0 then
+	  Abs({@DispSKUAmt}) / Abs({@DispSKUQty})
+	else 
+	  0;
+
+	Name: {@GetTransAmt}
+	Formula: abs({@GetTransCost}) * {@GetTransQty};
+
+	Name: {@GetTransQty}
+	Formula: // Type="*C" then -{TxDetails.Qty}; this is invoice
+	// Type="RS" then -{TxDetails.Qty}; this is refund
+	if {TxDetails.TxType} in ["RC","RS","WC"] then
+	 -{TxDetails.Qty}
+	else
+	  {TxDetails.Qty};
+
+	Name: {@DispSKUAmt}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar SKUAmt;
+
+	Name: {@GetTransCost}
+	Formula: // PR=Purchase Order
+	// RJ=Stock Rejected
+	// SR=Stock Received
+	// TN=Transfer In
+	// TU=Transfer Out
+	if {TxDetails.TxType} in "PRRJSJSRTNTU" then
+	  {TxDetails.UnitCost} - {TxDetails.MarkDownAmount}
+	else
+	  {TxDetails.UnitAmount} - {TxDetails.MarkDownAmount};
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetSubTitle}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.2 Page Footer Section
+	Visible, New Page After, Keep Together, Print At Bottom of Page
+
+5.3 Report Header Section
+	Hidden, New Page Before
+
+	{@InitialControl}
+		Numeric, Hidden, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+5.4 Report Footer Section
+	Visible, New Page After
+
+	Grand Total:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@DispGrandAmt}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+5.5 Group Header Section #1
+	Hidden
+
+	GroupName ({Inventory.DepartmentCode})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.6 Group Footer Section #1
+	Hidden
+
+5.7 Group Header Section #2
+	Hidden
+
+	GroupName ({Inventory.ClassCode})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.8 Group Footer Section #2
+	Hidden
+
+5.9 Group Header Section #3
+	Hidden
+
+5.10 Group Footer Section #3
+	Hidden
+
+	Sum ({Inventory.QtyTotalOnHand}, {Inventory.CategoryCode})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetInventoryCost}, {Inventory.CategoryCode})
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	  
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+	{Category.CategoryName}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+	:
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+5.11 Group Header Section #4
+	Visible
+
+	{@ResetSKUData}
+		Numeric, Hidden, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+5.12 Group Footer Section #4
+	Visible
+
+	{@DispBFDate}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Short, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	B/F Balance
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@DispSKUBFQty}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@DispSKUBFAvCost}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispSKUBFAmt}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@BuildGrandData}
+		Currency, Hidden, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+5.13 Group Header Section #5
+	Hidden
+
+	GroupName ({TxDetails.DateofEntry}, "daily")
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.14 Group Footer Section #5
+	Hidden
+
+5.15 Details Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: {Inventory.SKU} = Previous ({Inventory.SKU})
+		
+	Subsection.2 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: ({Inventory.ClassCode} in ["LN","CN"]) or
+({Inventory.SKU} = Previous ({Inventory.SKU}));
+		
+	Subsection.3 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: Not ({Inventory.ClassCode} in ["LN","CN"]) or
+({Inventory.SKU} = Previous ({Inventory.SKU}));
+		
+	Subsection.4 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: ({Inventory.SKU} = Previous ({Inventory.SKU}));
+		
+	Subsection.5 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: WhilePrintingRecords;
+BooleanVar XBFPrint;
+
+(not XBFPrint);
+		
+	Subsection.6 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: WhilePrintingRecords;
+BooleanVar XBFPrint;
+
+Isnull({TxDetails.DateofEntry}) or
+({TxDetails.DateofEntry}<{@AskLedgerDateFrom});
+		
+	Department: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Class: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Category:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Model: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Brand:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Supplier: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	{Department.DepartmentName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Category.CategoryName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Class.ClassName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.Model}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Brand.BrandDescription}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Supplier.SupplierName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Colour: 
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Material: 
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	{Material.MaterialDescription}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Size: 
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	{Inventory.Size}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.Color}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Base Curve: 
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Cylinder: 
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Sphere: 
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Diameter: 
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	{Inventory.Sphere}
+		Numeric, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{Inventory.Cylinder}
+		Numeric, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{Inventory.BaseCurve}
+		Numeric, Visible, Left Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 1 Decimal Places, Rounding: 0.1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Colour: 
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	{Inventory.Color}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.Diameter}
+		Numeric, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Description: 
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	SKU No.
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	C/D Quantity: 
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	C/D Amounts: 
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Average Cost:
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Re-order Level: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Re-order Qty: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Sale-order Qty: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Hold Qty: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Last Sales Date: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Last Received Date: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	{Inventory.Description}
+		Memo, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.SKU}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.ReOrderLevel}
+		Numeric, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{Inventory.DateLastIssued}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Short, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	{Inventory.DateLastReceived}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Short, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	{Inventory.QtySaleOrder}
+		Numeric, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{Inventory.ReOrderQty}
+		Numeric, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{Inventory.QtyHolded}
+		Numeric, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@GetInventoryCost}
+		Currency, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{Inventory.QtyTotalOnHand}
+		Numeric, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@BuildSKUData}
+		Numeric, Hidden, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{Inventory.AverageCost}
+		Currency, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	- - - - - - - - - -    O n   H a n d   D e t a i l s    - - - - - - - - - - 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Amounts
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Average Cost
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Quantities
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	- - - - - - - - - - - - - - - - - - - -   T r a n s a c t i on       D e t a i l s    - - - - - - - - - - - - - - - - - - - -
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Amounts
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Net Cost
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Quantities
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Reference
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	TransNumber
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Type
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Date
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	B/F Balance
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@DispSKUBFQty}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@DispSKUBFAmt}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispSKUBFAvCost}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispBFDate}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Short, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	{@DispSKUQty}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@DispSKUAvCost}
+		Currency, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{TxDetails.DateofEntry}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Short, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	{TxDetails.TxType}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{TxDetails.TxNumber}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetTransAmt}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@GetTransQty}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxHeader.RefNumber}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@DispSKUAmt}
+		Currency, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@GetTransCost}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+

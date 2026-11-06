@@ -1,0 +1,113 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: THE OPTICAL CENTRE - Pacific Mall - Bar Code Tag
+	Version: 5.0
+
+2.0 Record Sort Fields
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@ToBarCode}
+	Formula: StringToCode39 ({Inventory.SKU})
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Hidden, Keep Together
+
+5.2 Page Footer Section
+	Hidden, New Page After, Keep Together, Print At Bottom of Page
+
+5.3 Report Header Section
+	Hidden, New Page Before
+
+5.4 Report Footer Section
+	Hidden, New Page After
+
+5.5 Details Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together, Suppress Blank Sections
+
+	Subsection.2 
+		Visible, Keep Together, Suppress Blank Sections
+
+	Subsection.3 
+		Visible, Keep Together
+
+	{Inventory.InventoryType}
+		String, Hidden, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{BarCodePool.TxNumber}
+		String, Hidden, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@ToBarCode}
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Brand.BrandDescription}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.SKU}
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{RetailPrice.RetailPrice}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{Inventory.Model}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.Color}
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.Size}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Class.ClassName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	THE OPTICAL CENTRE
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{Inventory.SKU}
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+

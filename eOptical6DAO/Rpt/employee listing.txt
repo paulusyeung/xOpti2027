@@ -1,0 +1,444 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: The Optical Centre, Richmond - Empolyee Listing
+	Version: 5.0
+
+2.0 Record Sort Fields
+	A - {qryStaff.StaffFullName}
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@BuildLeadingCode}
+	Formula: WhilePrintingRecords;
+	StringVar LeadingCode :="";
+	
+	if not isnull({Country.CountryCode}) then
+	  LeadingCode:={Country.CountryPhoneCode} + "-";
+	
+	if not isnull({City.Code}) then
+	  (if Asc({City.CityPhoneCode}) in 48 to 57 then
+	    LeadingCode:=LeadingCode + {City.CityPhoneCode} + "-");
+	
+
+	Name: {@GetStaffName}
+	Formula: StringVar StaffName := "";
+	
+	if isnull({qryStaff.StaffFullName}) then
+	  (if isnull({qryStaff.StaffFirstName}) then
+	     StaffName:= StaffName + trim ({qryStaff.StaffLastName})
+	  else
+	    (if isnull({qryStaff.StaffLastName}) then
+	      StaffName :=StaffName + trim ({qryStaff.StaffFirstName})
+	    else
+	      StaffName :=StaffName + trim ({qryStaff.StaffFirstName})+"  " + trim ({qryStaff.StaffLastName})))
+	else
+	  StaffName := {qryStaff.StaffFullName};
+	
+	StaffName;
+
+	Name: {@GetAddress}
+	Formula: StringVar Address := "";
+	
+	if not isnull({qrystaff.HomeAddress}) then
+	   Address := trim({qrystaff.HomeAddress});
+	
+	if Address <> "" then
+	  (if Right(Address,1) in [";",","] then
+	    Address := Address + " "
+	  else
+	    Address := Address + ", ");
+	
+	if not isnull ({City.Code}) then
+	 (if not ({City.CityName} like "*/*") then
+	  (if Address <> "" then
+	     Address := Address + trim({City.CityName})
+	  else
+	     Address := trim({City.CityName})));
+	if not isnull ({City.ProvinceCode}) then
+	  if Address <> "" then
+	     Address := Address + ", " + trim ({Province.ProvinceName})
+	  else
+	     Address := trim({Province.ProvinceName});
+	
+	if not isnull ({qrystaff.HomePostalCode}) then
+	   if Address <> "" then 
+	      Address :=  Address + ", " + trim({qrystaff.HomePostalCode})
+	   else
+	      Address := trim({qrystaff.HomePostalCode});
+	
+	//if not isnull ({qrystaff.HomeCountry}) then
+	//   if Address <> "" then
+	//      Address := Address + ", " + trim({qrystaff.HomeCountry})
+	//   else
+	//      Address := trim({qrystaff.HomeCountry});
+	
+	Address;
+
+	Name: {@GetStaffFax}
+	Formula: WhilePrintingRecords;
+	StringVar LeadingCode;
+	
+	if isnull({qryStaff.HomeFax}) then
+	  ""
+	else
+	  (if trim({qryStaff.HomeFax})="" then
+	     ""
+	   else
+	     LeadingCode + {qryStaff.HomeFax});
+	
+
+	Name: {@GetStaffPhone}
+	Formula: WhilePrintingRecords;
+	StringVar LeadingCode;
+	
+	if isnull({qryStaff.HomePhone}) then
+	  ""
+	else
+	  (if trim({qryStaff.HomePhone})="" then
+	     ""
+	   else
+	     LeadingCode + {qryStaff.HomePhone});
+	
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.2 Page Footer Section
+	Visible, New Page After, Keep Together, Print At Bottom of Page
+
+5.3 Report Header Section
+	Hidden, New Page Before
+
+5.4 Report Footer Section
+	Visible, New Page After
+
+	Records printed: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+	RecordNumber
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+5.5 Group Header Section
+	Hidden
+
+	{@BuildLeadingCode}
+		String, Hidden, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.6 Group Footer Section
+	Visible
+
+5.7 Details Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Subsection.3 
+		Visible, Keep Together
+
+	Subsection.4 
+		Visible, Keep Together
+
+	Subsection.5 
+		Visible, Keep Together
+
+	Subsection.6 
+		Visible, Keep Together
+
+	Subsection.7 
+		Visible, Keep Together
+
+	Subsection.8 
+		Visible, Keep Together
+
+	Hired:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{qryStaff.DateHired}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	JobTitle:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Code:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{qryStaff.StaffCode}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{JobTitle.JobTitle}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetStaffName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+
+	Status:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Name:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Initial:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{qryStaff.StaffInitial}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{JobStatus.Name}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Marital Status:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Level:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{qryStaff.SecurityLevel}
+		Numeric, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sex:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{MaritalStatus.MaritalStatus}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Sex.Sex}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	SIN:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{qryStaff.SIN}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Birthday:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{qryStaff.Birthday}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	Salary:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{PayPer.Name}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Address:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@GetAddress}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{PayPeriod.Name}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Pay:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Home Phone:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Home Fax:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@GetStaffFax}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetStaffPhone}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Salary Basic:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Bank Account:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{qryStaff.BankAccount}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{qryStaff.SalaryBasic}
+		Currency, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	Leaved:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{qryStaff.DateLeaved}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	{qryStaff.CommissionBonus}
+		Numeric, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Commission Bonus:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{qryStaff.CommissionRate}
+		Numeric, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Commission Rate:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+

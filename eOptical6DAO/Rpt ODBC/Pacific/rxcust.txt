@@ -1,0 +1,1180 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: THE OPTICAL CENTRE - Pacific Mall - Customer's Prescription
+	Version: 5.0
+
+2.0 Record Sort Fields
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@DispHomePhone}
+	Formula: StringVar PhoneNo:="";
+	
+	if isnull({Customer.HomePhone}) then
+	  PhoneNo
+	else
+	  (if trim({Customer.HomePhone})="" then
+	     PhoneNo
+	   else
+	     {@BuildHomePhone});
+
+	Name: {@DispReference}
+	Formula: StringVar Msgs:="";
+	
+	if not isnull({TxHeader.TxNumber}) then
+	  (Msgs:={TxHeader.TxNumber};
+	   if not isnull ({TxHeader.DateOfEntry}) then
+	      Msgs:= Msgs + " dated " + 
+	      Totext({TxHeader.DateOfEntry},"MMM dd, yyyy"));
+	
+	if not isnull({TxHeader.RefNumber}) then
+	  Msgs:= Msgs + "   (" + {TxHeader.RefNumber} + ")";
+	
+	Msgs;
+
+	Name: {@DispBookLens}
+	Formula: StringVar Msgs:="I. Lens - ";
+	
+	if not isnull({Doctor.DoctorName}) then 
+	  Msgs:= Msgs + "issued by " + {Doctor.DoctorName};
+	
+	if not isnull ({CustomerPresLens.IssuedOn}) then
+	  Msgs:= Msgs +  " dated " + ToText ({CustomerPresLens.IssuedOn},"MMM dd, yyyy");
+	
+	Msgs;
+
+	Name: {@DispBookCN}
+	Formula: StringVar Msgs:="II. Contact/Disposal Lens - ";
+	
+	if not isnull({DoctorCN.DoctorName}) then 
+	  Msgs:= Msgs + "issued by " + {DoctorCN.DoctorName};
+	
+	if not isnull ({CustomerPresContact.IssuedOn}) then
+	  Msgs:= Msgs +  " dated " + ToText ({CustomerPresContact.IssuedOn},"MMM dd, yyyy");
+	
+	Msgs;
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	THE OPTICAL CENTRE PACIFIC MALL
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	CANADIAN EYE-CARE & BEAUTY CENTRE INC.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Unit C-52, 4300 Steeles Ave. East, Markham, Ontario  L3R 0Y5
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Phone: (905) 946-8846            Fax: (905) 946-0297
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	G.S.T. NO. 870912 920 RT0001
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	ReportTitle
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.2 Page Footer Section
+	Visible, New Page After, Keep Together, Print At Bottom of Page
+
+5.3 Report Header Section
+	Hidden, New Page Before
+
+5.4 Report Footer Section
+	Visible, New Page After
+
+5.5 Group Header Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	{@DispHomePhone}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Customer.FirstName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Customer.LastName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	LAST
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	FIRST
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	HOME PHONE
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+
+5.6 Group Footer Section
+	Hidden
+
+5.7 Details Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Subsection.3 
+		Visible, Keep Together
+
+	Subsection.4 
+		Visible, Keep Together
+
+	Subsection.5 
+		Visible, Keep Together
+
+	Subsection.6 
+		Visible, Keep Together
+
+	Reference No.: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@DispReference}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	I. Lens
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	VD
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Base
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	OC
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Seg HT
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Lens Style
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{TxSOrderLens.LeftVD}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.LeftBase}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.LeftOC}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.LeftSegHt}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.RightVD}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.RigthBase}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.RigthOC}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.RightSegHt}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.RightStyle}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{TxSOrderLens.LeftStyle}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	L
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	R
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{TxSOrderLens.LeftPupil}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.LeftAdd}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.LeftPrism}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.LeftPdNear}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.LeftPdDist}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.LeftAxis}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.LeftCylinder}
+		Numeric, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.LeftSphere}
+		Numeric, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Pupil
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{TxSOrderLens.RightPupil}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.RightAdd}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.RightPrism}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.RightPdNear}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.RightPdDist}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.RightAxis}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.RightCylinder}
+		Numeric, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderLens.RightSphere}
+		Numeric, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Add
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Prism
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	PD Near
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	PD Dist
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Axis
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Cylinder
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Sphere
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	L
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	R
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Rx
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	II. Contact/Disposal Lens
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{TxSOrderCont.Test}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{TxSOrderCont.Evaluation}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{TxSOrderCont.Reason}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{TxSOrderCont.Allergy}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{TxSOrderCont.Medical}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Vision test with spectacles:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Evaluation and diagnosis:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Reason for fitting:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Allergies:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Medications:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	History:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{TxSOrderCont.History}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{TxSOrderCont.LeftKReadingV}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderCont.LeftKReadingH}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderCont.LeftPalp}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderCont.LeftCorn}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderCont.LeftPupil}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderCont.RightPupil}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderCont.RightCorn}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderCont.RightKReadingH}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderCont.RightKReadingV}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderCont.RightAxis}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderCont.LeftAxis}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderCont.LeftCylinder}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderCont.LeftSphere}
+		Numeric, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderCont.RightCylinder}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxSOrderCont.RightSphere}
+		Numeric, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	L
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	R
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Rx
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Sphere
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Cylinder
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Axis
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	K-ReadingV
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	K-ReadingH
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Palp Apert.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Corn Dia.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Pupil
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{TxSOrderCont.RightPalp}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Latest prescription details as per our record:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@DispBookLens}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Rx
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Sphere
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Cylinder
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Axis
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	PD Dist
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	PD Near
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Prism
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Add
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Pupil
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	R
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	L
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{CustomerPresLens.RightSphere}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresLens.RightCylinder}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresLens.RightAxis}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresLens.RightPdDist}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresLens.RightPdNear}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresLens.RightPrism}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresLens.RightAdd}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresLens.RightPupil}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresLens.LeftSphere}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresLens.LeftCylinder}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresLens.LeftAxis}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresLens.LeftPdDist}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresLens.LeftPdNear}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresLens.LeftPrism}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresLens.LeftAdd}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresLens.LeftPupil}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@DispBookCN}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Rx
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Sphere
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Cylinder
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Axis
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	K-ReadingV
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	K-ReadingH
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Palp Apert.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Corn Dia.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Pupil
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	R
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	L
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{CustomerPresContact.RightSphere}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresContact.RightCylinder}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresContact.RightAxis}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresContact.RightKReadingV}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresContact.RightKReadingH}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresContact.RightPalp}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresContact.RightCorn}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresContact.RightPupil}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresContact.LeftSphere}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresContact.LeftCylinder}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresContact.LeftAxis}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresContact.LeftKReadingV}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresContact.LeftKReadingH}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresContact.LeftPalp}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresContact.LeftCorn}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerPresContact.LeftPupil}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	History:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Medications:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Allergies:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Reason for fitting:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Evaluation and diagnosis:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Vision test with spectacles:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{CustomerPresContact.History}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{CustomerPresContact.Medical}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{CustomerPresContact.Allergy}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{CustomerPresContact.Reason}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{CustomerPresContact.Evaluation}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{CustomerPresContact.Test}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+

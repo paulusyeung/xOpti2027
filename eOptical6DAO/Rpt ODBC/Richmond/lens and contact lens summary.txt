@@ -1,0 +1,116 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: The Optical Centre, Richmond - Lens and Contact Lens On Hand Quantities
+	Version: 5.0
+
+2.0 Record Sort Fields
+	A - {Brand.BrandDescription}
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	{Inventory.ClassCode} in ["CN","LN"] and
+{Inventory.DepartmentCode} = "GL"
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@GetClassCategory}
+	Formula: {Category.CategoryName} + " " + {Class.ClassName}
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together, Suppress Blank Sections
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Subsection.3 
+		Visible, Keep Together
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	BRAND
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	SPHERE
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	LENS STYLE
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	CYLINDER
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@GetClassCategory}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.2 Page Footer Section
+	Visible, New Page After, Keep Together, Print At Bottom of Page
+
+5.3 Report Header Section
+	Hidden, New Page Before, Print At Bottom of Page
+
+5.4 Report Footer Section
+	Hidden, New Page After
+
+5.5 Group Header Section #1
+	Visible
+
+5.6 Group Footer Section #1
+	Hidden
+
+5.7 Group Header Section #2
+	Visible
+
+5.8 Group Footer Section #2
+	Hidden
+
+5.9 Details Section
+	Hidden, New Page After
+
+	Subsection.1 
+		Visible, Keep Together
+

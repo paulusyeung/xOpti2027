@@ -1,0 +1,783 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: The Optical Centre, Richmond - Daily cash receipts
+	Version: 5.0
+
+2.0 Record Sort Fields
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@GetSubTitle}
+	Formula: StringVar SubTitle := "Date between " +
+	    Totext ({@AskDateFrom}, "MMMM dd, yyyy") + " and " 
+	 + Totext ({@AskDateTo}, "MMMM dd, yyyy");
+
+	Name: {@lblTaxA}
+	Formula: StringVar TaxALabel := "";
+	dateVar cutoffDate := date(2010, 7, 1);
+	
+	if {@AskDateFrom} >= cutoffDate then
+	  TaxALabel := "HST"
+	else
+	  TaxALabel := "GST";
+	
+
+	Name: {@lblTaxB}
+	Formula: StringVar TaxBLabel := "";
+	dateVar cutoffDate := date(2010, 7, 1);
+	
+	if {@AskDateFrom} >= cutoffDate then
+	  TaxBLabel := ""
+	else
+	  TaxBLabel := "PST";
+	
+
+	Name: {@GetNetSales}
+	Formula: WhilePrintingRecords;
+	
+	"* * * * * * Sales Amounts (exculding all taxes) : " + 
+	  Totext( (sum({@GetGrossSales}) - sum ({@GetGST}) - sum ({@GetPST})),2);
+
+	Name: {@GetOrderNumber}
+	Formula: if {TxHeader.TxType} = "SA" then
+	 "* " +  {TxHeader.TxNumber}
+	else if {TxHeader.RefNumber} like "SA*" then
+	  {TxHeader.RefNumber}
+	else
+	  " ";
+
+	Name: {@InitSKU}
+	Formula: WhilePrintingRecords;
+	StringVar SKUs := "";
+
+	Name: {@GetInvoiceNumber}
+	Formula: if {TxHeader.TxType} like "*C" then
+	  "* " + {TxHeader.TxNumber}
+	else if {TxHeader.RefNumber} like "*C*" then
+	  {TxHeader.RefNumber}
+	else
+	  " ";     // others are N/A
+
+	Name: {@GetOrderNumber}
+	Formula: if {TxHeader.TxType} = "SA" then
+	 "* " +  {TxHeader.TxNumber}
+	else if {TxHeader.RefNumber} like "SA*" then
+	  {TxHeader.RefNumber}
+	else
+	  " ";
+
+	Name: {@GetParticulars}
+	Formula: if {TxHeader.TxType} = "RS" then
+	 "Refund/Restock No." + {TxHeader.TxNumber}
+	else if {TxHeader.PaymentLink} > 1 then
+	  "Split payment of " + totext({TxPayment.PaymentLineNo},0) +
+	   "/" + totext({TxHeader.PaymentLink},0)
+	else
+	  " ";
+	  
+
+	Name: {@GetSales}
+	Formula: StringVar OrderNo;
+	
+	if isnull({TxHeader.RefNumber}) then
+	  OrderNo := "CashSale"
+	else
+	  OrderNo := {TxHeader.RefNumber};
+	
+	if {TxHeader.TxType} like "*C"  and OrderNo like "SA*" then   // Skip already exist in previous order
+	  0
+	else if {TxHeader.PaymentLink} =0 then  // This is a cash sale 
+	  {TxHeader.TotalSale}
+	else if {TxPayment.PaymentLineNo} <> 1 then   // This is a repeat due to slip payment
+	  0
+	else {TxHeader.TotalSale};
+
+	Name: {@GetGST}
+	Formula: dateVar cutoffDate := date(2010, 7, 1);
+	
+	if {@AskDateFrom} >= cutoffDate then
+	  (if isnull({TxPayment.PaymentLineNo}) then
+	    (if {TxHeader.TxType} <> "SA" then
+	        {TxHeader.TaxA} + {TxHeader.TaxB}
+	     else
+	        0)
+	  else if  {TxHeader.PaymentLink} =0 and {TxHeader.TxType} <> "SA" then
+	   {TxHeader.TaxA} + {TxHeader.TaxB}
+	  else if {TxPayment.PaymentLineNo}<>1 then
+	    0
+	  else if {TxHeader.TxType}<>"SA" then
+	    {TxHeader.TaxA} + {TxHeader.TaxB}
+	  else 0)
+	else
+	  (if isnull({TxPayment.PaymentLineNo}) then
+	    (if {TxHeader.TxType} <> "SA" then
+	        {TxHeader.TaxA}
+	      else
+	        0)
+	  else if  {TxHeader.PaymentLink} =0 and {TxHeader.TxType} <> "SA" then
+	   {TxHeader.TaxA}
+	  else if {TxPayment.PaymentLineNo}<>1 then
+	    0
+	  else if {TxHeader.TxType}<>"SA" then
+	    {TxHeader.TaxA}
+	  else 0);
+
+	Name: {@GetPST}
+	Formula: dateVar cutoffDate := date(2010, 7, 1);
+	
+	if {@AskDateFrom} >= cutoffDate then
+	  0
+	else
+	  (if isnull({TxPayment.PaymentLineNo}) then
+	    (if {TxHeader.TxType} <> "SA"  then
+	      {TxHeader.TaxB} 
+	    else
+	      0)
+	  else if {TxHeader.PaymentLink}=0 and {TxHeader.TxType} <> "SA"  then
+	   {TxHeader.TaxB} 
+	  else if {TxPayment.PaymentLineNo} <>1 then
+	    0
+	  else if {TxHeader.TxType}<>"SA" then
+	   {TxHeader.TaxB}
+	  else 0);
+	
+
+	Name: {@GetGrossSales}
+	Formula: if {TxHeader.TxType} like "*C*" and {TxHeader.PaymentLink} = 0 then
+	  // This is a cash sale
+	  {TxHeader.TotalAmount}
+	else if ({TxHeader.TxType} = "RS" and {TxHeader.RefNumber} like "*C*" ) then
+	  // This is a refund of sales
+	  {TxHeader.TotalAmount}
+	else if {TxHeader.TxType} like "*C" and {TxPayment.PaymentLineNo} < 2 then
+	  //  This is invocie against confirmed order and 1st exist
+	  {TxHeader.TotalAmount}
+	else  0;
+
+	Name: {@GetDepositToSales}
+	Formula: if {TxHeader.TxType} like "*C" then
+	  // This is a invoice and pervious deposit back to Sales
+	  (if {TxPayment.PaymentLineNo} < 2 then  {TxHeader.PreviousPaid}
+	    else  0);
+	
+
+	Name: {@GetBalanceReceived}
+	Formula: if {TxHeader.PaymentLink} =0 then
+	  // This is zero payment due to fully paid on order
+	  0
+	else if {TxHeader.TxType} like "*C" then
+	  // This is a invoice
+	     {TxPayment.TotalThisPay}
+	else if ({TxHeader.TxType} = "RS" and {TxHeader.RefNumber} like "*C*") then
+	  // This is a refund
+	  {TxPayment.TotalThisPay}
+	else
+	  0;
+
+	Name: {@GetDepositReceived}
+	Formula: if {TxHeader.TxType} = "SA"  then 
+	   // This is a deposit
+	  (if {TxHeader.PaymentLink} = 0 then 0
+	   else {TxPayment.TotalThisPay})
+	else if ({TxHeader.TxType} = "RS" and {TxHeader.RefNumber} like "SA*") then
+	  // This is a void order
+	   {TxPayment.TotalThisPay}
+	// else if {TxHeader.TxNumber} like "*C*" then
+	  // This is a invoice 
+	//  -{TxHeader.PreviousPaid}
+	else
+	  0;
+
+	Name: {@GetRowTotal}
+	Formula: {@GetDepositReceived}+{@GetBalanceReceived};  //+{@GetDepositToSales}
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Subsection.3 
+		Visible, Keep Together
+
+	Subsection.4 
+		Visible, Keep Together
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetSubTitle}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	(All Amounts shown as equivalent in Canadian Dollars)
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Gross
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Invoice
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Order
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Staff
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Particulars
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Total
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Sales
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Amounts
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Code
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	PST
+		String, Hidden, Right Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	GST
+		String, Hidden, Right Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Number
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Number
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Deposit
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Received
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Balance
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Received
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Deposit
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	To Sales
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Order
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@lblTaxA}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@lblTaxB}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.2 Page Footer Section
+	Visible, New Page After, Keep Together, Print At Bottom of Page
+
+5.3 Report Header Section
+	Hidden, New Page Before
+
+5.4 Report Footer Section
+	Visible, New Page After
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Grand Total:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Sum ({@GetRowTotal})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetDepositToSales})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetBalanceReceived})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetDepositReceived})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetGrossSales})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetPST})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetGST})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetSales})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@GetNetSales}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.5 Group Header Section #1
+	Visible
+
+	{TxHeader.DateOfEntry}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+5.6 Group Footer Section #1
+	Visible
+
+	Sum ({@GetRowTotal}, {TxHeader.DateOfEntry}, "daily")
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetBalanceReceived}, {TxHeader.DateOfEntry}, "daily")
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetDepositReceived}, {TxHeader.DateOfEntry}, "daily")
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetGrossSales}, {TxHeader.DateOfEntry}, "daily")
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetPST}, {TxHeader.DateOfEntry}, "daily")
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetGST}, {TxHeader.DateOfEntry}, "daily")
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetSales}, {TxHeader.DateOfEntry}, "daily")
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetDepositToSales}, {TxHeader.DateOfEntry}, "daily")
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxHeader.DateOfEntry}
+		Date, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+5.7 Group Header Section #2
+	Visible
+
+	GroupName ({PaymentMethods.PaymentNameLong})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.8 Group Footer Section #2
+	Visible
+
+	Sum ({@GetDepositReceived}, {PaymentMethods.PaymentNameLong})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetBalanceReceived}, {PaymentMethods.PaymentNameLong})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetRowTotal}, {PaymentMethods.PaymentNameLong})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetDepositToSales}, {PaymentMethods.PaymentNameLong})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetGrossSales}, {PaymentMethods.PaymentNameLong})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetPST}, {PaymentMethods.PaymentNameLong})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetGST}, {PaymentMethods.PaymentNameLong})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetSales}, {PaymentMethods.PaymentNameLong})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	GroupName ({PaymentMethods.PaymentNameLong})
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.9 Group Header Section #3
+	Hidden
+
+	GroupName ({TxPayment.TxNumber})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.10 Group Footer Section #3
+	Hidden
+
+	Sum ({@GetSales}, {TxPayment.TxNumber})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetGST}, {TxPayment.TxNumber})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetPST}, {TxPayment.TxNumber})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetGrossSales}, {TxPayment.TxNumber})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetDepositToSales}, {TxPayment.TxNumber})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetBalanceReceived}, {TxPayment.TxNumber})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetDepositReceived}, {TxPayment.TxNumber})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({@GetRowTotal}, {TxPayment.TxNumber})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@GetOrderNumber}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.11 Details Section
+	Visible
+
+	Subsection.1 
+		Visible
+
+	{@InitSKU}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetInvoiceNumber}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetOrderNumber}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetParticulars}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetSales}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+		Object Format Formulas -
+		Visible: {TxPayment.PaymentLineNo} > 1  // Split payment
+		
+	{@GetGST}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+		Object Format Formulas -
+		Visible: {TxPayment.PaymentLineNo} > 1  // Split payment
+		
+	{@GetPST}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+		Object Format Formulas -
+		Visible: {TxPayment.PaymentLineNo} > 1  // Split payment
+		
+	{@GetGrossSales}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+		Object Format Formulas -
+		Visible: {TxPayment.PaymentLineNo} > 1  // Split payment
+		
+	{@GetDepositToSales}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+		Object Format Formulas -
+		Visible: {TxPayment.PaymentLineNo} > 1  // Split payment
+		
+	{@GetBalanceReceived}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@GetDepositReceived}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@GetRowTotal}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{Staff.StaffCode}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+

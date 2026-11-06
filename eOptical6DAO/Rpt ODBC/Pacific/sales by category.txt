@@ -1,0 +1,319 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: THE OPTICAL CENTRE - Pacific Mall - Sales by Category
+	Version: 5.0
+
+2.0 Record Sort Fields
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@GMPctPie}
+	Formula: sum({OlapCategorySummary.Margin}) % sum ({OlapCategorySummary.Margin})
+
+	Name: {@GetMonthName}
+	Formula: StringVar MonthName;
+	StringVar array MonthOfYear := ["January", "February", "March",
+	  "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	
+	MonthName :=  MonthOfYear [ {OlapCategorySummary.Month}] +
+	                         ", " + Totext ({OlapCategorySummary.Year},"####",0)
+
+	Name: {@GetMonthName}
+	Formula: StringVar MonthName;
+	StringVar array MonthOfYear := ["January", "February", "March",
+	  "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	
+	MonthName :=  MonthOfYear [ {OlapCategorySummary.Month}] +
+	                         ", " + Totext ({OlapCategorySummary.Year},"####",0)
+
+	Name: {@GMPctMonth}
+	Formula: (Sum ({OlapCategorySummary.Sales},{OlapCategorySummary.Month}) -
+	 Sum ({OlapCategorySummary.Cost},{OlapCategorySummary.Month} ) ) %
+	Sum ({OlapCategorySummary.Margin})
+
+	Name: {@GMPctItem}
+	Formula: ({OlapCategorySummary.Sales} - {OlapCategorySummary.Cost}) %
+	Sum({OlapCategorySummary.Margin})
+
+	Name: {@GoodsAndServices}
+	Formula: {OlapCategorySummary.CategoryName} + " - " +
+	{OlapCategorySummary.ClassName}
+	
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Subsection.3 
+		Visible, Keep Together
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Goods and Services
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Sold Quantity
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Sales
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Cost
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Margin
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	% in Gross Margin
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+5.2 Page Footer Section
+	Visible, New Page After, Keep Together, Print At Bottom of Page
+
+5.3 Report Header Section
+	Hidden, New Page Before
+
+5.4 Report Footer Section
+	Visible, New Page After
+
+	Sum ({OlapCategorySummary.Units})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({OlapCategorySummary.Sales})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({OlapCategorySummary.Cost})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({OlapCategorySummary.Margin})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@GMPctPie}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Grand Total:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+5.5 Group Header Section #1
+	Hidden
+
+	{OlapCategorySummary.Year}
+		Numeric, Visible, Left Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, No Thousands Separators, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+5.6 Group Footer Section #1
+	Hidden
+
+	Sum ({OlapCategorySummary.Sales}, {OlapCategorySummary.Year})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({OlapCategorySummary.Cost}, {OlapCategorySummary.Year})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({OlapCategorySummary.Margin}, {OlapCategorySummary.Year})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({OlapCategorySummary.Units}, {OlapCategorySummary.Year})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{OlapCategorySummary.Year}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, No Thousands Separators, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+5.7 Group Header Section #2
+	Visible
+
+	{@GetMonthName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.8 Group Footer Section #2
+	Visible
+
+	Sum ({OlapCategorySummary.Units}, {OlapCategorySummary.Month})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({OlapCategorySummary.Sales}, {OlapCategorySummary.Month})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({OlapCategorySummary.Cost}, {OlapCategorySummary.Month})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({OlapCategorySummary.Margin}, {OlapCategorySummary.Month})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@GetMonthName}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GMPctMonth}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+5.9 Details Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+	{@GMPctItem}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{OlapCategorySummary.Units}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{OlapCategorySummary.Sales}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{OlapCategorySummary.Cost}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{OlapCategorySummary.Margin}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@GoodsAndServices}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+

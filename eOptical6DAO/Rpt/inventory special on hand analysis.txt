@@ -1,0 +1,245 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: Inventory Special On Hand Analysis
+	Version: 5.0
+
+2.0 Record Sort Fields
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Branch.BranchName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+	 -  
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+
+5.2 Page Footer Section
+	Visible, New Page After, Print At Bottom of Page
+
+	***
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	 = Quantity
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	$
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: {@AskNoCost}
+		
+
+	 = Dollars Cost
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: {@AskNoCost}
+		
+
+	$
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: {@AskNoLSP}
+		
+
+	 = Dollars LSP
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: {@AskNoLSP}
+		
+
+5.3 Report Header Section
+	Visible, New Page Before, New Page After
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Subsection.3 
+		Visible, Keep Together
+
+	Subsection.4 
+		Visible, Keep Together
+
+	Subsection.5 
+		Visible, Keep Together
+
+	Subsection.6 
+		Visible, Keep Together
+
+	Subsection.7 
+		Visible, Keep Together, Print At Bottom of Page
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Branch.BranchName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+	 -  
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+
+	Frame and SunGlasses Together
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Frame and SunGlasses Separately
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	$
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: {@AskNoLSP}
+		
+
+	 = Dollars LSP
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: {@AskNoLSP}
+		
+
+	 = Dollars Cost
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: {@AskNoCost}
+		
+
+	$
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: {@AskNoCost}
+		
+
+	 = Quantity
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	***
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+5.4 Report Footer Section
+	Hidden, New Page After
+
+5.5 Group Header Section
+	Hidden
+
+	{Department.DepartmentName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.6 Group Footer Section
+	Visible, New Page After, Print At Bottom of Page
+
+5.7 Details Section
+	Hidden
+
+	Subsection.1 
+		Hidden, Keep Together
+

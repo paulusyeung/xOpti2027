@@ -1,0 +1,676 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: The Optical Centre, Richmond - Cost and Margin of Goods Sold
+	Version: 5.0
+
+2.0 Record Sort Fields
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@GetSubTitle}
+	Formula: "Department Code like '" + {@AskDept} + "' and " +
+	  "Class Code  like '" + {@AskClass} + "' and " +
+	  "Category Code like '" +{@AskCat} + "'";
+	
+	
+
+	Name: {@GetMarginPie}
+	Formula: (Sum ({OlapSales.Sales}) - Sum ({OlapSales.Cost}) ) % Sum ({OlapSales.Margin})
+
+	Name: {@GetDepartmentName}
+	Formula: "Department: " + {Department.DepartmentName}
+
+	Name: {@GetClassName}
+	Formula: "Class: " + {Class.ClassName}
+
+	Name: {@GetCategoryName}
+	Formula: "Category: " + {Category.CategoryName}
+
+	Name: {@GetDepartmentName}
+	Formula: "Department: " + {Department.DepartmentName}
+
+	Name: {@GetClassName}
+	Formula: "Class: " + {Class.ClassName}
+
+	Name: {@GetCategoryName}
+	Formula: "Category: " + {Category.CategoryName}
+
+	Name: {@InitColorFlag}
+	Formula: WhilePrintingRecords;
+	NumberVar ColorFlag:=0;
+
+	Name: {@MarginPerCat}
+	Formula: Sum ({OlapSales.Margin}, {Inventory.CategoryCode}) % Sum ({OlapSales.Margin})
+
+	Name: {@DispCatFooter}
+	Formula: {Category.CategoryName} + " - " + {Class.ClassName} + ":"
+
+	Name: {@MarginPerSKU}
+	Formula: ({OlapSales.Sales} -{OlapSales.Cost}) %
+	    Sum ({OlapSales.Margin})
+
+	Name: {@MarginPerSKU}
+	Formula: ({OlapSales.Sales} -{OlapSales.Cost}) %
+	    Sum ({OlapSales.Margin})
+
+	Name: {@SetColorFlag}
+	Formula: WhilePrintingRecords;
+	NumberVar ColorFlag:=ColorFlag+1;
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetSubTitle}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.2 Page Footer Section
+	Visible, New Page After, Keep Together, Print At Bottom of Page
+
+5.3 Report Header Section
+	Hidden, New Page Before
+
+5.4 Report Footer Section
+	Visible, New Page After
+
+	{@GetMarginPie}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Grand Total:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Sum ({OlapSales.Units})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({OlapSales.Sales})
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	Sum ({OlapSales.Cost})
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	Sum ({OlapSales.Margin})
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+5.5 Group Header Section #1
+	Hidden
+
+	GroupName ({Inventory.DepartmentCode})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.6 Group Footer Section #1
+	Hidden
+
+5.7 Group Header Section #2
+	Hidden
+
+	GroupName ({Inventory.ClassCode})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.8 Group Footer Section #2
+	Hidden
+
+5.9 Group Header Section #3
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: ({Inventory.ClassCode} = "LN" or 
+ {Inventory.ClassCode} = "CN" );
+		
+	Subsection.2 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: ({Inventory.ClassCode} <> "LN" and 
+ {Inventory.ClassCode} <> "CN" );
+		
+	Subsection.3 
+		Hidden, Keep Together
+
+	Brand
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Model
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Supplier
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Color
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Size
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Material
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Quantity
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Amounts
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Total Cost
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	SKU No.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	- - - - -   Sales    - - - - -
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Gross
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Margin
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	% in Total
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Sales
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@GetDepartmentName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetClassName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetCategoryName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Brand
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Len Style
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Diam
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Sph
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	B.C.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Quantity
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	SKU No.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Supplier
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Color
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Total Cost
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Amounts
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	- - - - -   Sales    - - - - -
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Gross
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	% in Total
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Sales
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Margin
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Cyli
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@GetDepartmentName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetClassName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetCategoryName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@InitColorFlag}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+5.10 Group Footer Section #3
+	Visible
+
+	{@MarginPerCat}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@DispCatFooter}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Sum ({OlapSales.Margin}, {Inventory.CategoryCode})
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	Sum ({OlapSales.Cost}, {Inventory.CategoryCode})
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	Sum ({OlapSales.Sales}, {Inventory.CategoryCode})
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	Sum ({OlapSales.Units}, {Inventory.CategoryCode})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+5.11 Details Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: ({Inventory.ClassCode} = "LN" or 
+ {Inventory.ClassCode} = "CN" );
+		Background Color: //WhilePrintingRecords;
+//NumberVar ColorFlag;
+//if Remainder(ColorFlag, 2)<>0 then Silver else NoColor
+	Subsection.2 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: ({Inventory.ClassCode} <> "LN" and 
+ {Inventory.ClassCode} <> "CN" );
+		Background Color: //WhilePrintingRecords;
+//NumberVar ColorFlag;
+//if Remainder(ColorFlag, 2)<>0 then Silver else NoColor
+	Subsection.3 
+		Hidden, Keep Together
+
+	{Supplier.SupplierName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.Model}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.Color}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.Size}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Material.MaterialDescription}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.SKU}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{OlapSales.Units}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{OlapSales.Sales}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{OlapSales.Cost}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{Inventory.BrandCode}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@MarginPerSKU}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{OlapSales.Margin}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{Inventory.SKU}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.Color}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.Sphere}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{Inventory.Cylinder}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{Inventory.BaseCurve}
+		Numeric, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Suppress If Zero, 
+		Leading Minus, 1 Decimal Places, Rounding: 0.1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{Inventory.Diameter}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Suppress If Zero, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{OlapSales.Sales}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{OlapSales.Units}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{Supplier.SupplierName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.Model}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.BrandCode}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{OlapSales.Margin}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@MarginPerSKU}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{OlapSales.Cost}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@SetColorFlag}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+

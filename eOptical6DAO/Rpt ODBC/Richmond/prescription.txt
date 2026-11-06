@@ -1,0 +1,82 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: The Optical Centre, Richmond - Customer's Prescription
+	Version: 5.0
+
+2.0 Record Sort Fields
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	THE OPTICAL CENTRE
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	THE OPTICAL INTERNATIONAL INVESTMENT COMPANY LTD.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	UNIT 105 CENTRAL SQUARE - HAZELBRIDGE WAY,  RICHMOND, B.C.  CANADA  V6X 3L7
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Phone: (604) 270-6016            Fax: (604) 270-9016
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	G.S.T. NO. R-896634235
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	ReportTitle
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.2 Page Footer Section
+	Visible, New Page After, Keep Together, Print At Bottom of Page
+
+5.3 Report Header Section
+	Hidden, New Page Before
+
+5.4 Report Footer Section
+	Visible, New Page After
+
+5.5 Details Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+

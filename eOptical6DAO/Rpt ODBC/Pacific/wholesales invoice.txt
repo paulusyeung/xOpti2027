@@ -1,0 +1,472 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: THE OPTICAL CENTRE - Pacific Mall - Wholesales Invoice
+	Version: 5.0
+
+2.0 Record Sort Fields
+	A - {TxDetails.RowNo}
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	{TxHeader.TxType} = "WC"
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetInvoice}
+	Formula: //if isnull({TxHeader.TxNumber}) then
+	 "INVOICE"
+	//else "Invoice No : " + Right({TxHeader.TxNumber},Length ({TxHeader.TxNumber})-2);
+
+	Name: {@GetPageCount}
+	Formula: "Page: " + totext(PageNumber,0);
+	
+
+	Name: {@GetQty}
+	Formula: WhilePrintingRecords;
+	NumberVar varQty;
+	
+
+	Name: {@GetAmount}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar varAmount;
+	
+
+	Name: {@InitRunData}
+	Formula: WhilePrintingRecords;
+	NumberVar varPage:=1;
+	NumberVar varQty:=0;
+	CurrencyVar varAmount:=0;
+
+	Name: {@GetTxNumber}
+	Formula: if isnull({TxHeader.TxNumber}) then
+	 ""
+	else Right({TxHeader.TxNumber},Length ({TxHeader.TxNumber})-2);
+
+	Name: {@InitRunData}
+	Formula: WhilePrintingRecords;
+	NumberVar varPage:=1;
+	NumberVar varQty:=0;
+	CurrencyVar varAmount:=0;
+
+	Name: {@GetDescription}
+	Formula: WhilePrintingRecords;
+	StringVar strDesc;
+	
+	if isnull({TxDetails.SKU}) then
+	  strDesc:={TxSOrderAdd.Brand} + " -  " + {TxSOrderAdd.Model}
+	else
+	  (
+	  if not isnull({Inventory.Color}) then
+	    strDesc:={Inventory.Model} + "-" + {Inventory.Color}
+	  else
+	    strDesc:={Inventory.Model};
+	  )
+	
+
+	Name: {@GetNetUnitPrice}
+	Formula: ({TxDetails.UnitAmount}-{TxDetails.MarkDownAmount})
+
+	Name: {@BuildRunData}
+	Formula: WhilePrintingRecords;
+	NumberVar varQty:=varQty + {TxDetails.Qty};
+	CurrencyVar varAmount:=varAmount + {TxDetails.Amount};
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	CANADIAN EYE-CARE & BEAUTY CENTRE INC.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	UNIT C-52, 4300 Steeles Ave. East, Markham, Ontario  CANADA  L3R 0Y5
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Phone: (905) 946-8846            Fax: (905) 946-0297
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	(PACIFIC MALL)
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@GetInvoice}
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPageCount}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	G.S.T. NO. 870912 920 RT0001
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+5.2 Page Footer Section
+	Visible, New Page After, Print At Bottom of Page
+
+	Running Total
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+	 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+	:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@GetQty}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@GetAmount}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	......... Continued to next page
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+5.3 Report Header Section
+	Visible, New Page Before
+
+	{@InitRunData}
+		Currency, Hidden, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+5.4 Report Footer Section
+	Hidden, New Page After, Print At Bottom of Page
+
+5.5 Group Header Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+		Format Formulas
+
+		New Page Before: {TxHeader.TxNumber}<>Previous ({TxHeader.TxNumber}) 
+
+		
+	Subsection.2 
+		Visible, Keep Together
+
+	BILL TO:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{Supplier.SupplierName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	 
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+	PrintDate
+		Date, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+	    
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+	PrintTime
+		Time, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand, Time Base: 12 Hour, AM/PM Type: AM/PM After, Hour Type: Numeric, Minute Type: Numeric, Second Type: Numeric, AM String: 'AM', PM String: 'PM', Hour Minute Separator: ':', Minute  Second Separator: ':'
+
+
+	Date:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{TxHeader.DateOfEntry}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Long Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	A/C NO.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	INVOICE NO.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	QUANTITY
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	SKU
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	SOLD
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	BRAND NAME
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	DESCRIPTION
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	UNIT PRICE 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	TOTAL
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{Supplier.AccountNo}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetTxNumber}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.6 Group Footer Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together, Reset Page Number After
+
+	{TxHeader.TotalQty}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxHeader.TotalSale}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Grand Total:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Net Sales:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{TxHeader.TotalSale}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Freight:
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{TxHeader.ThisPaid}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxHeader.OtherCharges}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	CAD
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+	 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	TOTAL:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{TxHeader.Particulars}
+		Memo, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+
+	{@InitRunData}
+		Currency, Hidden, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{TxHeader.TaxA}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Total Tax:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	SIGNED WITH COMPANY CHOP
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+	(RECEIVED THE ABOVE IN GOOD CONDITION)
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+5.7 Details Section
+	Visible
+
+	Subsection.1 
+		Visible
+
+		Format Formulas
+
+		Background Color: //if Remainder(RecordNumber, 2)<>0 then Silver else NoColor
+	Subsection.2 
+		Hidden, Keep Together
+
+	{TxDetails.Qty}
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxDetails.SKU}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetDescription}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{TxDetails.Amount}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@GetNetUnitPrice}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{Brand.BrandCode}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@BuildRunData}
+		Currency, Hidden, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+

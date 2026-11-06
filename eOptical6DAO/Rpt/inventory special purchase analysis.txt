@@ -1,0 +1,245 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: The Optical Centre, Robson - Inventory Special Purchase Analysis
+	Version: 5.0
+
+2.0 Record Sort Fields
+	A - {RptPurSpecial.Model}
+	A - {RptPurSpecial.Color}
+	A - {RptPurSpecial.Size}
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@GetSubTitle}
+	Formula: Whileprintingrecords;
+	StringVar strSubTitle:="Date Period: Between " + Totext ({@AskDateFrom}, "MMM dd, yyyy") + " to "
+	                                                                           + Totext  ({@AskDateTo}, "MMM dd, yyyy");
+	
+	if {@AskTxNumberFrom}<>"" then
+	   strSubTitle:=strSubTitle + chr(13) + "SKU = " + {@AskTxNumberFrom};
+	
+	strSubTitle;
+	
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@GetSubTitle}
+	Formula: Whileprintingrecords;
+	StringVar strSubTitle:="Date Period: Between " + Totext ({@AskDateFrom}, "MMM dd, yyyy") + " to "
+	                                                                           + Totext  ({@AskDateTo}, "MMM dd, yyyy");
+	
+	if {@AskTxNumberFrom}<>"" then
+	   strSubTitle:=strSubTitle + chr(13) + "SKU = " + {@AskTxNumberFrom};
+	
+	strSubTitle;
+	
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetSubTitle}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.2 Page Footer Section
+	Visible, New Page After, Keep Together, Print At Bottom of Page
+
+	***
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	$
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: 
+		
+
+	 = Dollars Cost
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: 
+		
+
+	 = Quantity
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+5.3 Report Header Section
+	Visible, New Page Before
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Subsection.3 
+		Visible, Keep Together
+
+	Subsection.4 
+		Visible, Keep Together
+
+	Subsection.5 
+		Visible, Keep Together
+
+	Subsection.6 
+		Visible, Keep Together
+
+	Subsection.7 
+		Visible, New Page After, Keep Together, Print At Bottom of Page
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetSubTitle}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Frame and SunGlasses Together
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Frame and SunGlasses Separately
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	***
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	 = Quantity
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	$
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: 
+		
+
+	 = Dollars Cost
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: 
+		
+
+5.4 Report Footer Section
+	Hidden, New Page After
+
+5.5 Group Header Section #1
+	Hidden
+
+5.6 Group Footer Section #1
+	Visible
+
+5.7 Group Header Section #2
+	Hidden
+
+5.8 Group Footer Section #2
+	Hidden
+
+5.9 Group Header Section #3
+	Hidden
+
+5.10 Group Footer Section #3
+	Hidden
+
+5.11 Group Header Section #4
+	Hidden
+
+5.12 Group Footer Section #4
+	Hidden
+
+5.13 Group Header Section #5
+	Hidden
+
+5.14 Group Footer Section #5
+	Hidden
+
+5.15 Details Section
+	Hidden
+
+	Subsection.1 
+		Hidden, Keep Together
+

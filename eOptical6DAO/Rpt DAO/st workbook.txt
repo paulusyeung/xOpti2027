@@ -1,0 +1,618 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: The Optical Centre, Robson  - Stock Take Work Book
+	Version: 5.0
+
+2.0 Record Sort Fields
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@GetSubTitle}
+	Formula: "Stock Take Worksheet ID: " +
+	ToText({InvtSTHeader.ID},0) + " - " + 
+	{InvtSTHeader.Name} + " (created on " + 
+	ToText({InvtSTHeader.DateOfCreation}, "dddd - MMMM dd, yyyy") + ")"
+
+	Name: {@GetCatClass}
+	Formula: if isnull({Inventory.SKU}) then
+	 "   Item(s) not found in book : "
+	else
+	  "    " + {Category.CategoryName} + " - " + {Class.ClassName};
+
+	Name: {@DispCatCounts}
+	Formula: WhilePrintingRecords;
+	NumberVar CatCounts;
+
+	Name: {@InitCatCounts}
+	Formula: WhilePrintingRecords;
+	NumberVar CatCounts:=0;
+
+	Name: {@BuildCatCounts}
+	Formula: WhilePrintingRecords;
+	NumberVar CatCounts:=CatCounts+1;
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetSubTitle}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.2 Page Footer Section
+	Visible, New Page After, Keep Together, Print At Bottom of Page
+
+5.3 Report Header Section
+	Hidden, New Page Before
+
+5.4 Report Footer Section
+	Visible, New Page After
+
+	RecordNumber
+		Numeric, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Expand, 
+		Bracketed, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+	 
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+	Record(s) printed. 
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+5.5 Group Header Section #1
+	Hidden
+
+	GroupName ({InvtSTDetails.HeaderID})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.6 Group Footer Section #1
+	Hidden
+
+5.7 Group Header Section #2
+	Hidden
+
+	GroupName ({Inventory.DepartmentCode})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.8 Group Footer Section #2
+	Hidden
+
+5.9 Group Header Section #3
+	Hidden
+
+5.10 Group Footer Section #3
+	Hidden
+
+5.11 Group Header Section #4
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible
+
+		Format Formulas
+
+		Visible: (isnull({Inventory.SKU})) or ({Inventory.ClassCode} = "LN" or 
+ {Inventory.ClassCode} = "CN" );
+		
+	Subsection.2 
+		Visible
+
+		Format Formulas
+
+		Visible: (isnull({Inventory.SKU})) or ({Inventory.ClassCode} <> "LN" and 
+ {Inventory.ClassCode} <> "CN" );
+		
+	Department: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Class:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Category: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Brand
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Model
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Supplier
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Size
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Material
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	SKU No.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{Department.DepartmentName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Class.ClassName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Category.CategoryName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Color
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Stock Take Qty
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Retail
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Price
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Brand
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Len Style
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Supplier
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Color
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Diameter
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Sp.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Cy.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	B.C.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	SKU No.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Category: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	{Category.CategoryName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Class.ClassName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Class:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	{Department.DepartmentName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Department: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Stock Take Qty
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Retail
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Price
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+5.12 Group Footer Section #4
+	Visible, New Page After
+
+	Format Formulas
+
+	New Page After: not OnLastRecord
+	
+	{@GetCatClass}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@DispCatCounts}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@InitCatCounts}
+		Numeric, Hidden, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+5.13 Group Header Section #5
+	Hidden
+
+	GroupName ({Inventory.BrandCode})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.14 Group Footer Section #5
+	Hidden
+
+5.15 Group Header Section #6
+	Hidden
+
+	GroupName ({Inventory.Model})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.16 Group Footer Section #6
+	Hidden
+
+5.17 Group Header Section #7
+	Hidden
+
+	GroupName ({Inventory.SupplierCode})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.18 Group Footer Section #7
+	Hidden
+
+5.19 Group Header Section #8
+	Hidden
+
+	GroupName ({Inventory.Sphere})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.20 Group Footer Section #8
+	Hidden
+
+5.21 Group Header Section #9
+	Hidden
+
+	GroupName ({Inventory.Cylinder})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.22 Group Footer Section #9
+	Hidden
+
+5.23 Group Header Section #10
+	Hidden
+
+	GroupName ({Inventory.BaseCurve})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.24 Group Footer Section #10
+	Hidden
+
+5.25 Group Header Section #11
+	Hidden
+
+	GroupName ({Inventory.Diameter})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.26 Group Footer Section #11
+	Hidden
+
+5.27 Group Header Section #12
+	Hidden
+
+	GroupName ({Inventory.Color})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.28 Group Footer Section #12
+	Hidden
+
+5.29 Group Header Section #13
+	Hidden
+
+	GroupName ({Inventory.Size})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.30 Group Footer Section #13
+	Hidden
+
+5.31 Group Header Section #14
+	Hidden
+
+	GroupName ({InvtSTDetails.SKU})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.32 Group Footer Section #14
+	Hidden
+
+5.33 Details Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible
+
+		Format Formulas
+
+		Visible: (isnull({Inventory.SKU})) or ({Inventory.ClassCode} = "LN" or 
+ {Inventory.ClassCode} = "CN" );
+		
+	Subsection.2 
+		Visible
+
+		Format Formulas
+
+		Visible: (isnull({Inventory.SKU})) or ({Inventory.ClassCode} <> "LN" and 
+ {Inventory.ClassCode} <> "CN" );
+		
+	{Inventory.BrandCode}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.Model}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.Color}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.Size}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Material.MaterialDescription}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+
+	{Supplier.SupplierName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{RetailPrice.RetailPrice}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{InvtSTDetails.SKU}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.BrandCode}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.Model}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.Color}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.Sphere}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{Inventory.Cylinder}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{Inventory.BaseCurve}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 1 Decimal Places, Rounding: 0.1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{Supplier.SupplierName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Inventory.Diameter}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@BuildCatCounts}
+		Numeric, Hidden, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{RetailPrice.RetailPrice}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{InvtSTDetails.SKU}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+

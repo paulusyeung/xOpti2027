@@ -1,0 +1,223 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: The Optical Centre, Richmond - Inventory On Hand Summary
+	Version: 5.0
+
+2.0 Record Sort Fields
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.2 Page Footer Section
+	Hidden, New Page After, Keep Together, Print At Bottom of Page
+
+5.3 Report Header Section
+	Visible, New Page Before, New Page After
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Subsection.3 
+		Visible, Keep Together
+
+	Subsection.4 
+		Visible, Keep Together
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	All Sales Departments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	***
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	 = Quantity
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	 = Dollars Cost
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: {@AskNoCost}
+		
+
+	$
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: {@AskNoCost}
+		
+
+	$
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: {@AskNoLSP}
+		
+
+	 = Dollars LSP
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: {@AskNoLSP}
+		
+
+5.4 Report Footer Section
+	Hidden, New Page After
+
+5.5 Group Header Section #1
+	Hidden
+
+	GroupName ({RptSalesDeptOnly.DepartmentCode})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.6 Group Footer Section #1
+	Hidden
+
+5.7 Group Header Section #2
+	Visible
+
+	{Department.DepartmentName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	 = Quantity
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	$
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: {@AskNoCost}
+		
+
+	***
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	 = Dollars Cost
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: {@AskNoCost}
+		
+
+	$
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: {@AskNoLSP}
+		
+
+	 = Dollars LSP
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together
+
+
+		Object Format Formulas -
+		Visible: {@AskNoLSP}
+		
+
+5.8 Group Footer Section #2
+	Visible, New Page After
+
+5.9 Details Section
+	Hidden
+
+	Subsection.1 
+		Hidden, Keep Together
+

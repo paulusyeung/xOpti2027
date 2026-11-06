@@ -1,0 +1,667 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: The Optical Centre, Richmond  - Stock Received Report (By Supplier)
+	Version: 5.0
+
+2.0 Record Sort Fields
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@GetSubTitle}
+	Formula: WhilePrintingRecords;
+	
+	"Date between " +
+	             Totext ({@AskDateFrom},"MMMM dd, yyyy") + " and " 
+	          + Totext ({@AskDateTo},"MMMM dd, yyyy");
+
+	Name: {@InitAllData}
+	Formula: WhilePrintingRecords;
+	CurrencyVar DateTax:=0;
+	CurrencyVar DateFreight:=0;
+	CurrencyVar DateGrossPurchase:=0;
+	CurrencyVar SuppTax:=0;
+	CurrencyVar SuppFreight:=0;
+	CurrencyVar SuppGrossPurchase:=0;
+	CurrencyVar TtlTax:=0;
+	CurrencyVar TtlFreight :=0;
+	CurrencyVar TtlGrossPurchase:=0;
+	
+
+	Name: {@DispTtlGrossPurchase}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar TtlGrossPurchase;
+
+	Name: {@DispTtlTax}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar TtlTax;
+
+	Name: {@DispTtlFreight}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar TtlFreight;
+
+	Name: {@BuildTtlData}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar SuppTax;
+	CurrencyVar SuppFreight;
+	CurrencyVar SuppGrossPurchase;
+	CurrencyVar TtlFreight;
+	CurrencyVar TtlTax;
+	CurrencyVar TtlGrossPurchase;
+	
+	TtlTax := TtlTax + SuppTax;
+	TtlFreight := TtlFreight + SuppFreight;
+	TtlGrossPurchase := TtlGrossPurchase + SuppGrossPurchase;
+
+	Name: {@DispSuppTax}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar SuppTax;
+
+	Name: {@DispSuppFreight}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar SuppFreight;
+
+	Name: {@DispSuppGrossPurchase}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar SuppGrossPurchase;
+
+	Name: {@InitSuppData}
+	Formula: WhilePrintingRecords;
+	CurrencyVar SuppTax:=0;
+	CurrencyVar SuppFreight:=0;
+	CurrencyVar SuppGrossPurchase:=0;
+
+	Name: {@DispDateTax}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar DateTax;
+
+	Name: {@DispDateFreight}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar DateFreight;
+
+	Name: {@DispDateGrossPurchase}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar DateGrossPurchase;
+
+	Name: {@BuildSuppData}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar DateTax;
+	CurrencyVar DateFreight;
+	CurrencyVar DateGrossPurchase;
+	CurrencyVar SuppFreight;
+	CurrencyVar SuppTax;
+	CurrencyVar SuppGrossPurchase;
+	
+	SuppTax := SuppTax + DateTax;
+	SuppFreight := SuppFreight + DateFreight;
+	SuppGrossPurchase := SuppGrossPurchase + DateGrossPurchase;
+
+	Name: {@InitDateData}
+	Formula: WhilePrintingRecords;
+	CurrencyVar DateTax:=0;
+	CurrencyVar DateFreight:=0;
+	CurrencyVar DateGrossPurchase:=0;
+
+	Name: {@BuildDateData}
+	Formula: WhilePrintingRecords;
+	
+	CurrencyVar DateTax;
+	CurrencyVar DateFreight;
+	CurrencyVar DateGrossPurchase;
+	
+	DateTax := DateTax + {TxHeader.TaxA};
+	DateFreight := DateFreight + {TxHeader.OtherCharges};
+	DateGrossPurchase := DateGrossPurchase+ {TxHeader.TotalAmount};
+
+	Name: {@BuildSKU}
+	Formula: WhilePrintingRecords;
+	StringVar SKUs;
+	
+	//if {TxHeader.Status} = "1" then
+	//  SKUs:= "N/A"
+	//else
+	if not isnull ({Category.CategoryName}) then
+	  SKUs := {Category.CategoryName} + " - ";
+	  (if not isnull ({TxDetails.SKU}) then 
+	    // if SKUs <> "" then SKUs := SKUs + " &" + chr(10)  + {TxDetails.SKU}
+	    // else
+	       SKUs := SKUs + {TxDetails.SKU};
+	  if not isnull ({Brand.BrandDescription}) then 
+	    SKUs := SKUs + "/" + {Brand.BrandDescription};)
+	
+
+	Name: {@GetSKU}
+	Formula: WhilePrintingRecords;
+	StringVar SKUs;
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Subsection.3 
+		Visible, Keep Together
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetSubTitle}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Invoice
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Number
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Number
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Received
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Cost
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Staff
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Code
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Unit
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Qty
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Gross 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Net
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Unit
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Purchase
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	All Tax
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Frieght
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Purchase
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	LSP
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Number
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Purchase
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+5.2 Page Footer Section
+	Visible, New Page After, Keep Together, Print At Bottom of Page
+
+5.3 Report Header Section
+	Hidden, New Page Before
+
+	{@InitAllData}
+		Currency, Hidden, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+5.4 Report Footer Section
+	Visible, New Page After
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Grand Total:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Sum ({TxDetails.Qty})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Bracketed, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({TxDetails.Amount})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispTtlGrossPurchase}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispTtlTax}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispTtlFreight}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+5.5 Group Header Section #1
+	Visible
+
+	GroupName ({Supplier.SupplierName})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.6 Group Footer Section #1
+	Visible
+
+	Subsection.1 
+		Visible, New Page After, Keep Together
+
+	Subsection.2 
+		Hidden, Keep Together
+
+	Sum ({TxDetails.Qty}, {Supplier.SupplierName})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Bracketed, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	GroupName ({Supplier.SupplierName})
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@BuildTtlData}
+		Currency, Hidden, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispSuppTax}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispSuppFreight}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispSuppGrossPurchase}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	Sum ({TxDetails.Amount}, {Supplier.SupplierName})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@InitSuppData}
+		Currency, Hidden, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+5.7 Group Header Section #2
+	Visible
+
+5.8 Group Footer Section #2
+	Hidden
+
+5.9 Group Header Section #3
+	Visible
+
+	{TxDetails.DateofEntry}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+5.10 Group Footer Section #3
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Hidden, Keep Together
+
+	Sum ({TxDetails.Qty}, {TxHeader.DateOfEntry}, "daily")
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Bracketed, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Sum ({TxDetails.Amount}, {TxHeader.DateOfEntry}, "daily")
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispDateTax}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispDateFreight}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@DispDateGrossPurchase}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{TxDetails.DateofEntry}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	{@BuildSuppData}
+		Currency, Hidden, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@InitDateData}
+		Currency, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+5.11 Group Header Section #4
+	Visible
+
+	{TxHeader.OtherCharges}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{TxHeader.TaxA}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{TxHeader.TotalCost}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{TxHeader.RefNumber}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+
+	{TxHeader.TotalAmount}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{Staff.StaffCode}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	GroupName ({TxHeader.TxNumber})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{TxHeader.TotalQty}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Bracketed, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxHeader.TrackingNumber}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@BuildDateData}
+		Currency, Hidden, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+5.12 Group Footer Section #4
+	Hidden
+
+5.13 Group Header Section #5
+	Hidden
+
+5.14 Group Footer Section #5
+	Hidden
+
+5.15 Details Section
+	Visible
+
+	Subsection.1 
+		Hidden, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	{@BuildSKU}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+
+	{TxDetails.Qty}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Bracketed, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxDetails.Amount}
+		Numeric, Hidden, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{TxDetails.UnitCost}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{TxDetails.UnitLSP}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+	{@GetSKU}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+

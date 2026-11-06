@@ -1,0 +1,454 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: The Optical Centre, Richmond - Customer Listing (General)
+	Version: 5.0
+
+2.0 Record Sort Fields
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@GetSubTitleCustomer}
+	Formula: "Customers' Last Name = " + {@AskCustomerFrom};
+	
+
+	Name: {@GetSubTitleCountry}
+	Formula: "Home Country = " + {@AskCountryFrom};
+	
+
+	Name: {@GetCustomerName}
+	Formula: StringVar CustomerName := "";
+	
+	if not isnull({Customer.Salutation}) then CustomerName := trim({Customer.Salutation}) + " ";
+	if isnull({Customer.FirstName}) then
+	   CustomerName:= CustomerName + trim ({Customer.LastName})
+	else
+	  if isnull({Customer.LastName}) then
+	    CustomerName :=CustomerName + trim ({Customer.FirstName})
+	  else
+	    CustomerName :=CustomerName + trim ({Customer.FirstName})+"  " + trim ({Customer.LastName});
+	
+	CustomerName;
+
+	Name: {@GetAddress}
+	Formula: StringVar Address := "";
+	
+	if not isnull({Customer.HomeAddress}) then
+	   Address := trim({Customer.HomeAddress});
+	
+	if Address <> "" then
+	  (if Right(Address,1) in [";",","] then
+	    Address := Address + " "
+	  else
+	    Address := Address + ", ");
+	
+	if not isnull ({City.Code}) then
+	 (if not ({City.CityName} like "*/*") then
+	  (if Address <> "" then
+	     Address := Address + trim({City.CityName})
+	  else
+	     Address := trim({City.CityName})));
+	
+	if not isnull ({Province.ProvinceCode}) then
+	 (if not ({Province.ProvinceName} like "*/*") then
+	  (if Address <> "" then
+	     Address := Address + ", " + trim ({Province.ProvinceName})
+	  else
+	     Address := trim({Province.ProvinceName})));
+	
+	if not isnull ({Customer.HomePostalCode}) then
+	   if Address <> "" then 
+	      Address :=  Address + ", " + trim({Customer.HomePostalCode})
+	   else
+	      Address := trim({Customer.HomePostalCode});
+	
+	if not isnull ({Country.CountryCode}) then
+	 (if not ({Country.CountryName} like "*/*") then
+	   (if Address <> "" then
+	      Address := Address + ", " + trim({Country.CountryName})
+	   else
+	      Address := trim({Country.CountryName})));
+	
+	Address;
+
+	Name: {@GetVipCard}
+	Formula: StringVar VIPCard := "";
+	
+	if isnull ({Customer.VIPCode}) then
+	  VIPCard := "N/A"
+	else if {Customer.VIPCode} like "388*" then
+	     VIPCard := "*** " + {Customer.VIPCode}
+	  else
+	     VIPCard := "*   " + {Customer.VIPCode};
+	
+	VIPCard;
+	  
+
+	Name: {@GetHomePhone}
+	Formula: StringVar PhoneNo:="";
+	
+	if isnull({Customer.HomePhone}) then
+	  PhoneNo
+	else
+	  (if trim({Customer.HomePhone})="" then
+	     PhoneNo
+	   else
+	     {@BuildHomePhone});
+
+	Name: {@GetBizPhone}
+	Formula: StringVar PhoneNo:="";
+	
+	if isnull({Customer.BizPhone}) then
+	  PhoneNo
+	else
+	  (if trim({Customer.BizPhone})="" then
+	     PhoneNo
+	   else
+	     {@BuildBizPhone});
+
+	Name: {@GetRxReminder}
+	Formula: StringVar RxReminder := "";
+	
+	if ({CustomerMedical.PrescriptionLensFlag}=1)  then
+	  if isnull({CustomerPresLens.IssuedOn}) then
+	     RxReminder := "Missing Prescription for " + "Lens";
+	
+	if ({CustomerMedical.PrescriptionContactFlag}=1) then
+	  if isnull({CustomerPresContact.IssuedOn}) then
+	    if RxReminder = "" then RxReminder := "Missing Prescription for " + "Contact Lens"
+	       else RxReminder := RxReminder + " and Contact Lens";
+	
+	RxReminder;    
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Subsection.3 
+		Visible, Keep Together
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetSubTitleCustomer}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetSubTitleCountry}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Country
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Birthday
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Name
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	JoinDate
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Address
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Last Purchase
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Purchase Amount
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Refund Amount
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Markdown Save
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Home
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Coupon Save
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Office
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	----- Telephone -----
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Card No
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Prescription reminder
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Disc %
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	-----   VIP    -----
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Insurance Date
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	ID
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+5.2 Page Footer Section
+	Visible, New Page After, Keep Together, Print At Bottom of Page
+
+5.3 Report Header Section
+	Hidden, New Page Before
+
+5.4 Report Footer Section
+	Visible, New Page After
+
+	Records printed:    
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+	RecordNumber
+		Numeric, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+5.5 Group Header Section #1
+	Visible
+
+	{Country.CountryName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.6 Group Footer Section #1
+	Hidden
+
+5.7 Group Header Section #2
+	Hidden
+
+	GroupName ({Customer.LastName})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.8 Group Footer Section #2
+	Hidden
+
+5.9 Group Header Section #3
+	Hidden
+
+	GroupName ({Customer.FirstName})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.10 Group Footer Section #3
+	Hidden
+
+5.11 Details Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	{@GetCustomerName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+
+	{@GetAddress}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+
+	{@GetVipCard}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+		Font Color Formulas -
+		if isnull ({Customer.VIPCode}) then
+  Black
+else if {Customer.VIPCode} like "880*" then
+      Blue
+  else Maroon
+
+		
+	{Customer.VIPMarkDownPct}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerMedical.InsMaturityDate}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Short, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	{Customer.ID}
+		Numeric, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, No Thousands Separators, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@GetHomePhone}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetBizPhone}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Customer.Birthday}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	{CustomerAccounts.JointDate}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	{CustomerAccounts.LastPurchaseDate}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	{CustomerAccounts.YTDAmtPurchased}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerAccounts.YTDAmtRefund}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerAccounts.YTDAmtMrkdwnApplied}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{CustomerAccounts.YTDAmtCpnUsed}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@GetRxReminder}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+

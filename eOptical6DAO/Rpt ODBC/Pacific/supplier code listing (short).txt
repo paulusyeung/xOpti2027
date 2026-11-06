@@ -1,0 +1,222 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: THE OPTICAL CENTRE - Pacific Mall - Supplier Code Listing (Short)
+	Version: 5.0
+
+2.0 Record Sort Fields
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@GetCode}
+	Formula: StringVar CodeVar;
+	if isnull ({Supplier.SupplierCode}) then
+	  CodeVar := ""
+	else
+	  CodeVar := Trim ({Supplier.SupplierCode}) + " : ";
+
+	Name: {@GetTollFreePhone}
+	Formula: WhilePrintingRecords;
+	StringVar TollFreePhone1;
+	StringVar TollFreePhone2;
+	
+	if (TollFreePhone1="" and TollFreePhone2="") then
+	    ""
+	  else
+	  (if (TollFreePhone1="") then
+	    TollFreePhone2
+	   else
+	   (if (TollFreePhone2="") then
+	     TollFreePhone1
+	   else
+	    TollFreePhone1 + "  or  "  + TollFreePhone2));
+	
+
+	Name: {@BuildTollFreeData}
+	Formula: WhilePrintingRecords;
+	StringVar TollFreePhone1;
+	StringVar TollFreePhone2;
+	StringVar TollFreeFax1;
+	StringVar TollFreeFax2;
+	
+	if isnull ({Supplier.TollFreePhone1}) then
+	  TollFreePhone1:=""
+	else 
+	  (if ( "-" in {Supplier.TollFreePhone1}) then
+	     TollFreePhone1:={Supplier.TollFreePhone1}
+	   else
+	     TollFreePhone1:=Left ({Supplier.TollFreePhone1},1) + "-" +
+	                                 Mid ({Supplier.TollFreePhone1},2,3 ) + "-" +
+	                                 Mid ({Supplier.TollFreePhone1}, 5,20 ));
+	
+	if isnull ({Supplier.TollFreePhone2}) then
+	  TollFreePhone2:=""
+	else 
+	  (if ( "-" in {Supplier.TollFreePhone2}) then
+	     TollFreePhone2:={Supplier.TollFreePhone2}
+	   else
+	     TollFreePhone2:=Left ({Supplier.TollFreePhone2},1) + "-" +
+	                                 Mid ({Supplier.TollFreePhone2},2,3 ) + "-" +
+	                                 Mid ({Supplier.TollFreePhone2}, 5,20 ));
+	
+	if isnull ({Supplier.TollFreeFax1}) then
+	  TollFreeFax1:=""
+	else 
+	  (if ( "-" in {Supplier.TollFreeFax1}) then
+	     TollFreeFax1:={Supplier.TollFreeFax1}
+	   else
+	     TollFreeFax1:=Left ({Supplier.TollFreeFax1},1) + "-" +
+	                                 Mid ({Supplier.TollFreeFax1},2,3 ) + "-" +
+	                                 Mid ({Supplier.TollFreeFax1}, 5,20 ));
+	
+	if isnull ({Supplier.TollFreeFax2}) then
+	  TollFreeFax2:=""
+	else 
+	  (if ( "-" in {Supplier.TollFreeFax2}) then
+	     TollFreeFax2:={Supplier.TollFreeFax2}
+	   else
+	     TollFreeFax2:=Left ({Supplier.TollFreeFax2},1) + "-" +
+	                                 Mid ({Supplier.TollFreeFax2},2,3 ) + "-" +
+	                                 Mid ({Supplier.TollFreeFax2}, 5,20 ));
+	
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible
+
+	Format Formulas
+
+	Visible: OnLastRecord and IsNull ({Supplier.SupplierCode})
+	
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Subsection.3 
+		Hidden, Keep Together
+
+	Subsection.4 
+		Visible, Keep Together
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Description
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Code:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Code:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Description
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Supplier Code
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+5.2 Page Footer Section
+	Hidden, New Page After, Keep Together, Print At Bottom of Page
+
+5.3 Report Header Section
+	Hidden, New Page Before
+
+5.4 Report Footer Section
+	Visible, New Page After
+
+	Records printed :   
+		String, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+	RecordNumber
+		Numeric, Visible, Horizontal Centre Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+5.5 Group Header Section
+	Hidden
+
+	GroupName ({Supplier.SupplierName})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.6 Group Footer Section
+	Hidden
+
+5.7 Details Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together, Suppress Blank Sections
+
+	{@GetCode}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Supplier.SupplierName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetTollFreePhone}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@BuildTollFreeData}
+		String, Hidden, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+

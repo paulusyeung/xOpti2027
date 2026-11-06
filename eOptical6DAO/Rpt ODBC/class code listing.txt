@@ -1,0 +1,184 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: The Optical Centre, Richmond - Class Code Listing
+	Version: 5.0
+
+2.0 Record Sort Fields
+	A - {Class.ClassCode}
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@GetDepartment}
+	Formula: StringVar DescVar := "Department ";
+	
+	if isnull ({Class.Department}) then
+	  DescVar := DescVar + ": "
+	else 
+	  DescVar := DescVar + "(" + {Class.Department} + ") : ";
+	
+	if isnull ({Department.DepartmentName}) then
+	   DescVar
+	else 
+	  DescVar := DescVar + {Department.DepartmentName};
+
+	Name: {@GetCode}
+	Formula: StringVar CodeVar;
+	if isnull ({Class.ClassCode}) then
+	  CodeVar := ""
+	else
+	  CodeVar := Trim ({Class.ClassCode}) + " : ";
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible
+
+	Format Formulas
+
+	Visible: OnLastRecord and 
+Isnull ({Class.Department}) and Isnull ({Class.Department});
+	
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Subsection.3 
+		Hidden, Keep Together
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Description
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Code:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Code:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Description
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+5.2 Page Footer Section
+	Visible, New Page After, Print At Bottom of Page
+
+5.3 Report Header Section
+	Hidden, New Page Before
+
+5.4 Report Footer Section
+	Hidden, New Page After
+
+5.5 Group Header Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	{@GetDepartment}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Class 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+5.6 Group Footer Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: not OnLastrecord;
+		
+	Subsection.2 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: not (OnLastRecord);
+		
+	Records printed:   
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+	RecordNumber
+		Numeric, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+	  
+		String, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+5.7 Details Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together, Suppress Blank Sections
+
+	{@GetCode}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Class.ClassName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+

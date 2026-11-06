@@ -1,0 +1,574 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: The Optical Centre, Robson - Supplier Listing (Detailed)
+	Version: 5.0
+
+2.0 Record Sort Fields
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	{@XQualify};
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@BuildLeadingCode}
+	Formula: WhilePrintingRecords;
+	StringVar LeadingCode :="";
+	
+	if not isnull({Country.CountryCode}) then
+	  LeadingCode:={Country.CountryPhoneCode} + "-";
+	
+	if not isnull({City.Code}) then
+	  (if Asc({City.CityPhoneCode}) in 48 to 57 then
+	    LeadingCode:=LeadingCode + {City.CityPhoneCode} + "-");
+	
+
+	Name: {@BuildTollFreeData}
+	Formula: WhilePrintingRecords;
+	StringVar TollFreePhone1;
+	StringVar TollFreePhone2;
+	StringVar TollFreeFax1;
+	StringVar TollFreeFax2;
+	
+	if isnull ({Supplier.TollFreePhone1}) then
+	  TollFreePhone1:=""
+	else 
+	  (if ( "-" in {Supplier.TollFreePhone1}) then
+	     TollFreePhone1:={Supplier.TollFreePhone1}
+	   else
+	     TollFreePhone1:=Left ({Supplier.TollFreePhone1},1) + "-" +
+	                                 Mid ({Supplier.TollFreePhone1},2,3 ) + "-" +
+	                                 Mid ({Supplier.TollFreePhone1}, 5,20 ));
+	
+	if isnull ({Supplier.TollFreePhone2}) then
+	  TollFreePhone2:=""
+	else 
+	  (if ( "-" in {Supplier.TollFreePhone2}) then
+	     TollFreePhone2:={Supplier.TollFreePhone2}
+	   else
+	     TollFreePhone2:=Left ({Supplier.TollFreePhone2},1) + "-" +
+	                                 Mid ({Supplier.TollFreePhone2},2,3 ) + "-" +
+	                                 Mid ({Supplier.TollFreePhone2}, 5,20 ));
+	
+	if isnull ({Supplier.TollFreeFax1}) then
+	  TollFreeFax1:=""
+	else 
+	  (if ( "-" in {Supplier.TollFreeFax1}) then
+	     TollFreeFax1:={Supplier.TollFreeFax1}
+	   else
+	     TollFreeFax1:=Left ({Supplier.TollFreeFax1},1) + "-" +
+	                                 Mid ({Supplier.TollFreeFax1},2,3 ) + "-" +
+	                                 Mid ({Supplier.TollFreeFax1}, 5,20 ));
+	
+	if isnull ({Supplier.TollFreeFax2}) then
+	  TollFreeFax2:=""
+	else 
+	  (if ( "-" in {Supplier.TollFreeFax2}) then
+	     TollFreeFax2:={Supplier.TollFreeFax2}
+	   else
+	     TollFreeFax2:=Left ({Supplier.TollFreeFax2},1) + "-" +
+	                                 Mid ({Supplier.TollFreeFax2},2,3 ) + "-" +
+	                                 Mid ({Supplier.TollFreeFax2}, 5,20 ));
+	
+
+	Name: {@GetAddress}
+	Formula: StringVar Address := "";
+	
+	
+	if Address <> "" then
+	  (if Right(Address,1) in [";",","] then
+	    Address := Address + " "
+	  else
+	    Address := Address + ", ");
+	
+	if not isnull ({City.Code}) then
+	 (if not ({City.CityName} like "*/*") then
+	  (if Address <> "" then
+	     Address := Address + trim({City.CityName})
+	  else
+	     Address := trim({City.CityName})));
+	
+	if not isnull ({City.ProvinceCode}) then
+	  (if not ({Province.ProvinceName} like "*/*") then
+	    if Address <> "" then
+	       Address := Address + ", " + trim ({Province.ProvinceName})
+	    else
+	       Address := trim({Province.ProvinceName}));
+	
+	if not isnull ({Supplier.PostCode}) then
+	   if Address <> "" then 
+	      Address :=  Address + ", " + trim({Supplier.PostCode})
+	   else
+	      Address := trim({Supplier.PostCode});
+	
+	if not isnull ({City.CountryCode}) then
+	   (if not ({Country.CountryName} like "*/*") then
+	      if Address <> "" then
+	        Address := Address + ", " + trim({Country.CountryName})
+	     else
+	        Address := trim({Country.CountryName}));
+	
+	Address;
+
+	Name: {@GetTollFreePhone}
+	Formula: WhilePrintingRecords;
+	StringVar TollFreePhone1;
+	StringVar TollFreePhone2;
+	
+	if (TollFreePhone1="" and TollFreePhone2="") then
+	    ""
+	  else
+	  (if (TollFreePhone1="") then
+	    TollFreePhone2
+	   else
+	   (if (TollFreePhone2="") then
+	     TollFreePhone1
+	   else
+	    TollFreePhone1 + "  or  "  + TollFreePhone2));
+	
+
+	Name: {@GetTollFreeFax}
+	Formula: WhilePrintingRecords;
+	StringVar TollFreeFax1;
+	StringVar TollFreeFax2;
+	
+	if (TollFreeFax1="" and TollFreeFax2="") then
+	    ""
+	  else
+	  (if (TollFreeFax1="") then
+	    TollFreeFax2
+	   else
+	   (if (TollFreeFax2="") then
+	     TollFreeFax1
+	   else
+	    TollFreeFax1 + "  or  "  + TollFreeFax2));
+	
+
+	Name: {@GetGenVoice}
+	Formula: WhilePrintingRecords;
+	StringVar LeadingCode;
+	
+	if isnull({Supplier.PhoneGenVoice}) then
+	  ""
+	else
+	  (if trim({Supplier.PhoneGenVoice})="" then
+	     ""
+	   else
+	     LeadingCode + {Supplier.PhoneGenVoice});
+	
+
+	Name: {@GetSaleExt}
+	Formula: WhilePrintingRecords;
+	StringVar LeadingCode;
+	
+	if isnull({Supplier.PhoneSaleExt}) then
+	  ""
+	else
+	  (if trim({Supplier.PhoneSaleExt})="" then
+	     ""
+	   else
+	     LeadingCode + {Supplier.PhoneSaleExt});
+	
+
+	Name: {@GetServiceExt}
+	Formula: WhilePrintingRecords;
+	StringVar LeadingCode;
+	
+	if isnull({Supplier.PhoneServiceExt}) then
+	  ""
+	else
+	  (if trim({Supplier.PhoneServiceExt})="" then
+	     ""
+	   else
+	     LeadingCode +{Supplier.PhoneServiceExt});
+	
+
+	Name: {@GetACDeptExt}
+	Formula: WhilePrintingRecords;
+	StringVar LeadingCode;
+	
+	if isnull({Supplier.PhoneACDeptExt}) then
+	  ""
+	else
+	  (if trim({Supplier.PhoneACDeptExt})="" then
+	     ""
+	   else
+	     LeadingCode + {Supplier.PhoneACDeptExt});
+	
+
+	Name: {@GetGenFax}
+	Formula: WhilePrintingRecords;
+	StringVar LeadingCode;
+	
+	if isnull({Supplier.PhoneGenFax}) then
+	  ""
+	else
+	  (if trim({Supplier.PhoneGenFax})="" then
+	     ""
+	   else
+	     LeadingCode + {Supplier.PhoneGenFax});
+	
+
+	Name: {@GetSaleFax}
+	Formula: WhilePrintingRecords;
+	StringVar LeadingCode;
+	
+	if isnull({Supplier.PhoneSaleFax}) then
+	  ""
+	else
+	  (if trim({Supplier.PhoneSaleFax})="" then
+	     ""
+	   else
+	     LeadingCode + {Supplier.PhoneSaleFax});
+	
+
+	Name: {@GetServiceFax}
+	Formula: WhilePrintingRecords;
+	StringVar LeadingCode;
+	
+	if isnull({Supplier.PhoneServiceFax}) then
+	  ""
+	else
+	  (if trim({Supplier.PhoneServiceFax})="" then
+	     ""
+	   else
+	     LeadingCode + {Supplier.PhoneServiceFax});
+	
+
+	Name: {@GetACDeptFax}
+	Formula: WhilePrintingRecords;
+	StringVar LeadingCode;
+	
+	if isnull({Supplier.PhoneACDeptFax}) then
+	  ""
+	else
+	  (if trim({Supplier.PhoneACDeptFax})="" then
+	     ""
+	   else
+	     LeadingCode + {Supplier.PhoneACDeptFax});
+	
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.2 Page Footer Section
+	Visible, New Page After, Keep Together, Print At Bottom of Page
+
+5.3 Report Header Section
+	Hidden, New Page Before
+
+5.4 Report Footer Section
+	Hidden, New Page After
+
+5.5 Group Header Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	GroupName ({Supplier.SupplierName})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@BuildLeadingCode}
+		String, Hidden, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@BuildTollFreeData}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.6 Group Footer Section
+	Visible
+
+5.7 Details Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Subsection.3 
+		Visible, Keep Together
+
+	Subsection.4 
+		Visible, Keep Together
+
+	Subsection.5 
+		Visible, Keep Together
+
+	Subsection.6 
+		Visible, Keep Together
+
+	Subsection.7 
+		Visible, Keep Together
+
+	Subsection.8 
+		Visible, Keep Together
+
+	Subsection.9 
+		Visible, Keep Together
+
+	Subsection.10 
+		Visible, Keep Together
+
+	Subsection.11 
+		Visible, Keep Together
+
+	Subsection.12 
+		Visible, Keep Together
+
+	Supplier Code:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{Supplier.SupplierCode}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Account No.:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{Supplier.DateStarted}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Date Started:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{Supplier.AccountNo}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{Supplier.GSTNumber}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	GST Number:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{Supplier.PSTNumber}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	PST Number:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{Supplier.CreditLimit}
+		Numeric, Visible, Left Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	Credit Limit:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{Supplier.PaymentTerms}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Payment Terms:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{Supplier.ContactPerson}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Contact Person:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Address:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@GetAddress}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+
+	{Supplier.Remarks}
+		Memo, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand, Using System Default Formatting, Word Wrap
+
+
+	Remarks:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Toll Free Phone:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@GetTollFreePhone}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Toll Free Fax:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@GetTollFreeFax}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	General
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Account Dept.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Sales Dept.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Service Dept.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Phone:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@GetGenVoice}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetSaleExt}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetServiceExt}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetACDeptExt}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Fax:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{@GetGenFax}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetSaleFax}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetServiceFax}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetACDeptFax}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+

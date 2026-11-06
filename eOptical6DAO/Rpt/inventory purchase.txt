@@ -1,0 +1,712 @@
+	Crystal Report Professional v6.0 (32-bit) - Report Definition
+
+1.0 File Information
+
+	Report File: The Optical Centre, Richmond - Inventory Purchase
+	Version: 5.0
+
+2.0 Record Sort Fields
+	A - {RptInvtPurchase.Model}
+	A - {RptInvtPurchase.Color}
+	A - {RptInvtPurchase.Size}
+
+3.0 Group Sort Fields
+
+4.0 Formulas
+
+4.1 Record Selection Formula
+	
+
+4.2 Group Selection Formula
+	
+
+4.3 Other Formulas
+
+	Name: {@GetPrintStamp}
+	Formula: "Printed on: " + Totext(CurrentDate,"MMM dd, yyyy") + "   " 
+	+ Totext(CurrentTime,"hh:mm  tt") 
+	+ "        Page : " + Totext(PageNumber,0)
+
+	Name: {@GetSubTitle}
+	Formula: Whileprintingrecords;
+	StringVar strSubTitle:="Date Period: Between " + Totext ({@AskDateFrom}, "MMM dd, yyyy") + " to "
+	                                                                           + Totext  ({@AskDateTo}, "MMM dd, yyyy") + chr(13);
+	
+	if {@AskTxNumberFrom}<>"" then
+	   strSubTitle:=strSubTitle + "SKU = " + {@AskTxNumberFrom}
+	else 
+	   strSubTitle:=strSubTitle + "Department Name like '" + {@AskDept} + "' and " +
+	      "Class Name like '" + {@AskClass} + "' and " +
+	     "Category Name like '" +{@AskCat} + "'";
+	
+	strSubTitle;
+	
+
+	Name: {@InitSKUTrans}
+	Formula: WhilePrintingRecords;
+	NumberVar SKUTrans:=0;
+	NumberVar RefPageNumber:=PageNumber;
+
+	Name: {@GetNetCost}
+	Formula: {RptInvtPurchase.UnitCost}-{RptInvtPurchase.MarkDownAmount}
+
+	Name: {@IsSuppress}
+	Formula: WhilePrintingRecords;
+	BooleanVar XSuppress;
+	NumberVar refPageNumber;
+	
+	If (({RptInvtPurchase.SKU}=Previous ({RptInvtPurchase.SKU}))
+	 and (PageNumber=refPageNumber)) and Not OnFirstRecord Then 
+	   XSuppress:=True
+	else
+	   (refPageNumber:=PageNumber;
+	    XSuppress:=False)
+
+	Name: {@GetNetCost}
+	Formula: {RptInvtPurchase.UnitCost}-{RptInvtPurchase.MarkDownAmount}
+
+	Name: {@IsSuppress}
+	Formula: WhilePrintingRecords;
+	BooleanVar XSuppress;
+	NumberVar refPageNumber;
+	
+	If (({RptInvtPurchase.SKU}=Previous ({RptInvtPurchase.SKU}))
+	 and (PageNumber=refPageNumber)) and Not OnFirstRecord Then 
+	   XSuppress:=True
+	else
+	   (refPageNumber:=PageNumber;
+	    XSuppress:=False)
+
+	Name: {@UpdSKUTrans}
+	Formula: WhilePrintingRecords;
+	NumberVar SKUTrans;
+	
+	SKUTrans:=SKUTrans+1;
+
+5.0 Sectional Information
+
+5.1 Page Header Section
+	Visible, Keep Together
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	ReportComments
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetPrintStamp}
+		String, Visible, Right Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{@GetSubTitle}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	ReportTitle
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.2 Page Footer Section
+	Visible, New Page After, Keep Together, Print At Bottom of Page
+
+5.3 Report Header Section
+	Hidden, New Page Before
+
+5.4 Report Footer Section
+	Visible, New Page After
+
+	Subsection.1 
+		Visible, Keep Together
+
+	Subsection.2 
+		Visible, Keep Together
+
+	Grand Total:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Sum ({RptInvtPurchase.Purchase})
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+		Object Format Formulas -
+		Visible: Not {@AskXDispCost}
+		
+	Sum ({RptInvtPurchase.Qty})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+5.5 Group Header Section #1
+	Hidden
+
+	GroupName ({RptInvtPurchase.DepartmentName})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.6 Group Footer Section #1
+	Hidden
+
+5.7 Group Header Section #2
+	Hidden
+
+	GroupName ({RptInvtPurchase.ClassName})
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+5.8 Group Footer Section #2
+	Hidden
+
+5.9 Group Header Section #3
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: ({RptInvtPurchase.ClassCode} = "LN" or 
+ {RptInvtPurchase.ClassCode} = "CN" );
+		
+	Subsection.2 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: ({RptInvtPurchase.ClassCode} <> "LN" and
+ {RptInvtPurchase.ClassCode} <> "CN" );
+		
+	Department: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	{RptInvtPurchase.DepartmentName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Class:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	{RptInvtPurchase.ClassName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Category: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	{RptInvtPurchase.CategoryName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	SKU No.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Total Cost
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Unit Cost
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Quantity
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Size
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Color
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Supplier
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Model
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Brand
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Trans Date
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	{RptInvtPurchase.ClassName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	{RptInvtPurchase.CategoryName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Category: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	Class:
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	{RptInvtPurchase.DepartmentName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+	Department: 
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Expand
+
+
+
+	SKU No.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Total Cost
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Unit Cost
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Quantity
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Diam.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	B.C.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Cy.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Sp.
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Color
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Supplier
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Len Style
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Brand
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+	Trans Date
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together
+
+
+
+5.10 Group Footer Section #3
+	Visible
+
+5.11 Group Header Section #4
+	Hidden
+
+	{@InitSKUTrans}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+5.12 Group Footer Section #4
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: WhilePrintingRecords;
+NumberVar SKUTrans;
+
+SKUTrans=1;
+		
+	Subsection.2 
+		Visible, Keep Together
+
+	Sum ({RptInvtPurchase.Qty}, {RptInvtPurchase.SKU})
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+		Object Format Formulas -
+		Visible: WhilePrintingRecords;
+NumberVar SKUTrans;
+
+SKUTrans=1;
+		
+	Sum ({RptInvtPurchase.Purchase}, {RptInvtPurchase.SKU})
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+		Object Format Formulas -
+		Visible: WhilePrintingRecords;
+NumberVar SKUTrans;
+
+SKUTrans=1 or Not {@AskXDispCost}
+		
+5.13 Group Header Section #5
+	Hidden
+
+5.14 Group Footer Section #5
+	Hidden
+
+5.15 Details Section
+	Visible
+
+	Subsection.1 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: ({RptInvtPurchase.ClassCode} = "LN" or 
+ {RptInvtPurchase.ClassCode} = "CN" );
+		
+	Subsection.2 
+		Visible, Keep Together
+
+		Format Formulas
+
+		Visible: ({RptInvtPurchase.ClassCode} <> "LN" and
+ {RptInvtPurchase.ClassCode} <> "CN" );
+		
+	Subsection.3 
+		Hidden, Keep Together
+
+	{RptInvtPurchase.Model}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+		Object Format Formulas -
+		Visible: WhilePrintingRecords;
+BooleanVar XSuppress;
+		
+	{RptInvtPurchase.Color}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+		Object Format Formulas -
+		Visible: WhilePrintingRecords;
+BooleanVar XSuppress;
+		
+	{RptInvtPurchase.Size}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+		Object Format Formulas -
+		Visible: WhilePrintingRecords;
+BooleanVar XSuppress;
+		
+	{RptInvtPurchase.SKU}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+		Object Format Formulas -
+		Visible: WhilePrintingRecords;
+BooleanVar XSuppress;
+		
+	{RptInvtPurchase.SupplierName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+		Object Format Formulas -
+		Visible: WhilePrintingRecords;
+BooleanVar XSuppress;
+		
+	{RptInvtPurchase.BrandDescription}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+		Object Format Formulas -
+		Visible: WhilePrintingRecords;
+BooleanVar XSuppress;
+		
+	{RptInvtPurchase.Qty}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{RptInvtPurchase.Purchase}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+		Object Format Formulas -
+		Visible: Not {@AskXDispCost}
+		
+	{@GetNetCost}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+		Object Format Formulas -
+		Visible: Not {@AskXDispCost}
+		
+	{RptInvtPurchase.DateOfEntry}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	{@IsSuppress}
+		Boolean, Hidden, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Boolean Output Type: True or False
+
+
+	{RptInvtPurchase.Model}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+		Object Format Formulas -
+		Visible: WhilePrintingRecords;
+BooleanVar XSuppress;
+		
+	{RptInvtPurchase.Color}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+		Object Format Formulas -
+		Visible: WhilePrintingRecords;
+BooleanVar XSuppress;
+		
+	{RptInvtPurchase.SKU}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+		Object Format Formulas -
+		Visible: WhilePrintingRecords;
+BooleanVar XSuppress;
+		
+	{RptInvtPurchase.SupplierName}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+		Object Format Formulas -
+		Visible: WhilePrintingRecords;
+BooleanVar XSuppress;
+		
+	{RptInvtPurchase.BrandDescription}
+		String, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Word Wrap
+
+
+		Object Format Formulas -
+		Visible: WhilePrintingRecords;
+BooleanVar XSuppress;
+		
+	{RptInvtPurchase.Purchase}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+		Object Format Formulas -
+		Visible: Not {@AskXDispCost}
+		
+	{RptInvtPurchase.Qty}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 0 Decimal Places, Rounding: 1, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+	{@GetNetCost}
+		Currency, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Bracketed, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.', 
+		Float Symbol: '$', Leading Currency Outside Negative
+
+
+		Object Format Formulas -
+		Visible: Not {@AskXDispCost}
+		
+	{RptInvtPurchase.Diameter}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+		Object Format Formulas -
+		Visible: WhilePrintingRecords;
+BooleanVar XSuppress;
+		
+	{RptInvtPurchase.BaseCurve}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+		Object Format Formulas -
+		Visible: WhilePrintingRecords;
+BooleanVar XSuppress;
+		
+	{RptInvtPurchase.Cylinder}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+		Object Format Formulas -
+		Visible: WhilePrintingRecords;
+BooleanVar XSuppress;
+		
+	{RptInvtPurchase.Sphere}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
+		Object Format Formulas -
+		Visible: WhilePrintingRecords;
+BooleanVar XSuppress;
+		
+	{RptInvtPurchase.DateOfEntry}
+		Date, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Windows Default Type: Not Using Windows Defaults, Date Order: Month Day Year, Year Type: Long, Month Type: Short Month Name, Day Type: Leading Zero Numeric Day, Leading Day Type: None, First Separator: ' ', Second Separator: ', ', Leading Day Separator: ''
+
+
+	{@IsSuppress}
+		Boolean, Hidden, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, Boolean Output Type: True or False
+
+
+	{@UpdSKUTrans}
+		Numeric, Visible, Default Alignment, Top Alignment, 
+		Keep Together, Using System Default Formatting, 
+		Leading Minus, 2 Decimal Places, Rounding: 0.01, 
+		Thousands Symbol: ',', Decimal Symbol: '.'
+
+
