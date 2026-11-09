@@ -1,0 +1,26 @@
+area,severity,count,example,suspected_cause,action
+Schema types,Info,198,"REAL -> double precision (82); NUMERIC(15,2) -> numeric(19,4) (116)",Target uses wider numeric types,Accept
+Schema nullability,Info,49,"16 tightened, 33 relaxed","Target constraints differ from MDB",Review constraint intent
+Schema typos,Info,3,"preference.paltform -> platform","Source column typo corrected in target",None
+Row counts,Info,50962,"txdetails -12589; txheader -6431","xOpti is a May 2022 snapshot; MDB continues to Sep 2022",Refresh target or reconcile delta
+TxHeader monetary,Medium,84,"SA360530B 110 vs 90","Post-snapshot edits or source rebuild differences",Review exception list
+TxHeader quantity,Medium,50,"SA914166 1 vs 0","Post-snapshot edits",Review exception list
+TxHeader ref/second-date,Medium,248,"SA161835 ref RC00206579 blank in target","Post-migration rebuild updates",Review exception list
+TxHeader date-of-creation,Low,404,"SA338411 2022-07-12 vs 2016-08-09","MDB rebuild timestamp vs original creation date",Accept or normalize
+TxDetails monetary,Medium,129,"SA366960 cost 144.48 vs 0","Post-snapshot edits",Review exception list
+TxDetails quantity,Medium,12,"",Post-snapshot edits,Review exception list
+TxDetails tax code,Low,11,"",Post-snapshot edits,Review exception list
+TxPayment monetary,High,1,"SA360530B type 8 110 vs 90","Post-snapshot edit",Correct or accept
+PaymentSummary precision,Low,2,"payment 5 on 2018-09-01 539.17 vs 539.1740","MDB 2-decimal precision",Accept
+Inventory current state,Info,1329,"qty on hand 12435 vs 12731","Snapshot skew",Refresh at cutover
+Lots current state,Info,1928,"on hand -55304 vs -51777","Snapshot skew",Refresh at cutover
+Accounts receivable current state,Info,1736,"refund -2490380.26 vs -2397978.71","Snapshot skew",Refresh at cutover
+Retail price current state,Info,357,"total 32296829.15 vs 32279832.15","Snapshot skew",Refresh at cutover
+TxHeader missing,High,1,"RS00034463 absent from target","Legacy orphan or missed migration row",Investigate and migrate if valid
+TxDetails target-only,High,6,"SA368052 rows 2-3; SJ00002805 rows 1-2","Target-only edits or date corruption",Review and correct
+TxSalePerson orphaned,Warning,478,"RC00007118 sales row without header","Legacy orphaned salesperson rows",Decide whether to retain
+Summary date corruption,High,25,"invt_summary year 7848","Invalid year/date in target summary rows",Correct target dates
+Summary source year defects,Info,6,"invt_summary year 97","Legacy source summary defect",Accept or normalize
+Sequences,High,6,"RC 207025 vs 205303","xOpti sequences not advanced",Advance before cutover
+Surrogate sequences,High,3,"customer.id 75313 vs 74845","xOpti sequences not advanced",Advance before cutover
+Preference control numbers,Medium,2,"next_invt_control_number 612398 vs 605960","Control-number drift",Advance before cutover

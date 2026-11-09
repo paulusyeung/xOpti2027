@@ -44,7 +44,7 @@ If the desktop must stay Windows, use **WSL2**. Native Linux is cleaner.
 
 | Item | Needed for | Notes |
 | --- | --- | --- |
-| Confirmed production MDB | Source of truth | Not the root `SynergyV.mdb` template/sample. Confirm whether the 2016 `OpticalRmd` snapshot is the baseline. |
+| Confirmed production MDB | Source of truth | `~/Downloads/SynergyV.mdb` is a copy of the production source kept for dev purposes (not the root template/sample). |
 | Access workgroup/DB password, if any | Extraction | `mdbtools` may not handle encrypted/workgroup-secured files. |
 | Read-only PostgreSQL connection | Target comparison | Host, port, database, user, password. Supply via environment variable or session secret; never commit. |
 | Or schema/data dumps | Target comparison | `pg_dump --schema-only` plus data/CSV exports if the database is not reachable from the work machine. |
@@ -55,12 +55,24 @@ If the desktop must stay Windows, use **WSL2**. Native Linux is cleaner.
 
 ## Environment prerequisites
 
-Current work machine status:
+Current work machine status (verified 2026-11-08):
 
-- `mdbtools`, `psql`, and `pg_dump`: **not installed**.
+- `mdbtools`: **installed** (v1.0.0).
+- `psql` and `pg_dump`: **installed** (client 16.15).
 - `docker`: available.
-- PostgreSQL connection: **not configured**.
-- Root `SynergyV.mdb`: template/sample only.
+- PostgreSQL: **running** at `localhost:5432` (Docker container `psql-17`, server 17.11).
+- Databases:
+  - `Synergy5` — mirror using the original MDB table/query names (e.g. `BarCodePool`, `CustomerMedical`).
+  - `xOpti` — normalized names: lower case, underscore separators (e.g. `bar_code_pool`, `customer_medical`).
+- Source MDB: `~/Downloads/SynergyV.mdb` — present (1.5 GB), readable by `mdbtools` (70 tables). Confirmed as a dev-purpose copy of the production source (not the root template/sample).
+
+A local, gitignored `.env` is prepared at `eOptical6DAO/.env` with `DATABASE_URL` (Synergy5), `XOPTI_DATABASE_URL` (xOpti), and `SYNERGY_MDB`. Fill in the password there — never commit it or paste it into chat. Load it with:
+
+```bash
+set -a; . eOptical6DAO/.env; set +a
+```
+
+If the password contains URL-reserved characters (`@ : / ? # [ ] %`), percent-encode them. In particular `@` must become `%40`, since an unencoded `@` terminates the password and the rest is parsed as the host. For example a password `p@ss` is written `p%40ss`. Alternatively avoid the URL form and use a `.pgpass` file or `PGPASSWORD`, which need no encoding.
 
 Install on Linux:
 
@@ -73,9 +85,9 @@ Or run `mdbtools` and the PostgreSQL client from containers if packages should n
 Useful extraction commands:
 
 ```bash
-mdb-tables -1 SynergyV.mdb
-mdb-schema SynergyV.mdb postgres
-mdb-export SynergyV.mdb TxHeader > TxHeader.csv
+mdb-tables -1 ~/Downloads/SynergyV.mdb
+mdb-schema ~/Downloads/SynergyV.mdb postgres
+mdb-export ~/Downloads/SynergyV.mdb TxHeader > TxHeader.csv
 pg_dump --schema-only "$DATABASE_URL" > target-schema.sql
 psql "$DATABASE_URL" -c '\dt'
 ```
@@ -101,7 +113,7 @@ psql "$DATABASE_URL" -c '\dt'
 
 ## Open questions
 
-- Which MDB is the confirmed production source, and is it encrypted or workgroup-secured?
+- Is the production-source copy `~/Downloads/SynergyV.mdb` encrypted or workgroup-secured? (It is readable by `mdbtools`, so presumably not.)
 - Is a read-only PostgreSQL connection available, or should comparison use dumps?
 - Where are the manual mapping decisions and transform scripts recorded?
 - Which legacy queries/reports are authoritative for each reconciliation total?
