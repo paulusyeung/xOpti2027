@@ -41,7 +41,7 @@ Alternatives considered: introducing new surrogate keys during migration. Reject
 ### Decision: Fast-reload staging and set-based upsert for freeze-window sync
 Access/Jet has no transaction log, no CDC, and no rowversion column. Historical rows are frequently edited in place (as demonstrated by 84 `TxHeader` and 129 `TxDetails` monetary edits and inventory updates discovered in comparison). An incremental date-filtered delta (`WHERE txdate > last_run`) will miss historical corrections and corrupt AR/AP/inventory balances.
 
-Because full streaming ingestion of the 1.5 GB MDB takes ~2-3 minutes, the "freeze-window sync" (`sync` command) truncates the `legacy` schema, streams the latest MDB, and executes set-based upserts (`ON CONFLICT DO UPDATE`), ensuring zero missed edits without prolonged downtime.
+Because full streaming ingestion of the 1.5 GB MDB measures ~17 minutes on the dev snapshot (7.75M rows), and the set-based transform ~15 minutes with secondary-index deferral, the "freeze-window sync" (`sync` command) truncates the `legacy` schema, streams the latest MDB, and executes set-based upserts (`ON CONFLICT DO UPDATE`), ensuring zero missed edits within a roughly 35-minute window.
 
 Alternatives considered: date-based incremental filtering. Rejected because Access lacks change tracking and in-place updates would be permanently lost.
 
@@ -64,6 +64,12 @@ Legacy control numbers are prefixed strings (`RC`, `RS`, `SR`, `RJ`, `SJ`, `WC`)
 Reconciliation shall run independently and emit Markdown/CSV reports with pass/fail status, measured differences, and tolerance rules. It shall be runnable against the comparison database without writes.
 
 Alternatives considered: embedding checks only inside transform. Rejected because reconciliation must be repeatable and independently auditable.
+
+### Decision: Transaction-scoped secondary-index deferral (added during implementation)
+On multi-million-row tables, `ON CONFLICT DO UPDATE` against tables with many secondary indexes dominated transform time (customer: 60k rows took 37s with indexes, 15s without). Because the entire run happens inside one PostgreSQL transaction, the transform drops and rebuilds each bulk table's non-constraint secondary indexes inside that table's savepoint; a failure or rollback restores both data and index definitions atomically.
+
+### Decision: Hash-join-friendly anti-patterns only (added during implementation)
+Legacy `NOT IN (SELECT ...)` and `IS NOT DISTINCT FROM` join conditions degrade to per-row SubPlans/nested loops on 1M+ row tables (a header-orphan probe ran >25 minutes before correction). The orphan and target-only checks use `NOT EXISTS` and plain PK equality.
 
 ## Risks / Trade-offs
 

@@ -64,3 +64,48 @@ artifact is required.
 - Summary-table year values such as `97`, `995`, `997`, `4997`, `7848`, and `9797`
   are source-data defects preserved by both systems; they are reported, not
   normalized, during comparison.
+
+## xOpti.Migrations runner
+
+`src/xOpti.Migrations` automates the port itself (extract, transform, reconcile, cutover)
+so the data load no longer has to be done manually.
+
+```bash
+set -a; . eOptical6DAO/.env; set +a        # SYNERGY_MDB + connection URLs
+
+dotnet run --project src/xOpti.Migrations -- --help
+dotnet run --project src/xOpti.Migrations -- extract           # stream MDB -> legacy staging schema
+dotnet run --project src/xOpti.Migrations -- stage             # validate staging vs Synergy5 mirror
+dotnet run --project src/xOpti.Migrations -- transform         # set-based idempotent upserts
+dotnet run --project src/xOpti.Migrations -- reconcile         # row counts, aggregates, sequences
+dotnet run --project src/xOpti.Migrations -- sync              # extract + transform in one pass
+dotnet run --project src/xOpti.Migrations -- cutover           # sync + reconcile, gated on PASS
+dotnet run --project src/xOpti.Migrations -- cutover --dry-run # full pipeline, rolled back
+```
+
+- `--only Table1,Table2` restricts extract to a table subset; `--tolerance 0.005` overrides
+  the reconciliation money tolerance; `--env-file` points elsewhere.
+- The runner streams `mdb-export` stdout directly into PostgreSQL `COPY` (no intermediate
+  CSVs) and performs set-based transforms inside one transaction. A blocked cutover or a
+  dry run rolls everything back; the source MDB checksum is verified unchanged after every run.
+- Orphaned child rows get flagged synthetic `tx_header` rows (`is_synthetic = true`) and are
+  listed in `migration.anomaly_quarantine`; run bookkeeping lands in `migration.run_log`.
+- Reconciliation writes `reports/reconciliation.md` and `reports/reconciliation-workbook.csv`
+  (the comparison tool keeps its own `comparison-report.md` / `exception-workbook.csv`).
+
+### Cutover sequence (runbook)
+
+1. Freeze legacy writes.
+2. `dotnet run --project src/xOpti.Migrations -- cutover`
+   (rehearsed at least three times beforehand with `cutover --dry-run` against a copy).
+3. On non-zero exit: nothing was committed; inspect `reports/reconciliation.md`, fix the
+   exceptions, rerun.
+4. On success: switch the proxy, keep the MDB read-only for the audit period.
+
+Rollback: `docker exec psql-17 psql -U postgres -c 'drop database if exists xOpti_rollback;'`
+style snapshot restore — take `pg_dump` of `xOpti` immediately before cutover and restore
+that snapshot if a rerun is needed.
+
+Measured on the dev snapshot (70 tables, 7.7M rows): extract ~17 min, transform ~15 min
+(index maintenance deferred inside the load transaction), reconcile ~2 min. Rehearse on the
+production copy to measure the real freeze window.
