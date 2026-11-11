@@ -11,15 +11,28 @@ public static class ProblemResponses
 {
     public static async Task WriteAsync(HttpResponse response, ProblemDetails problem)
     {
-        if (response.HttpContext.Items.TryGetValue(CorrelationIdMiddleware.ItemKey, out var value)
-            && value is string correlationId)
+        if (response.HasStarted)
         {
-            problem.Extensions["correlationId"] = correlationId;
+            return;
+        }
+
+        string? correlationId = null;
+        if (response.HttpContext.Items.TryGetValue(CorrelationIdMiddleware.ItemKey, out var value)
+            && value is string id)
+        {
+            correlationId = id;
+            problem.Extensions["correlationId"] = id;
         }
 
         response.Clear();
         response.StatusCode = problem.Status ?? StatusCodes.Status500InternalServerError;
         response.ContentType = "application/problem+json";
+
+        if (!string.IsNullOrEmpty(correlationId))
+        {
+            response.Headers[CorrelationIdMiddleware.HeaderName] = correlationId;
+        }
+
         await response.WriteAsync(
             JsonSerializer.Serialize(problem, new JsonSerializerOptions(JsonSerializerDefaults.Web)));
     }

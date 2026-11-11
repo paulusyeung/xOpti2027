@@ -12,7 +12,7 @@ RUN dotnet publish src/xOpti.Api/xOpti.Api.csproj -c Release -o /app/publish /p:
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
-ENV TZ=America/Toronto
+ENV TZ=America/Vancouver
 ENV ASPNETCORE_URLS=http://+:8080
 ENV XOptiApi__FileStorageRoot=/var/lib/xopti/files
 ENV XOptiApi__FontDirectories__0=/usr/share/xopti/fonts
