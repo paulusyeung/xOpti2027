@@ -82,3 +82,6 @@ Thumbs.db
 *.bak
 *.mdf
 *.ldf
+
+# Local API settings containing the database password
+src/xOpti.Api/appsettings.Development.json

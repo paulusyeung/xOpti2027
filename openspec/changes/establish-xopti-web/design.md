@@ -93,3 +93,30 @@ nginx adds `Content-Security-Policy` (`default-src 'self'`; `script-src 'self'`;
 - Permission-name sync: generate the TypeScript list from the backend source during the contract step, or keep a checked-in list with a test? Default: checked-in list with a test.
 - CI platform: the repository currently has no workflow files. Default: provide an `npm run ci` script that runs every gate; wire it into the team's CI platform once chosen.
 - Session warning: the client currently reacts only to the expired session. A proactive idle warning before the 20-minute timeout is deferred unless the operators request it.
+
+## Implementation Record
+
+Recorded during implementation so the decisions above can be audited against the code.
+
+### Final Content Security Policy (task 7.6)
+
+Applied by `docker/nginx.conf` to all responses. Validated in a browser with the WebPivotTable route open (fixture build, `analytics-csp.dev.spec.ts`): no violations and no third-party requests. No directive was relaxed beyond the list in the decision above.
+
+```
+default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; connect-src 'self'; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+```
+
+The Vite dev HMR socket is blocked by `connect-src 'self'`; this is development-only and excluded from the check.
+
+### WebPivotTable integration findings (package 7.1.1)
+
+- Data is loaded with `setData(rows)`, as documented in the README. The published typings declare `setWptFromDataArray(data, opts)`, but the runtime method takes `(attrArray, dataArray, url, type)`.
+- `localeBaseUrl` must be set explicitly; the default falls back to the vendor CDN.
+- `ai: { enabled: false }` and `fileLinks: []` are set on every instance. The default sample-file links point at the vendor CDN.
+- The Memory-mode worker is created from `/assets/memory.worker-*.js`, which is not in the npm package. A build-only Vite transform (`xopti-webpivottable-worker-url`) defers that URL to runtime. The library falls back to the main thread when the worker fails to load.
+- The `wpt:ready` event is dispatched from `connectedCallback`. The wrapper creates the element and attaches its listener before insertion.
+
+### Container and deployment notes
+
+- `docker/nginx.conf` resolves `api` through Docker's embedded DNS per request, so nginx starts and keeps running while the API container restarts.
+- `docker/web.Dockerfile` runs the full `npm run ci` gate inside the build stage. The runtime stage writes `/config.json` from `XOPTI_ANALYTICS_ENABLED` and `XOPTI_WPT_LICENSE_KEY` through the nginx image's `/docker-entrypoint.d` hook.

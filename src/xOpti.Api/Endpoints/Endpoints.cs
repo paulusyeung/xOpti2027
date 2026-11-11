@@ -4,6 +4,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using xOpti.Application.Authorization;
 using xOpti.Application.Common;
 using xOpti.Application.Identity.ListBranches;
@@ -69,6 +70,38 @@ public static class Endpoints
             await signInManager.SignOutAsync();
             return Results.NoContent();
         });
+
+        // Read-only session identity for the SPA shell (permission-driven navigation).
+        // Returns no tokens or secret material; the API remains the authority for
+        // every permission check.
+        auth.MapGet("/me", async (
+            ClaimsPrincipal principal,
+            UserManager<xOpti.Infrastructure.Identity.XoptiUser> users) =>
+        {
+            var user = await users.GetUserAsync(principal);
+            if (user is null)
+            {
+                return Results.Problem(new ProblemDetails
+                {
+                    Type = Problems.Unauthenticated,
+                    Title = "Unauthorized",
+                    Status = StatusCodes.Status401Unauthorized,
+                    Detail = "No valid session.",
+                });
+            }
+
+            var permissions = principal
+                .FindAll(xOpti.Infrastructure.ClaimsCurrentPrincipal.PermissionClaimType)
+                .Select(claim => claim.Value)
+                .Distinct(StringComparer.Ordinal)
+                .OrderBy(value => value, StringComparer.Ordinal)
+                .ToArray();
+
+            return Results.Ok(new CurrentUserResponse(user.UserName ?? string.Empty, user.DisplayName, permissions));
+        })
+        .RequireAuthorization()
+        .Produces<CurrentUserResponse>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized);
 
         static IResult InvalidCredentials() => Results.Problem(new ProblemDetails
         {
@@ -145,6 +178,8 @@ public static class Endpoints
 }
 
 public sealed record SignInRequest(string? Username, string? Password);
+
+public sealed record CurrentUserResponse(string Username, string? DisplayName, IReadOnlyList<string> Permissions);
 
 public sealed record RenameBranchRequest(string Name, string? ExpectedCurrentName = null);
 

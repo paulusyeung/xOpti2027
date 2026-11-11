@@ -7,3 +7,12 @@ src/xOpti.Migrations
 !eOptical6DAO
 eOptical6DAO/*
 !eOptical6DAO/3of9.TTF
+
+# Web build inputs (node_modules and build output are excluded in the web project)
+!web
+web/xOpti.Web/node_modules
+web/xOpti.Web/dist
+web/xOpti.Web/public/vendor
+!api-contract
+!scripts
+!docker

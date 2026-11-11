@@ -1,0 +1,42 @@
+{
+  "name": "xopti-web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "vite",
+    "prebuild": "node scripts/copy-wpt-assets.mjs",
+    "build": "vue-tsc --noEmit -p tsconfig.json && vite build",
+    "build:dev-fixtures": "vite build --mode development",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "contract:check": "bash ../../scripts/contract-check.sh",
+    "check:bundle": "node scripts/check-build-output.mjs",
+    "e2e": "playwright test",
+    "ci": "npm run contract:check && npm run typecheck && npm run test && npm run build && npm run check:bundle"
+  },
+  "dependencies": {
+    "@mdi/font": "^7.4.47",
+    "openapi-fetch": "^0.17.0",
+    "pinia": "^3.0.4",
+    "vue": "^3.5.22",
+    "vue-router": "^4.6.4",
+    "vuetify": "^3.13.7",
+    "webpivottable": "^7.1.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.0",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "@vue/test-utils": "^2.5.1",
+    "jsdom": "^26.1.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.8",
+    "vite-plugin-vuetify": "^2.1.3",
+    "vitest": "^5.1.0",
+    "vue-tsc": "^3.3.14"
+  }
+}

@@ -12,8 +12,14 @@ RUN dotnet publish src/xOpti.Api/xOpti.Api.csproj -c Release -o /app/publish /p:
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
+# Npgsql loads the GSSAPI library at connection time; the base image does not include it.
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends libgssapi-krb5-2 \
+ && rm -rf /var/lib/apt/lists/*
 ENV TZ=America/Vancouver
 ENV ASPNETCORE_URLS=http://+:8080
+# appsettings.json pins Kestrel to the development port; the container must listen on 8080 for nginx.
+ENV Kestrel__Endpoints__Http__Url=http://0.0.0.0:8080
 ENV XOptiApi__FileStorageRoot=/var/lib/xopti/files
 ENV XOptiApi__FontDirectories__0=/usr/share/xopti/fonts
 COPY --from=build /app/publish ./

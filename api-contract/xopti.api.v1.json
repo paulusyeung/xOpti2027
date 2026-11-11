@@ -44,6 +44,28 @@
         }
       }
     },
+    "/api/v1/auth/me": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/api/v1/branches": {
       "get": {
         "tags": [
@@ -124,6 +146,31 @@
   },
   "components": {
     "schemas": {
+      "CurrentUserResponse": {
+        "required": [
+          "username",
+          "displayName",
+          "permissions"
+        ],
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "RenameBranchRequest": {
         "required": [
           "name"

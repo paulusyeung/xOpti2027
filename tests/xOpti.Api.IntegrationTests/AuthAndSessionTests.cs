@@ -151,4 +151,39 @@ public sealed class AuthAndSessionTests(ApiPostgresFixture _fixture)
         Assert.Equal(last, afterLockout.Status);
         Assert.Equal(HttpStatusCode.Unauthorized, afterLockout.Status);
     }
+
+    [Fact]
+    public async Task AuthMe_WithValidSession_ReturnsIdentityAndPermissions_WithoutSecrets()
+    {
+        var client = await SignInAsync("manager");
+
+        var response = await client.GetAsync("/api/v1/auth/me");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var body = await response.Content.ReadAsStringAsync();
+        using var doc = JsonDocument.Parse(body);
+        var root = doc.RootElement;
+
+        Assert.Equal("manager", root.GetProperty("username").GetString());
+        Assert.Equal(JsonValueKind.Array, root.GetProperty("permissions").ValueKind);
+        Assert.True(root.GetProperty("permissions").GetArrayLength() > 0, "manager must hold at least one permission claim");
+
+        // No token, password, or session material in the body.
+        Assert.DoesNotContain("xopti.session", body, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("Test#Passw0rd1!", body);
+        Assert.DoesNotContain("token", body, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task AuthMe_WithoutSession_Returns401UnauthenticatedProblem()
+    {
+        var client = new TestClient(new XOptiApiFactory(_fixture));
+
+        var response = await client.GetAsync("/api/v1/auth/me");
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        Assert.Null(response.Headers.Location);
+        using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        Assert.Equal("https://errors.xopti/unauthenticated", doc.RootElement.GetProperty("type").GetString());
+    }
 }

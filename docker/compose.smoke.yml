@@ -1,4 +1,6 @@
 # Ephemeral smoke override: unique ports, no host volume mounts.
+# Runs the same web and api services as compose.yml on a separate host port.
+#   docker compose -p xopti-smoke -f docker/compose.yml -f docker/compose.smoke.yml up -d --build
 services:
   web:
     ports:
