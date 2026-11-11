@@ -1,0 +1,9 @@
+*
+!xOpti.sln
+!src
+src/**/obj
+src/**/bin
+src/xOpti.Migrations
+!eOptical6DAO
+eOptical6DAO/*
+!eOptical6DAO/3of9.TTF

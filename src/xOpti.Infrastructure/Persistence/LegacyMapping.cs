@@ -116,7 +116,9 @@ public static class LegacyMapping
             e.ToTable("branch", t => t.ExcludeFromMigrations());
             e.HasKey(x => x.BranchCode);
             e.Property(x => x.BranchCode).HasColumnName("branch_code");
-            e.Property(x => x.BranchName).HasColumnName("branch_name");
+            // Value-based optimistic concurrency alongside xmin: a caller
+            // asserting the name it loaded conflicts when it changed.
+            e.Property(x => x.BranchName).HasColumnName("branch_name").IsConcurrencyToken();
             e.Property(x => x.City).HasColumnName("city");
             e.Property(x => x.Phone).HasColumnName("phone");
             AddXminConcurrency(e);

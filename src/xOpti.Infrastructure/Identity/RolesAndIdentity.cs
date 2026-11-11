@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using xOpti.Application.Authorization;
@@ -91,6 +92,11 @@ public static class IdentityServiceCollectionExtensions
         services.AddLogging();
         builder.AddTokenProvider<DataProtectorTokenProvider<XoptiUser>>(TokenOptions.DefaultProvider);
         builder.AddTokenProvider<DataProtectorTokenProvider<XoptiUser>>(TokenOptions.DefaultEmailProvider);
+        builder.AddSignInManager();
+
+        // Must run after AddSignInManager/AddRoles so Identity's default
+        // factory registration is replaced, not shadowed.
+        services.Replace(ServiceDescriptor.Scoped<IUserClaimsPrincipalFactory<XoptiUser>, PermissionClaimsPrincipalFactory>());
 
 
         return services;
@@ -109,4 +115,29 @@ public sealed class PermissionClaimsIssuer : IPermissionClaimsIssuer
         RolePermissionMatrix.PermissionsFor(roles)
             .Select(p => new Claim("xopti:permission", p))
             .ToList();
+}
+
+/// <summary>
+/// Adds the mapped permission claims to the sign-in principal so the cookie
+/// session carries the authorization-model vocabulary.
+/// </summary>
+public sealed class PermissionClaimsPrincipalFactory(
+    UserManager<XoptiUser> userManager,
+    RoleManager<XoptiRole> roleManager,
+    Microsoft.Extensions.Options.IOptions<IdentityOptions> options)
+    : UserClaimsPrincipalFactory<XoptiUser, XoptiRole>(userManager, roleManager, options)
+{
+    protected override async Task<System.Security.Claims.ClaimsIdentity> GenerateClaimsAsync(XoptiUser user)
+    {
+        var identity = await base.GenerateClaimsAsync(user);
+
+        var roles = await UserManager.GetRolesAsync(user);
+        foreach (var permission in RolePermissionMatrix.PermissionsFor(roles))
+        {
+            identity.AddClaim(new System.Security.Claims.Claim(
+                ClaimsCurrentPrincipal.PermissionClaimType, permission));
+        }
+
+        return identity;
+    }
 }

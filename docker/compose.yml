@@ -1,0 +1,42 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_PASSWORD: ${XOPTI_PG_PASSWORD:-xopti}
+      POSTGRES_DB: xopti
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d xopti"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  api:
+    build:
+      context: ..
+      dockerfile: docker/api.Dockerfile
+    environment:
+      ConnectionStrings__XOptiDatabase: Host=postgres;Database=xopti;Username=postgres;Password=${XOPTI_PG_PASSWORD:-xopti}
+    volumes:
+      - filevolume:/var/lib/xopti/files
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # EF migrations are applied ONLY by the one-shot job, never at startup:
+    #   docker compose run --rm api --migrate
+    command: []
+
+  web:
+    image: nginx:1.27-alpine
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./web-root:/usr/share/nginx/html:ro
+    ports:
+      - "${XOPTI_HTTP_PORT:-8080}:80"
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
+  filevolume:

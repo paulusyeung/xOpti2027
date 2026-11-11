@@ -1,0 +1,5 @@
+# Ephemeral smoke override: unique ports, no host volume mounts.
+services:
+  web:
+    ports:
+      - "18085:80"

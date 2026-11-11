@@ -19,7 +19,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<XOptiDbCon
     }
 }
 
-internal static class ConnectionStrings
+public static class ConnectionStrings
 {
     /// <summary>
     /// Accepts postgresql:// URLs (as the migration runner and ops tooling use)

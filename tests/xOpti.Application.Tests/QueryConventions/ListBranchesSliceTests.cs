@@ -71,6 +71,35 @@ internal sealed class InMemoryBranchRepository : IBranchRepository
             return Task.FromResult(page);
         }
     }
+
+    public Task<Branch?> FindByCodeAsync(string branchCode, CancellationToken cancellationToken)
+    {
+        lock (_gate)
+        {
+            return Task.FromResult(_all.FirstOrDefault(b => b.BranchCode == branchCode));
+        }
+    }
+
+    public Task<Branch> RenameAsync(Branch branch, string newName, string? expectedCurrentName, CancellationToken cancellationToken)
+    {
+        lock (_gate)
+        {
+            var index = _all.FindIndex(b => b.BranchCode == branch.BranchCode);
+            if (index < 0)
+            {
+                throw new InvalidOperationException($"Branch '{branch.BranchCode}' not found.");
+            }
+
+            if (expectedCurrentName is not null && _all[index].Name != expectedCurrentName)
+            {
+                throw new InvalidOperationException("Concurrency conflict: current name changed.");
+            }
+
+            var renamed = _all[index] with { Name = newName };
+            _all[index] = renamed;
+            return Task.FromResult(renamed);
+        }
+    }
 }
 
 public class ListBranchesSliceTests
