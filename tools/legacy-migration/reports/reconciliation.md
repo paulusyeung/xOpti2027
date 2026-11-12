@@ -1,6 +1,6 @@
 # xOpti migration reconciliation report
 
-- Command: `cutover` (dry run) at 2026-11-10 00:53 UTC
+- Command: `cutover` (dry run) at 2026-11-12 14:54 UTC
 - Source: `/home/paulus/Downloads/SynergyV.mdb` sha256 `55088a63b914f745a4bc6803ab07b11576b61e3d7c11e3f3c670bf11c2a5dd2e` (70 tables)
 - Tolerance: 0.005
 - Result: **FAIL** (3 failing checks)
