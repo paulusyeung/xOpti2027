@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using xOpti.Application;
 using xOpti.Infrastructure;
+using xOpti.Infrastructure.Bootstrap;
 using xOpti.Infrastructure.Identity;
 using xOpti.Infrastructure.Jobs;
 
@@ -169,8 +170,11 @@ builder.Services.AddApiVersioning(options =>
 
 builder.Services.AddOpenApi();
 
+builder.Services.AddSingleton<SchemaReadinessProbe>();
+
 builder.Services.AddHealthChecks()
     .AddCheck<XOptiDbHealthCheck>("database", tags: new[] { "ready" })
+    .AddCheck<SchemaBaselineHealthCheck>("schema-baseline", tags: new[] { "ready" })
     .AddCheck<FileVolumeHealthCheck>("file-volume", tags: new[] { "ready" })
     .AddCheck("self", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy(), tags: new[] { "live" });
 
@@ -188,6 +192,89 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
     options.KnownNetworks.Clear();
     options.KnownProxies.Clear();
 });
+
+// Fresh-database bootstrap: script + app-owned migrations + reference seed,
+// recorded in platform.schema_baseline. Runs as a one-shot deployment command.
+if (args.Contains("--bootstrap"))
+{
+    var schemaFile = SchemaScript.ResolvePath(
+        builder.Configuration["XOptiApi:SchemaFile"], builder.Environment.ContentRootPath);
+    if (schemaFile is null)
+    {
+        Console.Error.WriteLine(
+            "xopti-schema.sql was not found. Set XOptiApi:SchemaFile to the deployed schema file.");
+        return 1;
+    }
+
+    var runner = builder.Build();
+    try
+    {
+        var result = await SchemaBootstrap.RunAsync(runner.Services, new SchemaBootstrapOptions
+        {
+            ConnectionString = connectionString,
+            SchemaFilePath = schemaFile,
+            Version = SchemaScript.BaselineVersion,
+            ExpectedChecksum = SchemaScript.ComputeChecksum(schemaFile),
+            AppliedBy = "xopti-api --bootstrap",
+        });
+
+        Console.WriteLine(
+            result.Outcome == SchemaBootstrapOutcome.Bootstrapped
+                ? $"Bootstrapped schema baseline {result.Version} ({result.Checksum[..12]})."
+                : $"Schema baseline {result.Version} already current ({result.Checksum[..12]}); nothing to do.");
+        return 0;
+    }
+    catch (Exception exception) when (exception is SchemaBaselineMismatchException or SchemaBootstrapException)
+    {
+        Console.Error.WriteLine(exception.Message);
+        return 1;
+    }
+}
+
+// Smoke/E2E seed: demo branches and accounts. Refuses unless explicitly allowed.
+if (args.Contains("--seed-smoke"))
+{
+    if (Environment.GetEnvironmentVariable("XOPTI_ALLOW_SMOKE_SEED") != "1")
+    {
+        Console.Error.WriteLine(
+            "Refusing to seed smoke accounts. Set XOPTI_ALLOW_SMOKE_SEED=1 for a disposable smoke database.");
+        return 1;
+    }
+
+    var runner = builder.Build();
+    var smokePassword = Environment.GetEnvironmentVariable("XOPTI_SMOKE_PASSWORD") ?? SmokeSeed.DefaultPassword;
+    await SmokeSeed.ApplyAsync(runner.Services, smokePassword);
+    Console.WriteLine("Seeded smoke branches and accounts.");
+    return 0;
+}
+
+// CI schema-drift gate: compare a bootstrapped database with the canonical script.
+if (args.Contains("--schema-drift"))
+{
+    var schemaFile = SchemaScript.ResolvePath(
+        builder.Configuration["XOptiApi:SchemaFile"], builder.Environment.ContentRootPath);
+    if (schemaFile is null)
+    {
+        Console.Error.WriteLine(
+            "xopti-schema.sql was not found. Set XOptiApi:SchemaFile to the deployed schema file.");
+        return 1;
+    }
+
+    var differences = await SchemaDrift.CompareAsync(connectionString, schemaFile);
+    if (differences.Count == 0)
+    {
+        Console.WriteLine("No schema drift: the database matches xopti-schema.sql.");
+        return 0;
+    }
+
+    foreach (var difference in differences)
+    {
+        Console.Error.WriteLine("  " + difference);
+    }
+
+    Console.Error.WriteLine($"{differences.Count} schema difference(s) between the database and xopti-schema.sql.");
+    return 1;
+}
 
 var app = builder.Build();
 
@@ -208,6 +295,7 @@ app.UseSwaggerUI(options =>
 });
 app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseMiddleware<XOptiExceptionMapper>();
+app.UseMiddleware<SchemaGateMiddleware>();
 app.UseAuthentication();
 app.UseMiddleware<CsrfMiddleware>();
 app.UseAuthorization();

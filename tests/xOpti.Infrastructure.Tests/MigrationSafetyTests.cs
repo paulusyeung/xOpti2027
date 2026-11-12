@@ -106,7 +106,7 @@ public class SchemaMigrationJobTests(PostgresFixture fixture)
         await using (var cmd = conn.CreateCommand())
         {
             cmd.CommandText = "SELECT count(*) FROM information_schema.tables WHERE table_schema='platform'";
-            Assert.Equal(2L, Convert.ToInt64(await cmd.ExecuteScalarAsync()));
+            Assert.Equal(3L, Convert.ToInt64(await cmd.ExecuteScalarAsync()));
         }
     }
 }

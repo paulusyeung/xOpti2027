@@ -34,10 +34,13 @@ public static class ConnectionStrings
         }
 
         var uri = new Uri(urlOrCs.Replace("postgres://", "http://").Replace("postgresql://", "http://"));
+        // Uri.UserInfo keeps percent-encoding; Npgsql expects the decoded value
+        // (a password like pg%40secret means pg@secret).
         var userInfo = uri.UserInfo.Split(':', 2);
-        var database = uri.AbsolutePath.Trim('/');
+        var database = Uri.UnescapeDataString(uri.AbsolutePath.Trim('/'));
+        var username = Uri.UnescapeDataString(userInfo[0]);
+        var password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : string.Empty;
         return $"Host={uri.Host};Port={(uri.Port > 0 ? uri.Port : 5432)};"
-             + $"Database={database};Username={userInfo[0]};"
-             + $"Password={(userInfo.Length > 1 ? userInfo[1] : string.Empty)}";
+             + $"Database={database};Username={username};Password={password}";
     }
 }

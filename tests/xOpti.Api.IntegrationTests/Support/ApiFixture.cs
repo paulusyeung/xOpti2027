@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Testcontainers.PostgreSql;
 using xOpti.Infrastructure;
 using xOpti.Infrastructure.Identity;
@@ -42,9 +44,42 @@ public sealed class ApiPostgresFixture : IAsyncLifetime
         }
 
         await SeedData.ApplyAsync(ConnectionString);
+
+        // The fixture mirrors a database provisioned by the bootstrap command:
+        // schema + migrations exist, so record the baseline the readiness gate
+        // expects. The empty-database tests deliberately skip this.
+        await using (var conn = new Npgsql.NpgsqlConnection(ConnectionString))
+        {
+            await conn.OpenAsync();
+            await using var cmd = conn.CreateCommand();
+            cmd.CommandText = """
+                INSERT INTO platform.schema_baseline (id, version, checksum, applied_at, applied_by)
+                VALUES (1, @version, @checksum, now(), 'api-test-fixture')
+                ON CONFLICT (id) DO NOTHING
+                """;
+            cmd.Parameters.AddWithValue("version", xOpti.Infrastructure.Bootstrap.SchemaScript.BaselineVersion);
+            cmd.Parameters.AddWithValue("checksum", xOpti.Infrastructure.Bootstrap.SchemaScript.ComputeChecksum(SchemaPath()));
+            await cmd.ExecuteNonQueryAsync();
+        }
     }
 
     public async Task DisposeAsync() => await _container.DisposeAsync();
+
+    /// <summary>Creates an empty database in the shared container for preflight tests.</summary>
+    public async Task<string> CreateEmptyDatabaseAsync()
+    {
+        var name = "xopti_empty_" + Guid.NewGuid().ToString("N")[..12];
+        await using (var connection = new Npgsql.NpgsqlConnection(ConnectionString))
+        {
+            await connection.OpenAsync();
+            await using var command = connection.CreateCommand();
+            command.CommandText = $"CREATE DATABASE \"{name}\"";
+            await command.ExecuteNonQueryAsync();
+        }
+
+        var builder = new Npgsql.NpgsqlConnectionStringBuilder(ConnectionString) { Database = name };
+        return builder.ConnectionString;
+    }
 
     public XOptiDbContext NewContext()
     {
@@ -81,6 +116,9 @@ public sealed class XOptiApiFactory : WebApplicationFactory<Program>
     private readonly ApiPostgresFixture _fixture;
     private readonly Dictionary<string, string?> _overrides;
 
+    /// <summary>Structured entries captured from this host, including scope values.</summary>
+    public CapturingLoggerProvider Logs { get; } = new();
+
     public XOptiApiFactory(ApiPostgresFixture fixture, Dictionary<string, string?>? overrides = null)
     {
         _fixture = fixture;
@@ -97,6 +135,7 @@ public sealed class XOptiApiFactory : WebApplicationFactory<Program>
             ["XOptiApi:SessionIdle"] = "00:20:00",
         };
 
+        builder.ConfigureLogging(logging => logging.AddProvider(Logs));
         builder.UseSetting("ConnectionStrings:XOptiDatabase", _fixture.ConnectionString);
         builder.UseSetting("XOptiApi:FileStorageRoot", settings["XOptiApi:FileStorageRoot"]);
         builder.UseSetting("XOptiApi:JobsEnabled", "false");

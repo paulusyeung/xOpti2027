@@ -31,6 +31,8 @@ public class XOptiDbContext(DbContextOptions<XOptiDbContext> options)
 
     public DbSet<IdempotencyRecord> IdempotencyRecords => Set<IdempotencyRecord>();
 
+    public DbSet<SchemaBaseline> SchemaBaselines => Set<SchemaBaseline>();
+
     public DbSet<Identity.LegacyStaffRow> LegacyStaff => Set<Identity.LegacyStaffRow>();
 
     public DbSet<Identity.LegacyUserRow> LegacyUsers => Set<Identity.LegacyUserRow>();

@@ -1,0 +1,161 @@
+id,type,file,legacy_name,caption,purpose,entry_points,target_change,status,notes
+MOD-001,bas,AppData.Bas,AppData,,Module:   AppData,"6 public procedure(s): IsDatabaseOpen, GetDB, OnLogon, OpenDatabase, PopulateDatabaseList",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-002,bas,AppInfoExchange.bas,AppInfoExchange,,Move target result into the Xchg Control,1 public procedure(s): SetXchgCustomer,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-003,bas,AppMain.Bas,AppMain,,Menu Command constants,"19 public procedure(s): OnFileClose, OnFileSend, OnFileOpen, OnFileNew, DoSplash",complete-master-data-and-security,mapped,
+MOD-004,bas,AppOLTP.bas,AppOLTP,,OLTP for Inventory Control Applies to: Stock Received,"11 public procedure(s): OLTP_IC, OLTP_PoS, OLTP_PoS_CustomerSummary, OLTP_PoS_InvtSummary, OLTP_PoS_InvtLotRecord",complete-pos-sales-and-payments,mapped,
+MOD-005,bas,AppPoSSuppliment.bas,Module1,,AppPoSSuppliment,no public procedure,complete-pos-sales-and-payments,mapped,
+MOD-006,bas,AppPrintEngine.bas,Module1,,AppPrintEngine,no public procedure,complete-reporting-and-analytics,mapped,
+MOD-007,bas,AppStatusBar.Bas,AppStatusBar,,Procedure:  StatusBarClick Purpose:    Toggle between simple and normal style. Params:,"4 public procedure(s): StatusBarClick, LogonLog, CreatePanelObjects, PromptStatusBar",complete-master-data-and-security,mapped,
+MOD-008,bas,AppUnboundGrids.bas,AppUnboundGrids,,This module is used by UnboundGrids,"10 public procedure(s): DeleteRow, GetNewBookmark, GetRelativeBookmark, GetUserData, IndexFromBookmark",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-009,bas,AppUser.bas,AppUser,,Procedure:  SetUserProfile Purpose:    Setting permission as per User's Level Params:,1 public procedure(s): SetUserProfile,complete-master-data-and-security,mapped,
+MOD-010,bas,AppValidate.bas,Module2,,AppValidate,no public procedure,complete-master-data-and-security,mapped,
+MOD-011,bas,AppValidation.bas,AppValidation,,Is the Target an existing record? Caller supplies: strTable  = Table Name,"16 public procedure(s): IsFound, Masked_Key_Press, WithinRange, myIsDecimal, IsPositive",complete-master-data-and-security,mapped,
+MOD-012,bas,MSODBC.Bas,ODBCDeclarations,,|========================================================================| | ODBC Module Core Definitions                                           | |========================================================================|,no public procedure,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-013,bas,MSVBSQL.Bas,MSVBSqlDeclarations,,This module contains declarations for VBSQL.OCX taken (with a few exceptions) exactly as they came in the SQL programmers Toolkit.,no public procedure,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-014,bas,OfxConv.Bas,OfxConversions,,Module:   Ofx - Conversions,"12 public procedure(s): ofx_CCur, ofx_CCurDef, ofx_CDbl, ofx_CDblDef, ofx_CInt",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-015,bas,OfxCtrl.Bas,OfxControlUtilities,,Module:   Ofx - Control Utilities,"5 public procedure(s): ofx_ListBoxAddString, ofx_ListBoxFindString, ofx_ListBoxGetItemData, ofx_ListBoxReplaceString, ofx_ListBoxSelectString",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-016,bas,OfxDate.Bas,OfxDate,,Module:   Ofx - Date,"7 public procedure(s): ofx_Friday, ofx_Monday, ofx_Saturday, ofx_Sunday, ofx_Thursday",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-017,bas,OfxDBUtl.Bas,OfxDatabaseUtilities,,Module:   Ofx - Database Utilities,"12 public procedure(s): ofx_SplitDSN, ofx_rdoFillList, ofx_rdoLookup, ofx_odbcFillList, ofx_odbcLookup",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-018,bas,OfxErr.Bas,OfxErrorHandling,,Module:   Ofx - Error Handling,"4 public procedure(s): ofx_ClearErrorLog, ofx_GenericError, ofx_InitErrorLog, ofx_LogError",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-019,bas,OfxEvent.Bas,OfxEventLogging,,Module:   Ofx - Event Logging,"2 public procedure(s): ofx_InitEventLog, ofx_LogEvent",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-020,bas,OfxFile.Bas,OfxFile,,Module:   Ofx - File,"8 public procedure(s): ofx_GetDirName, ofx_PathPart, ofx_GetSaveFileName, ofx_FileExists, ofx_DeleteFilesInFolder",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-021,bas,OfxForm.Bas,OfxFormsReports,,Module:   Ofx - Forms & Reports,"9 public procedure(s): ofx_IsFormLoadedByName, ofx_CloseForm, ofx_CloseForm, ofx_CloseReport, ofx_DoModal",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-022,bas,OfxGlob.Bas,OfxGlobals,,Ofx - Globals ***********************************************************************,no public procedure,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-023,bas,OfxINet.Bas,OfxInternet,,Module:   Ofx - Internet,"5 public procedure(s): ofx_InetOpenURL, ofx_InetOpenSession, ofx_InetCloseSession, ofx_InetSetTimeout, ofx_InetCanonicalizeUrl",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-024,bas,OfxIni.Bas,OfxIniFiles,,Module:   Ofx - Ini Files,"16 public procedure(s): ofx_IniDataType, ofx_IniDeleteSection, ofx_IniDeleteKey, ofx_IniCreateSection, ofx_IniGetBool",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-025,bas,OfxINIT.Bas,OfxInitExit,,Module:   Ofx - Init & Exit,"4 public procedure(s): ofx_Initialize, ofx_Uninitialize, ASSERT, ofx_OnFinalUnload",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-026,bas,OfxMath.Bas,OfxMath,,Module:   Ofx - Math,"11 public procedure(s): ofx_SafeDiv, ofx_HighByte, ofx_HighWord, ofx_LowByte, ofx_LowWord",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-027,bas,OfxMDI.Bas,OfxMDI,,Module:   Ofx - MDI,"4 public procedure(s): ofx_MDICenterChild, ofx_MDIChildCount, ofx_MDIIsParent, ofx_MDIParent",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-028,bas,OfxMisc.Bas,OfxMiscellaneous,,Module:   Ofx - Miscellaneous,"4 public procedure(s): ofx_Is16BitOs, ofx_Swap, ofx_WaitCursor, ofx_SetEcho",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-029,bas,OfxMsg.Bas,OfxMessageBoxes,,Module:   Ofx - Message Boxes,1 public procedure(s): ofx_DoMessageBox,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-030,bas,OfxOfbk.Bas,OfxOfficeBook,,Module:   Ofx - OfficeBook,"15 public procedure(s): ofx_OfbkInitialize, ofx_OfbkUninitialize, ofx_OfbkMainDialog, ofx_OfbkEditRecordDlg, ofx_OfbkNewRecordDlg",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-031,bas,OfxOLE.Bas,OfxOLEAutomation,,Module:   Ofx - OLE Automation,"13 public procedure(s): ofx_WORD_InsertInfo, ofx_WORD_InsertRecordset, ofx_EXCEL_IsFileOpen, ofx_EXCEL_OpenFile, ofx_WORD_OpenFile",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-032,bas,OfxPlatf.Bas,OfxPlatformCompatibility,,Module:   Ofx - Platform Compatibility,"8 public procedure(s): IsMissing, Nz, Nz, ofx_CurrentUser, ofx_GetFormName",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-033,bas,OfxPos.Bas,OfxFormPositioning,,Module:   Ofx - Form Positioning,"5 public procedure(s): ofx_GetFormWidth, ofx_GetTitlebarHeight, ofx_CenterForm, ofx_RestoreFormPosition, ofx_SaveFormPosition",,deferred,"Shared VB6 framework module; reintroduced as platform code, not a business capability."
+MOD-034,bas,OfxProf.Bas,OfxProfile,,Module:   Ofx - Profile,"14 public procedure(s): ofx_ProfileDataType, ofx_ProfileDeleteSection, ofx_ProfileDeleteKey, ofx_ProfileCreateSection, ofx_ProfileGetBool",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-035,bas,OfxReg.Bas,OfxRegistry,,Module:   Ofx - Registry,"21 public procedure(s): ofx_RegCreateSection, ofx_RegExWriteVariant, ofx_RegGetBool, ofx_RegDeleteSection, ofx_RegDeleteKey",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-036,bas,OfxStr.Bas,OfxStrings,,Module:   Ofx - Strings,"27 public procedure(s): ofx_MoneyToWords, ofx_CopyStringArray, ofx_AppendStringArray, ofx_CRLF, ofx_IndentLines",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-037,bas,OfxTag.Bas,OfxTagStrings,,Module:   Ofx - Tag Strings,"4 public procedure(s): ofx_DeleteTag, ofx_GetTagString, ofx_InsertTagString, ofx_UpdateTagString",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-038,bas,OfxVBSql.Bas,OfxVBSql,,Module:   Ofx - VBSQL,"14 public procedure(s): OFXVBSQLTRY, OFXVBSQLTRY, ofx_sqlSetLastError, ofx_sqlSetLastError, ofx_sqlSetLastMessage",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-039,bas,OfxWin.Bas,OfxWinAPI,,Module:   Ofx - Win API,"11 public procedure(s): ofx_GetForegroundWindow, ofx_SetForegroundWindow, ofx_PointAPIToLong, ofx_GetNetworkUserID, ofx_GetNetworkUserID",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-040,bas,OLAP.bas,modOLAP,,OLAP,"3 public procedure(s): DispGraph, OLAPMain, GetCurrDataField",complete-reporting-and-analytics,mapped,
+MOD-041,bas,OLAPExport.Bas,modExport,,OLAPExport,"2 public procedure(s): ExportToExcel, ExportToText",complete-reporting-and-analytics,mapped,
+MOD-042,bas,Rptlibvalid.bas,basRptLibvalid,,Procedure:  KeyNumbers Purpose:    TBD Params:,"26 public procedure(s): KeyNumbers, KeyUpperNumber, InRange, IsValid, CheckSize",complete-master-data-and-security,mapped,
+CLS-001,cls,AppDisp.Cls,Application,,Module:   Application,"3 public procedure(s): Uninitialize, Initialize, ShowMainForm",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+CLS-002,cls,OfxDB.Cls,CDatabase,,Class:    CDatabase,"6 public procedure(s): OpenConnection, CloseConnection, Execute, BeginTrans, CommitTrans",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+CLS-003,cls,OfxDBBin.Cls,CLongBinary,,Class:    CLongBinary,"2 public procedure(s): CopyToFile, GetData",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+CLS-004,cls,OfxDBEnv.Cls,CDBState,,Class:    CDBState,no public procedure,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+CLS-005,cls,OfxDBFld.Cls,CField,,Class:    CField,no public procedure,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+CLS-006,cls,OfxDBHld.Cls,CDatabaseHolder,,Class:    CDatabaseHolder,"13 public procedure(s): GetDatabase, GetEnvironment, CreateEnvironment, OpenDatabase, CloseDatabase",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+CLS-007,cls,OfxDBRs.Cls,CResultset,,Class:    CResultset,"3 public procedure(s): OpenResultset, MoveNext, CloseResultset",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+CLS-008,cls,OfxDBXcp.Cls,CDBException,,Class:    CDBException,"2 public procedure(s): BuildErrorString, ReportError",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-001,frm,AppAbout.Frm,dlgAbout,About,About,no static caller found,complete-master-data-and-security,mapped,
+FORM-002,frm,AppChild.Frm,frmMDIChild,Child1,Child1,no static caller found,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-003,frm,AppLogon.Frm,dlgLogon,Logon,Logon,no static caller found,complete-master-data-and-security,mapped,
+FORM-004,frm,AppMDI.Frm,frmMain,Start Developing,Start Developing,opened by 1 source file(s): OfxINIT.Bas,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-005,frm,AppSDI.Frm,frmMain,Synergy V for Optical,Synergy V for Optical,opened by 1 source file(s): OfxINIT.Bas,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-006,frm,AppSplsh.Frm,frmSplash,Product Name,Product Name,no static caller found,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-007,frm,frmAdd.frm,frmAdd,Add,Add,"opened by 2 source file(s): frmCoding.frm, frmMenuCoding.frm",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-008,frm,frmAskDateRange.frm,frmAskDateRange,frmAskDateRange,frmAskDateRange,"opened by 2 source file(s): frmReportCentre.frm, frmReports.frm",complete-master-data-and-security,mapped,
+FORM-009,frm,frmAskDays.Frm,frmAskDays,General Ask Days,General Ask Days,"opened by 2 source file(s): frmReportCentre.frm, frmReports.frm",complete-master-data-and-security,mapped,
+FORM-010,frm,frmAskTxNumber.Frm,frmAskTxNumber,Ask Transaction Number,Ask Transaction Number,"opened by 3 source file(s): frmReportCentre.frm, frmReports.frm, frmSpecialReports.frm",complete-master-data-and-security,mapped,
+FORM-011,frm,frmBackOrder.frm,frmBackOrder,Back Order,Back Order,no static caller found,complete-pos-sales-and-payments,mapped,
+FORM-012,frm,frmBranch.frm,frmBranch,Branch,Branch,"opened by 2 source file(s): frmCoding.frm, frmMenuCoding.frm",complete-master-data-and-security,mapped,
+FORM-013,frm,frmBrand.frm,frmBrand,Brand,Brand,"opened by 3 source file(s): frmCoding.frm, frmInvt.frm, frmMenuCoding.frm",complete-inventory-and-purchasing,mapped,
+FORM-014,frm,frmCategory.frm,frmCategory,Category,Category,"opened by 3 source file(s): frmCoding.frm, frmInvt.frm, frmMenuCoding.frm",complete-inventory-and-purchasing,mapped,
+FORM-015,frm,frmCategoryNew.frm,frmCategoryNew,Category New,Category New,no static caller found,complete-inventory-and-purchasing,mapped,
+FORM-016,frm,frmCity.frm,frmCity,City,City,"opened by 6 source file(s): frmCustomer.frm, frmDoctor.frm, frmMenuPrefenerce.frm",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-017,frm,frmClass.frm,frmClass,Class,Class,"opened by 3 source file(s): frmCategory.frm, frmCoding.frm, frmMenuCoding.frm",complete-inventory-and-purchasing,mapped,
+FORM-018,frm,frmCoding.frm,frmCoding,Coding,Coding,no static caller found,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-019,frm,frmCountry.frm,frmCountry,Country,Country,"opened by 3 source file(s): frmCity.frm, frmMenuPrefenerce.frm, frmMenuPreference.frm",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-020,frm,frmCtlCrw.frm,frmCtlCrw,Control Centre for Crystal Reports,Control Centre for Crystal Reports,"opened by 17 source file(s): frmAskDateRange.frm, frmAskDays.Frm, frmAskTxNumber.Frm",complete-reporting-and-analytics,mapped,
+FORM-021,frm,frmCustAskDays.frm,frmCustAskDays,Customer Ask Days,Customer Ask Days,"opened by 2 source file(s): frmReportCentre.frm, frmReports.frm",complete-customer-prescriptions-and-insurance,mapped,
+FORM-022,frm,frmCustGeneral.frm,frmCustGeneral,Customer Listing (General),Customer Listing (General),"opened by 2 source file(s): frmReportCentre.frm, frmReports.frm",complete-customer-prescriptions-and-insurance,mapped,
+FORM-023,frm,frmCustomer.frm,frmCustomer,Customer,Customer,"opened by 4 source file(s): frmCoding.frm, frmInfoCustomer.frm, frmLookupCustomer.frm",complete-customer-prescriptions-and-insurance,mapped,
+FORM-024,frm,frmDept.frm,frmDept,Department,Department,"opened by 3 source file(s): frmClass.frm, frmCoding.frm, frmMenuCoding.frm",complete-inventory-and-purchasing,mapped,
+FORM-025,frm,frmDoctor.frm,frmDoctor,Doctor,Doctor,"opened by 2 source file(s): frmCustomer.frm, frmMenuCoding.frm",complete-customer-prescriptions-and-insurance,mapped,
+FORM-026,frm,frmHiLowDateRange.frm,frmHiLowDateRange,frmHiLowDateRange,frmHiLowDateRange,"opened by 2 source file(s): frmReportCentre.frm, frmReports.frm",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-027,frm,frmIC.frm,frmIC,Inventory Control,Inventory Control,no static caller found,complete-inventory-and-purchasing,mapped,
+FORM-028,frm,frmInfoCustomer.frm,frmInfoCustomer,Customer Information,Customer Information,opened by 1 source file(s): frmMenuInfo.frm,complete-customer-prescriptions-and-insurance,mapped,
+FORM-029,frm,frmInfoOrderPlanner.frm,frmInfoOrderPlanner,Order Planner,Order Planner,opened by 1 source file(s): frmMenuInfo.frm,complete-pos-sales-and-payments,mapped,
+FORM-030,frm,frmInfoSKU.frm,frmInfoSKU,SKU Information,SKU Information,"opened by 7 source file(s): frmMenuInfo.frm, frmStockAdjustment.frm, frmStockReceived.frm",complete-inventory-and-purchasing,mapped,
+FORM-031,frm,frmInfoSupplier.frm,frmInfoSupplier,Supplier Information,Supplier Information,"opened by 6 source file(s): frmMenuInfo.frm, frmStockReceived.frm, frmStockRecEnhenced.frm",complete-inventory-and-purchasing,mapped,
+FORM-032,frm,frmInventoryChoice.frm,frmInventoryChoice,frmInventoryChoice,frmInventoryChoice,"opened by 3 source file(s): frmMenuRBIC.frm, frmReportCentre.frm, frmReports.frm",complete-inventory-and-purchasing,mapped,
+FORM-033,frm,frmInvt.frm,frmInvt,Inventory,Inventory,"opened by 10 source file(s): frmCoding.frm, frmInfoSKU.frm, frmLookupPLU.frm",complete-inventory-and-purchasing,mapped,
+FORM-034,frm,frmInvtPurchase.Frm,frmInvtPurchase,frmInvtPurchase,frmInvtPurchase,no static caller found,complete-inventory-and-purchasing,mapped,
+FORM-035,frm,frmJobNature.frm,frmJobNature,Job Nature,Job Nature,"opened by 2 source file(s): frmMenuPreference.frm, frmStaff.frm",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-036,frm,frmJobTitle.frm,frmJobTitle,Job Title,Job Title,"opened by 2 source file(s): frmMenuPreference.frm, frmStaff.frm",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-037,frm,frmLookupCustomer.frm,frmLookupCustomer,Lookup Customer,Lookup Customer,opened by 1 source file(s): frmSalesOrder.frm,complete-customer-prescriptions-and-insurance,mapped,
+FORM-038,frm,frmLookupPLU.frm,frmLookupPLU,Lookup PLU,Lookup PLU,opened by 1 source file(s): frmSalesOrder.frm,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-039,frm,frmMarkdownWizard.frm,frmMarkdownWizard,MarkdownWizard,MarkdownWizard,no static caller found,complete-inventory-and-purchasing,mapped,
+FORM-040,frm,frmMaterial.frm,frmMaterial,Material,Material,"opened by 3 source file(s): frmCoding.frm, frmInvt.frm, frmMenuCoding.frm",complete-inventory-and-purchasing,mapped,
+FORM-041,frm,frmMenuCoding.frm,frmMenuCoding,Coding,Coding,opened by 1 source file(s): AppSDI.Frm,complete-master-data-and-security,mapped,
+FORM-042,frm,frmMenuIC.frm,frmMenuIC,Inventory Control,Inventory Control,opened by 1 source file(s): AppSDI.Frm,complete-inventory-and-purchasing,mapped,
+FORM-043,frm,frmMenuInfo.frm,frmMenuInfo,Information Centre,Information Centre,opened by 1 source file(s): AppSDI.Frm,complete-master-data-and-security,mapped,
+FORM-044,frm,frmMenuOLAP.frm,frmMenuOLAP,OLAP,OLAP,"opened by 4 source file(s): AppSDI.Frm, OLAPOrderInProgress.Frm, OLAPSales.frm",complete-reporting-and-analytics,mapped,
+FORM-045,frm,frmMenuPoS.frm,frmMenuPoS,Point-of-Service,Point-of-Service,opened by 1 source file(s): AppSDI.Frm,complete-pos-sales-and-payments,mapped,
+FORM-046,frm,frmMenuPrefenerce.frm,frmMenuPrefenerce,Preference,Preference,no static caller found,complete-master-data-and-security,mapped,
+FORM-047,frm,frmMenuPreference.frm,frmMenuPreference,Preference,Preference,opened by 1 source file(s): AppSDI.Frm,complete-master-data-and-security,mapped,
+FORM-048,frm,frmMenuRBIC.frm,frmMenuRBIC,Re-Build Inventory Cost,Re-Build Inventory Cost,no static caller found,complete-inventory-and-purchasing,mapped,
+FORM-049,frm,frmMenuUtility.frm,frmMenuUtility,Utility Menu,Utility Menu,opened by 1 source file(s): AppSDI.Frm,complete-master-data-and-security,mapped,
+FORM-050,frm,frmOLAP.frm,frmOLAP,OLAP,OLAP,"opened by 2 source file(s): OLAP.bas, OLAP.frm",complete-reporting-and-analytics,mapped,
+FORM-051,frm,frmOLAPDateSelector.frm,frmOLAPDateSelector,OLAP Date Range Selector,OLAP Date Range Selector,opened by 1 source file(s): frmMenuOLAP.frm,complete-reporting-and-analytics,mapped,
+FORM-052,frm,frmOrderCustomerRemarks.frm,frmOrderCustomerRemarks,Customer - Remarks,Customer - Remarks,opened by 1 source file(s): frmSalesOrder.frm,complete-customer-prescriptions-and-insurance,mapped,
+FORM-053,frm,frmOrderDetails_Cont.frm,frmOrderDetails_Cont,Order Details - Contact Lens/Disposal Lens,Order Details - Contact Lens/Disposal Lens,opened by 1 source file(s): frmSalesOrder.frm,complete-pos-sales-and-payments,mapped,
+FORM-054,frm,frmOrderDetails_Frame.frm,frmOrderDetails_Frame,Order Details - Frame,Order Details - Frame,opened by 1 source file(s): frmSalesOrder.frm,complete-pos-sales-and-payments,mapped,
+FORM-055,frm,frmOrderDetails_Lens.frm,frmOrderDetails_Lens,Order Details - Lens,Order Details - Lens,opened by 1 source file(s): frmSalesOrder.frm,complete-pos-sales-and-payments,mapped,
+FORM-056,frm,frmPayment.frm,frmPayment,PaymentMethods,PaymentMethods,"opened by 2 source file(s): frmCoding.frm, frmMenuCoding.frm",complete-pos-sales-and-payments,mapped,
+FORM-057,frm,frmPointOfService.frm,frmPointOfService,Point-of-Service,Point-of-Service,no static caller found,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-058,frm,frmPreference.frm,frmPreference,Preference,Preference,opened by 1 source file(s): frmMenuPrefenerce.frm,complete-master-data-and-security,mapped,
+FORM-059,frm,frmPriceWizard.frm,frmPriceWizard,Price Wizard,Price Wizard,opened by 1 source file(s): frmSalesOrder.frm,complete-inventory-and-purchasing,mapped,
+FORM-060,frm,frmProvince.frm,frmProvince,Province,Province,"opened by 3 source file(s): frmCity.frm, frmMenuPrefenerce.frm, frmMenuPreference.frm",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-061,frm,frmRBIC_EnterCost.frm,frmRBIC_EnterCost,Re-Build Inventory Cost - Enter Cost,Re-Build Inventory Cost - Enter Cost,opened by 1 source file(s): frmMenuRBIC.frm,complete-inventory-and-purchasing,mapped,
+FORM-062,frm,frmRBIC_PostEntry.frm,frmRBIC_PostEntry,ReBuild Cost - Post WorkBook,ReBuild Cost - Post WorkBook,"opened by 2 source file(s): frmMenuIC.frm, frmMenuRBIC.frm",complete-inventory-and-purchasing,mapped,
+FORM-063,frm,frmRemarks.frm,frmRemarks,Remarks,Remarks,no static caller found,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-064,frm,frmReportCentre.frm,frmReportCentre,Report Centre,Report Centre,no static caller found,complete-reporting-and-analytics,mapped,
+FORM-065,frm,frmReports.frm,frmReports,Reports,Reports,"opened by 2 source file(s): AppSDI.Frm, Rptlibvalid.bas",complete-reporting-and-analytics,mapped,
+FORM-066,frm,frmRptOHSpecial.frm,frmRptOHSpecial,Special On Hand Analysis,Special On Hand Analysis,opened by 1 source file(s): frmReports.frm,complete-reporting-and-analytics,mapped,
+FORM-067,frm,frmRptPurSpecial.frm,frmRptPurSpecial,Special Purchase Reports,Special Purchase Reports,opened by 1 source file(s): frmReports.frm,complete-inventory-and-purchasing,mapped,
+FORM-068,frm,frmRptSRbySupplier.frm,frmRptSRbySupplier,Stock Recievd (by Supplier),Stock Recievd (by Supplier),opened by 1 source file(s): frmReports.frm,complete-inventory-and-purchasing,mapped,
+FORM-069,frm,frmRxCustomer.Frm,frmRxCustomer,Rx Customer,Rx Customer,opened by 1 source file(s): frmSpecialReports.frm,complete-customer-prescriptions-and-insurance,mapped,
+FORM-070,frm,frmSalesInvoice.frm,frmSalesInvoice,Sales Invoice,Sales Invoice,opened by 1 source file(s): frmPointOfService.frm,complete-pos-sales-and-payments,mapped,
+FORM-071,frm,frmSalesOrder.frm,frmSalesOrder,Sale Order Entry,Sale Order Entry,"opened by 11 source file(s): frmCustomer.frm, frmInfoCustomer.frm, frmInvt.frm",complete-pos-sales-and-payments,mapped,
+FORM-072,frm,frmSalesOrderVoid.frm,frmSalesOrderVoid,Void Sales Order,Void Sales Order,no static caller found,complete-pos-sales-and-payments,mapped,
+FORM-073,frm,frmSalesRefund.frm,frmSalesRefund,Sales Refund,Sales Refund,opened by 1 source file(s): frmPointOfService.frm,complete-pos-sales-and-payments,mapped,
+FORM-074,frm,frmSalesTender.frm,frmSalesTender,Tender,Tender,no static caller found,complete-pos-sales-and-payments,mapped,
+FORM-075,frm,frmSalutation.frm,frmSalutation,Salutation,Salutation,"opened by 2 source file(s): frmCustomer.frm, frmMenuPreference.frm",,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-076,frm,frmSecurity.frm,frmSecurity,Security Table,Security Table,opened by 1 source file(s): frmMenuPreference.frm,complete-master-data-and-security,mapped,
+FORM-077,frm,frmSpecialReports.frm,frmSpecialReports,Special Reports,Special Reports,"opened by 3 source file(s): frmMenuPreference.frm, frmMenuUtility.frm, frmReports.frm",complete-reporting-and-analytics,mapped,
+FORM-078,frm,frmSpeicalAnalysis.frm,frmSpecialAnalysis,frmSpecialAnalysis,frmSpecialAnalysis,no static caller found,complete-reporting-and-analytics,mapped,
+FORM-079,frm,frmStaff.frm,frmStaff,Staff,Staff,"opened by 8 source file(s): frmCoding.frm, frmMenuCoding.frm, frmStockAdjustment.frm",complete-master-data-and-security,mapped,
+FORM-080,frm,frmStaffNew.frm,frmStaffNew,Staff,Staff,no static caller found,complete-master-data-and-security,mapped,
+FORM-081,frm,frmStockAdjustment.frm,frmStockAdjustment,Stock Adjustment,Stock Adjustment,opened by 1 source file(s): frmMenuIC.frm,complete-inventory-and-purchasing,mapped,
+FORM-082,frm,frmStockReceived.frm,frmStockReceived,Stock Received,Stock Received,"opened by 2 source file(s): frmCustomer.frm, frmInvt.frm",complete-inventory-and-purchasing,mapped,
+FORM-083,frm,frmStockRecEnhenced.frm,frmStockRecEnhanced,c,c,no static caller found,complete-inventory-and-purchasing,mapped,
+FORM-084,frm,frmStockReject.frm,frmStockReject,Stock Rejected,Stock Rejected,opened by 1 source file(s): frmMenuIC.frm,complete-inventory-and-purchasing,mapped,
+FORM-085,frm,frmStockTake.frm,frmStockTake,Stock Take,Stock Take,opened by 1 source file(s): frmMenuIC.frm,complete-inventory-and-purchasing,mapped,
+FORM-086,frm,frmStockTxfer.frm,frmStockTxfer,Stock Transfer,Stock Transfer,no static caller found,complete-inventory-and-purchasing,mapped,
+FORM-087,frm,frmSupplier.frm,frmSupplier,Supplier,Supplier,"opened by 9 source file(s): frmCoding.frm, frmInfoSupplier.frm, frmInvt.frm",complete-inventory-and-purchasing,mapped,
+FORM-088,frm,frmSystemProfile.frm,frmSystemProfile,System Profile,System Profile,opened by 1 source file(s): frmMenuUtility.frm,complete-master-data-and-security,mapped,
+FORM-089,frm,frmUtilCheckTable.frm,frmUtilCheckTable,Check Table Integrity,Check Table Integrity,opened by 1 source file(s): frmMenuUtility.frm,complete-master-data-and-security,mapped,
+FORM-090,frm,frmUtilDataConvertion.frm,frmUtilDataConvertion,Data Convertion,Data Convertion,opened by 1 source file(s): frmMenuUtility.frm,complete-master-data-and-security,mapped,
+FORM-091,frm,frmUtilDataImport.frm,frmUtilDataImport,Data Import,Data Import,opened by 1 source file(s): frmMenuUtility.frm,complete-master-data-and-security,mapped,
+FORM-092,frm,frmUtilDataSum.frm,frmUtilDataSum,Data Sum,Data Sum,opened by 1 source file(s): frmMenuUtility.frm,complete-master-data-and-security,mapped,
+FORM-093,frm,frmVoidRefundDate.frm,frmVoidRefundDate,frmVoidRefundDate,frmVoidRefundDate,opened by 1 source file(s): frmSalesOrder.frm,complete-pos-sales-and-payments,mapped,
+FORM-094,frm,frmWholesaleInvoice.frm,frmWholesaleInvoice,Wholesale Invoice,Wholesale Invoice,opened by 1 source file(s): frmMenuIC.frm,complete-wholesale-operations,mapped,
+FORM-095,frm,frmWholesaleReturn.frm,frmWholesaleReturn,Wholesale Return,Wholesale Return,opened by 1 source file(s): frmMenuIC.frm,complete-wholesale-operations,mapped,
+FORM-096,frm,OfxErr.Frm,ofx_dlgGenericError,Start Developing,Start Developing,no static caller found,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-097,frm,OfxTips.Frm,ofx_Tooltips,Tooltips,Tooltips,no static caller found,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-098,frm,OLAP.frm,frmOLAP,Synergy V - OLAP,Synergy V - OLAP,"opened by 9 source file(s): AppSDI.Frm, frmMenuOLAP.frm, frmOLAP.frm",complete-reporting-and-analytics,mapped,
+FORM-099,frm,OLAPAbout.frm,frmAbout,About Synergy V,About Synergy V,no static caller found,complete-reporting-and-analytics,mapped,
+FORM-100,frm,OLAPDataMark.frm,frmDataMarker,Data Marker,Data Marker,no static caller found,complete-reporting-and-analytics,mapped,
+FORM-101,frm,OLAPFormat.Frm,frmFormat,Number Format,Number Format,no static caller found,complete-reporting-and-analytics,mapped,
+FORM-102,frm,OLAPGraph.frm,frmGraph,Graph,Graph,no static caller found,complete-reporting-and-analytics,mapped,
+FORM-103,frm,OLAPMargin.frm,frmMargin,Sales by LSP - Right Click in Grid Area for a Context Menu,Sales by LSP - Right Click in Grid Area for a Context Menu,no static caller found,complete-reporting-and-analytics,mapped,
+FORM-104,frm,OLAPNewCalc.Frm,frmNewCalc,Add Calculated Field,Add Calculated Field,no static caller found,complete-reporting-and-analytics,mapped,
+FORM-105,frm,OLAPOrderInProgress.Frm,frmOrderInProgress,Order In Progress - Right Click in Grid Area for a Context Menu,Order In Progress - Right Click in Grid Area for a Context Menu,no static caller found,complete-reporting-and-analytics,mapped,
+FORM-106,frm,OLAPPlay.frm,frmPlay,Play Around Synergy V,Play Around Synergy V,no static caller found,complete-reporting-and-analytics,mapped,
+FORM-107,frm,OLAPProperty.Frm,frmDCProp,Synergy V Properties,Synergy V Properties,no static caller found,complete-reporting-and-analytics,mapped,
+FORM-108,frm,OLAPSales.frm,frmSales,Sales by Cost - Right Click in Grid Area for a Context Menu,Sales by Cost - Right Click in Grid Area for a Context Menu,no static caller found,complete-reporting-and-analytics,mapped,
+FORM-109,frm,OLAPSalesByLSP.frm,frmSalesByLSP,Sales by LSP - Right Click in Grid Area for a Context Menu,Sales by LSP - Right Click in Grid Area for a Context Menu,no static caller found,complete-reporting-and-analytics,mapped,
+FORM-110,frm,OLAPWizard.Frm,frmWizard,Synergy V  Wizard,Synergy V  Wizard,no static caller found,complete-reporting-and-analytics,mapped,

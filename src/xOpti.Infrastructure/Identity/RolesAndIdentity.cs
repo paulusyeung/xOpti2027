@@ -87,7 +87,15 @@ public static class IdentityServiceCollectionExtensions
 
         // Class libraries must wire the reset/confirm token providers explicitly
         // (AddDefaultTokenProviders is an ASP.NET startup helper).
-        services.AddDataProtection();
+        // Persist the key ring when a directory is configured, so cookie sessions
+        // and CSRF tokens survive restarts and can run on more than one instance.
+        var keyDirectory = Environment.GetEnvironmentVariable("XOPTI_DATA_PROTECTION_KEYS");
+        var dataProtection = services.AddDataProtection();
+        if (!string.IsNullOrWhiteSpace(keyDirectory))
+        {
+            Directory.CreateDirectory(keyDirectory);
+            dataProtection.PersistKeysToFileSystem(new DirectoryInfo(keyDirectory));
+        }
         services.Configure<DataProtectionTokenProviderOptions>(o => o.TokenLifespan = TimeSpan.FromHours(1));
         services.AddLogging();
         builder.AddTokenProvider<DataProtectorTokenProvider<XoptiUser>>(TokenOptions.DefaultProvider);

@@ -1,0 +1,25 @@
+# TLS edge override: Caddy terminates HTTPS with an internal CA and redirects
+# plain HTTP. The base compose still publishes the web container directly (use a
+# different XOPTI_HTTP_PORT when running both).
+#
+#   docker compose -p xopti-tls \
+#     -f docker/compose.yml -f docker/compose.tls.yml up -d --build
+services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      XOPTI_TLS_HOST: ${XOPTI_TLS_HOST:-localhost}
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    ports:
+      - "${XOPTI_TLS_HTTP_PORT:-8088}:80"
+      - "${XOPTI_TLS_HTTPS_PORT:-8443}:443"
+    depends_on:
+      - web
+
+volumes:
+  caddy_data:
+  caddy_config:

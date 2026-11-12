@@ -44,6 +44,31 @@ public sealed class PostgresFixture : IAsyncLifetime
 
     public async Task DisposeAsync() => await _container.DisposeAsync();
 
+    /// <summary>
+    /// Creates a separate, empty database in the shared container so bootstrap
+    /// tests start from nothing without paying for another container.
+    /// </summary>
+    public async Task<string> CreateEmptyDatabaseAsync()
+    {
+        var name = "xopti_bootstrap_" + Guid.NewGuid().ToString("N")[..12];
+        await using (var connection = new Npgsql.NpgsqlConnection(ConnectionString))
+        {
+            await connection.OpenAsync();
+            await using var command = connection.CreateCommand();
+            command.CommandText = $"CREATE DATABASE \"{name}\"";
+            await command.ExecuteNonQueryAsync();
+        }
+
+        var builder = new Npgsql.NpgsqlConnectionStringBuilder(ConnectionString) { Database = name };
+        return builder.ConnectionString;
+    }
+
+    public static string SchemaFilePath()
+    {
+        var root = FindRepoRoot();
+        return Path.Combine(root, "tools", "legacy-migration", "schema", "xopti-schema.sql");
+    }
+
     public XOptiDbContext NewContext()
     {
         var options = new DbContextOptionsBuilder<XOptiDbContext>()

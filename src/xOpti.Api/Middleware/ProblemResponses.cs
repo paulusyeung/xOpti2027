@@ -9,7 +9,10 @@ namespace xOpti.Api.Middleware;
 /// </summary>
 public static class ProblemResponses
 {
-    public static async Task WriteAsync(HttpResponse response, ProblemDetails problem)
+    public static async Task WriteAsync(
+        HttpResponse response,
+        ProblemDetails problem,
+        IReadOnlyDictionary<string, string>? headers = null)
     {
         if (response.HasStarted)
         {
@@ -27,6 +30,14 @@ public static class ProblemResponses
         response.Clear();
         response.StatusCode = problem.Status ?? StatusCodes.Status500InternalServerError;
         response.ContentType = "application/problem+json";
+
+        if (headers is not null)
+        {
+            foreach (var (name, headerValue) in headers)
+            {
+                response.Headers[name] = headerValue;
+            }
+        }
 
         if (!string.IsNullOrEmpty(correlationId))
         {

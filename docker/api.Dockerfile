@@ -22,9 +22,12 @@ ENV ASPNETCORE_URLS=http://+:8080
 ENV Kestrel__Endpoints__Http__Url=http://0.0.0.0:8080
 ENV XOptiApi__FileStorageRoot=/var/lib/xopti/files
 ENV XOptiApi__FontDirectories__0=/usr/share/xopti/fonts
+ENV XOptiApi__SchemaFile=/app/schema/xopti-schema.sql
 COPY --from=build /app/publish ./
-RUN mkdir -p /usr/share/xopti/fonts /var/lib/xopti/files
+RUN mkdir -p /usr/share/xopti/fonts /var/lib/xopti/files /var/lib/xopti/dpkeys
 COPY eOptical6DAO/3of9.TTF /usr/share/xopti/fonts/3of9.TTF
+# Canonical rebuild script used by --bootstrap and --schema-drift.
+COPY tools/legacy-migration/schema/xopti-schema.sql /app/schema/xopti-schema.sql
 RUN chown -R app:app /usr/share/xopti /var/lib/xopti /app
 EXPOSE 8080
 USER app

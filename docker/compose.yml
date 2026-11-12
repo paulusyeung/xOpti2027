@@ -18,13 +18,16 @@ services:
       dockerfile: docker/api.Dockerfile
     environment:
       ConnectionStrings__XOptiDatabase: Host=postgres;Database=xopti;Username=postgres;Password=${XOPTI_PG_PASSWORD:-xopti}
+      XOPTI_DATA_PROTECTION_KEYS: /var/lib/xopti/dpkeys
     volumes:
       - filevolume:/var/lib/xopti/files
+      - dataprotection:/var/lib/xopti/dpkeys
     depends_on:
       postgres:
         condition: service_healthy
-    # EF migrations are applied ONLY by the one-shot job, never at startup:
-    #   docker compose run --rm api --migrate
+    # Schema changes are applied ONLY by one-shot jobs, never at startup:
+    #   docker compose run --rm api --bootstrap   # fresh database: script + migrations + seed
+    #   docker compose run --rm api --migrate     # apply app-owned migrations only
     command: []
 
   web:
@@ -43,3 +46,4 @@ services:
 volumes:
   pgdata:
   filevolume:
+  dataprotection:

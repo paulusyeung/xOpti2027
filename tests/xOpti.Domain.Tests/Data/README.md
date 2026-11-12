@@ -6,8 +6,10 @@ read-only copy used by `xOpti.Migrations` reconciliation runs, see
 
 Rows were extracted read-only with `mdb-export` and filtered to:
 
-- `tax_lines_sample.csv`: single-line retail invoices (`RC`) across tax codes
-  `N`/`B`/`G`, spanning 2000-2010 rate eras. Columns carry the line net, the
+- `tax_lines_sample.csv`: single-line retail invoices (`RC`) and sales orders
+  (`SA`) across tax codes `N`/`B`/`G`/`g`/`P`, spanning 2000-2015 rate eras.
+  `p` (PST on GST) has no production rows in the snapshot; it is covered by a
+  synthetic unit test in `TaxCalculatorTests` only. Columns carry the line net, the
   rates the store used for that era (GST 7%/6%/5%, PST 7%), and the legacy
   computed `TaxA`/`TaxB`/`TotalAmount` as the expected outputs.
 - `lots_sample.csv`: all `InvtLotRecord` rows for two SKUs (`00000008`,

@@ -22,6 +22,18 @@ public static class PlatformMapping
             e.Property(x => x.ActorBranch).HasMaxLength(3);
         });
 
+        mb.Entity<SchemaBaseline>(e =>
+        {
+            e.ToTable("schema_baseline", "platform");
+            e.HasKey(x => x.Id);
+            // Single-row table: the id is supplied by the bootstrap, not a sequence.
+            e.Property(x => x.Id).ValueGeneratedNever();
+            e.Property(x => x.Version).HasMaxLength(64).IsRequired();
+            e.Property(x => x.Checksum).HasMaxLength(64).IsRequired();
+            e.Property(x => x.AppliedAt);
+            e.Property(x => x.AppliedBy).HasMaxLength(128).IsRequired();
+        });
+
         mb.Entity<IdempotencyRecord>(e =>
         {
             e.ToTable("idempotency_record", "platform");

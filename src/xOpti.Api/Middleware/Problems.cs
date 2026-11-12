@@ -15,4 +15,5 @@ public static class Problems
     public const string DomainRule = "https://errors.xopti/domain-rule";
     public const string NotFound = "https://errors.xopti/not-found";
     public const string Unhandled = "https://errors.xopti/unhandled";
+    public const string ServiceUnavailable = "https://errors.xopti/service-unavailable";
 }

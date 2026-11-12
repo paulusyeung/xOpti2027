@@ -3,6 +3,8 @@
 !src
 src/**/obj
 src/**/bin
+# Local settings can contain a connection string; never bake them into an image.
+src/**/appsettings.Development.json
 src/xOpti.Migrations
 !eOptical6DAO
 eOptical6DAO/*
@@ -16,3 +18,6 @@ web/xOpti.Web/public/vendor
 !api-contract
 !scripts
 !docker
+
+# Canonical schema rebuild script copied into the API image for --bootstrap/--schema-drift
+!tools/legacy-migration/schema/xopti-schema.sql

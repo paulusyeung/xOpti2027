@@ -1,0 +1,30 @@
+# TLS edge for the on-premises stack (task 7.1).
+#
+# Caddy terminates TLS with its internal CA on the LAN and redirects plain HTTP
+# to HTTPS (automatic, 308). The SPA and API stay same-origin behind it; nginx
+# forwards the real X-Forwarded-Proto so the API marks session and CSRF cookies
+# Secure.
+#
+# Start with:
+#   docker compose -p xopti-tls -f docker/compose.yml -f docker/compose.tls.yml up -d --build
+#
+# The internal CA root is in the `caddy_data` volume:
+#   docker compose ... exec caddy cat /data/caddy/pki/authorities/local/root.crt
+
+{
+	admin off
+}
+
+{$XOPTI_TLS_HOST:localhost} {
+	tls internal
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "same-origin"
+		-Server
+	}
+
+	reverse_proxy web:80
+}

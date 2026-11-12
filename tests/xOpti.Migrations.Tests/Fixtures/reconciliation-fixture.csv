@@ -1,0 +1,7 @@
+check,scope,expected,actual,status,detail
+row-count,pref_tx_number -> pref_tx_number,13,13,PASS,
+row-count,customer -> customer,59978,59978,PASS,
+aggregate,tx_header.total_amount,1049876.54,1049876.54,PASS,within tolerance
+aggregate,tx_details.amount,88321.10,88321.16,FAIL,"two cents over tolerance, see note"
+sequence,customer_id_seq vs customer.id,>= max,ok,PASS,
+control numbers ahead of migrated data,RC,207025.00,207025.00,PASS,

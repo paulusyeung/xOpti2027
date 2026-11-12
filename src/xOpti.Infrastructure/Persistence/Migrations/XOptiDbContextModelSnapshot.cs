@@ -155,6 +155,55 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                     b.ToTable("asp_net_user_tokens", (string)null);
                 });
 
+            modelBuilder.Entity("xOpti.Infrastructure.Identity.LegacyStaffRow", b =>
+                {
+                    b.Property<string>("StaffCode")
+                        .HasColumnType("text")
+                        .HasColumnName("staff_code");
+
+                    b.Property<int>("SecurityLevel")
+                        .HasColumnType("integer")
+                        .HasColumnName("security_level");
+
+                    b.Property<string>("StaffFullName")
+                        .HasColumnType("text")
+                        .HasColumnName("staff_full_name");
+
+                    b.HasKey("StaffCode")
+                        .HasName("pk_staff");
+
+                    b.ToTable("staff", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Identity.LegacyUserRow", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text")
+                        .HasColumnName("email");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.HasKey("Id")
+                        .HasName("pk_users");
+
+                    b.ToTable("users", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
             modelBuilder.Entity("xOpti.Infrastructure.Identity.XoptiRole", b =>
                 {
                     b.Property<string>("Id")
@@ -341,6 +390,7 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasColumnName("branch_code");
 
                     b.Property<string>("BranchName")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("branch_name");
@@ -642,6 +692,40 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         {
                             t.ExcludeFromMigrations();
                         });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.SchemaBaseline", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    b.Property<DateTimeOffset>("AppliedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("applied_at");
+
+                    b.Property<string>("AppliedBy")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("applied_by");
+
+                    b.Property<string>("Checksum")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("checksum");
+
+                    b.Property<string>("Version")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("version");
+
+                    b.HasKey("Id")
+                        .HasName("pk_schema_baseline");
+
+                    b.ToTable("schema_baseline", "platform");
                 });
 
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.TxDetail", b =>

@@ -1,0 +1,57 @@
+# WAL archiving plus scheduled base backups (task 7.5).
+#
+#   docker compose -p xopti-backup \
+#     -f docker/compose.yml -f docker/compose.backup.yml up -d
+#
+# Continuous WAL archiving is configured on the postgres service; the backup
+# container runs pg_basebackup on an interval, enforces retention, writes
+# /backups/status.json, and calls XOPTI_ALERT_WEBHOOK on failure.
+services:
+  postgres:
+    depends_on:
+      wal-init:
+        condition: service_completed_successfully
+    command:
+      - postgres
+      - -c
+      - archive_mode=on
+      - -c
+      - archive_command=cp %p /var/lib/postgresql/wal-archive/%f
+      - -c
+      - wal_level=replica
+    volumes:
+      - walarchive:/var/lib/postgresql/wal-archive
+      - ./backup/00-replication-hba.sh:/docker-entrypoint-initdb.d/00-replication-hba.sh:ro
+
+  # Named volumes are created root-owned; hand the archive directory to the
+  # postgres user before the server starts writing WAL segments.
+  wal-init:
+    image: postgres:17-alpine
+    user: root
+    volumes:
+      - walarchive:/archive
+    command: ["sh", "-c", "chown -R postgres:postgres /archive"]
+    restart: "no"
+
+  backup:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      PGHOST: postgres
+      PGUSER: postgres
+      PGPASSWORD: ${XOPTI_PG_PASSWORD:-xopti}
+      BACKUP_INTERVAL_SECONDS: ${XOPTI_BACKUP_INTERVAL_SECONDS:-86400}
+      BACKUP_RETENTION_DAYS: ${XOPTI_BACKUP_RETENTION_DAYS:-14}
+      XOPTI_ALERT_WEBHOOK: ${XOPTI_ALERT_WEBHOOK:-}
+      BACKUP_STATUS_FILE: /backups/status.json
+    volumes:
+      - backups:/backups
+      - ./backup:/scripts:ro
+    entrypoint: ["/bin/sh", "/scripts/backup-loop.sh"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  walarchive:
+  backups:

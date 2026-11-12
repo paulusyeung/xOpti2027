@@ -37,7 +37,7 @@ public static class InfrastructureServiceCollectionExtensions
 
         services.AddDbContext<XOptiDbContext>((sp, builder) =>
         {
-            builder.UseNpgsql(options.ConnectionString)
+            builder.UseNpgsql(Persistence.ConnectionStrings.ToNpgsql(options.ConnectionString))
                 .UseSnakeCaseNamingConvention()
                 .AddInterceptors(sp.GetRequiredService<AuditSaveChangesInterceptor>());
         });

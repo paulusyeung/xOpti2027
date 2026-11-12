@@ -1,0 +1,302 @@
+id,kind,source,target_change,status,note
+CLS-001,CLS,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+CLS-002,CLS,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+CLS-003,CLS,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+CLS-004,CLS,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+CLS-005,CLS,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+CLS-006,CLS,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+CLS-007,CLS,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+CLS-008,CLS,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-001,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-002,FORM,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-003,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-004,FORM,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-005,FORM,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-006,FORM,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-007,FORM,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-008,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-009,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-010,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-011,FORM,docs/parity/forms.csv,complete-pos-sales-and-payments,active,
+FORM-012,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-013,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-014,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-015,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-016,FORM,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-017,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-018,FORM,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-019,FORM,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-020,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-021,FORM,docs/parity/forms.csv,complete-customer-prescriptions-and-insurance,active,
+FORM-022,FORM,docs/parity/forms.csv,complete-customer-prescriptions-and-insurance,active,
+FORM-023,FORM,docs/parity/forms.csv,complete-customer-prescriptions-and-insurance,active,
+FORM-024,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-025,FORM,docs/parity/forms.csv,complete-customer-prescriptions-and-insurance,active,
+FORM-026,FORM,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-027,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-028,FORM,docs/parity/forms.csv,complete-customer-prescriptions-and-insurance,active,
+FORM-029,FORM,docs/parity/forms.csv,complete-pos-sales-and-payments,active,
+FORM-030,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-031,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-032,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-033,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-034,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-035,FORM,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-036,FORM,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-037,FORM,docs/parity/forms.csv,complete-customer-prescriptions-and-insurance,active,
+FORM-038,FORM,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-039,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-040,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-041,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-042,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-043,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-044,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-045,FORM,docs/parity/forms.csv,complete-pos-sales-and-payments,active,
+FORM-046,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-047,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-048,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-049,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-050,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-051,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-052,FORM,docs/parity/forms.csv,complete-customer-prescriptions-and-insurance,active,
+FORM-053,FORM,docs/parity/forms.csv,complete-pos-sales-and-payments,active,
+FORM-054,FORM,docs/parity/forms.csv,complete-pos-sales-and-payments,active,
+FORM-055,FORM,docs/parity/forms.csv,complete-pos-sales-and-payments,active,
+FORM-056,FORM,docs/parity/forms.csv,complete-pos-sales-and-payments,active,
+FORM-057,FORM,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-058,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-059,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-060,FORM,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-061,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-062,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-063,FORM,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-064,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-065,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-066,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-067,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-068,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-069,FORM,docs/parity/forms.csv,complete-customer-prescriptions-and-insurance,active,
+FORM-070,FORM,docs/parity/forms.csv,complete-pos-sales-and-payments,active,
+FORM-071,FORM,docs/parity/forms.csv,complete-pos-sales-and-payments,active,
+FORM-072,FORM,docs/parity/forms.csv,complete-pos-sales-and-payments,active,
+FORM-073,FORM,docs/parity/forms.csv,complete-pos-sales-and-payments,active,
+FORM-074,FORM,docs/parity/forms.csv,complete-pos-sales-and-payments,active,
+FORM-075,FORM,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-076,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-077,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-078,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-079,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-080,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-081,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-082,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-083,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-084,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-085,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-086,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-087,FORM,docs/parity/forms.csv,complete-inventory-and-purchasing,active,
+FORM-088,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-089,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-090,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-091,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-092,FORM,docs/parity/forms.csv,complete-master-data-and-security,active,
+FORM-093,FORM,docs/parity/forms.csv,complete-pos-sales-and-payments,active,
+FORM-094,FORM,docs/parity/forms.csv,complete-wholesale-operations,active,
+FORM-095,FORM,docs/parity/forms.csv,complete-wholesale-operations,active,
+FORM-096,FORM,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-097,FORM,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+FORM-098,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-099,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-100,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-101,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-102,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-103,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-104,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-105,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-106,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-107,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-108,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-109,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+FORM-110,FORM,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+MOD-001,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-002,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-003,MOD,docs/parity/forms.csv,complete-master-data-and-security,active,
+MOD-004,MOD,docs/parity/forms.csv,complete-pos-sales-and-payments,active,
+MOD-005,MOD,docs/parity/forms.csv,complete-pos-sales-and-payments,active,
+MOD-006,MOD,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+MOD-007,MOD,docs/parity/forms.csv,complete-master-data-and-security,active,
+MOD-008,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-009,MOD,docs/parity/forms.csv,complete-master-data-and-security,active,
+MOD-010,MOD,docs/parity/forms.csv,complete-master-data-and-security,active,
+MOD-011,MOD,docs/parity/forms.csv,complete-master-data-and-security,active,
+MOD-012,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-013,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-014,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-015,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-016,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-017,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-018,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-019,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-020,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-021,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-022,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-023,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-024,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-025,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-026,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-027,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-028,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-029,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-030,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-031,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-032,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-033,MOD,docs/parity/forms.csv,,deferred,"Shared VB6 framework module; reintroduced as platform code, not a business capability."
+MOD-034,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-035,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-036,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-037,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-038,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-039,MOD,docs/parity/forms.csv,,deferred,Legacy framework/utility screen with no direct xOpti capability; deferred pending manual triage.
+MOD-040,MOD,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+MOD-041,MOD,docs/parity/forms.csv,complete-reporting-and-analytics,active,
+MOD-042,MOD,docs/parity/forms.csv,complete-master-data-and-security,active,
+PERM-001,PERM,docs/parity/permissions.csv,complete-master-data-and-security,active,status=mapped parity=exact
+PERM-002,PERM,docs/parity/permissions.csv,complete-master-data-and-security,active,status=gap parity=disjoint
+PERM-003,PERM,docs/parity/permissions.csv,complete-master-data-and-security,active,status=gap parity=disjoint
+PERM-004,PERM,docs/parity/permissions.csv,complete-master-data-and-security,active,status=gap parity=none
+PERM-005,PERM,docs/parity/permissions.csv,complete-master-data-and-security,active,status=gap parity=disjoint
+PERM-006,PERM,docs/parity/permissions.csv,complete-master-data-and-security,active,status=gap parity=narrowed
+PERM-007,PERM,docs/parity/permissions.csv,complete-master-data-and-security,active,status=gap parity=disjoint
+PERM-008,PERM,docs/parity/permissions.csv,complete-master-data-and-security,active,status=gap parity=disjoint
+PERM-009,PERM,docs/parity/permissions.csv,complete-master-data-and-security,active,status=mapped parity=n/a
+PERM-010,PERM,docs/parity/permissions.csv,complete-master-data-and-security,active,status=mapped parity=n/a
+PERM-011,PERM,docs/parity/permissions.csv,complete-master-data-and-security,active,status=mapped parity=exact
+PERM-012,PERM,docs/parity/permissions.csv,complete-master-data-and-security,active,status=mapped parity=n/a
+PERM-013,PERM,docs/parity/permissions.csv,complete-master-data-and-security,active,status=gap parity=none
+PERM-101,PERM,docs/parity/permissions.csv,complete-master-data-and-security,active,status=gap parity=narrowed
+PERM-102,PERM,docs/parity/permissions.csv,complete-master-data-and-security,active,status=gap parity=narrowed
+PERM-103,PERM,docs/parity/permissions.csv,complete-master-data-and-security,active,status=gap parity=narrowed
+PERM-104,PERM,docs/parity/permissions.csv,complete-master-data-and-security,active,status=gap parity=narrowed
+PERM-105,PERM,docs/parity/permissions.csv,complete-master-data-and-security,active,status=gap parity=narrowed
+RPT-001,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-002,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,medium
+RPT-003,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,medium
+RPT-004,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,medium
+RPT-005,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,medium
+RPT-006,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,medium
+RPT-007,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-008,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-009,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-010,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-011,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-012,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-013,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-014,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-015,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-016,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-017,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-018,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-019,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-020,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-021,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-022,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,medium
+RPT-023,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-024,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-025,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,medium
+RPT-026,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,medium
+RPT-027,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,medium
+RPT-028,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,medium
+RPT-029,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,medium
+RPT-030,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,medium
+RPT-031,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,medium
+RPT-032,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,medium
+RPT-033,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-034,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-035,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-036,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-037,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-038,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-039,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-040,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-041,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-042,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-043,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-044,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-045,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-046,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-047,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-048,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-049,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-050,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-051,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-052,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-053,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-054,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-055,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-056,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-057,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-058,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-059,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-060,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-061,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-062,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-063,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-064,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-065,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-066,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-067,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-068,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-069,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-070,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-071,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-072,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-073,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-074,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-075,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-076,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,medium
+RPT-077,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-078,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-079,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-080,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-081,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-082,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-083,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-084,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-085,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-086,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-087,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-088,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-089,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-090,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-091,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-092,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,low
+RPT-093,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-094,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-095,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-096,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-097,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RPT-098,RPT,docs/parity/reports.csv,complete-reporting-and-analytics,active,high
+RULE-001,RULE,docs/parity/*-rules.md,complete-inventory-and-purchasing,active,
+RULE-002,RULE,docs/parity/*-rules.md,complete-inventory-and-purchasing,active,
+RULE-003,RULE,docs/parity/*-rules.md,complete-inventory-and-purchasing,active,
+RULE-004,RULE,docs/parity/*-rules.md,complete-pos-sales-and-payments,active,
+RULE-005,RULE,docs/parity/*-rules.md,complete-pos-sales-and-payments,active,
+RULE-006,RULE,docs/parity/*-rules.md,complete-pos-sales-and-payments,active,
+RULE-007,RULE,docs/parity/*-rules.md,complete-pos-sales-and-payments,active,
+RULE-008,RULE,docs/parity/*-rules.md,complete-pos-sales-and-payments,active,
+RULE-009,RULE,docs/parity/*-rules.md,complete-inventory-and-purchasing,active,
+RULE-010,RULE,docs/parity/*-rules.md,complete-inventory-and-purchasing,active,
+RULE-011,RULE,docs/parity/*-rules.md,complete-inventory-and-purchasing,active,
+RULE-012,RULE,docs/parity/*-rules.md,complete-inventory-and-purchasing,active,
+RULE-013,RULE,docs/parity/*-rules.md,complete-inventory-and-purchasing,active,
+RULE-014,RULE,docs/parity/*-rules.md,complete-inventory-and-purchasing,active,
+RULE-015,RULE,docs/parity/*-rules.md,complete-pos-sales-and-payments,active,
+RULE-016,RULE,docs/parity/*-rules.md,complete-pos-sales-and-payments,active,
+RULE-017,RULE,docs/parity/*-rules.md,complete-pos-sales-and-payments,active,
+RULE-018,RULE,docs/parity/*-rules.md,complete-pos-sales-and-payments,active,
+RULE-019,RULE,docs/parity/*-rules.md,complete-pos-sales-and-payments,active,
+RULE-020,RULE,docs/parity/*-rules.md,complete-pos-sales-and-payments,active,
+RULE-021,RULE,docs/parity/*-rules.md,complete-pos-sales-and-payments,active,
+RULE-022,RULE,docs/parity/*-rules.md,complete-pos-sales-and-payments,active,
+RULE-023,RULE,docs/parity/*-rules.md,complete-pos-sales-and-payments,active,
+RULE-024,RULE,docs/parity/*-rules.md,complete-pos-sales-and-payments,active,
+RULE-025,RULE,docs/parity/*-rules.md,complete-pos-sales-and-payments,active,
