@@ -241,6 +241,83 @@ public static class Endpoints
         .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
         .Produces<StaffAccountDto>();
 
+        v1.MapGet("/admin/suppliers", async (
+            string? search, string? cursor, int? pageSize,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ListSuppliersQuery(search, cursor, pageSize ?? 50), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<PagedResult<SupplierDto>>();
+
+        v1.MapPost("/admin/suppliers", async (
+            CreateSupplierRequest request, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new CreateSupplierCommand(
+                request.SupplierCode, request.Name, request.CityCode, request.Province,
+                request.Country, request.Phone, request.ContactPerson, request.CreditLimit,
+                request.PaymentTerms, request.Reason), cancellationToken);
+            return Results.Created($"/api/v1/admin/suppliers/{result.SupplierCode}", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<SupplierDto>(StatusCodes.Status201Created);
+
+        v1.MapGet("/admin/suppliers/{code}/contacts", async (
+            string code, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new ListSupplierContactsQuery(code), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<IReadOnlyList<SupplierContactDto>>();
+
+        v1.MapPost("/admin/suppliers/{code}/contacts", async (
+            string code, CreateContactRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new CreateSupplierContactCommand(
+                code, request.FirstName, request.Initial, request.LastName,
+                request.JobTitle, request.Phone, request.Reason), cancellationToken);
+            return Results.Created($"/api/v1/admin/suppliers/{code}/contacts", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<SupplierContactDto>(StatusCodes.Status201Created);
+
+        v1.MapGet("/admin/doctors", async (
+            string? search, string? cursor, int? pageSize,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ListDoctorsQuery(search, cursor, pageSize ?? 50), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<PagedResult<DoctorDto>>();
+
+        v1.MapPost("/admin/doctors", async (
+            CreateDoctorRequest request, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new CreateDoctorCommand(
+                request.Name, request.Address, request.CityCode, request.Province,
+                request.Country, request.Phone, request.PostalCode, request.Reason), cancellationToken);
+            return Results.Created($"/api/v1/admin/doctors/{result.Id}", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<DoctorDto>(StatusCodes.Status201Created);
+
+        v1.MapPost("/admin/branches/{code}/deactivate", async (
+            string code, DeactivateBranchRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new DeactivateBranchCommand(code, request.Reason, request.TargetBranchCode), cancellationToken);
+            return Results.Ok(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<bool>();
+
         v1.MapGet("/admin/reference/{kind}", async (
             ReferenceKind kind,
             string? search,
@@ -409,6 +486,19 @@ public sealed record ReferenceMutationRequest(
 }
 
 public sealed record RetireReferenceRequest(string Key, string Reason, bool ConfirmReferenced);
+
+public sealed record CreateSupplierRequest(
+    string SupplierCode, string Name, int? CityCode, string? Province, string? Country,
+    string? Phone, string? ContactPerson, decimal? CreditLimit, string? PaymentTerms, string Reason);
+
+public sealed record CreateContactRequest(
+    string FirstName, string? Initial, string LastName, string? JobTitle, string? Phone, string Reason);
+
+public sealed record CreateDoctorRequest(
+    string Name, string? Address, int? CityCode, string? Province, string? Country,
+    string? Phone, string? PostalCode, string Reason);
+
+public sealed record DeactivateBranchRequest(string Reason, string? TargetBranchCode);
 
 public sealed record ChangeRoleRequest(string Role, string Reason);
 

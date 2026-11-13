@@ -55,6 +55,14 @@ public class XOptiDbContext(DbContextOptions<XOptiDbContext> options)
 
     public DbSet<PaymentMethod> PaymentMethods => Set<PaymentMethod>();
 
+    public DbSet<Supplier> Suppliers => Set<Supplier>();
+
+    public DbSet<SupplierContact> SupplierContacts => Set<SupplierContact>();
+
+    public DbSet<Doctor> Doctors => Set<Doctor>();
+
+    public DbSet<BranchInventory> BranchInventory => Set<BranchInventory>();
+
     public DbSet<Identity.LegacyStaffRow> LegacyStaff => Set<Identity.LegacyStaffRow>();
 
     public DbSet<Identity.LegacyUserRow> LegacyUsers => Set<Identity.LegacyUserRow>();

@@ -96,6 +96,58 @@ public static class ReferenceMapping
             e.Property(x => x.TaxName).HasColumnName("tax_name");
         });
 
+        mb.Entity<Supplier>(e =>
+        {
+            e.ToTable("supplier", t => t.ExcludeFromMigrations());
+            e.HasKey(x => x.SupplierCode);
+            e.Property(x => x.SupplierCode).HasColumnName("supplier_code");
+            e.Property(x => x.SupplierName).HasColumnName("supplier_name");
+            e.Property(x => x.CityCode).HasColumnName("city");
+            e.Property(x => x.Province).HasColumnName("province");
+            e.Property(x => x.Country).HasColumnName("country");
+            e.Property(x => x.Phone).HasColumnName("phone_gen_voice");
+            e.Property(x => x.ContactPerson).HasColumnName("contact_person");
+            e.Property(x => x.CreditLimit).HasColumnName("credit_limit");
+            e.Property(x => x.PaymentTerms).HasColumnName("payment_terms");
+        });
+
+        mb.Entity<SupplierContact>(e =>
+        {
+            e.ToTable("supplier_contact_person", t => t.ExcludeFromMigrations());
+            e.HasKey(x => new { x.SupCode, x.FirstName, x.Initial, x.LastName });
+            e.Property(x => x.SupCode).HasColumnName("sup_code");
+            e.Property(x => x.FirstName).HasColumnName("first_name");
+            e.Property(x => x.Initial).HasColumnName("initial");
+            e.Property(x => x.LastName).HasColumnName("last_name");
+            e.Property(x => x.FullName).HasColumnName("full_name");
+            e.Property(x => x.JobTitle).HasColumnName("job_title");
+            e.Property(x => x.PhoneGeneralVoice).HasColumnName("phone_general_voice");
+            e.Property(x => x.PhoneMobile).HasColumnName("phone_mobile");
+        });
+
+        mb.Entity<Doctor>(e =>
+        {
+            e.ToTable("doctor", t => t.ExcludeFromMigrations());
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("id");
+            e.Property(x => x.DoctorName).HasColumnName("doctor_name");
+            e.Property(x => x.Address).HasColumnName("address");
+            e.Property(x => x.CityCode).HasColumnName("city");
+            e.Property(x => x.Province).HasColumnName("province");
+            e.Property(x => x.Country).HasColumnName("country");
+            e.Property(x => x.Phone).HasColumnName("phone");
+            e.Property(x => x.PostalCode).HasColumnName("postal_code");
+        });
+
+        mb.Entity<BranchInventory>(e =>
+        {
+            e.ToTable("branch_inventory", t => t.ExcludeFromMigrations());
+            e.HasKey(x => new { x.BranchCode, x.Sku });
+            e.Property(x => x.BranchCode).HasColumnName("branch_code");
+            e.Property(x => x.Sku).HasColumnName("sku");
+            e.Property(x => x.QtyOnHand).HasColumnName("qty_on_hand");
+        });
+
         mb.Entity<PaymentMethod>(e =>
         {
             e.ToTable("payment_methods", t => t.ExcludeFromMigrations());

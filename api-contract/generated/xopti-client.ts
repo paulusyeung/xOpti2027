@@ -496,6 +496,233 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/suppliers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    search?: string;
+                    cursor?: string;
+                    pageSize?: number | string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfSupplierDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateSupplierRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SupplierDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/suppliers/{code}/contacts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    code: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SupplierContactDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    code: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateContactRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SupplierContactDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/doctors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    search?: string;
+                    cursor?: string;
+                    pageSize?: number | string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfDoctorDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateDoctorRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["DoctorDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/branches/{code}/deactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    code: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["DeactivateBranchRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": boolean;
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/reference/{kind}": {
         parameters: {
             query?: never;
@@ -825,6 +1052,25 @@ export interface components {
             token: string;
             newPassword: string;
         };
+        CreateContactRequest: {
+            firstName: string;
+            initial: null | string;
+            lastName: string;
+            jobTitle: null | string;
+            phone: null | string;
+            reason: string;
+        };
+        CreateDoctorRequest: {
+            name: string;
+            address: null | string;
+            /** Format: int32 */
+            cityCode: null | number | string;
+            province: null | string;
+            country: null | string;
+            phone: null | string;
+            postalCode: null | string;
+            reason: string;
+        };
         CreateStaffRequest: {
             userName: string;
             displayName: null | string;
@@ -832,11 +1078,41 @@ export interface components {
             branchCode: null | string;
             reason: string;
         };
+        CreateSupplierRequest: {
+            supplierCode: string;
+            name: string;
+            /** Format: int32 */
+            cityCode: null | number | string;
+            province: null | string;
+            country: null | string;
+            phone: null | string;
+            contactPerson: null | string;
+            /** Format: double */
+            creditLimit: null | number | string;
+            paymentTerms: null | string;
+            reason: string;
+        };
         CurrentUserResponse: {
             username: string;
             displayName: null | string;
             branch: null | string;
             permissions: string[];
+        };
+        DeactivateBranchRequest: {
+            reason: string;
+            targetBranchCode: null | string;
+        };
+        DoctorDto: {
+            /** Format: int32 */
+            id: number | string;
+            name: null | string;
+            address: null | string;
+            /** Format: int32 */
+            cityCode: null | number | string;
+            province: null | string;
+            country: null | string;
+            phone: null | string;
+            postalCode: null | string;
         };
         LevelRuleDto: {
             /** Format: int32 */
@@ -847,12 +1123,20 @@ export interface components {
             items: components["schemas"]["BranchDto"][];
             nextCursor: null | string;
         };
+        PagedResultOfDoctorDto: {
+            items: components["schemas"]["DoctorDto"][];
+            nextCursor: null | string;
+        };
         PagedResultOfReferenceItemDto: {
             items: components["schemas"]["ReferenceItemDto"][];
             nextCursor: null | string;
         };
         PagedResultOfStaffAccountDto: {
             items: components["schemas"]["StaffAccountDto"][];
+            nextCursor: null | string;
+        };
+        PagedResultOfSupplierDto: {
+            items: components["schemas"]["SupplierDto"][];
             nextCursor: null | string;
         };
         PasswordResetCompletedDto: {
@@ -938,6 +1222,29 @@ export interface components {
         StaffCredentialsDto: {
             account: components["schemas"]["StaffAccountDto"];
             resetToken: string;
+        };
+        SupplierContactDto: {
+            supplierCode: string;
+            firstName: string;
+            initial: string;
+            lastName: string;
+            fullName: null | string;
+            jobTitle: null | string;
+            phone: null | string;
+            mobile: null | string;
+        };
+        SupplierDto: {
+            supplierCode: string;
+            name: null | string;
+            /** Format: int32 */
+            cityCode: null | number | string;
+            province: null | string;
+            country: null | string;
+            phone: null | string;
+            contactPerson: null | string;
+            /** Format: double */
+            creditLimit: null | number | string;
+            paymentTerms: null | string;
         };
     };
     responses: never;

@@ -103,3 +103,72 @@ public class PaymentMethod
 
     public double ExchangeRate { get; set; }
 }
+
+public class Supplier
+{
+    public string SupplierCode { get; set; } = string.Empty;
+
+    public string? SupplierName { get; set; }
+
+    public int? CityCode { get; set; }
+
+    public string? Province { get; set; }
+
+    public string? Country { get; set; }
+
+    public string? Phone { get; set; }
+
+    public string? ContactPerson { get; set; }
+
+    public decimal? CreditLimit { get; set; }
+
+    public string? PaymentTerms { get; set; }
+}
+
+public class SupplierContact
+{
+    public string SupCode { get; set; } = string.Empty;
+
+    public string FirstName { get; set; } = string.Empty;
+
+    public string Initial { get; set; } = string.Empty;
+
+    public string LastName { get; set; } = string.Empty;
+
+    public string? FullName { get; set; }
+
+    public string? JobTitle { get; set; }
+
+    public string? PhoneGeneralVoice { get; set; }
+
+    public string? PhoneMobile { get; set; }
+}
+
+public class Doctor
+{
+    public int Id { get; set; }
+
+    public string? DoctorName { get; set; }
+
+    public string? Address { get; set; }
+
+    public int? CityCode { get; set; }
+
+    public string? Province { get; set; }
+
+    public string? Country { get; set; }
+
+    public string? Phone { get; set; }
+
+    public string? PostalCode { get; set; }
+}
+
+
+public class BranchInventory
+{
+    public string BranchCode { get; set; } = string.Empty;
+
+    public string Sku { get; set; } = string.Empty;
+
+    public int QtyOnHand { get; set; }
+}
