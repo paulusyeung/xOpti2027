@@ -18,6 +18,12 @@ export const NAV_ITEMS: readonly NavItem[] = [
     permission: PermissionNames.MasterDataMaintain,
   },
   {
+    to: '/admin/reference',
+    title: 'References',
+    icon: 'mdi-format-list-bulleted-square',
+    permission: PermissionNames.MasterDataMaintain,
+  },
+  {
     to: '/analytics',
     title: 'Analytics',
     icon: 'mdi-chart-box-outline',

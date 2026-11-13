@@ -876,7 +876,8 @@ export interface components {
             parent?: null | string;
             detail?: null | string;
         };
-        ReferenceKind: number;
+        /** @enum {unknown} */
+        ReferenceKind: "City" | "Province" | "Country" | "Department" | "Class" | "Category" | "Brand" | "Material" | "TaxMethod" | "PaymentMethod";
         ReferenceMutationRequest: {
             key: string;
             name: string;

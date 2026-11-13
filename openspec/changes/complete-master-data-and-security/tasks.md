@@ -18,7 +18,7 @@
 
 - [x] 3.1 Map and expose branches, cities, provinces, countries, departments, classes, categories, brands, materials, tax methods, and payment methods; verify read-only directory tests return migrated records.
 - [x] 3.2 Implement create/update/retire commands with uniqueness, referential checks, and audit for each reference type; verify duplicate and referenced-record failures are field-specific.
-- [ ] 3.3 Build the reference-data administration screens with search, keyset pagination, and retirement reason capture; verify component and API tests cover query and mutation paths.
+- [x] 3.3 Build the reference-data administration screens with search, keyset pagination, and retirement reason capture; verify component and API tests cover query and mutation paths.
 - [ ] 3.4 Implement supplier, supplier-contact, doctor, and branch directories; verify required fields, uniqueness, and branch deactivation safeguards.
 
 ## 4. Inventory catalogue and pricing

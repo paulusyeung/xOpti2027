@@ -1005,7 +1005,18 @@
         }
       },
       "ReferenceKind": {
-        "type": "integer"
+        "enum": [
+          "City",
+          "Province",
+          "Country",
+          "Department",
+          "Class",
+          "Category",
+          "Brand",
+          "Material",
+          "TaxMethod",
+          "PaymentMethod"
+        ]
       },
       "ReferenceMutationRequest": {
         "required": [
