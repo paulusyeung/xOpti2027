@@ -496,6 +496,47 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/reference/{kind}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    search?: string;
+                    cursor?: string;
+                    pageSize?: number | string;
+                };
+                header?: never;
+                path: {
+                    kind: components["schemas"]["ReferenceKind"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfReferenceItemDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/roles": {
         parameters: {
             query?: never;
@@ -715,6 +756,10 @@ export interface components {
             items: components["schemas"]["BranchDto"][];
             nextCursor: null | string;
         };
+        PagedResultOfReferenceItemDto: {
+            items: components["schemas"]["ReferenceItemDto"][];
+            nextCursor: null | string;
+        };
         PagedResultOfStaffAccountDto: {
             items: components["schemas"]["StaffAccountDto"][];
             nextCursor: null | string;
@@ -733,6 +778,14 @@ export interface components {
         ReasonRequest: {
             reason: string;
         };
+        ReferenceItemDto: {
+            kind: string;
+            key: string;
+            name: string;
+            parent?: null | string;
+            detail?: null | string;
+        };
+        ReferenceKind: number;
         RenameBranchRequest: {
             name: string;
             expectedCurrentName?: null | string;

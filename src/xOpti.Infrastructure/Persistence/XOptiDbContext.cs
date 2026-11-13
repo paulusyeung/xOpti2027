@@ -33,6 +33,26 @@ public class XOptiDbContext(DbContextOptions<XOptiDbContext> options)
 
     public DbSet<SchemaBaseline> SchemaBaselines => Set<SchemaBaseline>();
 
+    public DbSet<City> Cities => Set<City>();
+
+    public DbSet<Province> Provinces => Set<Province>();
+
+    public DbSet<Country> Countries => Set<Country>();
+
+    public DbSet<Department> Departments => Set<Department>();
+
+    public DbSet<Class> Classes => Set<Class>();
+
+    public DbSet<Category> Categories => Set<Category>();
+
+    public DbSet<Brand> Brands => Set<Brand>();
+
+    public DbSet<Material> Materials => Set<Material>();
+
+    public DbSet<TaxMethod> TaxMethods => Set<TaxMethod>();
+
+    public DbSet<PaymentMethod> PaymentMethods => Set<PaymentMethod>();
+
     public DbSet<Identity.LegacyStaffRow> LegacyStaff => Set<Identity.LegacyStaffRow>();
 
     public DbSet<Identity.LegacyUserRow> LegacyUsers => Set<Identity.LegacyUserRow>();
@@ -43,6 +63,7 @@ public class XOptiDbContext(DbContextOptions<XOptiDbContext> options)
         IdentityTables(builder);
         LegacyMapping.Configure(builder);
         PlatformMapping.Configure(builder);
+        ReferenceMapping.Configure(builder);
     }
 
     /// <summary>App-owned Identity tables follow the snake_case contract (asp_net_*).</summary>

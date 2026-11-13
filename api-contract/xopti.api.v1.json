@@ -426,6 +426,61 @@
         }
       }
     },
+    "/api/v1/admin/reference/{kind}": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ReferenceKind"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfReferenceItemDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/admin/roles": {
       "get": {
         "tags": [
@@ -702,6 +757,27 @@
           }
         }
       },
+      "PagedResultOfReferenceItemDto": {
+        "required": [
+          "items",
+          "nextCursor"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReferenceItemDto"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "PagedResultOfStaffAccountDto": {
         "required": [
           "items",
@@ -783,6 +859,40 @@
             "type": "string"
           }
         }
+      },
+      "ReferenceItemDto": {
+        "required": [
+          "kind",
+          "key",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "parent": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "detail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ReferenceKind": {
+        "type": "integer"
       },
       "RenameBranchRequest": {
         "required": [

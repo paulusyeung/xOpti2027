@@ -10,6 +10,7 @@ using xOpti.Application.Common;
 using xOpti.Application.Identity.ListBranches;
 using xOpti.Application.Identity.Staff;
 using xOpti.Application.Inventory.GetInventorySummary;
+using xOpti.Application.Reference;
 using xOpti.Application.Common;
 using xOpti.Application.Identity.ListBranches;
 using xOpti.Application.Identity.UpdateBranchName;
@@ -239,6 +240,21 @@ public static class Endpoints
         })
         .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
         .Produces<StaffAccountDto>();
+
+        v1.MapGet("/admin/reference/{kind}", async (
+            ReferenceKind kind,
+            string? search,
+            string? cursor,
+            int? pageSize,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ListReferencesQuery(kind, search, cursor, pageSize ?? 50), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<PagedResult<ReferenceItemDto>>();
 
         v1.MapGet("/admin/roles", async (IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
         {
