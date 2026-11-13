@@ -52,6 +52,24 @@ describe('ProblemDetails mapping', () => {
     expect(error.fieldErrors).toEqual({ username: ['Required.'] })
   })
 
+  it('collects the API array form of validation field errors', () => {
+    const error = toAppError(
+      {
+        type: cases[0][1],
+        errors: [
+          { field: 'Role', code: 'invalid', message: 'Role is not part of the approved permission matrix.' },
+          { field: 'Reason', code: 'invalid', message: 'Reason is required.' },
+        ],
+      },
+      400,
+      null,
+    )
+    expect(error.fieldErrors).toEqual({
+      Role: ['Role is not part of the approved permission matrix.'],
+      Reason: ['Reason is required.'],
+    })
+  })
+
   it('prefers the body correlation id over the fallback', () => {
     const error = toAppError({ type: cases[11][1], correlationId: 'body-id' }, 500, 'header-id')
     expect(error.correlationId).toBe('body-id')

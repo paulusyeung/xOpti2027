@@ -165,6 +165,33 @@ public sealed class EfStaffAccountStore(
         return (await MapAsync(user), token);
     }
 
+    public async Task<PasswordResetOutcome> CompletePasswordResetAsync(
+        string userName,
+        string token,
+        string newPassword,
+        CancellationToken cancellationToken)
+    {
+        var user = await users.FindByNameAsync(userName);
+        if (user is null)
+        {
+            return new PasswordResetOutcome(false, TokenInvalid: true, Array.Empty<PasswordResetError>());
+        }
+
+        var reset = await users.ResetPasswordAsync(user, token, newPassword);
+        if (!reset.Succeeded)
+        {
+            var tokenInvalid = reset.Errors.Any(error => error.Code == "InvalidToken");
+            return new PasswordResetOutcome(
+                false,
+                tokenInvalid,
+                reset.Errors.Select(error => new PasswordResetError(error.Code, error.Description)).ToList());
+        }
+
+        user.ResetRequired = false;
+        await users.UpdateAsync(user);
+        return new PasswordResetOutcome(true, false, Array.Empty<PasswordResetError>());
+    }
+
     private async Task<XoptiUser> RequireAsync(StaffAccount account)
     {
         var user = await users.FindByIdAsync(account.Id);

@@ -88,12 +88,48 @@ public interface IStaffAccountStore
     Task<(StaffAccount Account, string ResetToken)> ForceResetAsync(
         StaffAccount account,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Completes a forced reset with an administrator-issued token. User
+    /// enumeration is not possible: a missing account and a bad token produce
+    /// the same outcome.
+    /// </summary>
+    Task<PasswordResetOutcome> CompletePasswordResetAsync(
+        string userName,
+        string token,
+        string newPassword,
+        CancellationToken cancellationToken);
 }
 
-/// <summary>Read-only role catalogue from the versioned permission matrix.</summary>
+public sealed record PasswordResetOutcome(
+    bool Succeeded,
+    bool TokenInvalid,
+    IReadOnlyList<PasswordResetError> Errors);
+
+public sealed record PasswordResetError(string Code, string Description);
+
+/// <summary>Read-only role and permission catalogue from the versioned matrix.</summary>
 public interface IRoleCatalogue
 {
     IReadOnlyList<string> KnownRoles { get; }
+
+    string Version { get; }
+
+    bool Signed { get; }
+
+    string? SignedBy { get; }
+
+    string? ApprovedOn { get; }
+
+    IReadOnlyList<(int MinLevel, string Role)> LevelRules { get; }
+
+    IReadOnlyList<string> AllPermissions { get; }
+
+    IReadOnlyList<string> UnassignedPermissions { get; }
+
+    IReadOnlyList<string> ParityGaps { get; }
+
+    IReadOnlyList<string> PermissionsForRole(string role);
 
     bool Exists(string role);
 }

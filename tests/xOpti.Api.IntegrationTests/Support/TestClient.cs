@@ -106,6 +106,24 @@ public sealed class TestClient : IDisposable
         return response;
     }
 
+    public async Task<HttpResponseMessage> PutAsync(string path, object body)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Put, path)
+        {
+            Content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json"),
+        };
+
+        if (CsrfToken is not null)
+        {
+            request.Headers.Add("X-CSRF-TOKEN", CsrfToken);
+        }
+
+        ApplyCookies(request);
+        var response = await Http.SendAsync(request);
+        StoreCookies(response);
+        return response;
+    }
+
     public async Task<HttpResponseMessage> PatchAsync(string path, object body)
     {
         var request = new HttpRequestMessage(HttpMethod.Patch, path)

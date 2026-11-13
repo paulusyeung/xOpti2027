@@ -20,6 +20,25 @@ public sealed class FakeRoleCatalogue : IRoleCatalogue
 
     public IReadOnlyList<string> KnownRoles => Roles;
 
+    public string Version => "test";
+
+    public bool Signed => false;
+
+    public string? SignedBy => null;
+
+    public string? ApprovedOn => null;
+
+    public IReadOnlyList<(int MinLevel, string Role)> LevelRules => new[] { (1, "clerk") };
+
+    public IReadOnlyList<string> AllPermissions => xOpti.Application.Authorization.PermissionNames.All;
+
+    public IReadOnlyList<string> UnassignedPermissions => new[] { "customer:pii" };
+
+    public IReadOnlyList<string> ParityGaps => Array.Empty<string>();
+
+    public IReadOnlyList<string> PermissionsForRole(string role) =>
+        role == "admin" ? xOpti.Application.Authorization.PermissionNames.All : Array.Empty<string>();
+
     public bool Exists(string role) => Roles.Contains(role);
 }
 

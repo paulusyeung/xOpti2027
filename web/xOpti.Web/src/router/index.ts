@@ -37,6 +37,12 @@ export const routes: RouteRecordRaw[] = [
     meta: { permission: PermissionNames.ReportFinancial, feature: 'analytics', title: 'Analytics' },
   },
   {
+    path: '/admin/staff',
+    name: 'staff-admin',
+    component: () => import('@/features/admin/StaffAdminPage.vue'),
+    meta: { permission: PermissionNames.MasterDataMaintain, title: 'Staff' },
+  },
+  {
     path: '/forbidden',
     name: 'forbidden',
     component: () => import('@/pages/ForbiddenPage.vue'),

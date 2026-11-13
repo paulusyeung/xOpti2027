@@ -10,9 +10,9 @@
 
 ## 2. Security administration API and UI
 
-- [ ] 2.1 Add versioned API endpoints for staff, roles, permissions, branch scope, and account reset; verify OpenAPI contract generation and permission policies.
-- [ ] 2.2 Build Vue administration screens for staff, roles, permissions, branch scope, and forced-reset status; verify component tests cover loading, forbidden, validation, and save states.
-- [ ] 2.3 Add Playwright coverage for an admin creating a staff account, assigning a role, forcing reset, and disabling the account; verify the effects on session access.
+- [x] 2.1 Add versioned API endpoints for staff, roles, permissions, branch scope, and account reset; verify OpenAPI contract generation and permission policies.
+- [x] 2.2 Build Vue administration screens for staff, roles, permissions, branch scope, and forced-reset status; verify component tests cover loading, forbidden, validation, and save states.
+- [x] 2.3 Add Playwright coverage for an admin creating a staff account, assigning a role, forcing reset, and disabling the account; verify the effects on session access.
 
 ## 3. Reference data
 

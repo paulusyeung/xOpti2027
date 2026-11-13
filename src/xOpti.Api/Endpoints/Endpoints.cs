@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using xOpti.Application.Authorization;
+using xOpti.Application.Common;
+using xOpti.Application.Identity.ListBranches;
 using xOpti.Application.Identity.Staff;
 using xOpti.Application.Inventory.GetInventorySummary;
 using xOpti.Application.Common;
@@ -65,6 +67,19 @@ public static class Endpoints
 
             return InvalidCredentials();
         }).AllowAnonymous();
+
+        auth.MapPost("/reset-password", async (
+            CompleteResetRequest request,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new CompletePasswordResetCommand(request.Username, request.Token, request.NewPassword),
+                cancellationToken);
+            return Results.Ok(result);
+        })
+        .AllowAnonymous()
+        .Produces<PasswordResetCompletedDto>();
 
         auth.MapPost("/sign-out", async (
             SignInManager<xOpti.Infrastructure.Identity.XoptiUser> signInManager) =>
@@ -136,7 +151,110 @@ public static class Endpoints
         {
             var result = await dispatcher.DispatchAsync(new ListBranchesQuery(cursor, pageSize ?? 20), cancellationToken);
             return Results.Json(result);
-        });
+        })
+        .Produces<PagedResult<BranchDto>>();
+
+        v1.MapGet("/admin/staff/{id}", async (
+            string id,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetStaffQuery(id), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<StaffAccountDto>();
+
+        v1.MapPost("/admin/staff", async (
+            CreateStaffRequest request,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new CreateStaffCommand(request.UserName, request.DisplayName, request.Role, request.BranchCode, request.Reason),
+                cancellationToken);
+            return Results.Created($"/api/v1/admin/staff/{result.Account.Id}", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<StaffCredentialsDto>(StatusCodes.Status201Created);
+
+        v1.MapPost("/admin/staff/{id}/disable", async (
+            string id,
+            ReasonRequest request,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new DisableStaffCommand(id, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<StaffAccountDto>();
+
+        v1.MapPost("/admin/staff/{id}/enable", async (
+            string id,
+            ReasonRequest request,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new EnableStaffCommand(id, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<StaffAccountDto>();
+
+        v1.MapPost("/admin/staff/{id}/force-reset", async (
+            string id,
+            ReasonRequest request,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new ForceStaffResetCommand(id, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<StaffCredentialsDto>();
+
+        v1.MapPut("/admin/staff/{id}/role", async (
+            string id,
+            ChangeRoleRequest request,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ChangeStaffRoleCommand(id, request.Role, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<StaffAccountDto>();
+
+        v1.MapPut("/admin/staff/{id}/branch", async (
+            string id,
+            SetBranchRequest request,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new SetStaffBranchCommand(id, request.BranchCode, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<StaffAccountDto>();
+
+        v1.MapGet("/admin/roles", async (IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetRolesQuery(), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<RoleCatalogueDto>();
+
+        v1.MapGet("/admin/permissions", async (IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetPermissionsQuery(), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<PermissionCatalogueDto>();
 
         v1.MapGet("/admin/staff", async (
             string? cursor,
@@ -147,7 +265,8 @@ public static class Endpoints
             var result = await dispatcher.DispatchAsync(new ListStaffQuery(cursor, pageSize ?? 50), cancellationToken);
             return Results.Json(result);
         })
-        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}");
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<PagedResult<StaffAccountDto>>();
 
         v1.MapGet("/inventory/{sku}", async (
             string sku,
@@ -168,7 +287,8 @@ public static class Endpoints
             var result = await dispatcher.DispatchAsync(
                 new UpdateBranchNameCommand(branchCode, request.Name, request.ExpectedCurrentName), cancellationToken);
             return Results.Json(result);
-        });
+        })
+        .Produces<BranchDto>();
 
         // Financial reference endpoint: idempotency key enforced by filter,
         // forwarded to the command; replay/conflict semantics live in the
@@ -203,6 +323,21 @@ public static class Endpoints
 }
 
 public sealed record SignInRequest(string? Username, string? Password);
+
+public sealed record CompleteResetRequest(string Username, string Token, string NewPassword);
+
+public sealed record CreateStaffRequest(
+    string UserName,
+    string? DisplayName,
+    string Role,
+    string? BranchCode,
+    string Reason);
+
+public sealed record ReasonRequest(string Reason);
+
+public sealed record ChangeRoleRequest(string Role, string Reason);
+
+public sealed record SetBranchRequest(string? BranchCode, string Reason);
 
 public sealed record CurrentUserResponse(
     string Username,

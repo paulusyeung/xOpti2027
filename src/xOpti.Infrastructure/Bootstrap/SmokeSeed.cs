@@ -59,6 +59,8 @@ public static class SmokeSeed
                  {
                      ("manager", RolePermissionMatrix.Manager),
                      ("clerk", RolePermissionMatrix.Clerk),
+                     ("purchasing", RolePermissionMatrix.Purchasing),
+                     ("admin", RolePermissionMatrix.Admin),
                  })
         {
             if (await users.FindByNameAsync(name) is not null)

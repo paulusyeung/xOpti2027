@@ -2,7 +2,7 @@ import createClient from 'openapi-fetch'
 import type { paths } from '@contract/xopti-client'
 import { CORRELATION_HEADER, newCorrelationId } from './correlation'
 import { CSRF_HEADER, CsrfTokenStore } from './csrf'
-import { AppError, appErrorFromResponse, problemTypeOf, ProblemTypeUris } from './problems'
+import { AppError, problemTypeOf, ProblemTypeUris, toAppError } from './problems'
 
 type FetchLike = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>
 
@@ -93,7 +93,13 @@ export function createApi(options: ApiOptions = {}): Api {
  */
 export async function unwrap<T>(result: { data?: T; error?: unknown; response: Response }): Promise<T> {
   if (result.error !== undefined) {
-    throw await appErrorFromResponse(result.response, result.response.headers.get(CORRELATION_HEADER))
+    // openapi-fetch parses the problem body into `error`, consuming the
+    // response stream; re-reading the clone would fail and lose the kind.
+    throw toAppError(
+      result.error,
+      result.response.status,
+      result.response.headers.get(CORRELATION_HEADER),
+    )
   }
   return result.data as T
 }

@@ -12,6 +12,12 @@ export interface NavItem {
 export const NAV_ITEMS: readonly NavItem[] = [
   { to: '/', title: 'Home', icon: 'mdi-home-outline' },
   {
+    to: '/admin/staff',
+    title: 'Staff',
+    icon: 'mdi-account-cog-outline',
+    permission: PermissionNames.MasterDataMaintain,
+  },
+  {
     to: '/analytics',
     title: 'Analytics',
     icon: 'mdi-chart-box-outline',

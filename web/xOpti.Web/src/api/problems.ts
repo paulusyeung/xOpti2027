@@ -110,7 +110,18 @@ export function toAppError(
   const detail = typeof record.detail === 'string' ? record.detail : undefined
 
   const fieldErrors: Record<string, string[]> = {}
-  if (record.errors && typeof record.errors === 'object') {
+  if (Array.isArray(record.errors)) {
+    // The API emits [{ field, code, message }]; keep field-level errors usable.
+    for (const entry of record.errors) {
+      if (!entry || typeof entry !== 'object') {
+        continue
+      }
+      const { field, message } = entry as { field?: unknown; message?: unknown }
+      if (typeof field === 'string' && typeof message === 'string') {
+        ;(fieldErrors[field] ??= []).push(message)
+      }
+    }
+  } else if (record.errors && typeof record.errors === 'object') {
     for (const [field, messages] of Object.entries(record.errors as Record<string, unknown>)) {
       if (Array.isArray(messages)) {
         fieldErrors[field] = messages.filter((m): m is string => typeof m === 'string')

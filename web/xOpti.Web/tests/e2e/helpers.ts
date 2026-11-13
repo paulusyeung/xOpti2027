@@ -6,6 +6,8 @@ export const SESSION_COOKIE = 'xopti.session'
 export const accounts = {
   manager: { username: 'manager', password: 'Test#Passw0rd1!' },
   clerk: { username: 'clerk', password: 'Test#Passw0rd1!' },
+  purchasing: { username: 'purchasing', password: 'Test#Passw0rd1!' },
+  admin: { username: 'admin', password: 'Test#Passw0rd1!' },
 } as const
 
 export async function signIn(page: Page, account: keyof typeof accounts): Promise<void> {
