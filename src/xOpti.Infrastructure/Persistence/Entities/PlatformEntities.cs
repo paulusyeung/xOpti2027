@@ -36,3 +36,20 @@ public class IdempotencyRecord
 
     public DateTimeOffset ExpiresAt { get; set; }
 }
+
+
+/// <summary>Additive retirement marker for legacy master records (no hard delete).</summary>
+public class EntityRetirement
+{
+    /// <summary>Reference kind or aggregate name (e.g. "Brand", "Supplier").</summary>
+    public string EntityType { get; set; } = string.Empty;
+
+    /// <summary>Stable natural key, composite keys joined with '/'.</summary>
+    public string EntityKey { get; set; } = string.Empty;
+
+    public string Reason { get; set; } = string.Empty;
+
+    public string? RetiredBy { get; set; }
+
+    public DateTimeOffset RetiredAt { get; set; }
+}

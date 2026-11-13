@@ -529,8 +529,99 @@ export interface paths {
                 };
             };
         };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    kind: components["schemas"]["ReferenceKind"];
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ReferenceMutationRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ReferenceItemDto"];
+                    };
+                };
+            };
+        };
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    kind: components["schemas"]["ReferenceKind"];
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ReferenceMutationRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ReferenceItemDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/reference/{kind}/retire": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
         put?: never;
-        post?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    kind: components["schemas"]["ReferenceKind"];
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["RetireReferenceRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ReferenceItemDto"];
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
@@ -786,9 +877,27 @@ export interface components {
             detail?: null | string;
         };
         ReferenceKind: number;
+        ReferenceMutationRequest: {
+            key: string;
+            name: string;
+            parent: null | string;
+            summaryFlag: null | boolean;
+            costingMethod: null | string;
+            inventoryMethod: null | string;
+            taxMethod: null | string;
+            paymentNameShort: null | string;
+            /** Format: double */
+            exchangeRate: null | number | string;
+            reason: string;
+        };
         RenameBranchRequest: {
             name: string;
             expectedCurrentName?: null | string;
+        };
+        RetireReferenceRequest: {
+            key: string;
+            reason: string;
+            confirmReferenced: boolean;
         };
         RoleCatalogueDto: {
             version: string;

@@ -16,6 +16,8 @@ public class Inventory
 
     public string BrandCode { get; set; } = string.Empty;
 
+    public string? MaterialCode { get; set; }
+
     public string? Name { get; set; }
 
     public Money AverageCost { get; set; }

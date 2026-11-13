@@ -34,6 +34,17 @@ public static class PlatformMapping
             e.Property(x => x.AppliedBy).HasMaxLength(128).IsRequired();
         });
 
+        mb.Entity<EntityRetirement>(e =>
+        {
+            e.ToTable("entity_retirement", "platform");
+            e.HasKey(x => new { x.EntityType, x.EntityKey });
+            e.Property(x => x.EntityType).HasMaxLength(32);
+            e.Property(x => x.EntityKey).HasMaxLength(40);
+            e.Property(x => x.Reason).HasMaxLength(500).IsRequired();
+            e.Property(x => x.RetiredBy).HasMaxLength(64);
+            e.Property(x => x.RetiredAt);
+        });
+
         mb.Entity<IdempotencyRecord>(e =>
         {
             e.ToTable("idempotency_record", "platform");

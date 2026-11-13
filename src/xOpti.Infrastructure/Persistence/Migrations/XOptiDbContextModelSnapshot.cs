@@ -428,6 +428,159 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Brand", b =>
+                {
+                    b.Property<string>("BrandCode")
+                        .HasColumnType("text")
+                        .HasColumnName("brand_code");
+
+                    b.Property<string>("BrandDescription")
+                        .HasColumnType("text")
+                        .HasColumnName("brand_description");
+
+                    b.HasKey("BrandCode")
+                        .HasName("pk_brand");
+
+                    b.ToTable("brand", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Category", b =>
+                {
+                    b.Property<string>("DepartmentCode")
+                        .HasColumnType("text")
+                        .HasColumnName("department_code");
+
+                    b.Property<string>("ClassCode")
+                        .HasColumnType("text")
+                        .HasColumnName("class_code");
+
+                    b.Property<string>("CategoryCode")
+                        .HasColumnType("text")
+                        .HasColumnName("category_code");
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("text")
+                        .HasColumnName("category_name");
+
+                    b.Property<string>("CostingMethod")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("costing_method");
+
+                    b.Property<string>("InventoryMethod")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("inventory_method");
+
+                    b.Property<bool?>("SummaryFlag")
+                        .HasColumnType("boolean")
+                        .HasColumnName("summary_flag");
+
+                    b.Property<string>("TaxMethod")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("tax_method");
+
+                    b.HasKey("DepartmentCode", "ClassCode", "CategoryCode")
+                        .HasName("pk_category");
+
+                    b.ToTable("category", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.City", b =>
+                {
+                    b.Property<int>("Code")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("code");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Code"));
+
+                    b.Property<string>("CityName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("city_name");
+
+                    b.Property<string>("CityPhoneCode")
+                        .HasColumnType("text")
+                        .HasColumnName("city_phone_code");
+
+                    b.Property<string>("CountryCode")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("country_code");
+
+                    b.Property<string>("ProvinceCode")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("province_code");
+
+                    b.HasKey("Code")
+                        .HasName("pk_city");
+
+                    b.ToTable("city", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Class", b =>
+                {
+                    b.Property<string>("Department")
+                        .HasColumnType("text")
+                        .HasColumnName("department");
+
+                    b.Property<string>("ClassCode")
+                        .HasColumnType("text")
+                        .HasColumnName("class_code");
+
+                    b.Property<string>("ClassName")
+                        .HasColumnType("text")
+                        .HasColumnName("class_name");
+
+                    b.Property<bool?>("SummaryFlag")
+                        .HasColumnType("boolean")
+                        .HasColumnName("summary_flag");
+
+                    b.HasKey("Department", "ClassCode")
+                        .HasName("pk_class");
+
+                    b.ToTable("class", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Country", b =>
+                {
+                    b.Property<string>("CountryCode")
+                        .HasColumnType("text")
+                        .HasColumnName("country_code");
+
+                    b.Property<string>("CountryName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("country_name");
+
+                    b.Property<string>("CountryPhoneCode")
+                        .HasColumnType("text")
+                        .HasColumnName("country_phone_code");
+
+                    b.HasKey("CountryCode")
+                        .HasName("pk_country");
+
+                    b.ToTable("country", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Customer", b =>
                 {
                     b.Property<int>("Id")
@@ -467,6 +620,62 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         {
                             t.ExcludeFromMigrations();
                         });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Department", b =>
+                {
+                    b.Property<string>("DepartmentCode")
+                        .HasColumnType("text")
+                        .HasColumnName("department_code");
+
+                    b.Property<string>("DepartmentName")
+                        .HasColumnType("text")
+                        .HasColumnName("department_name");
+
+                    b.Property<bool?>("SummaryFlag")
+                        .HasColumnType("boolean")
+                        .HasColumnName("summary_flag");
+
+                    b.HasKey("DepartmentCode")
+                        .HasName("pk_department");
+
+                    b.ToTable("department", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.EntityRetirement", b =>
+                {
+                    b.Property<string>("EntityType")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("entity_type");
+
+                    b.Property<string>("EntityKey")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("entity_key");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("reason");
+
+                    b.Property<DateTimeOffset>("RetiredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("retired_at");
+
+                    b.Property<string>("RetiredBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("retired_by");
+
+                    b.HasKey("EntityType", "EntityKey")
+                        .HasName("pk_entity_retirement");
+
+                    b.ToTable("entity_retirement", "platform");
                 });
 
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.IdempotencyRecord", b =>
@@ -629,6 +838,54 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Material", b =>
+                {
+                    b.Property<string>("MaterialCode")
+                        .HasColumnType("text")
+                        .HasColumnName("material_code");
+
+                    b.Property<string>("MaterialDescription")
+                        .HasColumnType("text")
+                        .HasColumnName("material_description");
+
+                    b.HasKey("MaterialCode")
+                        .HasName("pk_material");
+
+                    b.ToTable("material", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.PaymentMethod", b =>
+                {
+                    b.Property<string>("PaymentCode")
+                        .HasColumnType("text")
+                        .HasColumnName("payment_code");
+
+                    b.Property<double>("ExchangeRate")
+                        .HasColumnType("double precision")
+                        .HasColumnName("exchange_rate");
+
+                    b.Property<string>("PaymentNameLong")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("payment_name_long");
+
+                    b.Property<string>("PaymentNameShort")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("payment_name_short");
+
+                    b.HasKey("PaymentCode")
+                        .HasName("pk_payment_methods");
+
+                    b.ToTable("payment_methods", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.PrefTxNumber", b =>
                 {
                     b.Property<string>("TxPrefix")
@@ -704,6 +961,26 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Province", b =>
+                {
+                    b.Property<string>("ProvinceCode")
+                        .HasColumnType("text")
+                        .HasColumnName("province_code");
+
+                    b.Property<string>("ProvinceName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("province_name");
+
+                    b.HasKey("ProvinceCode")
+                        .HasName("pk_province");
+
+                    b.ToTable("province", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.SchemaBaseline", b =>
                 {
                     b.Property<int>("Id")
@@ -736,6 +1013,26 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasName("pk_schema_baseline");
 
                     b.ToTable("schema_baseline", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.TaxMethod", b =>
+                {
+                    b.Property<string>("TaxCode")
+                        .HasColumnType("text")
+                        .HasColumnName("tax_code");
+
+                    b.Property<string>("TaxName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("tax_name");
+
+                    b.HasKey("TaxCode")
+                        .HasName("pk_tax_method");
+
+                    b.ToTable("tax_method", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.TxDetail", b =>

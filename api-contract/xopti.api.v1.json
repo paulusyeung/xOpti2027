@@ -479,6 +479,119 @@
             }
           }
         }
+      },
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ReferenceKind"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReferenceMutationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReferenceItemDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ReferenceKind"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReferenceMutationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReferenceItemDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/reference/{kind}/retire": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "kind",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ReferenceKind"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RetireReferenceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReferenceItemDto"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/admin/roles": {
@@ -894,6 +1007,77 @@
       "ReferenceKind": {
         "type": "integer"
       },
+      "ReferenceMutationRequest": {
+        "required": [
+          "key",
+          "name",
+          "parent",
+          "summaryFlag",
+          "costingMethod",
+          "inventoryMethod",
+          "taxMethod",
+          "paymentNameShort",
+          "exchangeRate",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "parent": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "summaryFlag": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          },
+          "costingMethod": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "inventoryMethod": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "taxMethod": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "paymentNameShort": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "exchangeRate": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
       "RenameBranchRequest": {
         "required": [
           "name"
@@ -908,6 +1092,25 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "RetireReferenceRequest": {
+        "required": [
+          "key",
+          "reason",
+          "confirmReferenced"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "confirmReferenced": {
+            "type": "boolean"
           }
         }
       },

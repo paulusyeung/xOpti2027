@@ -256,6 +256,46 @@ public static class Endpoints
         .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
         .Produces<PagedResult<ReferenceItemDto>>();
 
+        v1.MapPost("/admin/reference/{kind}", async (
+            ReferenceKind kind,
+            ReferenceMutationRequest request,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new CreateReferenceCommand(request.ToMutation(kind), request.Reason), cancellationToken);
+            return Results.Created($"/api/v1/admin/reference/{kind}/{result.Key}", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<ReferenceItemDto>(StatusCodes.Status201Created);
+
+        v1.MapPut("/admin/reference/{kind}", async (
+            ReferenceKind kind,
+            ReferenceMutationRequest request,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new UpdateReferenceCommand(request.ToMutation(kind), request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<ReferenceItemDto>();
+
+        v1.MapPost("/admin/reference/{kind}/retire", async (
+            ReferenceKind kind,
+            RetireReferenceRequest request,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new RetireReferenceCommand(kind, request.Key, request.Reason, request.ConfirmReferenced),
+                cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<ReferenceItemDto>();
+
         v1.MapGet("/admin/roles", async (IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
         {
             var result = await dispatcher.DispatchAsync(new GetRolesQuery(), cancellationToken);
@@ -350,6 +390,25 @@ public sealed record CreateStaffRequest(
     string Reason);
 
 public sealed record ReasonRequest(string Reason);
+
+public sealed record ReferenceMutationRequest(
+    string Key,
+    string Name,
+    string? Parent,
+    bool? SummaryFlag,
+    string? CostingMethod,
+    string? InventoryMethod,
+    string? TaxMethod,
+    string? PaymentNameShort,
+    double? ExchangeRate,
+    string Reason)
+{
+    public ReferenceMutation ToMutation(ReferenceKind kind) => new(
+        kind, Key, Name, Parent, SummaryFlag, CostingMethod, InventoryMethod, TaxMethod,
+        PaymentNameShort, ExchangeRate);
+}
+
+public sealed record RetireReferenceRequest(string Key, string Reason, bool ConfirmReferenced);
 
 public sealed record ChangeRoleRequest(string Role, string Reason);
 

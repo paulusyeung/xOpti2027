@@ -7,7 +7,25 @@ namespace xOpti.Infrastructure.Repositories;
 /// <summary>Read-only reference directory over the migrated public tables.</summary>
 public sealed class EfReferenceDirectory(XOptiDbContext context) : IReferenceDirectory
 {
-    public Task<IReadOnlyList<ReferenceItemDto>> PageAsync(
+    public async Task<IReadOnlyList<ReferenceItemDto>> PageAsync(
+        ReferenceKind kind,
+        string? search,
+        string? afterKey,
+        int limit,
+        CancellationToken cancellationToken)
+    {
+        var retired = await context.EntityRetirements.AsNoTracking()
+            .Where(row => row.EntityType == kind.ToString())
+            .Select(row => row.EntityKey)
+            .ToListAsync(cancellationToken);
+
+        var rows = await FetchAsync(kind, search, afterKey, limit + retired.Count, cancellationToken);
+        return retired.Count == 0
+            ? rows
+            : rows.Where(row => !retired.Contains(row.Key, StringComparer.Ordinal)).Take(limit).ToList();
+    }
+
+    private Task<IReadOnlyList<ReferenceItemDto>> FetchAsync(
         ReferenceKind kind,
         string? search,
         string? afterKey,

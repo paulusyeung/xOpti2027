@@ -86,6 +86,7 @@ public static class LegacyMapping
             e.Property(x => x.CategoryCode).HasColumnName("category_code");
             e.Property(x => x.SupplierCode).HasColumnName("supplier_code");
             e.Property(x => x.BrandCode).HasColumnName("brand_code");
+            e.Property(x => x.MaterialCode).HasColumnName("material_code");
             e.Property(x => x.Name).HasColumnName("name");
             MoneyProp(e, x => x.AverageCost, "average_cost");
             e.Property(x => x.QtyTotalOnHand).HasColumnName("qty_total_on_hand");

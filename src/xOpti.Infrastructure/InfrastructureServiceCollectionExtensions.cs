@@ -52,6 +52,7 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddScoped<xOpti.Application.Inventory.GetInventorySummary.IInventorySummaryRepository,
             Repositories.EfInventorySummaryRepository>();
         services.AddScoped<xOpti.Application.Reference.IReferenceDirectory, Repositories.EfReferenceDirectory>();
+        services.AddScoped<xOpti.Application.Reference.IReferenceWriter, Repositories.EfReferenceWriter>();
         services.AddSingleton<xOpti.Application.Identity.Staff.IRoleCatalogue, Identity.RoleCatalogue>();
         services.AddSingleton<IClock, SystemClock>();
         services.AddScoped<xOpti.Application.Identity.ListBranches.IBranchRepository, Repositories.EfBranchRepository>();
