@@ -1,0 +1,88 @@
+{
+  "version": "1.0.0-provisional.1",
+  "signed": false,
+  "signedBy": null,
+  "approvedOn": null,
+  "notes": "PROVISIONAL: generated from the establish-production-baseline parity matrix while task 3.2 (customer sign-off) is open. Unmapped levels receive no role and therefore no business claims. Replace only by signing the PERM-* matrix.",
+  "baseline": {
+    "change": "establish-production-baseline",
+    "source": "docs/parity/permissions.csv",
+    "checksumSha256": "ac750aa6bdb149ca24e55df34004dd20a9d666a21431509cc1b3628c9fd8994d",
+    "signOffTask": "3.2"
+  },
+  "levelRules": [
+    {
+      "minLevel": 7,
+      "role": "admin"
+    },
+    {
+      "minLevel": 5,
+      "role": "manager"
+    },
+    {
+      "minLevel": 3,
+      "role": "optician"
+    },
+    {
+      "minLevel": 1,
+      "role": "clerk"
+    }
+  ],
+  "roles": {
+    "clerk": [
+      "sales:order-create"
+    ],
+    "optician": [
+      "sales:order-create",
+      "sales:invoice-post",
+      "prescription:enter",
+      "prescription:view"
+    ],
+    "purchasing": [
+      "inventory:receive",
+      "inventory:adjust",
+      "wholesale:invoice-post"
+    ],
+    "manager": [
+      "sales:order-create",
+      "sales:invoice-post",
+      "sales:price-override",
+      "prescription:enter",
+      "prescription:view",
+      "inventory:receive",
+      "inventory:adjust",
+      "wholesale:invoice-post",
+      "cost:view",
+      "report:financial",
+      "master-data:maintain"
+    ],
+    "admin": [
+      "sales:order-create",
+      "sales:invoice-post",
+      "sales:price-override",
+      "prescription:enter",
+      "prescription:view",
+      "inventory:receive",
+      "inventory:adjust",
+      "wholesale:invoice-post",
+      "cost:view",
+      "report:financial",
+      "master-data:maintain",
+      "staff:pii"
+    ]
+  },
+  "unassignedPermissions": [
+    {
+      "permission": "customer:pii",
+      "reason": "PERM-004: the provisional matrix assigns no customer-PII holder; granting it requires the signed matrix (task 3.2)."
+    }
+  ],
+  "parityGaps": [
+    "PERM-002 inventory access: legacy levels 1-2 vs manager/admin",
+    "PERM-003 OLAP: legacy levels 1-3 vs report:financial holders",
+    "PERM-004 customer PII: legacy all staff; customer:pii is not granted by this provisional matrix",
+    "PERM-005/007 coding and preference: legacy levels 1,2,4 vs manager/admin",
+    "PERM-008 cost visibility: legacy level 1 vs manager/admin (inverted)",
+    "PERM-013 admin and purchasing roles are unreachable from levels 1-5"
+  ]
+}

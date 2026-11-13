@@ -48,6 +48,10 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddScoped<IControlNumberAllocator, PostgresControlNumberAllocator>();
         services.AddScoped<IIdempotencyStore, DbIdempotencyStore>();
         services.AddScoped<IAuditRecorder, DbAuditRecorder>();
+        services.AddScoped<xOpti.Application.Identity.Staff.IStaffAccountStore, Identity.EfStaffAccountStore>();
+        services.AddScoped<xOpti.Application.Inventory.GetInventorySummary.IInventorySummaryRepository,
+            Repositories.EfInventorySummaryRepository>();
+        services.AddSingleton<xOpti.Application.Identity.Staff.IRoleCatalogue, Identity.RoleCatalogue>();
         services.AddSingleton<IClock, SystemClock>();
         services.AddScoped<xOpti.Application.Identity.ListBranches.IBranchRepository, Repositories.EfBranchRepository>();
 

@@ -11,6 +11,12 @@ public class XoptiUser : IdentityUser
 
     /// <summary>True until the account has completed a password reset.</summary>
     public bool ResetRequired { get; set; }
+
+    /// <summary>Administratively disabled; existing sessions are rejected on next request.</summary>
+    public bool Disabled { get; set; }
+
+    /// <summary>Default branch claim; null when the account is not branch-scoped.</summary>
+    public string? DefaultBranchCode { get; set; }
 }
 
 public class XoptiRole : IdentityRole

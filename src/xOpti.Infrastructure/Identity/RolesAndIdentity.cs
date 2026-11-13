@@ -10,9 +10,9 @@ using xOpti.Application.Authorization;
 namespace xOpti.Infrastructure.Identity;
 
 /// <summary>
-/// Role -> permission-claim matrix implementing the authorization-model
-/// vocabulary. Unknown roles resolve to the default-deny set (no permissions),
-/// never to full access.
+/// Role -> permission-claim matrix backed by the versioned
+/// <c>permissions.v1.json</c> file (see <see cref="PermissionMatrix"/>).
+/// Unknown roles and unmapped levels resolve to default-deny, never full access.
 /// </summary>
 public static class RolePermissionMatrix
 {
@@ -22,38 +22,20 @@ public static class RolePermissionMatrix
     public const string Manager = "manager";
     public const string Admin = "admin";
 
-    public static readonly IReadOnlyList<string> KnownRoles = new[] { Clerk, Optician, Purchasing, Manager, Admin };
+    private static readonly Lazy<PermissionMatrix> Loaded = new(() =>
+        PermissionMatrix.LoadDefault(Environment.GetEnvironmentVariable("XOPTI_PERMISSIONS_FILE")));
 
-    public static IReadOnlyList<string> PermissionsFor(IEnumerable<string> roles)
-    {
-        var set = new HashSet<string>();
-        foreach (var role in roles)
-        {
-            foreach (var permission in ForRole(role))
-            {
-                set.Add(permission);
-            }
-        }
+    public static PermissionMatrix Current => Loaded.Value;
 
-        return set.ToList();
-    }
+    public static IReadOnlyList<string> KnownRoles => Current.KnownRoles;
 
-    private static IEnumerable<string> ForRole(string role) => role switch
-    {
-        Clerk => new[] { PermissionNames.SalesOrderCreate },
-        Optician => new[] { PermissionNames.SalesOrderCreate, PermissionNames.SalesInvoicePost, PermissionNames.PrescriptionEnter, PermissionNames.PrescriptionView },
-        Purchasing => new[] { PermissionNames.InventoryReceive, PermissionNames.InventoryAdjust, PermissionNames.WholesaleInvoicePost },
-        Manager => new[]
-        {
-            PermissionNames.SalesOrderCreate, PermissionNames.SalesInvoicePost, PermissionNames.SalesPriceOverride,
-            PermissionNames.PrescriptionEnter, PermissionNames.PrescriptionView,
-            PermissionNames.InventoryReceive, PermissionNames.InventoryAdjust, PermissionNames.WholesaleInvoicePost,
-            PermissionNames.CostView, PermissionNames.ReportFinancial, PermissionNames.MasterDataMaintain,
-        },
-        Admin => PermissionNames.All,
-        // Default-deny: no permission claims for unmapped roles.
-        _ => Array.Empty<string>(),
-    };
+    public static IReadOnlyList<string> PermissionsFor(IEnumerable<string> roles) => Current.PermissionsFor(roles);
+
+    public static IReadOnlyList<string> PermissionsForRole(string role) => Current.PermissionsForRole(role);
+
+    public static string? RoleForLevel(int level) => Current.RoleForLevel(level);
+
+    public static bool IsKnownRole(string role) => Current.IsKnownRole(role);
 }
 
 /// <summary>Adds Identity stores with the hardening options the notes require.</summary>
@@ -144,6 +126,12 @@ public sealed class PermissionClaimsPrincipalFactory(
         {
             identity.AddClaim(new System.Security.Claims.Claim(
                 ClaimsCurrentPrincipal.PermissionClaimType, permission));
+        }
+
+        if (!string.IsNullOrWhiteSpace(user.DefaultBranchCode))
+        {
+            identity.AddClaim(new System.Security.Claims.Claim(
+                ClaimsCurrentPrincipal.BranchClaimType, user.DefaultBranchCode));
         }
 
         return identity;

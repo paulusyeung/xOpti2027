@@ -17,6 +17,7 @@ export const PermissionNames = {
   PrescriptionEnter: 'prescription:enter',
   PrescriptionView: 'prescription:view',
   MasterDataMaintain: 'master-data:maintain',
+  StaffPii: 'staff:pii',
 } as const
 
 export type PermissionName = (typeof PermissionNames)[keyof typeof PermissionNames]

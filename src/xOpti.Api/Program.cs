@@ -78,6 +78,25 @@ builder.Services
         // authentication handlers; return problem documents instead.
         options.Events = new CookieAuthenticationEvents
         {
+            // Reject a cookie when the security stamp changed (role, branch,
+            // disable, force-reset) or the account was disabled. This makes
+            // administrative changes take effect on the next request.
+            OnValidatePrincipal = async context =>
+            {
+                await SecurityStampValidator.ValidatePrincipalAsync(context);
+                if (context.Principal?.Identity?.IsAuthenticated != true)
+                {
+                    return;
+                }
+
+                var users = context.HttpContext.RequestServices.GetRequiredService<UserManager<XoptiUser>>();
+                var user = await users.GetUserAsync(context.Principal);
+                if (user is null || user.Disabled)
+                {
+                    context.RejectPrincipal();
+                    await context.HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+                }
+            },
             OnRedirectToLogin = context =>
             {
                 var hasSessionCookie = context.Request.Cookies.ContainsKey(options.Cookie.Name!);

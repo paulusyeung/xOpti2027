@@ -23,6 +23,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Runtime authorization matrix; deployed beside the application. -->
+    <None Update="Identity/permissions.v1.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\xOpti.Application\xOpti.Application.csproj" />
     <ProjectReference Include="..\xOpti.Domain\xOpti.Domain.csproj" />
   </ItemGroup>

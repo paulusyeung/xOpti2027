@@ -52,7 +52,16 @@ public sealed class LegacyUserSeeder(
                 continue;
             }
 
-            await users.AddToRoleAsync(user, RoleForLevel(staff.SecurityLevel));
+            var role = RolePermissionMatrix.RoleForLevel(staff.SecurityLevel);
+            if (role is null)
+            {
+                report.WithoutRole++;
+            }
+            else
+            {
+                await users.AddToRoleAsync(user, role);
+            }
+
             report.Seeded++;
         }
 
@@ -80,7 +89,9 @@ public sealed class LegacyUserSeeder(
                 continue;
             }
 
-            await users.AddToRoleAsync(user, RolePermissionMatrix.Clerk);
+            // The legacy `users` table has no level; keep it default-deny
+            // instead of silently granting clerk permissions.
+            report.WithoutRole++;
             report.Seeded++;
         }
 
@@ -104,19 +115,14 @@ public sealed class LegacyUserSeeder(
         return result;
     }
 
-    private static string RoleForLevel(int level) => level switch
-    {
-        >= 7 => RolePermissionMatrix.Admin,
-        >= 5 => RolePermissionMatrix.Manager,
-        >= 3 => RolePermissionMatrix.Optician,
-        _ => RolePermissionMatrix.Clerk,
-    };
-
     public sealed record SeedingReport
     {
         public int Seeded { get; set; }
 
         public int Skipped { get; set; }
+
+        /// <summary>Accounts created without a role because their level is unmapped (default-deny).</summary>
+        public int WithoutRole { get; set; }
 
         public List<string> Failed { get; } = new();
     }

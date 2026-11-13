@@ -2,11 +2,11 @@
 
 ## 1. Security administration foundation
 
-- [ ] 1.1 Replace `RolePermissionMatrix` with the signed `PERM-*` matrix loaded from a versioned configuration file; verify the matrix test asserts every approved permission and default denial for unmapped levels.
-- [ ] 1.2 Extend staff seeding to map every legacy `Security`/`Staff` account to an Identity user and role without carrying legacy passwords; verify a seeded account cannot authenticate with the legacy password and can complete forced reset.
-- [ ] 1.3 Implement staff lifecycle commands (create, disable, re-enable, force reset, role change, branch scope); verify handler tests cover authorization, validation, audit, and session invalidation.
-- [ ] 1.4 Implement cost/PII-aware response projections; verify API integration tests omit cost and PII fields for users without `cost:view` or the corresponding PII permission.
-- [ ] 1.5 Add security audit entries for account, role, permission, and branch-scope changes; verify entries include actor, branch, target, before/after, reason, and cannot be edited by normal users.
+- [x] 1.1 Replace `RolePermissionMatrix` with the signed `PERM-*` matrix loaded from a versioned configuration file; verify the matrix test asserts every approved permission and default denial for unmapped levels.
+- [x] 1.2 Extend staff seeding to map every legacy `Security`/`Staff` account to an Identity user and role without carrying legacy passwords; verify a seeded account cannot authenticate with the legacy password and can complete forced reset.
+- [x] 1.3 Implement staff lifecycle commands (create, disable, re-enable, force reset, role change, branch scope); verify handler tests cover authorization, validation, audit, and session invalidation.
+- [x] 1.4 Implement cost/PII-aware response projections; verify API integration tests omit cost and PII fields for users without `cost:view` or the corresponding PII permission.
+- [x] 1.5 Add security audit entries for account, role, permission, and branch-scope changes; verify entries include actor, branch, target, before/after, reason, and cannot be edited by normal users.
 
 ## 2. Security administration API and UI
 

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using xOpti.Application.Authorization;
+using xOpti.Application.Identity.Staff;
+using xOpti.Application.Inventory.GetInventorySummary;
 using xOpti.Application.Common;
 using xOpti.Application.Identity.ListBranches;
 using xOpti.Application.Identity.UpdateBranchName;
@@ -37,7 +39,7 @@ public static class Endpoints
 
             // Uniform failure shape whether the user is missing, locked out,
             // or the password is wrong: never reveal account existence.
-            if (user is null)
+            if (user is null || user.Disabled)
             {
                 return InvalidCredentials();
             }
@@ -97,7 +99,9 @@ public static class Endpoints
                 .OrderBy(value => value, StringComparer.Ordinal)
                 .ToArray();
 
-            return Results.Ok(new CurrentUserResponse(user.UserName ?? string.Empty, user.DisplayName, permissions));
+            var branch = principal.FindFirstValue(xOpti.Infrastructure.ClaimsCurrentPrincipal.BranchClaimType);
+            return Results.Ok(new CurrentUserResponse(
+                user.UserName ?? string.Empty, user.DisplayName, branch, permissions));
         })
         .RequireAuthorization()
         .Produces<CurrentUserResponse>(StatusCodes.Status200OK)
@@ -133,6 +137,27 @@ public static class Endpoints
             var result = await dispatcher.DispatchAsync(new ListBranchesQuery(cursor, pageSize ?? 20), cancellationToken);
             return Results.Json(result);
         });
+
+        v1.MapGet("/admin/staff", async (
+            string? cursor,
+            int? pageSize,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new ListStaffQuery(cursor, pageSize ?? 50), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}");
+
+        v1.MapGet("/inventory/{sku}", async (
+            string sku,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetInventorySummaryQuery(sku), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}");
 
         v1.MapPatch("/branches/{branchCode}", async (
             string branchCode,
@@ -179,7 +204,11 @@ public static class Endpoints
 
 public sealed record SignInRequest(string? Username, string? Password);
 
-public sealed record CurrentUserResponse(string Username, string? DisplayName, IReadOnlyList<string> Permissions);
+public sealed record CurrentUserResponse(
+    string Username,
+    string? DisplayName,
+    string? Branch,
+    IReadOnlyList<string> Permissions);
 
 public sealed record RenameBranchRequest(string Name, string? ExpectedCurrentName = null);
 

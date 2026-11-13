@@ -46,10 +46,13 @@ public static class PermissionNames
     /// <summary>Maintain master data (customers, suppliers, staff, items).</summary>
     public const string MasterDataMaintain = "master-data:maintain";
 
+    /// <summary>View staff contact and payroll PII (provisional addition pending matrix sign-off).</summary>
+    public const string StaffPii = "staff:pii";
+
     public static readonly IReadOnlyList<string> All = new[]
     {
         CostView, InventoryAdjust, ReportFinancial, CustomerPii, InventoryReceive,
         SalesPriceOverride, SalesOrderCreate, SalesInvoicePost, WholesaleInvoicePost,
-        PrescriptionEnter, PrescriptionView, MasterDataMaintain,
+        PrescriptionEnter, PrescriptionView, MasterDataMaintain, StaffPii,
     };
 }

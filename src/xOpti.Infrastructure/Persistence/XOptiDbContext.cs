@@ -48,7 +48,12 @@ public class XOptiDbContext(DbContextOptions<XOptiDbContext> options)
     /// <summary>App-owned Identity tables follow the snake_case contract (asp_net_*).</summary>
     private static void IdentityTables(ModelBuilder builder)
     {
-        builder.Entity<XoptiUser>().ToTable("asp_net_users");
+        builder.Entity<XoptiUser>(entity =>
+        {
+            entity.ToTable("asp_net_users");
+            entity.Property(user => user.DisplayName).HasMaxLength(100);
+            entity.Property(user => user.DefaultBranchCode).HasMaxLength(3);
+        });
         builder.Entity<XoptiRole>().ToTable("asp_net_roles");
         builder.Entity<IdentityUserRole<string>>().ToTable("asp_net_user_roles");
         builder.Entity<IdentityUserClaim<string>>().ToTable("asp_net_user_claims");

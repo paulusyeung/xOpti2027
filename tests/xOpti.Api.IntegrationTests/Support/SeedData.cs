@@ -93,6 +93,8 @@ public static class SeedData
                  {
                      ("manager", RolePermissionMatrix.Manager),
                      ("clerk", RolePermissionMatrix.Clerk),
+                     ("purchasing", RolePermissionMatrix.Purchasing),
+                     ("admin", RolePermissionMatrix.Admin),
                      ("locked-target", RolePermissionMatrix.Clerk),
                      ("unlocked-reset", RolePermissionMatrix.Clerk),
                  })
@@ -100,7 +102,14 @@ public static class SeedData
             var existing = await users.FindByNameAsync(name);
             if (existing is null)
             {
-                var user = new XoptiUser { UserName = name, DisplayName = name };
+                var user = new XoptiUser
+                {
+                    UserName = name,
+                    DisplayName = name,
+                    Email = $"{name}@example.test",
+                    PhoneNumber = "604-555-0100",
+                    DefaultBranchCode = "01",
+                };
                 await users.CreateAsync(user, Password);
                 await users.AddToRoleAsync(user, role);
                 if (await users.FindByNameAsync(name) is { } u)
