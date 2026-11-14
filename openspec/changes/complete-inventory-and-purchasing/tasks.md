@@ -16,7 +16,7 @@
 ## 3. Stock receipt and rejection
 
 - [x] 3.1 Implement the SR receipt command with control number, supplier, branch, lot, quantity, cost, tax, idempotency, and audit; verify handler and API tests cover success, duplicate submission, and validation failures.
-- [ ] 3.2 Implement lot creation/increase and inventory total updates in the same transaction; verify a forced failure leaves both unchanged.
+- [x] 3.2 Implement lot creation/increase and inventory total updates in the same transaction; verify a forced failure leaves both unchanged.
 - [ ] 3.3 Implement the RJ rejection/return command with original-document reference and quantity guards; verify over-return is rejected with the available quantity.
 - [ ] 3.4 Build receiving and rejection screens including line entry, totals, validation, and reprint; verify Playwright covers a full receive-and-reject flow.
 
