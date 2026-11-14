@@ -139,6 +139,39 @@ public static class ReferenceMapping
             e.Property(x => x.PostalCode).HasColumnName("postal_code");
         });
 
+        mb.Entity<RetailPrice>(e =>
+        {
+            e.ToTable("retail_price", t => t.ExcludeFromMigrations());
+            e.HasKey(x => x.Sku);
+            e.Property(x => x.Sku).HasColumnName("sku");
+            e.Property(x => x.LeastSellingPrice).HasColumnName("least_selling_price");
+            e.Property(x => x.RetailPriceValue).HasColumnName("retail_price");
+            e.Property(x => x.RetailMarkdownAmount).HasColumnName("retail_markdown_amt");
+            e.Property(x => x.RetailMarkdownPercent).HasColumnName("retail_markdown_pct");
+        });
+
+        mb.Entity<WholesalePrice>(e =>
+        {
+            e.ToTable("wholesale_price", t => t.ExcludeFromMigrations());
+            e.HasKey(x => x.Sku);
+            e.Property(x => x.Sku).HasColumnName("sku");
+            e.Property(x => x.SuggestedRetailPrice).HasColumnName("suggested_retail_price");
+            e.Property(x => x.GradeA).HasColumnName("selling_price_grade_a");
+            e.Property(x => x.GradeB).HasColumnName("selling_price_grade_b");
+            e.Property(x => x.GradeC).HasColumnName("selling_price_grade_c");
+        });
+
+        mb.Entity<BarCodePool>(e =>
+        {
+            e.ToTable("bar_code_pool", t => t.ExcludeFromMigrations());
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("id").ValueGeneratedNever();
+            e.Property(x => x.TxNumber).HasColumnName("tx_number");
+            e.Property(x => x.DateOfEntry).HasColumnName("date_of_entry");
+            e.Property(x => x.Sku).HasColumnName("sku");
+            e.Property(x => x.Qty).HasColumnName("qty");
+        });
+
         mb.Entity<BranchInventory>(e =>
         {
             e.ToTable("branch_inventory", t => t.ExcludeFromMigrations());

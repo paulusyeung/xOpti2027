@@ -496,6 +496,295 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/skus": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    search?: string;
+                    cursor?: string;
+                    pageSize?: number | string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfCatalogueItemDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateSkuRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CatalogueItemDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/skus/{sku}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    sku: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CatalogueItemDto"];
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    sku: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdateSkuRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CatalogueItemDto"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/skus/{sku}/retire": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    sku: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["RetireSkuRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CatalogueItemDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/skus/{sku}/prices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    sku: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SkuPricesDto"];
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    sku: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["SetPricesRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SkuPricesDto"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/skus/{sku}/barcode": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    sku: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BarcodeTagDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    sku: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ReasonRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BarcodeTagDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/suppliers": {
         parameters: {
             query?: never;
@@ -1038,10 +1327,31 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        BarcodeTagDto: {
+            barcode: string;
+            sku: string;
+            labelText: string;
+            reprint: boolean;
+        };
         BranchDto: {
             branchCode: string;
             name: string;
             city: null | string;
+        };
+        CatalogueItemDto: {
+            sku: string;
+            name: null | string;
+            departmentCode: string;
+            classCode: string;
+            categoryCode: string;
+            supplierCode: string;
+            brandCode: string;
+            materialCode: null | string;
+            lotTracked: boolean;
+            retailPriceFlag: boolean;
+            wholesalePriceFlag: boolean;
+            /** Format: int32 */
+            qtyOnHand: number | string;
         };
         ChangeRoleRequest: {
             role: string;
@@ -1069,6 +1379,20 @@ export interface components {
             country: null | string;
             phone: null | string;
             postalCode: null | string;
+            reason: string;
+        };
+        CreateSkuRequest: {
+            sku: string;
+            name: string;
+            departmentCode: string;
+            classCode: string;
+            categoryCode: string;
+            supplierCode: string;
+            brandCode: string;
+            materialCode: null | string;
+            lotTracked: boolean;
+            retailPriceFlag: boolean;
+            wholesalePriceFlag: boolean;
             reason: string;
         };
         CreateStaffRequest: {
@@ -1121,6 +1445,10 @@ export interface components {
         };
         PagedResultOfBranchDto: {
             items: components["schemas"]["BranchDto"][];
+            nextCursor: null | string;
+        };
+        PagedResultOfCatalogueItemDto: {
+            items: components["schemas"]["CatalogueItemDto"][];
             nextCursor: null | string;
         };
         PagedResultOfDoctorDto: {
@@ -1184,6 +1512,10 @@ export interface components {
             reason: string;
             confirmReferenced: boolean;
         };
+        RetireSkuRequest: {
+            reason: string;
+            confirmOnHand: boolean;
+        };
         RoleCatalogueDto: {
             version: string;
             signed: boolean;
@@ -1202,9 +1534,47 @@ export interface components {
             branchCode: null | string;
             reason: string;
         };
+        SetPricesRequest: {
+            /** Format: double */
+            retailPrice: null | number | string;
+            /** Format: double */
+            leastSellingPrice: null | number | string;
+            /** Format: double */
+            retailMarkdownAmount: null | number | string;
+            /** Format: double */
+            retailMarkdownPercent: null | number | string;
+            /** Format: double */
+            suggestedRetailPrice: null | number | string;
+            /** Format: double */
+            gradeA: null | number | string;
+            /** Format: double */
+            gradeB: null | number | string;
+            /** Format: double */
+            gradeC: null | number | string;
+            reason: string;
+        };
         SignInRequest: {
             username: null | string;
             password: null | string;
+        };
+        SkuPricesDto: {
+            sku: string;
+            /** Format: double */
+            retailPrice: null | number | string;
+            /** Format: double */
+            leastSellingPrice: null | number | string;
+            /** Format: double */
+            retailMarkdownAmount: null | number | string;
+            /** Format: double */
+            retailMarkdownPercent: null | number | string;
+            /** Format: double */
+            suggestedRetailPrice: null | number | string;
+            /** Format: double */
+            gradeA: null | number | string;
+            /** Format: double */
+            gradeB: null | number | string;
+            /** Format: double */
+            gradeC: null | number | string;
         };
         StaffAccountDto: {
             id: string;
@@ -1245,6 +1615,19 @@ export interface components {
             /** Format: double */
             creditLimit: null | number | string;
             paymentTerms: null | string;
+        };
+        UpdateSkuRequest: {
+            name: string;
+            departmentCode: string;
+            classCode: string;
+            categoryCode: string;
+            supplierCode: string;
+            brandCode: string;
+            materialCode: null | string;
+            lotTracked: boolean;
+            retailPriceFlag: boolean;
+            wholesalePriceFlag: boolean;
+            reason: string;
         };
     };
     responses: never;

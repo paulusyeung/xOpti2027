@@ -172,3 +172,42 @@ public class BranchInventory
 
     public int QtyOnHand { get; set; }
 }
+
+public class RetailPrice
+{
+    public string Sku { get; set; } = string.Empty;
+
+    public decimal? LeastSellingPrice { get; set; }
+
+    public decimal? RetailPriceValue { get; set; }
+
+    public decimal? RetailMarkdownAmount { get; set; }
+
+    public double? RetailMarkdownPercent { get; set; }
+}
+
+public class WholesalePrice
+{
+    public string Sku { get; set; } = string.Empty;
+
+    public decimal? SuggestedRetailPrice { get; set; }
+
+    public decimal? GradeA { get; set; }
+
+    public decimal? GradeB { get; set; }
+
+    public decimal? GradeC { get; set; }
+}
+
+public class BarCodePool
+{
+    public int Id { get; set; }
+
+    public string TxNumber { get; set; } = string.Empty;
+
+    public DateTime DateOfEntry { get; set; }
+
+    public string Sku { get; set; } = string.Empty;
+
+    public int Qty { get; set; }
+}

@@ -426,6 +426,317 @@
         }
       }
     },
+    "/api/v1/admin/skus": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfCatalogueItemDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSkuRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogueItemDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/skus/{sku}": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "sku",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogueItemDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "sku",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSkuRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogueItemDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/skus/{sku}/retire": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "sku",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RetireSkuRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogueItemDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/skus/{sku}/prices": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "sku",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkuPricesDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "sku",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetPricesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkuPricesDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/skus/{sku}/barcode": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "sku",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReasonRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BarcodeTagDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "sku",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BarcodeTagDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/admin/suppliers": {
       "get": {
         "tags": [
@@ -964,6 +1275,29 @@
   },
   "components": {
     "schemas": {
+      "BarcodeTagDto": {
+        "required": [
+          "barcode",
+          "sku",
+          "labelText",
+          "reprint"
+        ],
+        "type": "object",
+        "properties": {
+          "barcode": {
+            "type": "string"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "labelText": {
+            "type": "string"
+          },
+          "reprint": {
+            "type": "boolean"
+          }
+        }
+      },
       "BranchDto": {
         "required": [
           "branchCode",
@@ -983,6 +1317,72 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "CatalogueItemDto": {
+        "required": [
+          "sku",
+          "name",
+          "departmentCode",
+          "classCode",
+          "categoryCode",
+          "supplierCode",
+          "brandCode",
+          "materialCode",
+          "lotTracked",
+          "retailPriceFlag",
+          "wholesalePriceFlag",
+          "qtyOnHand"
+        ],
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "departmentCode": {
+            "type": "string"
+          },
+          "classCode": {
+            "type": "string"
+          },
+          "categoryCode": {
+            "type": "string"
+          },
+          "supplierCode": {
+            "type": "string"
+          },
+          "brandCode": {
+            "type": "string"
+          },
+          "materialCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lotTracked": {
+            "type": "boolean"
+          },
+          "retailPriceFlag": {
+            "type": "boolean"
+          },
+          "wholesalePriceFlag": {
+            "type": "boolean"
+          },
+          "qtyOnHand": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -1114,6 +1514,64 @@
               "null",
               "string"
             ]
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateSkuRequest": {
+        "required": [
+          "sku",
+          "name",
+          "departmentCode",
+          "classCode",
+          "categoryCode",
+          "supplierCode",
+          "brandCode",
+          "materialCode",
+          "lotTracked",
+          "retailPriceFlag",
+          "wholesalePriceFlag",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "departmentCode": {
+            "type": "string"
+          },
+          "classCode": {
+            "type": "string"
+          },
+          "categoryCode": {
+            "type": "string"
+          },
+          "supplierCode": {
+            "type": "string"
+          },
+          "brandCode": {
+            "type": "string"
+          },
+          "materialCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lotTracked": {
+            "type": "boolean"
+          },
+          "retailPriceFlag": {
+            "type": "boolean"
+          },
+          "wholesalePriceFlag": {
+            "type": "boolean"
           },
           "reason": {
             "type": "string"
@@ -1376,6 +1834,27 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/BranchDto"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "PagedResultOfCatalogueItemDto": {
+        "required": [
+          "items",
+          "nextCursor"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CatalogueItemDto"
             }
           },
           "nextCursor": {
@@ -1683,6 +2162,21 @@
           }
         }
       },
+      "RetireSkuRequest": {
+        "required": [
+          "reason",
+          "confirmOnHand"
+        ],
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string"
+          },
+          "confirmOnHand": {
+            "type": "boolean"
+          }
+        }
+      },
       "RoleCatalogueDto": {
         "required": [
           "version",
@@ -1776,6 +2270,97 @@
           }
         }
       },
+      "SetPricesRequest": {
+        "required": [
+          "retailPrice",
+          "leastSellingPrice",
+          "retailMarkdownAmount",
+          "retailMarkdownPercent",
+          "suggestedRetailPrice",
+          "gradeA",
+          "gradeB",
+          "gradeC",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "retailPrice": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "leastSellingPrice": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "retailMarkdownAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "retailMarkdownPercent": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "suggestedRetailPrice": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "gradeA": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "gradeB": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "gradeC": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
       "SignInRequest": {
         "required": [
           "username",
@@ -1794,6 +2379,97 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "SkuPricesDto": {
+        "required": [
+          "sku",
+          "retailPrice",
+          "leastSellingPrice",
+          "retailMarkdownAmount",
+          "retailMarkdownPercent",
+          "suggestedRetailPrice",
+          "gradeA",
+          "gradeB",
+          "gradeC"
+        ],
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "retailPrice": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "leastSellingPrice": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "retailMarkdownAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "retailMarkdownPercent": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "suggestedRetailPrice": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "gradeA": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "gradeB": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "gradeC": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },
@@ -2000,6 +2676,60 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "UpdateSkuRequest": {
+        "required": [
+          "name",
+          "departmentCode",
+          "classCode",
+          "categoryCode",
+          "supplierCode",
+          "brandCode",
+          "materialCode",
+          "lotTracked",
+          "retailPriceFlag",
+          "wholesalePriceFlag",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "departmentCode": {
+            "type": "string"
+          },
+          "classCode": {
+            "type": "string"
+          },
+          "categoryCode": {
+            "type": "string"
+          },
+          "supplierCode": {
+            "type": "string"
+          },
+          "brandCode": {
+            "type": "string"
+          },
+          "materialCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lotTracked": {
+            "type": "boolean"
+          },
+          "retailPriceFlag": {
+            "type": "boolean"
+          },
+          "wholesalePriceFlag": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string"
           }
         }
       }

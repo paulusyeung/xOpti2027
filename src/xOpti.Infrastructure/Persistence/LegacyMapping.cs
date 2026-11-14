@@ -92,6 +92,7 @@ public static class LegacyMapping
             e.Property(x => x.QtyTotalOnHand).HasColumnName("qty_total_on_hand");
             e.Property(x => x.DateLastIssued).HasColumnName("date_last_issued").HasConversion(Converters.UtcTimestampNullable);
             e.Property(x => x.RetailPriceFlag).HasColumnName("retail_price_flag");
+            e.Property(x => x.WholesalePriceFlag).HasColumnName("whole_sale_price_flag");
             e.Property(x => x.InventoryLotFlag).HasColumnName("inventory_lot_flag");
             AddXminConcurrency(e);
         });

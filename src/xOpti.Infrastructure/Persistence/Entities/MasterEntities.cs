@@ -28,6 +28,8 @@ public class Inventory
 
     public bool RetailPriceFlag { get; set; }
 
+    public bool WholesalePriceFlag { get; set; }
+
     public bool InventoryLotFlag { get; set; }
 }
 

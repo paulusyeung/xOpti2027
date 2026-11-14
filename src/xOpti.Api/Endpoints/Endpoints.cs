@@ -9,6 +9,7 @@ using xOpti.Application.Authorization;
 using xOpti.Application.Common;
 using xOpti.Application.Identity.ListBranches;
 using xOpti.Application.Identity.Staff;
+using xOpti.Application.Inventory.Catalogue;
 using xOpti.Application.Inventory.GetInventorySummary;
 using xOpti.Application.Reference;
 using xOpti.Application.Common;
@@ -240,6 +241,104 @@ public static class Endpoints
         })
         .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
         .Produces<StaffAccountDto>();
+
+        v1.MapGet("/admin/skus", async (
+            string? search, string? cursor, int? pageSize,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ListCatalogueQuery(search, cursor, pageSize ?? 50), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<PagedResult<CatalogueItemDto>>();
+
+        v1.MapGet("/admin/skus/{sku}", async (
+            string sku, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetSkuQuery(sku), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<CatalogueItemDto>();
+
+        v1.MapPost("/admin/skus", async (
+            CreateSkuRequest request, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new CreateSkuCommand(
+                request.Sku, request.Name, request.DepartmentCode, request.ClassCode, request.CategoryCode,
+                request.SupplierCode, request.BrandCode, request.MaterialCode, request.LotTracked,
+                request.RetailPriceFlag, request.WholesalePriceFlag, request.Reason), cancellationToken);
+            return Results.Created($"/api/v1/admin/skus/{result.Sku}", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<CatalogueItemDto>(StatusCodes.Status201Created);
+
+        v1.MapPut("/admin/skus/{sku}", async (
+            string sku, UpdateSkuRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new UpdateSkuCommand(
+                sku, request.Name, request.DepartmentCode, request.ClassCode, request.CategoryCode,
+                request.SupplierCode, request.BrandCode, request.MaterialCode, request.LotTracked,
+                request.RetailPriceFlag, request.WholesalePriceFlag, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<CatalogueItemDto>();
+
+        v1.MapPost("/admin/skus/{sku}/retire", async (
+            string sku, RetireSkuRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new RetireSkuCommand(sku, request.Reason, request.ConfirmOnHand), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<CatalogueItemDto>();
+
+        v1.MapGet("/admin/skus/{sku}/prices", async (
+            string sku, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetSkuPricesQuery(sku), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<SkuPricesDto>();
+
+        v1.MapPut("/admin/skus/{sku}/prices", async (
+            string sku, SetPricesRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new SetSkuPricesCommand(
+                sku, request.RetailPrice, request.LeastSellingPrice, request.RetailMarkdownAmount,
+                request.RetailMarkdownPercent, request.SuggestedRetailPrice,
+                request.GradeA, request.GradeB, request.GradeC, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<SkuPricesDto>();
+
+        v1.MapPost("/admin/skus/{sku}/barcode", async (
+            string sku, ReasonRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GenerateBarcodeTagCommand(sku, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<BarcodeTagDto>();
+
+        v1.MapGet("/admin/skus/{sku}/barcode", async (
+            string sku, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new ReprintBarcodeTagCommand(sku), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<BarcodeTagDto>();
 
         v1.MapGet("/admin/suppliers", async (
             string? search, string? cursor, int? pageSize,
@@ -499,6 +598,23 @@ public sealed record CreateDoctorRequest(
     string? Phone, string? PostalCode, string Reason);
 
 public sealed record DeactivateBranchRequest(string Reason, string? TargetBranchCode);
+
+public sealed record CreateSkuRequest(
+    string Sku, string Name, string DepartmentCode, string ClassCode, string CategoryCode,
+    string SupplierCode, string BrandCode, string? MaterialCode,
+    bool LotTracked, bool RetailPriceFlag, bool WholesalePriceFlag, string Reason);
+
+public sealed record UpdateSkuRequest(
+    string Name, string DepartmentCode, string ClassCode, string CategoryCode,
+    string SupplierCode, string BrandCode, string? MaterialCode,
+    bool LotTracked, bool RetailPriceFlag, bool WholesalePriceFlag, string Reason);
+
+public sealed record RetireSkuRequest(string Reason, bool ConfirmOnHand);
+
+public sealed record SetPricesRequest(
+    decimal? RetailPrice, decimal? LeastSellingPrice, decimal? RetailMarkdownAmount,
+    double? RetailMarkdownPercent, decimal? SuggestedRetailPrice,
+    decimal? GradeA, decimal? GradeB, decimal? GradeC, string Reason);
 
 public sealed record ChangeRoleRequest(string Role, string Reason);
 

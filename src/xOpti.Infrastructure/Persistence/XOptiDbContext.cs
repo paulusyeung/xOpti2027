@@ -63,6 +63,12 @@ public class XOptiDbContext(DbContextOptions<XOptiDbContext> options)
 
     public DbSet<BranchInventory> BranchInventory => Set<BranchInventory>();
 
+    public DbSet<RetailPrice> RetailPrices => Set<RetailPrice>();
+
+    public DbSet<WholesalePrice> WholesalePrices => Set<WholesalePrice>();
+
+    public DbSet<BarCodePool> BarCodePool => Set<BarCodePool>();
+
     public DbSet<Identity.LegacyStaffRow> LegacyStaff => Set<Identity.LegacyStaffRow>();
 
     public DbSet<Identity.LegacyUserRow> LegacyUsers => Set<Identity.LegacyUserRow>();
