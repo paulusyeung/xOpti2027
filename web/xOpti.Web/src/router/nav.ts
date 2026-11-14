@@ -36,6 +36,12 @@ export const NAV_ITEMS: readonly NavItem[] = [
     permission: PermissionNames.MasterDataMaintain,
   },
   {
+    to: '/admin/inventory',
+    title: 'Inventory',
+    icon: 'mdi-warehouse',
+    permission: PermissionNames.InventoryAdjust,
+  },
+  {
     to: '/analytics',
     title: 'Analytics',
     icon: 'mdi-chart-box-outline',
