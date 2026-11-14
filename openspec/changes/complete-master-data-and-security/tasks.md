@@ -34,7 +34,7 @@
 - [x] 5.1 Map and expose company/branch preferences and control-number settings; verify all 13 legacy counter rows are visible and required families cannot be removed.
 - [x] 5.2 Implement preference updates with audit and permission checks; verify changes apply to new transactions only.
 - [x] 5.3 Implement dry-run and confirmed master-data import for SKUs, suppliers, and reference data; verify invalid rows write nothing and confirmed imports report created/updated/skipped/retired counts.
-- [ ] 5.4 Add import screens with progress and error-report download; verify a failed chunk is resumable and no partial row is silently accepted.
+- [x] 5.4 Add import screens with progress and error-report download; verify a failed chunk is resumable and no partial row is silently accepted.
 
 ## 6. Search, retirement and audit
 
@@ -45,9 +45,9 @@
 
 ## 7. Integration and migration reconciliation
 
-- [ ] 7.1 Reconcile master-data API counts and keys against the migrated `public` tables; verify inventory, supplier, doctor, staff, branch, category, and reference counts match.
-- [ ] 7.2 Run permission-matrix tests across every administrative endpoint; verify no endpoint is accessible without its named permission.
-- [ ] 7.3 Run Playwright and API integration suites against PostgreSQL; verify administration flows work end to end with realistic migrated data.
+- [x] 7.1 Reconcile master-data API counts and keys against the migrated `public` tables; verify inventory, supplier, doctor, staff, branch, category, and reference counts match.
+- [x] 7.2 Run permission-matrix tests across every administrative endpoint; verify no endpoint is accessible without its named permission.
+- [x] 7.3 Run Playwright and API integration suites against PostgreSQL; verify administration flows work end to end with realistic migrated data.
 
 ## Workflow follow-up
 

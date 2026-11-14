@@ -113,6 +113,13 @@ public sealed class ApiPostgresFixture : IAsyncLifetime
 /// </summary>
 public sealed class XOptiApiFactory : WebApplicationFactory<Program>
 {
+    static XOptiApiFactory()
+    {
+        // Many short-lived hosts in one test run exhaust the inotify instance
+        // limit (default 128); polling watchers avoid that failure mode.
+        Environment.SetEnvironmentVariable("DOTNET_USE_POLLING_FILE_WATCHER", "1");
+    }
+
     private readonly ApiPostgresFixture _fixture;
     private readonly Dictionary<string, string?> _overrides;
 

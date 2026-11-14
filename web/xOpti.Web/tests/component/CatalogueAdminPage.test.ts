@@ -64,7 +64,7 @@ describe('CatalogueAdminPage', () => {
   })
 
   it('edits a SKU and reloads the row', async () => {
-    const fetchMock = stubApi((url, method) =>
+    const fetchMock = stubApi((_url, method) =>
       method === 'PUT' ? json({ ...row, name: 'Renamed Frame' }) : undefined)
     const { wrapper } = await mountInApp(CatalogueAdminPage, { path: '/' })
     await flushPromises()
