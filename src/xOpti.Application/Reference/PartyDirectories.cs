@@ -183,7 +183,15 @@ public sealed class CreateSupplierHandler(
                 request.CreditLimit, request.PaymentTerms);
             await directory.CreateSupplierAsync(supplier, token);
             await audit.RecordAsync(new AuditRecord("supplier.create", "Supplier", supplier.SupplierCode,
-                JsonSerializer.Serialize(new { reason = request.Reason, after = supplier })), token);
+                JsonSerializer.Serialize(new
+                {
+                    reason = request.Reason,
+                    after = new
+                    {
+                        supplier.SupplierCode, supplier.Name, supplier.Province,
+                        supplier.Country, supplier.CreditLimit, supplier.PaymentTerms,
+                    },
+                })), token);
             return supplier;
         }, ct);
 }
@@ -200,7 +208,11 @@ public sealed class CreateDoctorHandler(
                 request.PostalCode);
             await directory.CreateDoctorAsync(doctor, token);
             await audit.RecordAsync(new AuditRecord("doctor.create", "Doctor", doctor.Id.ToString(),
-                JsonSerializer.Serialize(new { reason = request.Reason, after = doctor })), token);
+                JsonSerializer.Serialize(new
+                {
+                    reason = request.Reason,
+                    after = new { doctor.Id, doctor.Name, doctor.Province, doctor.Country },
+                })), token);
             return doctor;
         }, ct);
 }
@@ -236,7 +248,11 @@ public sealed class CreateSupplierContactHandler(
                 request.Phone, null);
             await directory.CreateContactAsync(contact, token);
             await audit.RecordAsync(new AuditRecord("supplier.contact.create", "Supplier", request.SupplierCode,
-                JsonSerializer.Serialize(new { reason = request.Reason, after = contact })), token);
+                JsonSerializer.Serialize(new
+                {
+                    reason = request.Reason,
+                    after = new { contact.FirstName, contact.Initial, contact.LastName, contact.JobTitle },
+                })), token);
             return contact;
         }, ct);
 }

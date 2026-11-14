@@ -10,7 +10,9 @@ public sealed class EfPartyDirectory(XOptiDbContext context) : IPartyDirectory
     public async Task<IReadOnlyList<SupplierDto>> PageSuppliersAsync(
         string? search, string? afterKey, int limit, CancellationToken ct)
     {
-        var query = context.Suppliers.AsNoTracking();
+        var retired = context.EntityRetirements
+            .Where(row => row.EntityType == "Supplier").Select(row => row.EntityKey);
+        var query = context.Suppliers.AsNoTracking().Where(row => !retired.Contains(row.SupplierCode));
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = $"%{search.Trim()}%";
@@ -32,7 +34,10 @@ public sealed class EfPartyDirectory(XOptiDbContext context) : IPartyDirectory
     public async Task<IReadOnlyList<DoctorDto>> PageDoctorsAsync(
         string? search, string? afterKey, int limit, CancellationToken ct)
     {
-        var query = context.Doctors.AsNoTracking();
+        var retired = context.EntityRetirements
+            .Where(row => row.EntityType == "Doctor").Select(row => row.EntityKey);
+        var query = context.Doctors.AsNoTracking()
+            .Where(row => !retired.Contains(row.Id.ToString()));
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = $"%{search.Trim()}%";

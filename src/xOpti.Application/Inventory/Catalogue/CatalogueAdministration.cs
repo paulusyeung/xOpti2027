@@ -37,6 +37,9 @@ public sealed record BarcodeTagDto(string Barcode, string Sku, string LabelText,
 public interface ICatalogueStore
 {
     Task<CatalogueItemDto?> FindAsync(string sku, CancellationToken ct);
+
+    /// <summary>Selection lookup: null when the SKU is retired (history still uses FindAsync).</summary>
+    Task<CatalogueItemDto?> FindForSelectionAsync(string sku, CancellationToken ct);
     Task<IReadOnlyList<CatalogueItemDto>> PageAsync(string? search, string? afterSku, int limit, CancellationToken ct);
     Task<bool> SkuExistsAsync(string sku, CancellationToken ct);
     Task<bool> CategoryExistsAsync(string department, string @class, string category, CancellationToken ct);

@@ -38,10 +38,10 @@
 
 ## 6. Search, retirement and audit
 
-- [ ] 6.1 Add case-insensitive search indexes or normalized keys for inventory, suppliers, doctors, staff, and branches; verify query plans and result parity on production-sized extracts.
-- [ ] 6.2 Implement keyset pagination for all directory/catalogue queries; verify deep-page tests do not repeat or skip records.
-- [ ] 6.3 Add `platform.entity_retirement` and filter retired records from selection lists; verify historical references still resolve and new transactions cannot select retired records.
-- [ ] 6.4 Verify every master-data mutation emits one allow-listed audit entry with no secrets or unnecessary PII.
+- [x] 6.1 Add case-insensitive search indexes or normalized keys for inventory, suppliers, doctors, staff, and branches; verify query plans and result parity on production-sized extracts.
+- [x] 6.2 Implement keyset pagination for all directory/catalogue queries; verify deep-page tests do not repeat or skip records.
+- [x] 6.3 Add `platform.entity_retirement` and filter retired records from selection lists; verify historical references still resolve and new transactions cannot select retired records.
+- [x] 6.4 Verify every master-data mutation emits one allow-listed audit entry with no secrets or unnecessary PII.
 
 ## 7. Integration and migration reconciliation
 

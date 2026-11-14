@@ -12,7 +12,11 @@ public sealed class EfBranchRepository(XOptiDbContext context) : IBranchReposito
         int limit,
         CancellationToken cancellationToken)
     {
-        IQueryable<Persistence.Entities.Branch> query = context.Branches.AsNoTracking();
+        var retired = context.EntityRetirements
+            .Where(row => row.EntityType == "Branch")
+            .Select(row => row.EntityKey);
+        IQueryable<Persistence.Entities.Branch> query = context.Branches.AsNoTracking()
+            .Where(branch => !retired.Contains(branch.BranchCode));
 
         if (afterBranchCode is not null)
         {

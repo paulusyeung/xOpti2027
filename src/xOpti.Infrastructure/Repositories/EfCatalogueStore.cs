@@ -13,6 +13,13 @@ public sealed class EfCatalogueStore(XOptiDbContext context) : ICatalogueStore
         return row is null ? null : Map(row);
     }
 
+    public async Task<CatalogueItemDto?> FindForSelectionAsync(string sku, CancellationToken ct)
+    {
+        var retired = await context.EntityRetirements.AnyAsync(
+            row => row.EntityType == "Inventory" && row.EntityKey == sku, ct);
+        return retired ? null : await FindAsync(sku, ct);
+    }
+
     public async Task<IReadOnlyList<CatalogueItemDto>> PageAsync(
         string? search, string? afterSku, int limit, CancellationToken ct)
     {

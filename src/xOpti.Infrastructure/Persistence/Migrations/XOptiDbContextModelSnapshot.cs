@@ -393,6 +393,39 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                     b.ToTable("audit_log", "platform");
                 });
 
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.BarCodePool", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("DateOfEntry")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_of_entry");
+
+                    b.Property<int>("Qty")
+                        .HasColumnType("integer")
+                        .HasColumnName("qty");
+
+                    b.Property<string>("Sku")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("sku");
+
+                    b.Property<string>("TxNumber")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("tx_number");
+
+                    b.HasKey("Id")
+                        .HasName("pk_bar_code_pool");
+
+                    b.ToTable("bar_code_pool", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Branch", b =>
                 {
                     b.Property<string>("BranchCode")
@@ -423,6 +456,29 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasName("pk_branch");
 
                     b.ToTable("branch", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.BranchInventory", b =>
+                {
+                    b.Property<string>("BranchCode")
+                        .HasColumnType("text")
+                        .HasColumnName("branch_code");
+
+                    b.Property<string>("Sku")
+                        .HasColumnType("text")
+                        .HasColumnName("sku");
+
+                    b.Property<int>("QtyOnHand")
+                        .HasColumnType("integer")
+                        .HasColumnName("qty_on_hand");
+
+                    b.HasKey("BranchCode", "Sku")
+                        .HasName("pk_branch_inventory");
+
+                    b.ToTable("branch_inventory", null, t =>
                         {
                             t.ExcludeFromMigrations();
                         });
@@ -645,6 +701,52 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Doctor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasColumnType("text")
+                        .HasColumnName("address");
+
+                    b.Property<int?>("CityCode")
+                        .HasColumnType("integer")
+                        .HasColumnName("city");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("text")
+                        .HasColumnName("country");
+
+                    b.Property<string>("DoctorName")
+                        .HasColumnType("text")
+                        .HasColumnName("doctor_name");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("text")
+                        .HasColumnName("phone");
+
+                    b.Property<string>("PostalCode")
+                        .HasColumnType("text")
+                        .HasColumnName("postal_code");
+
+                    b.Property<string>("Province")
+                        .HasColumnType("text")
+                        .HasColumnName("province");
+
+                    b.HasKey("Id")
+                        .HasName("pk_doctor");
+
+                    b.ToTable("doctor", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.EntityRetirement", b =>
                 {
                     b.Property<string>("EntityType")
@@ -752,6 +854,10 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("inventory_lot_flag");
 
+                    b.Property<string>("MaterialCode")
+                        .HasColumnType("text")
+                        .HasColumnName("material_code");
+
                     b.Property<string>("Name")
                         .HasColumnType("text")
                         .HasColumnName("name");
@@ -768,6 +874,10 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("supplier_code");
+
+                    b.Property<bool>("WholesalePriceFlag")
+                        .HasColumnType("boolean")
+                        .HasColumnName("whole_sale_price_flag");
 
                     b.Property<uint>("xmin")
                         .IsConcurrencyToken()
@@ -920,9 +1030,38 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("serial_number");
 
+                    b.Property<string>("BranchNumber")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("branch_number");
+
+                    b.Property<string>("GstNumber")
+                        .HasColumnType("text")
+                        .HasColumnName("gst_number");
+
                     b.Property<int>("NextInvoiceNumber")
                         .HasColumnType("integer")
                         .HasColumnName("next_invoice_number");
+
+                    b.Property<int>("NextInvtControlNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("next_invt_control_number");
+
+                    b.Property<int>("NextInvtSku")
+                        .HasColumnType("integer")
+                        .HasColumnName("next_invt_sku");
+
+                    b.Property<int>("NextSalesOrderNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("next_sales_order_number");
+
+                    b.Property<int>("NumberOfUser")
+                        .HasColumnType("integer")
+                        .HasColumnName("number_of_user");
+
+                    b.Property<string>("OwnerAddress")
+                        .HasColumnType("text")
+                        .HasColumnName("owner_address");
 
                     b.Property<string>("OwnerName")
                         .IsRequired()
@@ -939,6 +1078,10 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("product_name");
 
+                    b.Property<string>("PstNumber")
+                        .HasColumnType("text")
+                        .HasColumnName("pst_number");
+
                     b.Property<double>("TaxARate")
                         .HasColumnType("double precision")
                         .HasColumnName("tax_a_rate");
@@ -946,6 +1089,10 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                     b.Property<double>("TaxBRate")
                         .HasColumnType("double precision")
                         .HasColumnName("tax_b_rate");
+
+                    b.Property<string>("UserAddress")
+                        .HasColumnType("text")
+                        .HasColumnName("user_address");
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -976,6 +1123,37 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasName("pk_province");
 
                     b.ToTable("province", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.RetailPrice", b =>
+                {
+                    b.Property<string>("Sku")
+                        .HasColumnType("text")
+                        .HasColumnName("sku");
+
+                    b.Property<decimal?>("LeastSellingPrice")
+                        .HasColumnType("numeric")
+                        .HasColumnName("least_selling_price");
+
+                    b.Property<decimal?>("RetailMarkdownAmount")
+                        .HasColumnType("numeric")
+                        .HasColumnName("retail_markdown_amt");
+
+                    b.Property<double?>("RetailMarkdownPercent")
+                        .HasColumnType("double precision")
+                        .HasColumnName("retail_markdown_pct");
+
+                    b.Property<decimal?>("RetailPriceValue")
+                        .HasColumnType("numeric")
+                        .HasColumnName("retail_price");
+
+                    b.HasKey("Sku")
+                        .HasName("pk_retail_price");
+
+                    b.ToTable("retail_price", null, t =>
                         {
                             t.ExcludeFromMigrations();
                         });
@@ -1013,6 +1191,96 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasName("pk_schema_baseline");
 
                     b.ToTable("schema_baseline", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Supplier", b =>
+                {
+                    b.Property<string>("SupplierCode")
+                        .HasColumnType("text")
+                        .HasColumnName("supplier_code");
+
+                    b.Property<int?>("CityCode")
+                        .HasColumnType("integer")
+                        .HasColumnName("city");
+
+                    b.Property<string>("ContactPerson")
+                        .HasColumnType("text")
+                        .HasColumnName("contact_person");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("text")
+                        .HasColumnName("country");
+
+                    b.Property<decimal?>("CreditLimit")
+                        .HasColumnType("numeric")
+                        .HasColumnName("credit_limit");
+
+                    b.Property<string>("PaymentTerms")
+                        .HasColumnType("text")
+                        .HasColumnName("payment_terms");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("text")
+                        .HasColumnName("phone_gen_voice");
+
+                    b.Property<string>("Province")
+                        .HasColumnType("text")
+                        .HasColumnName("province");
+
+                    b.Property<string>("SupplierName")
+                        .HasColumnType("text")
+                        .HasColumnName("supplier_name");
+
+                    b.HasKey("SupplierCode")
+                        .HasName("pk_supplier");
+
+                    b.ToTable("supplier", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.SupplierContact", b =>
+                {
+                    b.Property<string>("SupCode")
+                        .HasColumnType("text")
+                        .HasColumnName("sup_code");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("text")
+                        .HasColumnName("first_name");
+
+                    b.Property<string>("Initial")
+                        .HasColumnType("text")
+                        .HasColumnName("initial");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("text")
+                        .HasColumnName("last_name");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("text")
+                        .HasColumnName("full_name");
+
+                    b.Property<string>("JobTitle")
+                        .HasColumnType("text")
+                        .HasColumnName("job_title");
+
+                    b.Property<string>("PhoneGeneralVoice")
+                        .HasColumnType("text")
+                        .HasColumnName("phone_general_voice");
+
+                    b.Property<string>("PhoneMobile")
+                        .HasColumnType("text")
+                        .HasColumnName("phone_mobile");
+
+                    b.HasKey("SupCode", "FirstName", "Initial", "LastName")
+                        .HasName("pk_supplier_contact_person");
+
+                    b.ToTable("supplier_contact_person", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
                 });
 
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.TaxMethod", b =>
@@ -1230,6 +1498,37 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasName("pk_tx_payment");
 
                     b.ToTable("tx_payment", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.WholesalePrice", b =>
+                {
+                    b.Property<string>("Sku")
+                        .HasColumnType("text")
+                        .HasColumnName("sku");
+
+                    b.Property<decimal?>("GradeA")
+                        .HasColumnType("numeric")
+                        .HasColumnName("selling_price_grade_a");
+
+                    b.Property<decimal?>("GradeB")
+                        .HasColumnType("numeric")
+                        .HasColumnName("selling_price_grade_b");
+
+                    b.Property<decimal?>("GradeC")
+                        .HasColumnType("numeric")
+                        .HasColumnName("selling_price_grade_c");
+
+                    b.Property<decimal?>("SuggestedRetailPrice")
+                        .HasColumnType("numeric")
+                        .HasColumnName("suggested_retail_price");
+
+                    b.HasKey("Sku")
+                        .HasName("pk_wholesale_price");
+
+                    b.ToTable("wholesale_price", null, t =>
                         {
                             t.ExcludeFromMigrations();
                         });
