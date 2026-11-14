@@ -9,6 +9,7 @@ using xOpti.Application.Authorization;
 using xOpti.Application.Common;
 using xOpti.Application.Identity.ListBranches;
 using xOpti.Application.Identity.Staff;
+using xOpti.Application.Inventory.Availability;
 using xOpti.Application.Inventory.Catalogue;
 using xOpti.Application.Inventory.GetInventorySummary;
 using xOpti.Application.Reference;
@@ -274,6 +275,26 @@ public static class Endpoints
         })
         .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
         .Produces<PreferencesDto>();
+
+        v1.MapGet("/inventory/{sku}/availability", async (
+            string sku, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetSkuAvailabilityQuery(sku), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<SkuAvailabilityDto>();
+
+        v1.MapGet("/inventory/{sku}/movements", async (
+            string sku, string? cursor, int? pageSize,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ListSkuMovementsQuery(sku, cursor, pageSize ?? 50), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<PagedResult<MovementDto>>();
 
         v1.MapGet("/admin/skus", async (
             string? search, string? cursor, int? pageSize,

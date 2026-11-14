@@ -501,6 +501,83 @@
         }
       }
     },
+    "/api/v1/inventory/{sku}/availability": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "sku",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkuAvailabilityDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/inventory/{sku}/movements": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "sku",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfMovementDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/admin/skus": {
       "get": {
         "tags": [
@@ -1373,6 +1450,26 @@
           }
         }
       },
+      "BranchAvailabilityDto": {
+        "required": [
+          "branchCode",
+          "qtyOnHand"
+        ],
+        "type": "object",
+        "properties": {
+          "branchCode": {
+            "type": "string"
+          },
+          "qtyOnHand": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "BranchDto": {
         "required": [
           "branchCode",
@@ -2042,6 +2139,125 @@
           }
         }
       },
+      "LotAvailabilityDto": {
+        "required": [
+          "lotNo",
+          "supplierCode",
+          "dateReceived",
+          "qtyPurchased",
+          "qtyUsed",
+          "qtyOnHand"
+        ],
+        "type": "object",
+        "properties": {
+          "lotNo": {
+            "type": "string"
+          },
+          "supplierCode": {
+            "type": "string"
+          },
+          "dateReceived": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "qtyPurchased": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "qtyUsed": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "qtyOnHand": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "Money": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "isZero": {
+            "type": "boolean"
+          },
+          "isNegative": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MovementDto": {
+        "required": [
+          "dateOfEntry",
+          "txType",
+          "txNumber",
+          "rowNo",
+          "qty",
+          "unitAmount",
+          "amount",
+          "taxCode"
+        ],
+        "type": "object",
+        "properties": {
+          "dateOfEntry": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "txType": {
+            "type": "string"
+          },
+          "txNumber": {
+            "type": "string"
+          },
+          "rowNo": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "qty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "unitAmount": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "amount": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "taxCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "PagedResultOfBranchDto": {
         "required": [
           "items",
@@ -2095,6 +2311,27 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/DoctorDto"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "PagedResultOfMovementDto": {
+        "required": [
+          "items",
+          "nextCursor"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MovementDto"
             }
           },
           "nextCursor": {
@@ -2721,6 +2958,58 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "SkuAvailabilityDto": {
+        "required": [
+          "sku",
+          "qtyTotalOnHand",
+          "qtySaleOrder",
+          "qtyPurchaseOrder",
+          "branches",
+          "lots"
+        ],
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "qtyTotalOnHand": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "qtySaleOrder": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "qtyPurchaseOrder": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "branches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BranchAvailabilityDto"
+            }
+          },
+          "lots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LotAvailabilityDto"
+            }
           }
         }
       },

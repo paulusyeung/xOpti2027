@@ -593,6 +593,83 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/inventory/{sku}/availability": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    sku: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SkuAvailabilityDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/inventory/{sku}/movements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    cursor?: string;
+                    pageSize?: number | string;
+                };
+                header?: never;
+                path: {
+                    sku: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfMovementDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/skus": {
         parameters: {
             query?: never;
@@ -1430,6 +1507,11 @@ export interface components {
             labelText: string;
             reprint: boolean;
         };
+        BranchAvailabilityDto: {
+            branchCode: string;
+            /** Format: int32 */
+            qtyOnHand: number | string;
+        };
         BranchDto: {
             branchCode: string;
             name: string;
@@ -1574,6 +1656,37 @@ export interface components {
             minLevel: number | string;
             role: string;
         };
+        LotAvailabilityDto: {
+            lotNo: string;
+            supplierCode: string;
+            /** Format: date-time */
+            dateReceived: string;
+            /** Format: int32 */
+            qtyPurchased: number | string;
+            /** Format: int32 */
+            qtyUsed: number | string;
+            /** Format: int32 */
+            qtyOnHand: number | string;
+        };
+        Money: {
+            /** Format: double */
+            amount?: number | string;
+            isZero?: boolean;
+            isNegative?: boolean;
+        };
+        MovementDto: {
+            /** Format: date-time */
+            dateOfEntry: string;
+            txType: string;
+            txNumber: string;
+            /** Format: int32 */
+            rowNo: number | string;
+            /** Format: int32 */
+            qty: number | string;
+            unitAmount: components["schemas"]["Money"];
+            amount: components["schemas"]["Money"];
+            taxCode: null | string;
+        };
         PagedResultOfBranchDto: {
             items: components["schemas"]["BranchDto"][];
             nextCursor: null | string;
@@ -1584,6 +1697,10 @@ export interface components {
         };
         PagedResultOfDoctorDto: {
             items: components["schemas"]["DoctorDto"][];
+            nextCursor: null | string;
+        };
+        PagedResultOfMovementDto: {
+            items: components["schemas"]["MovementDto"][];
             nextCursor: null | string;
         };
         PagedResultOfReferenceItemDto: {
@@ -1712,6 +1829,17 @@ export interface components {
         SignInRequest: {
             username: null | string;
             password: null | string;
+        };
+        SkuAvailabilityDto: {
+            sku: string;
+            /** Format: int32 */
+            qtyTotalOnHand: number | string;
+            /** Format: int32 */
+            qtySaleOrder: number | string;
+            /** Format: int32 */
+            qtyPurchaseOrder: number | string;
+            branches: components["schemas"]["BranchAvailabilityDto"][];
+            lots: components["schemas"]["LotAvailabilityDto"][];
         };
         SkuPricesDto: {
             sku: string;
