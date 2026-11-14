@@ -48,6 +48,12 @@ export const NAV_ITEMS: readonly NavItem[] = [
     permission: PermissionNames.InventoryReceive,
   },
   {
+    to: '/admin/stock-ops',
+    title: 'Stock ops',
+    icon: 'mdi-swap-horizontal',
+    permission: PermissionNames.InventoryAdjust,
+  },
+  {
     to: '/analytics',
     title: 'Analytics',
     icon: 'mdi-chart-box-outline',
