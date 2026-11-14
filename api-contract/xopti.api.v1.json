@@ -1470,6 +1470,35 @@
         }
       }
     },
+    "/api/v1/purchasing/rejections": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RejectStockRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RejectStockResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/sales/holds": {
       "post": {
         "tags": [
@@ -2974,6 +3003,143 @@
           },
           "reason": {
             "type": "string"
+          }
+        }
+      },
+      "RejectStockLineRequest": {
+        "required": [
+          "sku",
+          "lotNo",
+          "quantity",
+          "unitCost",
+          "gstAmount",
+          "pstAmount",
+          "taxCode"
+        ],
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "lotNo": {
+            "type": "string"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "unitCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "gstAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "pstAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxCode": {
+            "type": "string"
+          }
+        }
+      },
+      "RejectStockRequest": {
+        "required": [
+          "supplierCode",
+          "branchCode",
+          "originalTxNumber",
+          "reason",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "supplierCode": {
+            "type": "string"
+          },
+          "branchCode": {
+            "type": "string"
+          },
+          "originalTxNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RejectStockLineRequest"
+            }
+          }
+        }
+      },
+      "RejectStockResult": {
+        "required": [
+          "txNumber",
+          "controlNumber",
+          "originalTxNumber",
+          "totalQuantity",
+          "totalCost",
+          "totalTax"
+        ],
+        "type": "object",
+        "properties": {
+          "txNumber": {
+            "type": "string"
+          },
+          "controlNumber": {
+            "type": "string"
+          },
+          "originalTxNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "totalQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalTax": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },

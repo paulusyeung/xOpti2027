@@ -1540,6 +1540,45 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/purchasing/rejections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["RejectStockRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RejectStockResult"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/sales/holds": {
         parameters: {
             query?: never;
@@ -1895,6 +1934,37 @@ export interface components {
             /** Format: double */
             exchangeRate: null | number | string;
             reason: string;
+        };
+        RejectStockLineRequest: {
+            sku: string;
+            lotNo: string;
+            /** Format: int32 */
+            quantity: number | string;
+            /** Format: double */
+            unitCost: number | string;
+            /** Format: double */
+            gstAmount: number | string;
+            /** Format: double */
+            pstAmount: number | string;
+            taxCode: string;
+        };
+        RejectStockRequest: {
+            supplierCode: string;
+            branchCode: string;
+            originalTxNumber: null | string;
+            reason: string;
+            lines: components["schemas"]["RejectStockLineRequest"][];
+        };
+        RejectStockResult: {
+            txNumber: string;
+            controlNumber: string;
+            originalTxNumber: null | string;
+            /** Format: int32 */
+            totalQuantity: number | string;
+            /** Format: double */
+            totalCost: number | string;
+            /** Format: double */
+            totalTax: number | string;
         };
         RenameBranchRequest: {
             name: string;
