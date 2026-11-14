@@ -1501,6 +1501,45 @@ export interface paths {
         };
         trace?: never;
     };
+    "/api/v1/inventory/adjustments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["AdjustStockRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AdjustStockResult"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/purchasing/receipts": {
         parameters: {
             query?: never;
@@ -1616,6 +1655,23 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        AdjustStockRequest: {
+            sku: string;
+            branchCode: string;
+            /** Format: int32 */
+            quantityDelta: number | string;
+            reasonCode: string;
+            reason: string;
+            allowNegative: boolean;
+        };
+        AdjustStockResult: {
+            txNumber: string;
+            controlNumber: string;
+            /** Format: int32 */
+            quantityDelta: number | string;
+            /** Format: int32 */
+            newOnHand: number | string;
+        };
         BarcodeTagDto: {
             barcode: string;
             sku: string;

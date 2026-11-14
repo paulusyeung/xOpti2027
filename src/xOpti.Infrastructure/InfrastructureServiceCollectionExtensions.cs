@@ -64,6 +64,8 @@ public static class InfrastructureServiceCollectionExtensions
             Repositories.EfReceiptStore>();
         services.AddScoped<xOpti.Application.Purchasing.RejectStock.IRejectStockStore,
             Repositories.EfRejectStockStore>();
+        services.AddScoped<xOpti.Application.Inventory.AdjustStock.IAdjustmentStore,
+            Repositories.EfAdjustmentStore>();
         services.AddScoped<xOpti.Application.Settings.IPreferencesStore, Repositories.EfPreferencesStore>();
         services.AddScoped<xOpti.Application.Settings.IImportStore, Repositories.EfImportStore>();
         services.AddSingleton<xOpti.Application.Identity.Staff.IRoleCatalogue, Identity.RoleCatalogue>();

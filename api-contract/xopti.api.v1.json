@@ -1441,6 +1441,35 @@
         }
       }
     },
+    "/api/v1/inventory/adjustments": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdjustStockRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdjustStockResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/purchasing/receipts": {
       "post": {
         "tags": [
@@ -1514,6 +1543,75 @@
   },
   "components": {
     "schemas": {
+      "AdjustStockRequest": {
+        "required": [
+          "sku",
+          "branchCode",
+          "quantityDelta",
+          "reasonCode",
+          "reason",
+          "allowNegative"
+        ],
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "branchCode": {
+            "type": "string"
+          },
+          "quantityDelta": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "reasonCode": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "allowNegative": {
+            "type": "boolean"
+          }
+        }
+      },
+      "AdjustStockResult": {
+        "required": [
+          "txNumber",
+          "controlNumber",
+          "quantityDelta",
+          "newOnHand"
+        ],
+        "type": "object",
+        "properties": {
+          "txNumber": {
+            "type": "string"
+          },
+          "controlNumber": {
+            "type": "string"
+          },
+          "quantityDelta": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "newOnHand": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "BarcodeTagDto": {
         "required": [
           "barcode",

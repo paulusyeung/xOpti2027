@@ -9,6 +9,7 @@ using xOpti.Application.Authorization;
 using xOpti.Application.Common;
 using xOpti.Application.Identity.ListBranches;
 using xOpti.Application.Identity.Staff;
+using xOpti.Application.Inventory.AdjustStock;
 using xOpti.Application.Inventory.Availability;
 using xOpti.Application.Inventory.Catalogue;
 using xOpti.Application.Inventory.Valuation;
@@ -588,6 +589,22 @@ public static class Endpoints
         })
         .Produces<BranchDto>();
 
+        v1.MapPost("/inventory/adjustments", async (
+            HttpContext http,
+            AdjustStockRequest request,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var key = http.Request.Headers["Idempotency-Key"].FirstOrDefault();
+            var result = await dispatcher.DispatchAsync(new AdjustStockCommand(
+                request.Sku, request.BranchCode, request.QuantityDelta,
+                request.ReasonCode, request.Reason, request.AllowNegative, key), cancellationToken);
+            return Results.Created($"/api/v1/inventory/adjustments/{result.TxNumber}", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .AddEndpointFilter<IdempotencyKeyFilter>()
+        .Produces<AdjustStockResult>(StatusCodes.Status201Created);
+
         v1.MapPost("/purchasing/receipts", async (
             HttpContext http,
             ReceiveStockRequest request,
@@ -702,6 +719,10 @@ public sealed record CreateDoctorRequest(
     string? Phone, string? PostalCode, string Reason);
 
 public sealed record DeactivateBranchRequest(string Reason, string? TargetBranchCode);
+
+public sealed record AdjustStockRequest(
+    string Sku, string BranchCode, int QuantityDelta,
+    string ReasonCode, string Reason, bool AllowNegative);
 
 public sealed record RejectStockLineRequest(
     string Sku, string LotNo, int Quantity, decimal UnitCost,

@@ -22,7 +22,7 @@
 
 ## 4. Adjustments and transfers
 
-- [ ] 4.1 Implement positive/negative SJ adjustments with reason codes, permissions, deficit rules, and audit; verify negative-stock behavior matches the signed baseline.
+- [x] 4.1 Implement positive/negative SJ adjustments with reason codes, permissions, deficit rules, and audit; verify negative-stock behavior matches the signed baseline.
 - [ ] 4.2 Implement branch transfer postings with paired movements and a shared transfer identifier; verify a forced destination failure rolls back the source.
 - [ ] 4.3 Add adjustment and transfer screens; verify component tests cover permissions, reasons, validation, and confirmation.
 - [ ] 4.4 Add reprints for adjustment and transfer documents; verify reprint output is identical and audited.
