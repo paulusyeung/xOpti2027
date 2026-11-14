@@ -4,7 +4,7 @@
 
 - [x] 1.1 Correct control-number semantics so a migrated counter and the allocator agree on the next number; verify the first allocation after migration is the expected maximum plus one for every required family.
 - [x] 1.2 Add counter coverage and tests for RC, RS, SR, RJ, SJ, WC, WR, and SA; verify a missing family produces a configuration error and never falls back to another prefix.
-- [ ] 1.3 Map remaining inventory, lot, branch-inventory, stock-take, supplier, and SR/RJ/SJ transaction tables; verify round-trip tests preserve money, quantity, and legacy identifiers.
+- [x] 1.3 Map remaining inventory, lot, branch-inventory, stock-take, supplier, and SR/RJ/SJ transaction tables; verify round-trip tests preserve money, quantity, and legacy identifiers.
 
 ## 2. Inventory reads
 

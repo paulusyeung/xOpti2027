@@ -139,6 +139,58 @@ public static class ReferenceMapping
             e.Property(x => x.PostalCode).HasColumnName("postal_code");
         });
 
+        mb.Entity<InvtSTHeader>(e =>
+        {
+            e.ToTable("invt_st_header", t => t.ExcludeFromMigrations());
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).HasColumnName("id").ValueGeneratedNever();
+            e.Property(x => x.Name).HasColumnName("name");
+            e.Property(x => x.DateOfCreation).HasColumnName("date_of_creation")
+                .HasColumnType("timestamp without time zone");
+            e.Property(x => x.DateOfUpdate).HasColumnName("date_of_update")
+                .HasColumnType("timestamp without time zone");
+            e.Property(x => x.DateOfPurge).HasColumnName("date_of_purge")
+                .HasColumnType("timestamp without time zone");
+            e.Property(x => x.Status).HasColumnName("status");
+        });
+
+        mb.Entity<InvtSTDetail>(e =>
+        {
+            e.ToTable("invt_st_details", t => t.ExcludeFromMigrations());
+            e.HasKey(x => new { x.HeaderId, x.Sku });
+            e.Property(x => x.HeaderId).HasColumnName("header_id");
+            e.Property(x => x.Sku).HasColumnName("sku");
+            e.Property(x => x.ComputerQty).HasColumnName("computer_qty");
+            e.Property(x => x.PhysicalQty).HasColumnName("physical_qty");
+            e.Property(x => x.DiffQty).HasColumnName("diff_qty");
+            e.Property(x => x.AverageCost).HasColumnName("average_cost");
+        });
+
+        mb.Entity<InvtSTImport>(e =>
+        {
+            e.ToTable("invt_st_import", t => t.ExcludeFromMigrations());
+            e.HasKey(x => new { x.HeaderId, x.Sku });
+            e.Property(x => x.HeaderId).HasColumnName("header_id");
+            e.Property(x => x.Sku).HasColumnName("sku");
+            e.Property(x => x.Qty).HasColumnName("qty");
+            e.Property(x => x.Status).HasColumnName("status");
+        });
+
+        mb.Entity<SupplierSummary>(e =>
+        {
+            e.ToTable("supplier_summary", t => t.ExcludeFromMigrations());
+            e.HasKey(x => new { x.SupplierCode, x.Year, x.Month, x.FirstDateOfMonth });
+            e.Property(x => x.SupplierCode).HasColumnName("supplier_code");
+            e.Property(x => x.Year).HasColumnName("year");
+            e.Property(x => x.Month).HasColumnName("month");
+            e.Property(x => x.FirstDateOfMonth).HasColumnName("first_date_of_month")
+                .HasColumnType("timestamp without time zone");
+            e.Property(x => x.QtyPurchased).HasColumnName("qty_purchased");
+            e.Property(x => x.AmountPurchased).HasColumnName("amt_purchased");
+            e.Property(x => x.QtyRejected).HasColumnName("qty_rejected");
+            e.Property(x => x.AmountRejected).HasColumnName("amt_rejected");
+        });
+
         mb.Entity<RetailPrice>(e =>
         {
             e.ToTable("retail_price", t => t.ExcludeFromMigrations());
