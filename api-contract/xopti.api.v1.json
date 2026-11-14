@@ -1441,6 +1441,35 @@
         }
       }
     },
+    "/api/v1/inventory/transfers": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferStockRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TransferStockResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/inventory/adjustments": {
       "post": {
         "tags": [
@@ -3843,6 +3872,70 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "TransferStockRequest": {
+        "required": [
+          "sku",
+          "fromBranch",
+          "toBranch",
+          "quantity",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "fromBranch": {
+            "type": "string"
+          },
+          "toBranch": {
+            "type": "string"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "TransferStockResult": {
+        "required": [
+          "transferId",
+          "sourceTxNumber",
+          "destinationTxNumber",
+          "sku",
+          "quantity"
+        ],
+        "type": "object",
+        "properties": {
+          "transferId": {
+            "type": "string"
+          },
+          "sourceTxNumber": {
+            "type": "string"
+          },
+          "destinationTxNumber": {
+            "type": "string"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },

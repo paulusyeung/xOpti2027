@@ -17,6 +17,8 @@ public class TxHeader
 
     public string? RefNumber { get; set; }
 
+    public string? TrackingNumber { get; set; }
+
     public int CustomerId { get; set; }
 
     public string? SupplierCode { get; set; }

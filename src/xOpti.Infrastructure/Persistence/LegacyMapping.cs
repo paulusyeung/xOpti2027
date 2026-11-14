@@ -25,6 +25,7 @@ public static class LegacyMapping
             e.Property(x => x.DateOfEntry).HasColumnName("date_of_entry").HasConversion(Converters.UtcTimestamp);
             e.Property(x => x.DateOfCreation).HasColumnName("date_of_creation").HasConversion(Converters.UtcTimestampNullable);
             e.Property(x => x.RefNumber).HasColumnName("ref_number");
+            e.Property(x => x.TrackingNumber).HasColumnName("tracking_number");
             e.Property(x => x.CustomerId).HasColumnName("customer_id");
             e.Property(x => x.SupplierCode).HasColumnName("supplier_code");
             e.Property(x => x.Particulars).HasColumnName("particulars");

@@ -11,6 +11,7 @@ using xOpti.Application.Identity.ListBranches;
 using xOpti.Application.Identity.Staff;
 using xOpti.Application.Inventory.AdjustStock;
 using xOpti.Application.Inventory.Availability;
+using xOpti.Application.Inventory.TransferStock;
 using xOpti.Application.Inventory.Catalogue;
 using xOpti.Application.Inventory.Valuation;
 using xOpti.Application.Purchasing.ReceiveStock;
@@ -589,6 +590,22 @@ public static class Endpoints
         })
         .Produces<BranchDto>();
 
+        v1.MapPost("/inventory/transfers", async (
+            HttpContext http,
+            TransferStockRequest request,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var key = http.Request.Headers["Idempotency-Key"].FirstOrDefault();
+            var result = await dispatcher.DispatchAsync(new TransferStockCommand(
+                request.Sku, request.FromBranch, request.ToBranch,
+                request.Quantity, request.Reason, key), cancellationToken);
+            return Results.Created($"/api/v1/inventory/transfers/{result.TransferId}", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .AddEndpointFilter<IdempotencyKeyFilter>()
+        .Produces<TransferStockResult>(StatusCodes.Status201Created);
+
         v1.MapPost("/inventory/adjustments", async (
             HttpContext http,
             AdjustStockRequest request,
@@ -719,6 +736,9 @@ public sealed record CreateDoctorRequest(
     string? Phone, string? PostalCode, string Reason);
 
 public sealed record DeactivateBranchRequest(string Reason, string? TargetBranchCode);
+
+public sealed record TransferStockRequest(
+    string Sku, string FromBranch, string ToBranch, int Quantity, string Reason);
 
 public sealed record AdjustStockRequest(
     string Sku, string BranchCode, int QuantityDelta,

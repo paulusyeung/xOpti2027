@@ -1501,6 +1501,45 @@ export interface paths {
         };
         trace?: never;
     };
+    "/api/v1/inventory/transfers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["TransferStockRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TransferStockResult"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/inventory/adjustments": {
         parameters: {
             query?: never;
@@ -2145,6 +2184,22 @@ export interface components {
             /** Format: double */
             creditLimit: null | number | string;
             paymentTerms: null | string;
+        };
+        TransferStockRequest: {
+            sku: string;
+            fromBranch: string;
+            toBranch: string;
+            /** Format: int32 */
+            quantity: number | string;
+            reason: string;
+        };
+        TransferStockResult: {
+            transferId: string;
+            sourceTxNumber: string;
+            destinationTxNumber: string;
+            sku: string;
+            /** Format: int32 */
+            quantity: number | string;
         };
         UpdatePreferencesRequest: {
             productName: string;
