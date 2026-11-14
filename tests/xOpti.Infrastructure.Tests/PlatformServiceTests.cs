@@ -17,6 +17,12 @@ public class ControlNumberAllocatorTests(PostgresFixture fixture)
     [Fact]
     public async Task FiftyConcurrent_AllocationsAreDistinctAndIncreasing()
     {
+        int startingCounter;
+        await using (var before = fixture.NewContext())
+        {
+            startingCounter = (await before.PrefTxNumbers.SingleAsync(p => p.TxPrefix == "RC")).TxNextNumber;
+        }
+
         var results = await Task.WhenAll(Enumerable.Range(1, 50).Select(async _ =>
         {
             await using var ctx = fixture.NewContext();
@@ -28,14 +34,14 @@ public class ControlNumberAllocatorTests(PostgresFixture fixture)
 
         Assert.Equal(50, sequences.Distinct().Count());
 
-        // Seeded at 1000: contiguous monotonic block, no lost updates.
-        var first = sequences[0];
-        Assert.Equal(Enumerable.Range(first, 50), sequences);
+        // The stored value is the NEXT number: contiguous block starts there.
+        Assert.Equal(startingCounter, sequences[0]);
+        Assert.Equal(Enumerable.Range(startingCounter, 50), sequences);
 
-        // Row holds the high-water value above all allocated numbers.
+        // The stored value is the next unallocated number after the block.
         await using var verify = fixture.NewContext();
         var row = await verify.PrefTxNumbers.SingleAsync(p => p.TxPrefix == "RC");
-        Assert.True(row.TxNextNumber >= sequences[^1]);
+        Assert.Equal(sequences[^1] + 1, row.TxNextNumber);
     }
 
     [Fact]
@@ -50,8 +56,68 @@ public class ControlNumberAllocatorTests(PostgresFixture fixture)
         await using var verify = fixture.NewContext();
         var after = await verify.PrefTxNumbers.SingleAsync(p => p.TxPrefix == "WC");
         Assert.Equal(before.TxNextNumber + 1, after.TxNextNumber);
-        Assert.Equal(after.TxNextNumber, number.Sequence);
+        Assert.Equal(before.TxNextNumber, number.Sequence);
         Assert.Equal("WC", number.Family.ToLegacyCode());
+    }
+
+    [Theory]
+    [InlineData(TransactionType.StockReceived)]
+    [InlineData(TransactionType.StockRejected)]
+    [InlineData(TransactionType.StockAdjustment)]
+    [InlineData(TransactionType.RetailInvoice)]
+    [InlineData(TransactionType.RetailRefund)]
+    [InlineData(TransactionType.WholesaleInvoice)]
+    [InlineData(TransactionType.WholesaleReturn)]
+    [InlineData(TransactionType.SalesOrder)]
+    public async Task EveryRequiredFamily_AllocatesFromItsOwnCounter(TransactionType family)
+    {
+        var prefix = family.ToLegacyCode();
+        await using (var seed = fixture.NewContext())
+        {
+            await seed.Database.ExecuteSqlInterpolatedAsync($"""
+                INSERT INTO public.pref_tx_number (tx_prefix, tx_next_number, description, value)
+                VALUES ({prefix}, 500, {"seeded for test"}, {string.Empty})
+                ON CONFLICT (tx_prefix) DO NOTHING
+                """);
+        }
+
+        await using var ctx = fixture.NewContext();
+        var allocator = new xOpti.Infrastructure.PostgresControlNumberAllocator(ctx);
+        var allocated = await allocator.AllocateAsync(family, CancellationToken.None);
+
+        Assert.Equal(prefix, allocated.Family.ToLegacyCode());
+        Assert.True(allocated.Sequence >= 500);
+
+        await using var verify = fixture.NewContext();
+        var row = await verify.PrefTxNumbers.SingleAsync(p => p.TxPrefix == prefix);
+        Assert.Equal((int)allocated.Sequence + 1, row.TxNextNumber);
+    }
+
+    [Fact]
+    public async Task MissingFamily_FailsClearly_WithoutBorrowingAnotherCounter()
+    {
+        await using (var delete = fixture.NewContext())
+        {
+            await delete.Database.ExecuteSqlRawAsync(
+                "DELETE FROM public.pref_tx_number WHERE tx_prefix = 'WR'");
+        }
+
+        try
+        {
+            await using var ctx = fixture.NewContext();
+            var allocator = new xOpti.Infrastructure.PostgresControlNumberAllocator(ctx);
+            var error = await Assert.ThrowsAsync<InvalidOperationException>(
+                () => allocator.AllocateAsync(TransactionType.WholesaleReturn, CancellationToken.None));
+            Assert.Contains("No transaction counter", error.Message);
+            Assert.Contains("WR", error.Message);
+        }
+        finally
+        {
+            await using var restore = fixture.NewContext();
+            await restore.Database.ExecuteSqlRawAsync(
+                "INSERT INTO public.pref_tx_number (tx_prefix, tx_next_number, description, value) "
+                + "VALUES ('WR', 500, 'restored', '') ON CONFLICT (tx_prefix) DO NOTHING");
+        }
     }
 
     [Fact]

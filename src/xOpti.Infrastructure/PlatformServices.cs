@@ -38,7 +38,18 @@ public sealed class PostgresControlNumberAllocator(XOptiDbContext context) : ICo
             select.Transaction = transaction;
             select.CommandText = "SELECT tx_next_number FROM public.pref_tx_number WHERE tx_prefix = @p FOR UPDATE";
             select.Parameters.Add(new NpgsqlParameter("p", prefix));
-            var current = (int)(await select.ExecuteScalarAsync(cancellationToken))!;
+            var scalar = await select.ExecuteScalarAsync(cancellationToken);
+            if (scalar is null or DBNull)
+            {
+                throw new InvalidOperationException(
+                    $"No transaction counter is configured for prefix '{prefix}'. "
+                    + "Add the required family to pref_tx_number before posting.");
+            }
+
+            // Legacy contract: the stored value IS the next number; posting
+            // consumes it and advances the counter. Never fall back to another
+            // family when a required counter is missing.
+            var current = Convert.ToInt32(scalar);
             var next = current + 1;
 
             await using (var update = connection.CreateCommand())
@@ -55,7 +66,7 @@ public sealed class PostgresControlNumberAllocator(XOptiDbContext context) : ICo
                 await tx!.CommitAsync(cancellationToken);
             }
 
-            return ControlNumber.Create(family, next);
+            return ControlNumber.Create(family, current);
         }
     }
 }
