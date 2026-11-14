@@ -948,6 +948,104 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.InvtSTDetail", b =>
+                {
+                    b.Property<int>("HeaderId")
+                        .HasColumnType("integer")
+                        .HasColumnName("header_id");
+
+                    b.Property<string>("Sku")
+                        .HasColumnType("text")
+                        .HasColumnName("sku");
+
+                    b.Property<decimal?>("AverageCost")
+                        .HasColumnType("numeric")
+                        .HasColumnName("average_cost");
+
+                    b.Property<double?>("ComputerQty")
+                        .HasColumnType("double precision")
+                        .HasColumnName("computer_qty");
+
+                    b.Property<double?>("DiffQty")
+                        .HasColumnType("double precision")
+                        .HasColumnName("diff_qty");
+
+                    b.Property<double?>("PhysicalQty")
+                        .HasColumnType("double precision")
+                        .HasColumnName("physical_qty");
+
+                    b.HasKey("HeaderId", "Sku")
+                        .HasName("pk_invt_st_details");
+
+                    b.ToTable("invt_st_details", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.InvtSTHeader", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime?>("DateOfCreation")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("date_of_creation");
+
+                    b.Property<DateTime?>("DateOfPurge")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("date_of_purge");
+
+                    b.Property<DateTime?>("DateOfUpdate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("date_of_update");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<short?>("Status")
+                        .HasColumnType("smallint")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id")
+                        .HasName("pk_invt_st_header");
+
+                    b.ToTable("invt_st_header", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.InvtSTImport", b =>
+                {
+                    b.Property<int>("HeaderId")
+                        .HasColumnType("integer")
+                        .HasColumnName("header_id");
+
+                    b.Property<string>("Sku")
+                        .HasColumnType("text")
+                        .HasColumnName("sku");
+
+                    b.Property<int?>("Qty")
+                        .HasColumnType("integer")
+                        .HasColumnName("qty");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("integer")
+                        .HasColumnName("status");
+
+                    b.HasKey("HeaderId", "Sku")
+                        .HasName("pk_invt_st_import");
+
+                    b.ToTable("invt_st_import", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Material", b =>
                 {
                     b.Property<string>("MaterialCode")
@@ -1278,6 +1376,49 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasName("pk_supplier_contact_person");
 
                     b.ToTable("supplier_contact_person", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.SupplierSummary", b =>
+                {
+                    b.Property<string>("SupplierCode")
+                        .HasColumnType("text")
+                        .HasColumnName("supplier_code");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("integer")
+                        .HasColumnName("year");
+
+                    b.Property<int>("Month")
+                        .HasColumnType("integer")
+                        .HasColumnName("month");
+
+                    b.Property<DateTime>("FirstDateOfMonth")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("first_date_of_month");
+
+                    b.Property<decimal?>("AmountPurchased")
+                        .HasColumnType("numeric")
+                        .HasColumnName("amt_purchased");
+
+                    b.Property<decimal?>("AmountRejected")
+                        .HasColumnType("numeric")
+                        .HasColumnName("amt_rejected");
+
+                    b.Property<int?>("QtyPurchased")
+                        .HasColumnType("integer")
+                        .HasColumnName("qty_purchased");
+
+                    b.Property<int?>("QtyRejected")
+                        .HasColumnType("integer")
+                        .HasColumnName("qty_rejected");
+
+                    b.HasKey("SupplierCode", "Year", "Month", "FirstDateOfMonth")
+                        .HasName("pk_supplier_summary");
+
+                    b.ToTable("supplier_summary", null, t =>
                         {
                             t.ExcludeFromMigrations();
                         });
