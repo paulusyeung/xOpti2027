@@ -27,7 +27,7 @@
 - [x] 4.2 Implement SKU create/update/retire with required attributes, uniqueness, costing method, tax code, lot flag, and branch behavior; verify validation and permission tests.
 - [x] 4.3 Implement retail/wholesale price updates with forward-only effect and audit history; verify posted transactions are unchanged after a price change.
 - [x] 4.4 Implement barcode pool and tag generation/reprint; verify duplicate barcode rejection and identical reprint output.
-- [ ] 4.5 Build SKU, pricing, and barcode administration screens; verify component tests cover search, edit, price change, retire, and tag reprint.
+- [x] 4.5 Build SKU, pricing, and barcode administration screens; verify component tests cover search, edit, price change, retire, and tag reprint.
 
 ## 5. Preferences, numbering and imports
 
