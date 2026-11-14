@@ -11,6 +11,7 @@ using xOpti.Application.Identity.ListBranches;
 using xOpti.Application.Identity.Staff;
 using xOpti.Application.Inventory.Availability;
 using xOpti.Application.Inventory.Catalogue;
+using xOpti.Application.Inventory.Valuation;
 using xOpti.Application.Inventory.GetInventorySummary;
 using xOpti.Application.Reference;
 using xOpti.Application.Settings;
@@ -275,6 +276,15 @@ public static class Endpoints
         })
         .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
         .Produces<PreferencesDto>();
+
+        v1.MapGet("/inventory/{sku}/valuation", async (
+            string sku, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetInventoryValuationQuery(sku), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<InventoryValuationDto>();
 
         v1.MapGet("/inventory/{sku}/availability", async (
             string sku, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>

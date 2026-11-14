@@ -593,6 +593,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/inventory/{sku}/valuation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    sku: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["InventoryValuationDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/inventory/{sku}/availability": {
         parameters: {
             query?: never;
@@ -1651,6 +1688,14 @@ export interface components {
             field: string;
             message: string;
         };
+        InventoryValuationDto: {
+            sku: string;
+            /** Format: int32 */
+            qtyOnHand: number | string;
+            lots: components["schemas"]["LotValuationDto"][];
+            averageCost: null | components["schemas"]["Money"];
+            extendedCost: null | components["schemas"]["Money"];
+        };
         LevelRuleDto: {
             /** Format: int32 */
             minLevel: number | string;
@@ -1667,6 +1712,13 @@ export interface components {
             qtyUsed: number | string;
             /** Format: int32 */
             qtyOnHand: number | string;
+        };
+        LotValuationDto: {
+            lotNo: string;
+            /** Format: int32 */
+            qtyOnHand: number | string;
+            unitCost: null | components["schemas"]["Money"];
+            extendedCost: null | components["schemas"]["Money"];
         };
         Money: {
             /** Format: double */

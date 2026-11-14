@@ -501,6 +501,35 @@
         }
       }
     },
+    "/api/v1/inventory/{sku}/valuation": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "sku",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryValuationDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/inventory/{sku}/availability": {
       "get": {
         "tags": [
@@ -2119,6 +2148,55 @@
           }
         }
       },
+      "InventoryValuationDto": {
+        "required": [
+          "sku",
+          "qtyOnHand",
+          "lots",
+          "averageCost",
+          "extendedCost"
+        ],
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "qtyOnHand": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "lots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LotValuationDto"
+            }
+          },
+          "averageCost": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Money"
+              }
+            ]
+          },
+          "extendedCost": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Money"
+              }
+            ]
+          }
+        }
+      },
       "LevelRuleDto": {
         "required": [
           "minLevel",
@@ -2183,6 +2261,48 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "LotValuationDto": {
+        "required": [
+          "lotNo",
+          "qtyOnHand",
+          "unitCost",
+          "extendedCost"
+        ],
+        "type": "object",
+        "properties": {
+          "lotNo": {
+            "type": "string"
+          },
+          "qtyOnHand": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "unitCost": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Money"
+              }
+            ]
+          },
+          "extendedCost": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Money"
+              }
+            ]
           }
         }
       },

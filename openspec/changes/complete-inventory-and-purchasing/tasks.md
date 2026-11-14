@@ -9,7 +9,7 @@
 ## 2. Inventory reads
 
 - [x] 2.1 Implement branch/SKU/lot availability and movement-history queries; verify results against migrated inventory and lot records.
-- [ ] 2.2 Implement inventory valuation with cost visibility rules; verify users without `cost:view` receive quantities without cost or margin.
+- [x] 2.2 Implement inventory valuation with cost visibility rules; verify users without `cost:view` receive quantities without cost or margin.
 - [ ] 2.3 Build inventory list, SKU detail, lot, movement, valuation, and exception screens; verify component tests cover loading, forbidden, empty, and large-page states.
 - [ ] 2.4 Add keyset pagination and case-insensitive search for inventory queries; verify production-sized query plans and stable deep pages.
 
