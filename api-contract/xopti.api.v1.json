@@ -426,6 +426,81 @@
         }
       }
     },
+    "/api/v1/admin/import": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportResultDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/preferences": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreferenceSettingsDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePreferencesRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreferencesDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/admin/skus": {
       "get": {
         "tags": [
@@ -1420,6 +1495,37 @@
           }
         }
       },
+      "CounterDto": {
+        "required": [
+          "prefix",
+          "nextNumber",
+          "description",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "prefix": {
+            "type": "string"
+          },
+          "nextNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          },
+          "value": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "CreateContactRequest": {
         "required": [
           "firstName",
@@ -1803,6 +1909,119 @@
           }
         }
       },
+      "ImportKind": {
+        "enum": [
+          "Sku",
+          "Supplier",
+          "Brand"
+        ]
+      },
+      "ImportRequest": {
+        "required": [
+          "kind",
+          "csv",
+          "dryRun",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/ImportKind"
+          },
+          "csv": {
+            "type": "string"
+          },
+          "dryRun": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "ImportResultDto": {
+        "required": [
+          "kind",
+          "dryRun",
+          "created",
+          "updated",
+          "skipped",
+          "errors",
+          "resumeFrom"
+        ],
+        "type": "object",
+        "properties": {
+          "kind": {
+            "$ref": "#/components/schemas/ImportKind"
+          },
+          "dryRun": {
+            "type": "boolean"
+          },
+          "created": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "updated": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "skipped": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ImportRowError"
+            }
+          },
+          "resumeFrom": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "ImportRowError": {
+        "required": [
+          "row",
+          "field",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "row": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "field": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
       "LevelRuleDto": {
         "required": [
           "minLevel",
@@ -1992,6 +2211,129 @@
             "type": "string"
           },
           "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "PreferencesDto": {
+        "required": [
+          "serialNumber",
+          "platform",
+          "productName",
+          "userName",
+          "userAddress",
+          "ownerName",
+          "ownerAddress",
+          "gstNumber",
+          "pstNumber",
+          "taxARate",
+          "taxBRate",
+          "nextInvoiceNumber",
+          "nextInvtControlNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "serialNumber": {
+            "type": "string"
+          },
+          "platform": {
+            "type": "string"
+          },
+          "productName": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "userAddress": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ownerName": {
+            "type": "string"
+          },
+          "ownerAddress": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "gstNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "pstNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "taxARate": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxBRate": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "nextInvoiceNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "nextInvtControlNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "PreferenceSettingsDto": {
+        "required": [
+          "preferences",
+          "counters",
+          "requiredFamilies",
+          "missingFamilies"
+        ],
+        "type": "object",
+        "properties": {
+          "preferences": {
+            "$ref": "#/components/schemas/PreferencesDto"
+          },
+          "counters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CounterDto"
+            }
+          },
+          "requiredFamilies": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "missingFamilies": {
             "type": "array",
             "items": {
               "type": "string"
@@ -2676,6 +3018,75 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "UpdatePreferencesRequest": {
+        "required": [
+          "productName",
+          "userName",
+          "userAddress",
+          "ownerName",
+          "ownerAddress",
+          "gstNumber",
+          "pstNumber",
+          "taxARate",
+          "taxBRate",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "productName": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "userAddress": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ownerName": {
+            "type": "string"
+          },
+          "ownerAddress": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "gstNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "pstNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "taxARate": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxBRate": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "reason": {
+            "type": "string"
           }
         }
       },

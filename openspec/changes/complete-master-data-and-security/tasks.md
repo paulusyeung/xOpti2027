@@ -31,9 +31,9 @@
 
 ## 5. Preferences, numbering and imports
 
-- [ ] 5.1 Map and expose company/branch preferences and control-number settings; verify all 13 legacy counter rows are visible and required families cannot be removed.
-- [ ] 5.2 Implement preference updates with audit and permission checks; verify changes apply to new transactions only.
-- [ ] 5.3 Implement dry-run and confirmed master-data import for SKUs, suppliers, and reference data; verify invalid rows write nothing and confirmed imports report created/updated/skipped/retired counts.
+- [x] 5.1 Map and expose company/branch preferences and control-number settings; verify all 13 legacy counter rows are visible and required families cannot be removed.
+- [x] 5.2 Implement preference updates with audit and permission checks; verify changes apply to new transactions only.
+- [x] 5.3 Implement dry-run and confirmed master-data import for SKUs, suppliers, and reference data; verify invalid rows write nothing and confirmed imports report created/updated/skipped/retired counts.
 - [ ] 5.4 Add import screens with progress and error-report download; verify a failed chunk is resumable and no partial row is silently accepted.
 
 ## 6. Search, retirement and audit

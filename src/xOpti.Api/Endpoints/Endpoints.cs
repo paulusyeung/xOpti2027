@@ -12,6 +12,7 @@ using xOpti.Application.Identity.Staff;
 using xOpti.Application.Inventory.Catalogue;
 using xOpti.Application.Inventory.GetInventorySummary;
 using xOpti.Application.Reference;
+using xOpti.Application.Settings;
 using xOpti.Application.Common;
 using xOpti.Application.Identity.ListBranches;
 using xOpti.Application.Identity.UpdateBranchName;
@@ -241,6 +242,38 @@ public static class Endpoints
         })
         .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
         .Produces<StaffAccountDto>();
+
+        v1.MapPost("/admin/import", async (
+            ImportRequest request, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ImportMasterDataCommand(request.Kind, request.Csv, request.DryRun, request.Reason),
+                cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<ImportResultDto>();
+
+        v1.MapGet("/admin/preferences", async (
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetPreferencesQuery(), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<PreferenceSettingsDto>();
+
+        v1.MapPut("/admin/preferences", async (
+            UpdatePreferencesRequest request, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new UpdatePreferencesCommand(
+                request.ProductName, request.UserName, request.UserAddress, request.OwnerName,
+                request.OwnerAddress, request.GstNumber, request.PstNumber,
+                request.TaxARate, request.TaxBRate, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<PreferencesDto>();
 
         v1.MapGet("/admin/skus", async (
             string? search, string? cursor, int? pageSize,
@@ -610,6 +643,12 @@ public sealed record UpdateSkuRequest(
     bool LotTracked, bool RetailPriceFlag, bool WholesalePriceFlag, string Reason);
 
 public sealed record RetireSkuRequest(string Reason, bool ConfirmOnHand);
+
+public sealed record ImportRequest(ImportKind Kind, string Csv, bool DryRun, string Reason);
+
+public sealed record UpdatePreferencesRequest(
+    string ProductName, string UserName, string? UserAddress, string OwnerName, string? OwnerAddress,
+    string? GstNumber, string? PstNumber, double TaxARate, double TaxBRate, string Reason);
 
 public sealed record SetPricesRequest(
     decimal? RetailPrice, decimal? LeastSellingPrice, decimal? RetailMarkdownAmount,

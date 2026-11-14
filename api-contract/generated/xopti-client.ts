@@ -496,6 +496,103 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ImportRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ImportResultDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/preferences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PreferenceSettingsDto"];
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdatePreferencesRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PreferencesDto"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/skus": {
         parameters: {
             query?: never;
@@ -1362,6 +1459,13 @@ export interface components {
             token: string;
             newPassword: string;
         };
+        CounterDto: {
+            prefix: string;
+            /** Format: int32 */
+            nextNumber: number | string;
+            description: string;
+            value: null | string;
+        };
         CreateContactRequest: {
             firstName: string;
             initial: null | string;
@@ -1438,6 +1542,33 @@ export interface components {
             phone: null | string;
             postalCode: null | string;
         };
+        /** @enum {unknown} */
+        ImportKind: "Sku" | "Supplier" | "Brand";
+        ImportRequest: {
+            kind: components["schemas"]["ImportKind"];
+            csv: string;
+            dryRun: boolean;
+            reason: string;
+        };
+        ImportResultDto: {
+            kind: components["schemas"]["ImportKind"];
+            dryRun: boolean;
+            /** Format: int32 */
+            created: number | string;
+            /** Format: int32 */
+            updated: number | string;
+            /** Format: int32 */
+            skipped: number | string;
+            errors: components["schemas"]["ImportRowError"][];
+            /** Format: int32 */
+            resumeFrom: null | number | string;
+        };
+        ImportRowError: {
+            /** Format: int32 */
+            row: number | string;
+            field: string;
+            message: string;
+        };
         LevelRuleDto: {
             /** Format: int32 */
             minLevel: number | string;
@@ -1477,6 +1608,31 @@ export interface components {
         PermissionGrantDto: {
             permission: string;
             roles: string[];
+        };
+        PreferencesDto: {
+            serialNumber: string;
+            platform: string;
+            productName: string;
+            userName: string;
+            userAddress: null | string;
+            ownerName: string;
+            ownerAddress: null | string;
+            gstNumber: null | string;
+            pstNumber: null | string;
+            /** Format: double */
+            taxARate: number | string;
+            /** Format: double */
+            taxBRate: number | string;
+            /** Format: int32 */
+            nextInvoiceNumber: number | string;
+            /** Format: int32 */
+            nextInvtControlNumber: number | string;
+        };
+        PreferenceSettingsDto: {
+            preferences: components["schemas"]["PreferencesDto"];
+            counters: components["schemas"]["CounterDto"][];
+            requiredFamilies: string[];
+            missingFamilies: string[];
         };
         ReasonRequest: {
             reason: string;
@@ -1615,6 +1771,20 @@ export interface components {
             /** Format: double */
             creditLimit: null | number | string;
             paymentTerms: null | string;
+        };
+        UpdatePreferencesRequest: {
+            productName: string;
+            userName: string;
+            userAddress: null | string;
+            ownerName: string;
+            ownerAddress: null | string;
+            gstNumber: null | string;
+            pstNumber: null | string;
+            /** Format: double */
+            taxARate: number | string;
+            /** Format: double */
+            taxBRate: number | string;
+            reason: string;
         };
         UpdateSkuRequest: {
             name: string;

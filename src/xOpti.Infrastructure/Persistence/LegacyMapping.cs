@@ -148,8 +148,17 @@ public static class LegacyMapping
             e.Property(x => x.ProductName).HasColumnName("product_name");
             e.Property(x => x.UserName).HasColumnName("user_name");
             e.Property(x => x.OwnerName).HasColumnName("owner_name");
+            e.Property(x => x.UserAddress).HasColumnName("user_address");
+            e.Property(x => x.OwnerAddress).HasColumnName("owner_address");
+            e.Property(x => x.GstNumber).HasColumnName("gst_number");
+            e.Property(x => x.PstNumber).HasColumnName("pst_number");
             e.Property(x => x.TaxARate).HasColumnName("tax_a_rate");
             e.Property(x => x.TaxBRate).HasColumnName("tax_b_rate");
+            e.Property(x => x.NextInvtControlNumber).HasColumnName("next_invt_control_number");
+            e.Property(x => x.NumberOfUser).HasColumnName("number_of_user");
+            e.Property(x => x.BranchNumber).HasColumnName("branch_number");
+            e.Property(x => x.NextInvtSku).HasColumnName("next_invt_sku");
+            e.Property(x => x.NextSalesOrderNumber).HasColumnName("next_sales_order_number");
             e.Property(x => x.NextInvoiceNumber).HasColumnName("next_invoice_number");
         });
 

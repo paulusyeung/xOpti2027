@@ -90,13 +90,31 @@ public class Preference
 
     public string UserName { get; set; } = string.Empty;
 
+    public string? UserAddress { get; set; }
+
     public string OwnerName { get; set; } = string.Empty;
+
+    public string? OwnerAddress { get; set; }
+
+    public string? GstNumber { get; set; }
+
+    public string? PstNumber { get; set; }
 
     public double TaxARate { get; set; }
 
     public double TaxBRate { get; set; }
 
     public int NextInvoiceNumber { get; set; }
+
+    public int NextInvtControlNumber { get; set; }
+
+    public int NumberOfUser { get; set; }
+
+    public string BranchNumber { get; set; } = string.Empty;
+
+    public int NextInvtSku { get; set; }
+
+    public int NextSalesOrderNumber { get; set; }
 }
 
 public class PrefTxNumber
