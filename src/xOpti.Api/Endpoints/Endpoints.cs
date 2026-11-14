@@ -12,6 +12,7 @@ using xOpti.Application.Identity.Staff;
 using xOpti.Application.Inventory.Availability;
 using xOpti.Application.Inventory.Catalogue;
 using xOpti.Application.Inventory.Valuation;
+using xOpti.Application.Purchasing.ReceiveStock;
 using xOpti.Application.Inventory.GetInventorySummary;
 using xOpti.Application.Reference;
 using xOpti.Application.Settings;
@@ -586,6 +587,25 @@ public static class Endpoints
         })
         .Produces<BranchDto>();
 
+        v1.MapPost("/purchasing/receipts", async (
+            HttpContext http,
+            ReceiveStockRequest request,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var key = http.Request.Headers["Idempotency-Key"].FirstOrDefault();
+            var lines = request.Lines.Select(line => new ReceiveStockLine(
+                line.Sku, line.LotNo, line.Quantity, line.UnitCost,
+                line.GstAmount, line.PstAmount, line.TaxCode)).ToList();
+            var result = await dispatcher.DispatchAsync(
+                new ReceiveStockCommand(request.SupplierCode, request.BranchCode, lines, key, request.Reason),
+                cancellationToken);
+            return Results.Created($"/api/v1/purchasing/receipts/{result.TxNumber}", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryReceive}")
+        .AddEndpointFilter<IdempotencyKeyFilter>()
+        .Produces<ReceiveStockResult>(StatusCodes.Status201Created);
+
         // Financial reference endpoint: idempotency key enforced by filter,
         // forwarded to the command; replay/conflict semantics live in the
         // Application pipeline.
@@ -662,6 +682,14 @@ public sealed record CreateDoctorRequest(
     string? Phone, string? PostalCode, string Reason);
 
 public sealed record DeactivateBranchRequest(string Reason, string? TargetBranchCode);
+
+public sealed record ReceiveStockLineRequest(
+    string Sku, string LotNo, int Quantity, decimal UnitCost,
+    decimal GstAmount, decimal PstAmount, string TaxCode);
+
+public sealed record ReceiveStockRequest(
+    string SupplierCode, string BranchCode, string Reason,
+    IReadOnlyList<ReceiveStockLineRequest> Lines);
 
 public sealed record CreateSkuRequest(
     string Sku, string Name, string DepartmentCode, string ClassCode, string CategoryCode,

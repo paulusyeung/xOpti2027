@@ -50,6 +50,7 @@ public static class LegacyMapping
         {
             e.ToTable("tx_details", t => t.ExcludeFromMigrations());
             e.HasKey(x => new { x.TxType, x.TxNumber, x.DateOfEntry, x.RowNo });
+            e.Property(x => x.ControlNumber).HasColumnName("control_number");
             e.Property(x => x.TxType).HasColumnName("tx_type").HasConversion(Converters.TxTypeCode);
             e.Property(x => x.TxNumber).HasColumnName("tx_number");
             e.Property(x => x.DateOfEntry).HasColumnName("date_of_entry").HasConversion(Converters.UtcTimestamp);
@@ -91,6 +92,7 @@ public static class LegacyMapping
             MoneyProp(e, x => x.AverageCost, "average_cost");
             e.Property(x => x.QtyTotalOnHand).HasColumnName("qty_total_on_hand");
             e.Property(x => x.DateLastIssued).HasColumnName("date_last_issued").HasConversion(Converters.UtcTimestampNullable);
+            e.Property(x => x.DateLastReceived).HasColumnName("date_last_received").HasConversion(Converters.UtcTimestampNullable);
             e.Property(x => x.RetailPriceFlag).HasColumnName("retail_price_flag");
             e.Property(x => x.WholesalePriceFlag).HasColumnName("whole_sale_price_flag");
             e.Property(x => x.InventoryLotFlag).HasColumnName("inventory_lot_flag");

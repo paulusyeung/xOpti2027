@@ -50,6 +50,8 @@ public class TxHeader
 
 public class TxDetail
 {
+    public string ControlNumber { get; set; } = string.Empty;
+
     public TransactionType TxType { get; set; }
 
     public string TxNumber { get; set; } = string.Empty;

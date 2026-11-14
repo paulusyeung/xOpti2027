@@ -26,6 +26,8 @@ public class Inventory
 
     public DateTimeOffset? DateLastIssued { get; set; }
 
+    public DateTimeOffset? DateLastReceived { get; set; }
+
     public bool RetailPriceFlag { get; set; }
 
     public bool WholesalePriceFlag { get; set; }

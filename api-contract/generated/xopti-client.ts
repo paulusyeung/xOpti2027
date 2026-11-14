@@ -1501,6 +1501,45 @@ export interface paths {
         };
         trace?: never;
     };
+    "/api/v1/purchasing/receipts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ReceiveStockRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ReceiveStockResult"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/sales/holds": {
         parameters: {
             query?: never;
@@ -1805,6 +1844,35 @@ export interface components {
         };
         ReasonRequest: {
             reason: string;
+        };
+        ReceiveStockLineRequest: {
+            sku: string;
+            lotNo: string;
+            /** Format: int32 */
+            quantity: number | string;
+            /** Format: double */
+            unitCost: number | string;
+            /** Format: double */
+            gstAmount: number | string;
+            /** Format: double */
+            pstAmount: number | string;
+            taxCode: string;
+        };
+        ReceiveStockRequest: {
+            supplierCode: string;
+            branchCode: string;
+            reason: string;
+            lines: components["schemas"]["ReceiveStockLineRequest"][];
+        };
+        ReceiveStockResult: {
+            txNumber: string;
+            controlNumber: string;
+            /** Format: int32 */
+            totalQuantity: number | string;
+            /** Format: double */
+            totalCost: number | string;
+            /** Format: double */
+            totalTax: number | string;
         };
         ReferenceItemDto: {
             kind: string;
