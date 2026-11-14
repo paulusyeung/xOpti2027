@@ -1501,6 +1501,43 @@ export interface paths {
         };
         trace?: never;
     };
+    "/api/v1/inventory/documents/{txNumber}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["StockDocumentDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/inventory/transfers": {
         parameters: {
             query?: never;
@@ -2161,6 +2198,30 @@ export interface components {
         StaffCredentialsDto: {
             account: components["schemas"]["StaffAccountDto"];
             resetToken: string;
+        };
+        StockDocumentDto: {
+            txNumber: string;
+            txType: string;
+            controlNumber: string;
+            /** Format: date-time */
+            dateOfEntry: string;
+            trackingNumber: null | string;
+            particulars: null | string;
+            /** Format: int32 */
+            totalQty: number | string;
+            reprint: boolean;
+            lines: components["schemas"]["StockDocumentLineDto"][];
+        };
+        StockDocumentLineDto: {
+            /** Format: int32 */
+            rowNo: number | string;
+            sku: string;
+            /** Format: int32 */
+            qty: number | string;
+            unitAmount: components["schemas"]["Money"];
+            amount: components["schemas"]["Money"];
+            remarks: null | string;
+            taxCode: null | string;
         };
         SupplierContactDto: {
             supplierCode: string;

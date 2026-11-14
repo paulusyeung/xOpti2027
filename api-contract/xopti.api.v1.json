@@ -1441,6 +1441,35 @@
         }
       }
     },
+    "/api/v1/inventory/documents/{txNumber}": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "txNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockDocumentDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/inventory/transfers": {
       "post": {
         "tags": [
@@ -3748,6 +3777,115 @@
           },
           "resetToken": {
             "type": "string"
+          }
+        }
+      },
+      "StockDocumentDto": {
+        "required": [
+          "txNumber",
+          "txType",
+          "controlNumber",
+          "dateOfEntry",
+          "trackingNumber",
+          "particulars",
+          "totalQty",
+          "reprint",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "txNumber": {
+            "type": "string"
+          },
+          "txType": {
+            "type": "string"
+          },
+          "controlNumber": {
+            "type": "string"
+          },
+          "dateOfEntry": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "trackingNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "particulars": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "totalQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "reprint": {
+            "type": "boolean"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StockDocumentLineDto"
+            }
+          }
+        }
+      },
+      "StockDocumentLineDto": {
+        "required": [
+          "rowNo",
+          "sku",
+          "qty",
+          "unitAmount",
+          "amount",
+          "remarks",
+          "taxCode"
+        ],
+        "type": "object",
+        "properties": {
+          "rowNo": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "qty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "unitAmount": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "amount": {
+            "$ref": "#/components/schemas/Money"
+          },
+          "remarks": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "taxCode": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },

@@ -11,6 +11,7 @@ using xOpti.Application.Identity.ListBranches;
 using xOpti.Application.Identity.Staff;
 using xOpti.Application.Inventory.AdjustStock;
 using xOpti.Application.Inventory.Availability;
+using xOpti.Application.Inventory.Documents;
 using xOpti.Application.Inventory.TransferStock;
 using xOpti.Application.Inventory.Catalogue;
 using xOpti.Application.Inventory.Valuation;
@@ -589,6 +590,15 @@ public static class Endpoints
             return Results.Json(result);
         })
         .Produces<BranchDto>();
+
+        v1.MapGet("/inventory/documents/{txNumber}", async (
+            string txNumber, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetStockDocumentQuery(txNumber), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<StockDocumentDto>();
 
         v1.MapPost("/inventory/transfers", async (
             HttpContext http,
