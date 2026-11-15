@@ -45,9 +45,9 @@
 
 ## 7. Purchasing documents and balances
 
-- [ ] 7.1 Implement supplier receiving document queries, reprints, and supplier activity; verify SR documents reconcile to posted inventory movements.
-- [ ] 7.2 Implement supplier rejection/return document queries and payable-relevant totals; verify RJ totals exclude reversed quantities and taxes correctly.
-- [ ] 7.3 Implement supplier activity/balance reconciliation from posted documents; verify mismatches report the affected documents.
+- [x] 7.1 Implement supplier receiving document queries, reprints, and supplier activity; verify SR documents reconcile to posted inventory movements.
+- [x] 7.2 Implement supplier rejection/return document queries and payable-relevant totals; verify RJ totals exclude reversed quantities and taxes correctly.
+- [x] 7.3 Implement supplier activity/balance reconciliation from posted documents; verify mismatches report the affected documents.
 - [ ] 7.4 Build supplier activity, receiving, and return screens; verify Playwright covers a receive, return, and reprint flow.
 
 ## 8. Integration and rehearsal

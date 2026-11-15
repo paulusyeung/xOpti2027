@@ -1501,6 +1501,83 @@ export interface paths {
         };
         trace?: never;
     };
+    "/api/v1/purchasing/documents/{txNumber}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SupplierDocumentDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/purchasing/suppliers/{code}/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query: {
+                    from: string;
+                    to: string;
+                };
+                header?: never;
+                path: {
+                    code: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SupplierActivityDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/inventory/issues": {
         parameters: {
             query?: never;
@@ -2658,6 +2735,27 @@ export interface components {
             /** Format: int32 */
             lines: number | string;
         };
+        SupplierActivityDto: {
+            supplierCode: string;
+            /** Format: date */
+            from: string;
+            /** Format: date */
+            to: string;
+            /** Format: int32 */
+            receiptCount: number | string;
+            /** Format: int32 */
+            returnCount: number | string;
+            /** Format: double */
+            receiptCost: number | string;
+            /** Format: double */
+            returnCost: number | string;
+            /** Format: double */
+            netCost: number | string;
+            /** Format: double */
+            taxTotal: number | string;
+            documentNumbers: string[];
+            mismatches: string[];
+        };
         SupplierContactDto: {
             supplierCode: string;
             firstName: string;
@@ -2667,6 +2765,37 @@ export interface components {
             jobTitle: null | string;
             phone: null | string;
             mobile: null | string;
+        };
+        SupplierDocumentDto: {
+            txNumber: string;
+            txType: string;
+            controlNumber: string;
+            /** Format: date-time */
+            dateOfEntry: string;
+            supplierCode: null | string;
+            refNumber: null | string;
+            /** Format: double */
+            totalCost: number | string;
+            /** Format: double */
+            taxA: number | string;
+            /** Format: double */
+            taxB: number | string;
+            /** Format: double */
+            totalAmount: number | string;
+            reprint: boolean;
+            lines: components["schemas"]["SupplierDocumentLineDto"][];
+        };
+        SupplierDocumentLineDto: {
+            /** Format: int32 */
+            rowNo: number | string;
+            sku: string;
+            /** Format: int32 */
+            qty: number | string;
+            /** Format: double */
+            unitCost: number | string;
+            /** Format: double */
+            amount: number | string;
+            taxCode: null | string;
         };
         SupplierDto: {
             supplierCode: string;

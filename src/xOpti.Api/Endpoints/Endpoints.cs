@@ -21,6 +21,7 @@ using xOpti.Application.Inventory.Catalogue;
 using xOpti.Application.Inventory.Valuation;
 using xOpti.Application.Purchasing.ReceiveStock;
 using xOpti.Application.Purchasing.RejectStock;
+using xOpti.Application.Purchasing.SupplierDocuments;
 using xOpti.Application.Inventory.GetInventorySummary;
 using xOpti.Application.Reference;
 using xOpti.Application.Settings;
@@ -594,6 +595,25 @@ public static class Endpoints
             return Results.Json(result);
         })
         .Produces<BranchDto>();
+
+        v1.MapGet("/purchasing/documents/{txNumber}", async (
+            string txNumber, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetSupplierDocumentQuery(txNumber), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryReceive}")
+        .Produces<SupplierDocumentDto>();
+
+        v1.MapGet("/purchasing/suppliers/{code}/activity", async (
+            string code, DateOnly from, DateOnly to, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetSupplierActivityQuery(code, from, to), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryReceive}")
+        .Produces<SupplierActivityDto>();
 
         v1.MapPost("/inventory/issues", async (
             HttpContext http,

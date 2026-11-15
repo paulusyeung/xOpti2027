@@ -1441,6 +1441,82 @@
         }
       }
     },
+    "/api/v1/purchasing/documents/{txNumber}": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "txNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierDocumentDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/purchasing/suppliers/{code}/activity": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierActivityDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/inventory/issues": {
       "post": {
         "tags": [
@@ -4698,6 +4774,95 @@
           }
         }
       },
+      "SupplierActivityDto": {
+        "required": [
+          "supplierCode",
+          "from",
+          "to",
+          "receiptCount",
+          "returnCount",
+          "receiptCost",
+          "returnCost",
+          "netCost",
+          "taxTotal",
+          "documentNumbers",
+          "mismatches"
+        ],
+        "type": "object",
+        "properties": {
+          "supplierCode": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string",
+            "format": "date"
+          },
+          "to": {
+            "type": "string",
+            "format": "date"
+          },
+          "receiptCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "returnCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "receiptCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "returnCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "netCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "documentNumbers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mismatches": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "SupplierContactDto": {
         "required": [
           "supplierCode",
@@ -4742,6 +4907,145 @@
             ]
           },
           "mobile": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "SupplierDocumentDto": {
+        "required": [
+          "txNumber",
+          "txType",
+          "controlNumber",
+          "dateOfEntry",
+          "supplierCode",
+          "refNumber",
+          "totalCost",
+          "taxA",
+          "taxB",
+          "totalAmount",
+          "reprint",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "txNumber": {
+            "type": "string"
+          },
+          "txType": {
+            "type": "string"
+          },
+          "controlNumber": {
+            "type": "string"
+          },
+          "dateOfEntry": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "supplierCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "refNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "totalCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxA": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxB": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "reprint": {
+            "type": "boolean"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SupplierDocumentLineDto"
+            }
+          }
+        }
+      },
+      "SupplierDocumentLineDto": {
+        "required": [
+          "rowNo",
+          "sku",
+          "qty",
+          "unitCost",
+          "amount",
+          "taxCode"
+        ],
+        "type": "object",
+        "properties": {
+          "rowNo": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "qty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "unitCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxCode": {
             "type": [
               "null",
               "string"
