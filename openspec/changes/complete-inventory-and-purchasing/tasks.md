@@ -18,7 +18,7 @@
 - [x] 3.1 Implement the SR receipt command with control number, supplier, branch, lot, quantity, cost, tax, idempotency, and audit; verify handler and API tests cover success, duplicate submission, and validation failures.
 - [x] 3.2 Implement lot creation/increase and inventory total updates in the same transaction; verify a forced failure leaves both unchanged.
 - [x] 3.3 Implement the RJ rejection/return command with original-document reference and quantity guards; verify over-return is rejected with the available quantity.
-- [ ] 3.4 Build receiving and rejection screens including line entry, totals, validation, and reprint; verify Playwright covers a full receive-and-reject flow.
+- [x] 3.4 Build receiving and rejection screens including line entry, totals, validation, and reprint; verify Playwright covers a full receive-and-reject flow.
 
 ## 4. Adjustments and transfers
 
@@ -33,7 +33,7 @@
 - [x] 5.2 Implement counted-quantity import with row-level validation and dry run; verify invalid rows write nothing and valid rows are resumable.
 - [x] 5.3 Implement variance review and approval; verify unapproved variances do not change inventory.
 - [x] 5.4 Post approved variances as SJ adjustments with stock-take references; verify counts, values, and audit entries reconcile.
-- [ ] 5.5 Build stock-take screens for create, count import, variance review, approval, and posting; verify Playwright covers a complete stock take.
+- [x] 5.5 Build stock-take screens for create, count import, variance review, approval, and posting; verify Playwright covers a complete stock take.
 
 ## 6. Costing and deficits
 
@@ -48,13 +48,13 @@
 - [x] 7.1 Implement supplier receiving document queries, reprints, and supplier activity; verify SR documents reconcile to posted inventory movements.
 - [x] 7.2 Implement supplier rejection/return document queries and payable-relevant totals; verify RJ totals exclude reversed quantities and taxes correctly.
 - [x] 7.3 Implement supplier activity/balance reconciliation from posted documents; verify mismatches report the affected documents.
-- [ ] 7.4 Build supplier activity, receiving, and return screens; verify Playwright covers a receive, return, and reprint flow.
+- [x] 7.4 Build supplier activity, receiving, and return screens; verify Playwright covers a receive, return, and reprint flow.
 
 ## 8. Integration and rehearsal
 
 - [x] 8.1 Run inventory posting concurrency tests across receipt, adjustment, transfer, and sale-like issue; verify no lost updates or duplicate control numbers.
 - [x] 8.2 Reconcile inventory quantities and valuation against the migrated database after a full posting rehearsal; verify differences are explained by the test posting set.
-- [ ] 8.3 Run Playwright and API integration suites for inventory and purchasing against PostgreSQL; verify all critical flows pass.
+- [x] 8.3 Run Playwright and API integration suites for inventory and purchasing against PostgreSQL; verify all critical flows pass.
 - [x] 8.4 Document the inventory/purchasing operating rules, deficit policy, and stock-take freeze procedure; verify the documented steps match the automated tests.
 
 ## Workflow follow-up

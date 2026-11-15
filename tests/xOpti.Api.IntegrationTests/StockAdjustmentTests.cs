@@ -40,11 +40,7 @@ public sealed class StockAdjustmentTests(ApiPostgresFixture fixture)
                 """);
         }
 
-        int before;
-        await using (var context = fixture.NewContext())
-        {
-            before = (await context.InventoryItems.SingleAsync(row => row.Sku == sku)).QtyTotalOnHand;
-        }
+        const int before = 10; // seeded branch_inventory quantity above
 
         using var manager = await ManagerAsync();
         var positive = await manager.PostAsync("/api/v1/inventory/adjustments", new
@@ -75,7 +71,8 @@ public sealed class StockAdjustmentTests(ApiPostgresFixture fixture)
         await using (var context = fixture.NewContext())
         {
             Assert.Equal(before + 1,
-                (await context.InventoryItems.SingleAsync(row => row.Sku == sku)).QtyTotalOnHand);
+                (await context.BranchInventory.SingleAsync(row =>
+                    row.BranchCode == "01" && row.Sku == sku)).QtyOnHand);
             Assert.True(await context.AuditLogs.AnyAsync(row =>
                 row.Action == "stock.adjust" && row.Details!.Contains("damaged stock")));
         }

@@ -33,9 +33,19 @@ public sealed class StockTakePostingTests(ApiPostgresFixture fixture)
             before = (await context.InventoryItems.SingleAsync(row => row.Sku == "30110359")).QtyTotalOnHand;
         }
 
+        var variancesResponse = await manager.GetAsync($"/api/v1/inventory/stock-takes/{headerId}/variances");
+        using var varianceBody = JsonDocument.Parse(await variancesResponse.Content.ReadAsStringAsync());
+        var csv = new System.Text.StringBuilder("sku,qty\n");
+        foreach (var row in varianceBody.RootElement.GetProperty("rows").EnumerateArray())
+        {
+            var rowSku = row.GetProperty("sku").GetString()!;
+            var counted = rowSku == "30110359" ? 2 : (int)(row.GetProperty("computerQty").GetDecimal());
+            csv.AppendLine($"{rowSku},{counted}");
+        }
+
         var count = await manager.PostAsync($"/api/v1/inventory/stock-takes/{headerId}/counts", new
         {
-            csv = "sku,qty\n30110359,2", dryRun = false, reason = "counted",
+            csv = csv.ToString(), dryRun = false, reason = "counted",
         });
         Assert.Equal(HttpStatusCode.OK, count.StatusCode);
 
