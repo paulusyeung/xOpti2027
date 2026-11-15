@@ -60,6 +60,12 @@ export const NAV_ITEMS: readonly NavItem[] = [
     permission: PermissionNames.InventoryAdjust,
   },
   {
+    to: '/admin/supplier-activity',
+    title: 'Supplier activity',
+    icon: 'mdi-account-cash-outline',
+    permission: PermissionNames.InventoryReceive,
+  },
+  {
     to: '/analytics',
     title: 'Analytics',
     icon: 'mdi-chart-box-outline',
