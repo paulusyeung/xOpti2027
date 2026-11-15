@@ -87,6 +87,8 @@ public class TxPayment
 
     public string? CardNumber { get; set; }
 
+    public string? AuthorizationCode { get; set; }
+
     public Money AmountTender { get; set; }
 
     public Money EqAmount { get; set; }

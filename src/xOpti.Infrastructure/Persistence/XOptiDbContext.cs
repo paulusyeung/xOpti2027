@@ -69,6 +69,12 @@ public class XOptiDbContext(DbContextOptions<XOptiDbContext> options)
 
     public DbSet<BarCodePool> BarCodePool => Set<BarCodePool>();
 
+    public DbSet<TxSalePerson> TxSalePersons => Set<TxSalePerson>();
+
+    public DbSet<TxSOrderAdd> TxSOrderAdds => Set<TxSOrderAdd>();
+
+    public DbSet<TxSOrderExtra> TxSOrderExtras => Set<TxSOrderExtra>();
+
     public DbSet<InvtSTHeader> StockTakeHeaders => Set<InvtSTHeader>();
 
     public DbSet<InvtSTDetail> StockTakeDetails => Set<InvtSTDetail>();
@@ -88,6 +94,7 @@ public class XOptiDbContext(DbContextOptions<XOptiDbContext> options)
         LegacyMapping.Configure(builder);
         PlatformMapping.Configure(builder);
         ReferenceMapping.Configure(builder);
+        PosMapping.Configure(builder);
     }
 
     /// <summary>App-owned Identity tables follow the snake_case contract (asp_net_*).</summary>

@@ -73,6 +73,7 @@ public static class LegacyMapping
             e.Property(x => x.PaymentLineNo).HasColumnName("payment_line_no");
             e.Property(x => x.Type).HasColumnName("type");
             e.Property(x => x.CardNumber).HasColumnName("card_number");
+            e.Property(x => x.AuthorizationCode).HasColumnName("authorization_code");
             MoneyProp(e, x => x.AmountTender, "amount_tender");
             MoneyProp(e, x => x.EqAmount, "eq_amount");
             MoneyProp(e, x => x.TotalThisPay, "total_this_pay");
