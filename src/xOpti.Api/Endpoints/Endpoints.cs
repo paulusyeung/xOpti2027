@@ -24,6 +24,7 @@ using xOpti.Application.Purchasing.RejectStock;
 using xOpti.Application.Purchasing.SupplierDocuments;
 using xOpti.Application.Inventory.GetInventorySummary;
 using xOpti.Application.Reference;
+using xOpti.Application.Sales.Documents;
 using xOpti.Application.Settings;
 using xOpti.Application.Common;
 using xOpti.Application.Identity.ListBranches;
@@ -614,6 +615,26 @@ public static class Endpoints
         })
         .RequireAuthorization($"perm:{PermissionNames.InventoryReceive}")
         .Produces<SupplierActivityDto>();
+
+        v1.MapGet("/sales/documents/{txNumber}", async (
+            string txNumber, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetSalesDocumentQuery(txNumber), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<SalesDocumentDto>();
+
+        v1.MapGet("/sales/documents", async (
+            int? customerId, string? status, string? cursor, int? pageSize,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ListSalesDocumentsQuery(customerId, status, cursor, pageSize ?? 25), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<PagedResult<SalesDocumentDto>>();
 
         v1.MapPost("/inventory/issues", async (
             HttpContext http,

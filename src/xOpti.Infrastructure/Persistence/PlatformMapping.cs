@@ -34,6 +34,52 @@ public static class PlatformMapping
             e.Property(x => x.AppliedBy).HasMaxLength(128).IsRequired();
         });
 
+        mb.Entity<CashSession>(e =>
+        {
+            e.ToTable("cash_session", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.BranchCode).HasMaxLength(3).IsRequired();
+            e.Property(x => x.TerminalCode).HasMaxLength(20).IsRequired();
+            e.Property(x => x.Status).HasMaxLength(16).IsRequired();
+            e.Property(x => x.OpenedAt);
+            e.Property(x => x.OpenedBy).HasMaxLength(64);
+            e.Property(x => x.OpeningFloat).HasPrecision(12, 4);
+            e.Property(x => x.SuspendedAt);
+            e.Property(x => x.ClosedAt);
+            e.Property(x => x.ClosedBy).HasMaxLength(64);
+            e.Property(x => x.ExpectedCash).HasPrecision(12, 4);
+            e.Property(x => x.CountedCash).HasPrecision(12, 4);
+            e.Property(x => x.Variance).HasPrecision(12, 4);
+            e.Property(x => x.VarianceReason).HasMaxLength(500);
+        });
+
+        mb.Entity<CashCount>(e =>
+        {
+            e.ToTable("cash_count", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.Kind).HasMaxLength(16).IsRequired();
+            e.Property(x => x.Amount).HasPrecision(12, 4);
+            e.Property(x => x.CountedAt);
+            e.Property(x => x.CountedBy).HasMaxLength(64);
+            e.Property(x => x.Variance).HasPrecision(12, 4);
+            e.Property(x => x.Reason).HasMaxLength(500);
+        });
+
+        mb.Entity<CashMovement>(e =>
+        {
+            e.ToTable("cash_movement", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.Kind).HasMaxLength(16).IsRequired();
+            e.Property(x => x.Amount).HasPrecision(12, 4);
+            e.Property(x => x.Reason).HasMaxLength(500).IsRequired();
+            e.Property(x => x.OccurredAt);
+            e.Property(x => x.Actor).HasMaxLength(64);
+            e.Property(x => x.DestinationReference).HasMaxLength(128);
+        });
+
         mb.Entity<EntityRetirement>(e =>
         {
             e.ToTable("entity_retirement", "platform");

@@ -35,6 +35,12 @@ public class XOptiDbContext(DbContextOptions<XOptiDbContext> options)
 
     public DbSet<EntityRetirement> EntityRetirements => Set<EntityRetirement>();
 
+    public DbSet<CashSession> CashSessions => Set<CashSession>();
+
+    public DbSet<CashCount> CashCounts => Set<CashCount>();
+
+    public DbSet<CashMovement> CashMovements => Set<CashMovement>();
+
     public DbSet<City> Cities => Set<City>();
 
     public DbSet<Province> Provinces => Set<Province>();

@@ -3,8 +3,8 @@
 ## 1. POS data foundation
 
 - [x] 1.1 Map POS transaction, detail, payment, sale-person, and order-detail tables with money and timestamp converters; verify round-trip tests preserve posted values and legacy identifiers.
-- [ ] 1.2 Implement order, invoice, and refund read models with customer, line, tax, payment, deposit, and status projections; verify queries against migrated transactions.
-- [ ] 1.3 Add additive `platform.cash_session`, `cash_count`, and `cash_movement` tables through app-owned migrations; verify EF migration SQL contains no legacy table changes.
+- [x] 1.2 Implement order, invoice, and refund read models with customer, line, tax, payment, deposit, and status projections; verify queries against migrated transactions.
+- [x] 1.3 Add additive `platform.cash_session`, `cash_count`, and `cash_movement` tables through app-owned migrations; verify EF migration SQL contains no legacy table changes.
 
 ## 2. Order entry and conversion
 

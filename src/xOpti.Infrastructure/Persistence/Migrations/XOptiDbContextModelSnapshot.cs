@@ -503,6 +503,185 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.CashCount", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(12, 4)
+                        .HasColumnType("numeric(12,4)")
+                        .HasColumnName("amount");
+
+                    b.Property<DateTimeOffset>("CountedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("counted_at");
+
+                    b.Property<string>("CountedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("counted_by");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("kind");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("reason");
+
+                    b.Property<long>("SessionId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("session_id");
+
+                    b.Property<decimal?>("Variance")
+                        .HasPrecision(12, 4)
+                        .HasColumnType("numeric(12,4)")
+                        .HasColumnName("variance");
+
+                    b.HasKey("Id")
+                        .HasName("pk_cash_count");
+
+                    b.ToTable("cash_count", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.CashMovement", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Actor")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("actor");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(12, 4)
+                        .HasColumnType("numeric(12,4)")
+                        .HasColumnName("amount");
+
+                    b.Property<string>("DestinationReference")
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("destination_reference");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("kind");
+
+                    b.Property<DateTimeOffset>("OccurredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_at");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("reason");
+
+                    b.Property<long>("SessionId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("session_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_cash_movement");
+
+                    b.ToTable("cash_movement", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.CashSession", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("BranchCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("branch_code");
+
+                    b.Property<DateTimeOffset?>("ClosedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("closed_at");
+
+                    b.Property<string>("ClosedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("closed_by");
+
+                    b.Property<decimal?>("CountedCash")
+                        .HasPrecision(12, 4)
+                        .HasColumnType("numeric(12,4)")
+                        .HasColumnName("counted_cash");
+
+                    b.Property<decimal?>("ExpectedCash")
+                        .HasPrecision(12, 4)
+                        .HasColumnType("numeric(12,4)")
+                        .HasColumnName("expected_cash");
+
+                    b.Property<DateTimeOffset>("OpenedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("opened_at");
+
+                    b.Property<string>("OpenedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("opened_by");
+
+                    b.Property<decimal>("OpeningFloat")
+                        .HasPrecision(12, 4)
+                        .HasColumnType("numeric(12,4)")
+                        .HasColumnName("opening_float");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("status");
+
+                    b.Property<DateTimeOffset?>("SuspendedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("suspended_at");
+
+                    b.Property<string>("TerminalCode")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("terminal_code");
+
+                    b.Property<decimal?>("Variance")
+                        .HasPrecision(12, 4)
+                        .HasColumnType("numeric(12,4)")
+                        .HasColumnName("variance");
+
+                    b.Property<string>("VarianceReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("variance_reason");
+
+                    b.HasKey("Id")
+                        .HasName("pk_cash_session");
+
+                    b.ToTable("cash_session", "platform");
+                });
+
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Category", b =>
                 {
                     b.Property<string>("DepartmentCode")
@@ -844,6 +1023,10 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                     b.Property<DateTime?>("DateLastIssued")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date_last_issued");
+
+                    b.Property<DateTime?>("DateLastReceived")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("date_last_received");
 
                     b.Property<string>("DepartmentCode")
                         .IsRequired()
@@ -1466,6 +1649,11 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("amount");
 
+                    b.Property<string>("ControlNumber")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("control_number");
+
                     b.Property<int>("Qty")
                         .HasColumnType("integer")
                         .HasColumnName("qty");
@@ -1582,6 +1770,10 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("total_sale");
 
+                    b.Property<string>("TrackingNumber")
+                        .HasColumnType("text")
+                        .HasColumnName("tracking_number");
+
                     b.Property<string>("TxType")
                         .IsRequired()
                         .HasColumnType("text")
@@ -1623,6 +1815,10 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasColumnType("numeric")
                         .HasColumnName("amount_tender");
 
+                    b.Property<string>("AuthorizationCode")
+                        .HasColumnType("text")
+                        .HasColumnName("authorization_code");
+
                     b.Property<string>("CardNumber")
                         .HasColumnType("text")
                         .HasColumnName("card_number");
@@ -1639,6 +1835,96 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasName("pk_tx_payment");
 
                     b.ToTable("tx_payment", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.TxSOrderAdd", b =>
+                {
+                    b.Property<string>("TxNumber")
+                        .HasColumnType("text")
+                        .HasColumnName("tx_number");
+
+                    b.Property<double>("LineNumber")
+                        .HasColumnType("double precision")
+                        .HasColumnName("line_number");
+
+                    b.Property<string>("Brand")
+                        .HasColumnType("text")
+                        .HasColumnName("brand");
+
+                    b.Property<string>("Model")
+                        .HasColumnType("text")
+                        .HasColumnName("model");
+
+                    b.Property<string>("Supplier")
+                        .HasColumnType("text")
+                        .HasColumnName("supplier");
+
+                    b.HasKey("TxNumber", "LineNumber")
+                        .HasName("pk_tx_s_order_add");
+
+                    b.ToTable("tx_s_order_add", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.TxSOrderExtra", b =>
+                {
+                    b.Property<string>("TxNumber")
+                        .HasColumnType("text")
+                        .HasColumnName("tx_number");
+
+                    b.Property<bool?>("Mail")
+                        .HasColumnType("boolean")
+                        .HasColumnName("mail");
+
+                    b.Property<bool?>("Msd")
+                        .HasColumnType("boolean")
+                        .HasColumnName("msd");
+
+                    b.Property<bool?>("Redo")
+                        .HasColumnType("boolean")
+                        .HasColumnName("redo");
+
+                    b.Property<int?>("Remarks")
+                        .HasColumnType("integer")
+                        .HasColumnName("remarks");
+
+                    b.Property<bool?>("Warranty")
+                        .HasColumnType("boolean")
+                        .HasColumnName("warranty");
+
+                    b.HasKey("TxNumber")
+                        .HasName("pk_tx_s_order_extra");
+
+                    b.ToTable("tx_s_order_extra", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.TxSalePerson", b =>
+                {
+                    b.Property<string>("TxNumber")
+                        .HasColumnType("text")
+                        .HasColumnName("tx_number");
+
+                    b.Property<double>("SalesRowNo")
+                        .HasColumnType("double precision")
+                        .HasColumnName("sales_row_no");
+
+                    b.Property<string>("StaffCode")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("staff_code");
+
+                    b.HasKey("TxNumber", "SalesRowNo")
+                        .HasName("pk_tx_sale_person");
+
+                    b.ToTable("tx_sale_person", null, t =>
                         {
                             t.ExcludeFromMigrations();
                         });
