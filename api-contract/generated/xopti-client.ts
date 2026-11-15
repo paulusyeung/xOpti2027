@@ -1501,6 +1501,80 @@ export interface paths {
         };
         trace?: never;
     };
+    "/api/v1/inventory/issues": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["IssueStockRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["IssueStockResult"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/inventory/reconciliation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["InventoryReconciliationDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/inventory/stock-takes": {
         parameters: {
             query?: never;
@@ -2126,6 +2200,11 @@ export interface components {
             resumeFrom: null | number | string;
             errors: components["schemas"]["CountRowError"][];
         };
+        InventoryReconciliationDto: {
+            /** Format: int32 */
+            checkedSkus: number | string;
+            drifts: components["schemas"]["ReconciliationRowDto"][];
+        };
         InventoryValuationDto: {
             sku: string;
             /** Format: int32 */
@@ -2133,6 +2212,32 @@ export interface components {
             lots: components["schemas"]["LotValuationDto"][];
             averageCost: null | components["schemas"]["Money"];
             extendedCost: null | components["schemas"]["Money"];
+        };
+        IssueConsumptionDto: {
+            lotNo: string;
+            /** Format: int32 */
+            quantity: number | string;
+            /** Format: double */
+            unitCost: number | string;
+            /** Format: double */
+            cost: number | string;
+        };
+        IssueStockRequest: {
+            sku: string;
+            branchCode: string;
+            /** Format: int32 */
+            quantity: number | string;
+            reason: string;
+        };
+        IssueStockResult: {
+            txNumber: string;
+            method: string;
+            /** Format: double */
+            totalCost: number | string;
+            /** Format: int32 */
+            deficitQuantity: number | string;
+            deficitLotNo: null | string;
+            consumptions: components["schemas"]["IssueConsumptionDto"][];
         };
         LevelRuleDto: {
             /** Format: int32 */
@@ -2286,6 +2391,16 @@ export interface components {
             totalCost: number | string;
             /** Format: double */
             totalTax: number | string;
+        };
+        ReconciliationRowDto: {
+            sku: string;
+            /** Format: int32 */
+            inventoryQuantity: number | string;
+            /** Format: int32 */
+            lotQuantity: number | string;
+            /** Format: int32 */
+            difference: number | string;
+            affectedLots: string[];
         };
         ReferenceItemDto: {
             kind: string;

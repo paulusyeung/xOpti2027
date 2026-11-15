@@ -1441,6 +1441,54 @@
         }
       }
     },
+    "/api/v1/inventory/issues": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IssueStockRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueStockResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/inventory/reconciliation": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryReconciliationDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/inventory/stock-takes": {
       "post": {
         "tags": [
@@ -2679,6 +2727,29 @@
           }
         }
       },
+      "InventoryReconciliationDto": {
+        "required": [
+          "checkedSkus",
+          "drifts"
+        ],
+        "type": "object",
+        "properties": {
+          "checkedSkus": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "drifts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReconciliationRowDto"
+            }
+          }
+        }
+      },
       "InventoryValuationDto": {
         "required": [
           "sku",
@@ -2725,6 +2796,119 @@
                 "$ref": "#/components/schemas/Money"
               }
             ]
+          }
+        }
+      },
+      "IssueConsumptionDto": {
+        "required": [
+          "lotNo",
+          "quantity",
+          "unitCost",
+          "cost"
+        ],
+        "type": "object",
+        "properties": {
+          "lotNo": {
+            "type": "string"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "unitCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "cost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "IssueStockRequest": {
+        "required": [
+          "sku",
+          "branchCode",
+          "quantity",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "branchCode": {
+            "type": "string"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "IssueStockResult": {
+        "required": [
+          "txNumber",
+          "method",
+          "totalCost",
+          "deficitQuantity",
+          "deficitLotNo",
+          "consumptions"
+        ],
+        "type": "object",
+        "properties": {
+          "txNumber": {
+            "type": "string"
+          },
+          "method": {
+            "type": "string"
+          },
+          "totalCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "deficitQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "deficitLotNo": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "consumptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IssueConsumptionDto"
+            }
           }
         }
       },
@@ -3418,6 +3602,51 @@
               "string"
             ],
             "format": "double"
+          }
+        }
+      },
+      "ReconciliationRowDto": {
+        "required": [
+          "sku",
+          "inventoryQuantity",
+          "lotQuantity",
+          "difference",
+          "affectedLots"
+        ],
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "inventoryQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "lotQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "difference": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "affectedLots": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },

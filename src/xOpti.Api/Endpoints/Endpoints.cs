@@ -12,6 +12,8 @@ using xOpti.Application.Identity.Staff;
 using xOpti.Application.Inventory.AdjustStock;
 using xOpti.Application.Inventory.Availability;
 using xOpti.Application.Inventory.Documents;
+using xOpti.Application.Inventory.IssueStock;
+using xOpti.Application.Inventory.Reconciliation;
 using xOpti.Application.Inventory.StockTake;
 using xOpti.Application.Inventory.TransferStock;
 using xOpti.Application.Inventory.Catalogue;
@@ -592,6 +594,30 @@ public static class Endpoints
         })
         .Produces<BranchDto>();
 
+        v1.MapPost("/inventory/issues", async (
+            HttpContext http,
+            IssueStockRequest request,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var key = http.Request.Headers["Idempotency-Key"].FirstOrDefault();
+            var result = await dispatcher.DispatchAsync(new IssueStockCommand(
+                request.Sku, request.BranchCode, request.Quantity, request.Reason, key), cancellationToken);
+            return Results.Created($"/api/v1/inventory/issues/{result.TxNumber}", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .AddEndpointFilter<IdempotencyKeyFilter>()
+        .Produces<IssueStockResult>(StatusCodes.Status201Created);
+
+        v1.MapGet("/inventory/reconciliation", async (
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetInventoryReconciliationQuery(), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<InventoryReconciliationDto>();
+
         v1.MapPost("/inventory/stock-takes", async (
             CreateStockTakeRequest request, IRequestDispatcher dispatcher,
             CancellationToken cancellationToken) =>
@@ -808,6 +834,8 @@ public sealed record ApproveStockTakeRequest(string Reason);
 public sealed record PostStockTakeRequest(string Reason);
 
 public sealed record ImportCountsRequest(string Csv, bool DryRun, string Reason);
+
+public sealed record IssueStockRequest(string Sku, string BranchCode, int Quantity, string Reason);
 
 public sealed record CreateStockTakeRequest(string Name, string? BranchCode, string Reason);
 

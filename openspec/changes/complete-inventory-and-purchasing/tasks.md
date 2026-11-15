@@ -37,10 +37,10 @@
 
 ## 6. Costing and deficits
 
-- [ ] 6.1 Implement FIFO, LIFO, and average issue consumption against persisted lots; verify characterization tests reproduce legacy cost totals.
-- [ ] 6.2 Implement deficit-layer creation and receipt reconciliation; verify negative on-hand never blocks a sale and later receipts reconcile per policy.
-- [ ] 6.3 Add category cost-method selection and validation; verify an unsupported or missing method blocks posting with a clear error.
-- [ ] 6.4 Add inventory total-versus-lot reconciliation; verify drift is reported with the affected SKU/lot and never silently corrected.
+- [x] 6.1 Implement FIFO, LIFO, and average issue consumption against persisted lots; verify characterization tests reproduce legacy cost totals.
+- [x] 6.2 Implement deficit-layer creation and receipt reconciliation; verify negative on-hand never blocks a sale and later receipts reconcile per policy.
+- [x] 6.3 Add category cost-method selection and validation; verify an unsupported or missing method blocks posting with a clear error.
+- [x] 6.4 Add inventory total-versus-lot reconciliation; verify drift is reported with the affected SKU/lot and never silently corrected.
 - [ ] 6.5 Rebuild inventory/category/class/department summaries as read models; verify totals match posted documents and migrated values within tolerance.
 
 ## 7. Purchasing documents and balances
