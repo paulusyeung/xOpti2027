@@ -79,6 +79,12 @@ export const routes: RouteRecordRaw[] = [
     meta: { permission: PermissionNames.InventoryAdjust, title: 'Stock ops' },
   },
   {
+    path: '/admin/stock-take',
+    name: 'stock-take',
+    component: () => import('@/features/admin/StockTakePage.vue'),
+    meta: { permission: PermissionNames.InventoryAdjust, title: 'Stock take' },
+  },
+  {
     path: '/forbidden',
     name: 'forbidden',
     component: () => import('@/pages/ForbiddenPage.vue'),
