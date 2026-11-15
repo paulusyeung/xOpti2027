@@ -1659,6 +1659,47 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/inventory/stock-takes/{id}/post": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: number | string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["PostStockTakeRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PostStockTakeVariancesResult"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/inventory/documents/{txNumber}": {
         parameters: {
             query?: never;
@@ -2174,6 +2215,20 @@ export interface components {
         PermissionGrantDto: {
             permission: string;
             roles: string[];
+        };
+        PostStockTakeRequest: {
+            reason: string;
+        };
+        PostStockTakeVariancesResult: {
+            /** Format: int32 */
+            headerId: number | string;
+            txNumber: string;
+            /** Format: int32 */
+            adjustedRows: number | string;
+            /** Format: int32 */
+            totalDifference: number | string;
+            /** Format: double */
+            totalValue: number | string;
         };
         PreferencesDto: {
             serialNumber: string;

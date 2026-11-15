@@ -636,6 +636,17 @@ public static class Endpoints
         .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
         .Produces<StockTakeVarianceDto>();
 
+        v1.MapPost("/inventory/stock-takes/{id}/post", async (
+            int id, PostStockTakeRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new PostStockTakeVariancesCommand(id, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<PostStockTakeVariancesResult>();
+
         v1.MapGet("/inventory/documents/{txNumber}", async (
             string txNumber, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
         {
@@ -793,6 +804,8 @@ public sealed record CreateDoctorRequest(
 public sealed record DeactivateBranchRequest(string Reason, string? TargetBranchCode);
 
 public sealed record ApproveStockTakeRequest(string Reason);
+
+public sealed record PostStockTakeRequest(string Reason);
 
 public sealed record ImportCountsRequest(string Csv, bool DryRun, string Reason);
 

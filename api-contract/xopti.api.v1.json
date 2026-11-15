@@ -1592,6 +1592,50 @@
         }
       }
     },
+    "/api/v1/inventory/stock-takes/{id}/post": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostStockTakeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostStockTakeVariancesResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/inventory/documents/{txNumber}": {
       "get": {
         "tags": [
@@ -3059,6 +3103,64 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "PostStockTakeRequest": {
+        "required": [
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "PostStockTakeVariancesResult": {
+        "required": [
+          "headerId",
+          "txNumber",
+          "adjustedRows",
+          "totalDifference",
+          "totalValue"
+        ],
+        "type": "object",
+        "properties": {
+          "headerId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "txNumber": {
+            "type": "string"
+          },
+          "adjustedRows": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalDifference": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalValue": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },

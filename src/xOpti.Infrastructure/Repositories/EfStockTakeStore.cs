@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using xOpti.Application.Inventory.StockTake;
+using xOpti.Domain.Values;
 using xOpti.Infrastructure.Persistence;
 using xOpti.Infrastructure.Persistence.Entities;
 
 namespace xOpti.Infrastructure.Repositories;
 
-public sealed class EfStockTakeStore(XOptiDbContext context) : IStockTakeStore, IStockTakeCountStore, IStockTakeVarianceStore
+public sealed class EfStockTakeStore(XOptiDbContext context) : IStockTakeStore, IStockTakeCountStore, IStockTakeVarianceStore, IStockTakePostingStore
 {
     public async Task<int> NextHeaderIdAsync(CancellationToken ct) =>
         (await context.StockTakeHeaders.MaxAsync(row => (int?)row.Id, ct) ?? 0) + 1;
@@ -65,6 +66,61 @@ public sealed class EfStockTakeStore(XOptiDbContext context) : IStockTakeStore, 
                 detail.PhysicalQty = counted;
                 detail.DiffQty = counted - detail.ComputerQty;
             }
+        }
+
+        await context.SaveChangesAsync(ct);
+    }
+
+    public Task<bool> IsApprovedAsync(int headerId, CancellationToken ct) =>
+        context.StockTakeHeaders.AnyAsync(row => row.Id == headerId && row.Status == 2, ct);
+
+    public async Task<string> NextInventoryControlNumberAsync(CancellationToken ct)
+    {
+        var preference = await context.Preferences.OrderBy(row => row.SerialNumber).FirstOrDefaultAsync(ct);
+        if (preference is null) return "00000001";
+        preference.NextInvtControlNumber += 1;
+        await context.SaveChangesAsync(ct);
+        return preference.NextInvtControlNumber.ToString("D8");
+    }
+
+    public async Task PostAsync(int headerId, string txNumber, string controlNumber,
+        IReadOnlyList<StockTakeAdjustmentRow> rows, CancellationToken ct)
+    {
+        var now = DateTimeOffset.UtcNow;
+        var header = await context.StockTakeHeaders.SingleAsync(row => row.Id == headerId, ct);
+        header.Status = 3;
+        header.DateOfUpdate = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);
+
+        context.TxHeaders.Add(new TxHeader
+        {
+            ControlNumber = controlNumber,
+            TxType = TransactionType.StockAdjustment,
+            TxNumber = txNumber,
+            DateOfEntry = now,
+            DateOfCreation = now,
+            RefNumber = $"STK{headerId}",
+            Particulars = "Stock-take variance",
+            TotalQty = rows.Sum(row => row.Difference),
+            Status = "0",
+        });
+
+        var rowNo = 1;
+        foreach (var row in rows)
+        {
+            context.TxDetails.Add(new TxDetail
+            {
+                ControlNumber = controlNumber,
+                TxType = TransactionType.StockAdjustment,
+                TxNumber = txNumber,
+                DateOfEntry = now,
+                RowNo = rowNo++,
+                Sku = row.Sku,
+                Qty = row.Difference,
+                Remarks = $"STK{headerId}",
+            });
+
+            var inventory = await context.InventoryItems.SingleAsync(item => item.Sku == row.Sku, ct);
+            inventory.QtyTotalOnHand += row.Difference;
         }
 
         await context.SaveChangesAsync(ct);
