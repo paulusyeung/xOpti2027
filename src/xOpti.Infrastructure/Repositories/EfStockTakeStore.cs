@@ -5,7 +5,7 @@ using xOpti.Infrastructure.Persistence.Entities;
 
 namespace xOpti.Infrastructure.Repositories;
 
-public sealed class EfStockTakeStore(XOptiDbContext context) : IStockTakeStore
+public sealed class EfStockTakeStore(XOptiDbContext context) : IStockTakeStore, IStockTakeCountStore
 {
     public async Task<int> NextHeaderIdAsync(CancellationToken ct) =>
         (await context.StockTakeHeaders.MaxAsync(row => (int?)row.Id, ct) ?? 0) + 1;
@@ -30,6 +30,32 @@ public sealed class EfStockTakeStore(XOptiDbContext context) : IStockTakeStore
             .Select(row => new StockTakeSnapshotRow(
                 row.Sku, row.QtyTotalOnHand, row.AverageCost.Amount))
             .ToListAsync(ct);
+    }
+
+    public Task<bool> FrozenHeaderExistsAsync(int headerId, CancellationToken ct) =>
+        context.StockTakeHeaders.AnyAsync(row => row.Id == headerId && row.Status == 1, ct);
+
+    public Task<bool> SkuInSnapshotAsync(int headerId, string sku, CancellationToken ct) =>
+        context.StockTakeDetails.AnyAsync(row => row.HeaderId == headerId && row.Sku == sku, ct);
+
+    public async Task UpsertCountAsync(int headerId, string sku, int qty, CancellationToken ct)
+    {
+        var row = await context.StockTakeImports
+            .SingleOrDefaultAsync(item => item.HeaderId == headerId && item.Sku == sku, ct);
+        if (row is null)
+        {
+            context.StockTakeImports.Add(new InvtSTImport
+            {
+                HeaderId = headerId, Sku = sku, Qty = qty, Status = 1,
+            });
+        }
+        else
+        {
+            row.Qty = qty;
+            row.Status = 1;
+        }
+
+        await context.SaveChangesAsync(ct);
     }
 
     public async Task CreateAsync(StockTakeSnapshot snapshot, DateTimeOffset frozenAt, CancellationToken ct)

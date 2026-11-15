@@ -1540,6 +1540,47 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/inventory/stock-takes/{id}/counts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: number | string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ImportCountsRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ImportStockTakeCountsResult"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/inventory/documents/{txNumber}": {
         parameters: {
             query?: never;
@@ -1834,6 +1875,12 @@ export interface components {
             description: string;
             value: null | string;
         };
+        CountRowError: {
+            /** Format: int32 */
+            row: number | string;
+            field: string;
+            message: string;
+        };
         CreateContactRequest: {
             firstName: string;
             initial: null | string;
@@ -1915,6 +1962,11 @@ export interface components {
             phone: null | string;
             postalCode: null | string;
         };
+        ImportCountsRequest: {
+            csv: string;
+            dryRun: boolean;
+            reason: string;
+        };
         /** @enum {unknown} */
         ImportKind: "Sku" | "Supplier" | "Brand";
         ImportRequest: {
@@ -1941,6 +1993,16 @@ export interface components {
             row: number | string;
             field: string;
             message: string;
+        };
+        ImportStockTakeCountsResult: {
+            /** Format: int32 */
+            headerId: number | string;
+            dryRun: boolean;
+            /** Format: int32 */
+            accepted: number | string;
+            /** Format: int32 */
+            resumeFrom: null | number | string;
+            errors: components["schemas"]["CountRowError"][];
         };
         InventoryValuationDto: {
             sku: string;

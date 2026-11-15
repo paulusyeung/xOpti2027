@@ -1470,6 +1470,50 @@
         }
       }
     },
+    "/api/v1/inventory/stock-takes/{id}/counts": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportCountsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImportStockTakeCountsResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/inventory/documents/{txNumber}": {
       "get": {
         "tags": [
@@ -1895,6 +1939,30 @@
           }
         }
       },
+      "CountRowError": {
+        "required": [
+          "row",
+          "field",
+          "message"
+        ],
+        "type": "object",
+        "properties": {
+          "row": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "field": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
       "CreateContactRequest": {
         "required": [
           "firstName",
@@ -2300,6 +2368,25 @@
           }
         }
       },
+      "ImportCountsRequest": {
+        "required": [
+          "csv",
+          "dryRun",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "csv": {
+            "type": "string"
+          },
+          "dryRun": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
       "ImportKind": {
         "enum": [
           "Sku",
@@ -2410,6 +2497,52 @@
           },
           "message": {
             "type": "string"
+          }
+        }
+      },
+      "ImportStockTakeCountsResult": {
+        "required": [
+          "headerId",
+          "dryRun",
+          "accepted",
+          "resumeFrom",
+          "errors"
+        ],
+        "type": "object",
+        "properties": {
+          "headerId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "dryRun": {
+            "type": "boolean"
+          },
+          "accepted": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "resumeFrom": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CountRowError"
+            }
           }
         }
       },
