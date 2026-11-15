@@ -38,14 +38,8 @@ public sealed class EfIssueStockStore(XOptiDbContext context) : IIssueStockStore
     public async Task<Money> FallbackCostAsync(string sku, CancellationToken ct) =>
         (await context.InventoryItems.AsNoTracking().SingleAsync(row => row.Sku == sku, ct)).AverageCost;
 
-    public async Task<string> NextControlNumberAsync(CancellationToken ct)
-    {
-        var preference = await context.Preferences.OrderBy(row => row.SerialNumber).FirstOrDefaultAsync(ct);
-        if (preference is null) return "00000001";
-        preference.NextInvtControlNumber += 1;
-        await context.SaveChangesAsync(ct);
-        return preference.NextInvtControlNumber.ToString("D8");
-    }
+    public Task<string> NextControlNumberAsync(CancellationToken ct) =>
+        ControlNumberSequencer.NextAsync(context, ct);
 
     public async Task PostAsync(string txNumber, string controlNumber, string sku, string branchCode,
         int quantity, IReadOnlyList<LayerConsumption> consumptions, int deficitQuantity,

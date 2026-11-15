@@ -22,14 +22,8 @@ public sealed class EfTransferStore(XOptiDbContext context) : ITransferStore
             .Select(row => row.QtyOnHand)
             .SingleOrDefaultAsync(ct);
 
-    public async Task<string> NextInventoryControlNumberAsync(CancellationToken ct)
-    {
-        var preference = await context.Preferences.OrderBy(row => row.SerialNumber).FirstOrDefaultAsync(ct);
-        if (preference is null) return "00000001";
-        preference.NextInvtControlNumber += 1;
-        await context.SaveChangesAsync(ct);
-        return preference.NextInvtControlNumber.ToString("D8");
-    }
+    public Task<string> NextInventoryControlNumberAsync(CancellationToken ct) =>
+        ControlNumberSequencer.NextAsync(context, ct);
 
     public async Task PostAsync(TransferPosting posting, CancellationToken ct)
     {

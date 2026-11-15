@@ -15,14 +15,8 @@ public sealed class EfRejectStockStore(XOptiDbContext context) : IRejectStockSto
         return lot?.QtyOnHand ?? 0;
     }
 
-    public async Task<string> NextInventoryControlNumberAsync(CancellationToken ct)
-    {
-        var preference = await context.Preferences.OrderBy(row => row.SerialNumber).FirstOrDefaultAsync(ct);
-        if (preference is null) return "00000001";
-        preference.NextInvtControlNumber += 1;
-        await context.SaveChangesAsync(ct);
-        return preference.NextInvtControlNumber.ToString("D8");
-    }
+    public Task<string> NextInventoryControlNumberAsync(CancellationToken ct) =>
+        ControlNumberSequencer.NextAsync(context, ct);
 
     public async Task PostAsync(RejectPosting posting, CancellationToken ct)
     {

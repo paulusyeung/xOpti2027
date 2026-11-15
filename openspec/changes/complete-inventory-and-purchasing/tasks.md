@@ -52,8 +52,8 @@
 
 ## 8. Integration and rehearsal
 
-- [ ] 8.1 Run inventory posting concurrency tests across receipt, adjustment, transfer, and sale-like issue; verify no lost updates or duplicate control numbers.
-- [ ] 8.2 Reconcile inventory quantities and valuation against the migrated database after a full posting rehearsal; verify differences are explained by the test posting set.
+- [x] 8.1 Run inventory posting concurrency tests across receipt, adjustment, transfer, and sale-like issue; verify no lost updates or duplicate control numbers.
+- [x] 8.2 Reconcile inventory quantities and valuation against the migrated database after a full posting rehearsal; verify differences are explained by the test posting set.
 - [ ] 8.3 Run Playwright and API integration suites for inventory and purchasing against PostgreSQL; verify all critical flows pass.
 - [ ] 8.4 Document the inventory/purchasing operating rules, deficit policy, and stock-take freeze procedure; verify the documented steps match the automated tests.
 

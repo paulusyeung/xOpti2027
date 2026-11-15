@@ -31,18 +31,8 @@ public sealed class EfReceiptStore(XOptiDbContext context) : IReceiptStore
         return requested.Where(sku => !known.Contains(sku)).ToList();
     }
 
-    public async Task<string> NextInventoryControlNumberAsync(CancellationToken ct)
-    {
-        var preference = await context.Preferences.OrderBy(row => row.SerialNumber).FirstOrDefaultAsync(ct);
-        if (preference is null)
-        {
-            return "00000001";
-        }
-
-        preference.NextInvtControlNumber += 1;
-        await context.SaveChangesAsync(ct);
-        return preference.NextInvtControlNumber.ToString("D8");
-    }
+    public Task<string> NextInventoryControlNumberAsync(CancellationToken ct) =>
+        ControlNumberSequencer.NextAsync(context, ct);
 
     public async Task PostAsync(ReceiptPosting posting, CancellationToken ct)
     {
