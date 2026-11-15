@@ -70,6 +70,8 @@ public static class InfrastructureServiceCollectionExtensions
             Repositories.EfTransferStore>();
         services.AddScoped<xOpti.Application.Inventory.Documents.IStockDocumentStore,
             Repositories.EfStockDocumentStore>();
+        services.AddScoped<xOpti.Application.Inventory.StockTake.IStockTakeStore,
+            Repositories.EfStockTakeStore>();
         services.AddScoped<xOpti.Application.Settings.IPreferencesStore, Repositories.EfPreferencesStore>();
         services.AddScoped<xOpti.Application.Settings.IImportStore, Repositories.EfImportStore>();
         services.AddSingleton<xOpti.Application.Identity.Staff.IRoleCatalogue, Identity.RoleCatalogue>();

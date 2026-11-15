@@ -29,7 +29,7 @@
 
 ## 5. Stock take
 
-- [ ] 5.1 Implement stock-take creation and frozen snapshot; verify snapshot rows match on-hand at freeze time and cannot change while frozen.
+- [x] 5.1 Implement stock-take creation and frozen snapshot; verify snapshot rows match on-hand at freeze time and cannot change while frozen.
 - [ ] 5.2 Implement counted-quantity import with row-level validation and dry run; verify invalid rows write nothing and valid rows are resumable.
 - [ ] 5.3 Implement variance review and approval; verify unapproved variances do not change inventory.
 - [ ] 5.4 Post approved variances as SJ adjustments with stock-take references; verify counts, values, and audit entries reconcile.

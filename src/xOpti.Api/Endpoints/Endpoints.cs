@@ -12,6 +12,7 @@ using xOpti.Application.Identity.Staff;
 using xOpti.Application.Inventory.AdjustStock;
 using xOpti.Application.Inventory.Availability;
 using xOpti.Application.Inventory.Documents;
+using xOpti.Application.Inventory.StockTake;
 using xOpti.Application.Inventory.TransferStock;
 using xOpti.Application.Inventory.Catalogue;
 using xOpti.Application.Inventory.Valuation;
@@ -591,6 +592,18 @@ public static class Endpoints
         })
         .Produces<BranchDto>();
 
+        v1.MapPost("/inventory/stock-takes", async (
+            CreateStockTakeRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new CreateStockTakeCommand(request.Name, request.BranchCode, request.Reason),
+                cancellationToken);
+            return Results.Created($"/api/v1/inventory/stock-takes/{result.Id}", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<StockTakeDto>(StatusCodes.Status201Created);
+
         v1.MapGet("/inventory/documents/{txNumber}", async (
             string txNumber, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
         {
@@ -746,6 +759,8 @@ public sealed record CreateDoctorRequest(
     string? Phone, string? PostalCode, string Reason);
 
 public sealed record DeactivateBranchRequest(string Reason, string? TargetBranchCode);
+
+public sealed record CreateStockTakeRequest(string Name, string? BranchCode, string Reason);
 
 public sealed record TransferStockRequest(
     string Sku, string FromBranch, string ToBranch, int Quantity, string Reason);

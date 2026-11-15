@@ -1441,6 +1441,35 @@
         }
       }
     },
+    "/api/v1/inventory/stock-takes": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStockTakeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockTakeDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/inventory/documents/{txNumber}": {
       "get": {
         "tags": [
@@ -2044,6 +2073,28 @@
             ]
           },
           "role": {
+            "type": "string"
+          },
+          "branchCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateStockTakeRequest": {
+        "required": [
+          "name",
+          "branchCode",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
             "type": "string"
           },
           "branchCode": {
@@ -3886,6 +3937,56 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "StockTakeDto": {
+        "required": [
+          "id",
+          "name",
+          "branchCode",
+          "status",
+          "rowCount",
+          "frozenAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "branchCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int16"
+          },
+          "rowCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "frozenAt": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },

@@ -1501,6 +1501,45 @@ export interface paths {
         };
         trace?: never;
     };
+    "/api/v1/inventory/stock-takes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateStockTakeRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["StockTakeDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/inventory/documents/{txNumber}": {
         parameters: {
             query?: never;
@@ -1832,6 +1871,11 @@ export interface components {
             userName: string;
             displayName: null | string;
             role: string;
+            branchCode: null | string;
+            reason: string;
+        };
+        CreateStockTakeRequest: {
+            name: string;
             branchCode: null | string;
             reason: string;
         };
@@ -2222,6 +2266,18 @@ export interface components {
             amount: components["schemas"]["Money"];
             remarks: null | string;
             taxCode: null | string;
+        };
+        StockTakeDto: {
+            /** Format: int32 */
+            id: number | string;
+            name: string;
+            branchCode: null | string;
+            /** Format: int16 */
+            status: number | string;
+            /** Format: int32 */
+            rowCount: number | string;
+            /** Format: date-time */
+            frozenAt: string;
         };
         SupplierContactDto: {
             supplierCode: string;
