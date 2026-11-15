@@ -1581,6 +1581,84 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/inventory/stock-takes/{id}/variances": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: number | string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["StockTakeVarianceDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/inventory/stock-takes/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: number | string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ApproveStockTakeRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["StockTakeVarianceDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/inventory/documents/{txNumber}": {
         parameters: {
             query?: never;
@@ -1827,6 +1905,9 @@ export interface components {
             quantityDelta: number | string;
             /** Format: int32 */
             newOnHand: number | string;
+        };
+        ApproveStockTakeRequest: {
+            reason: string;
         };
         BarcodeTagDto: {
             barcode: string;
@@ -2341,6 +2422,14 @@ export interface components {
             /** Format: date-time */
             frozenAt: string;
         };
+        StockTakeVarianceDto: {
+            /** Format: int32 */
+            headerId: number | string;
+            name: string;
+            /** Format: int16 */
+            status: number | string;
+            rows: components["schemas"]["VarianceRowDto"][];
+        };
         SupplierContactDto: {
             supplierCode: string;
             firstName: string;
@@ -2406,6 +2495,17 @@ export interface components {
             retailPriceFlag: boolean;
             wholesalePriceFlag: boolean;
             reason: string;
+        };
+        VarianceRowDto: {
+            sku: string;
+            /** Format: double */
+            computerQty: null | number | string;
+            /** Format: int32 */
+            countedQty: null | number | string;
+            /** Format: double */
+            difference: null | number | string;
+            /** Format: double */
+            averageCost: null | number | string;
         };
     };
     responses: never;

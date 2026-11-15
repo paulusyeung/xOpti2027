@@ -616,6 +616,26 @@ public static class Endpoints
         .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
         .Produces<ImportStockTakeCountsResult>();
 
+        v1.MapGet("/inventory/stock-takes/{id}/variances", async (
+            int id, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetStockTakeVariancesQuery(id), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<StockTakeVarianceDto>();
+
+        v1.MapPost("/inventory/stock-takes/{id}/approve", async (
+            int id, ApproveStockTakeRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ApproveStockTakeCommand(id, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<StockTakeVarianceDto>();
+
         v1.MapGet("/inventory/documents/{txNumber}", async (
             string txNumber, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
         {
@@ -771,6 +791,8 @@ public sealed record CreateDoctorRequest(
     string? Phone, string? PostalCode, string Reason);
 
 public sealed record DeactivateBranchRequest(string Reason, string? TargetBranchCode);
+
+public sealed record ApproveStockTakeRequest(string Reason);
 
 public sealed record ImportCountsRequest(string Csv, bool DryRun, string Reason);
 

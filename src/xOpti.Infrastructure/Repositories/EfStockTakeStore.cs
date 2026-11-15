@@ -5,7 +5,7 @@ using xOpti.Infrastructure.Persistence.Entities;
 
 namespace xOpti.Infrastructure.Repositories;
 
-public sealed class EfStockTakeStore(XOptiDbContext context) : IStockTakeStore, IStockTakeCountStore
+public sealed class EfStockTakeStore(XOptiDbContext context) : IStockTakeStore, IStockTakeCountStore, IStockTakeVarianceStore
 {
     public async Task<int> NextHeaderIdAsync(CancellationToken ct) =>
         (await context.StockTakeHeaders.MaxAsync(row => (int?)row.Id, ct) ?? 0) + 1;
@@ -30,6 +30,44 @@ public sealed class EfStockTakeStore(XOptiDbContext context) : IStockTakeStore, 
             .Select(row => new StockTakeSnapshotRow(
                 row.Sku, row.QtyTotalOnHand, row.AverageCost.Amount))
             .ToListAsync(ct);
+    }
+
+    public async Task<StockTakeVarianceDto?> GetAsync(int headerId, CancellationToken ct)
+    {
+        var header = await context.StockTakeHeaders.AsNoTracking().SingleOrDefaultAsync(row => row.Id == headerId, ct);
+        if (header is null) return null;
+        var counts = await context.StockTakeImports.AsNoTracking()
+            .Where(row => row.HeaderId == headerId)
+            .ToDictionaryAsync(row => row.Sku, row => row.Qty, ct);
+        var details = await context.StockTakeDetails.AsNoTracking()
+            .Where(row => row.HeaderId == headerId).OrderBy(row => row.Sku).ToListAsync(ct);
+        var rows = details.Select(row =>
+        {
+            var counted = counts.TryGetValue(row.Sku, out var qty) ? qty : (int?)null;
+            return new VarianceRowDto(row.Sku, (decimal?)row.ComputerQty, counted,
+                counted is null ? null : counted - (decimal?)row.ComputerQty, row.AverageCost);
+        }).ToList();
+        return new StockTakeVarianceDto(header.Id, header.Name, header.Status ?? 0, rows);
+    }
+
+    public async Task ApproveAsync(int headerId, CancellationToken ct)
+    {
+        var header = await context.StockTakeHeaders.SingleAsync(row => row.Id == headerId, ct);
+        header.Status = 2;
+        header.DateOfUpdate = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Unspecified);
+        var details = await context.StockTakeDetails.Where(row => row.HeaderId == headerId).ToListAsync(ct);
+        var counts = await context.StockTakeImports.Where(row => row.HeaderId == headerId)
+            .ToDictionaryAsync(row => row.Sku, row => row.Qty, ct);
+        foreach (var detail in details)
+        {
+            if (counts.TryGetValue(detail.Sku, out var counted))
+            {
+                detail.PhysicalQty = counted;
+                detail.DiffQty = counted - detail.ComputerQty;
+            }
+        }
+
+        await context.SaveChangesAsync(ct);
     }
 
     public Task<bool> FrozenHeaderExistsAsync(int headerId, CancellationToken ct) =>
