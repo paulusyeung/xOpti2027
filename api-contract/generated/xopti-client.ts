@@ -1540,6 +1540,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/inventory/summaries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query: {
+                    from: string;
+                    to: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["InventorySummariesDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/inventory/reconciliation": {
         parameters: {
             query?: never;
@@ -2205,6 +2243,13 @@ export interface components {
             checkedSkus: number | string;
             drifts: components["schemas"]["ReconciliationRowDto"][];
         };
+        InventorySummariesDto: {
+            /** Format: date */
+            from: string;
+            /** Format: date */
+            to: string;
+            groups: components["schemas"]["SummaryGroupDto"][];
+        };
         InventoryValuationDto: {
             sku: string;
             /** Format: int32 */
@@ -2599,6 +2644,19 @@ export interface components {
             /** Format: int16 */
             status: number | string;
             rows: components["schemas"]["VarianceRowDto"][];
+        };
+        SummaryGroupDto: {
+            level: string;
+            rows: components["schemas"]["SummaryRowDto"][];
+        };
+        SummaryRowDto: {
+            key: string;
+            /** Format: int32 */
+            quantity: number | string;
+            /** Format: double */
+            amount: number | string;
+            /** Format: int32 */
+            lines: number | string;
         };
         SupplierContactDto: {
             supplierCode: string;

@@ -14,6 +14,7 @@ using xOpti.Application.Inventory.Availability;
 using xOpti.Application.Inventory.Documents;
 using xOpti.Application.Inventory.IssueStock;
 using xOpti.Application.Inventory.Reconciliation;
+using xOpti.Application.Inventory.Summaries;
 using xOpti.Application.Inventory.StockTake;
 using xOpti.Application.Inventory.TransferStock;
 using xOpti.Application.Inventory.Catalogue;
@@ -608,6 +609,16 @@ public static class Endpoints
         .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
         .AddEndpointFilter<IdempotencyKeyFilter>()
         .Produces<IssueStockResult>(StatusCodes.Status201Created);
+
+        v1.MapGet("/inventory/summaries", async (
+            DateOnly from, DateOnly to, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetInventorySummariesQuery(from, to), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.InventoryAdjust}")
+        .Produces<InventorySummariesDto>();
 
         v1.MapGet("/inventory/reconciliation", async (
             IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>

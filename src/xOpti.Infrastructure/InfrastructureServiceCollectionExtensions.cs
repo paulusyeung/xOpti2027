@@ -82,6 +82,8 @@ public static class InfrastructureServiceCollectionExtensions
             Repositories.EfIssueStockStore>();
         services.AddScoped<xOpti.Application.Inventory.Reconciliation.IInventoryReconciliationStore,
             Repositories.EfInventoryReconciliationStore>();
+        services.AddScoped<xOpti.Application.Inventory.Summaries.ISummaryStore,
+            Repositories.EfSummaryStore>();
         services.AddScoped<xOpti.Application.Settings.IPreferencesStore, Repositories.EfPreferencesStore>();
         services.AddScoped<xOpti.Application.Settings.IImportStore, Repositories.EfImportStore>();
         services.AddSingleton<xOpti.Application.Identity.Staff.IRoleCatalogue, Identity.RoleCatalogue>();

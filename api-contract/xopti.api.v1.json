@@ -1470,6 +1470,45 @@
         }
       }
     },
+    "/api/v1/inventory/summaries": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventorySummariesDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/inventory/reconciliation": {
       "get": {
         "tags": [
@@ -2746,6 +2785,30 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ReconciliationRowDto"
+            }
+          }
+        }
+      },
+      "InventorySummariesDto": {
+        "required": [
+          "from",
+          "to",
+          "groups"
+        ],
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "date"
+          },
+          "to": {
+            "type": "string",
+            "format": "date"
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SummaryGroupDto"
             }
           }
         }
@@ -4576,6 +4639,62 @@
             "items": {
               "$ref": "#/components/schemas/VarianceRowDto"
             }
+          }
+        }
+      },
+      "SummaryGroupDto": {
+        "required": [
+          "level",
+          "rows"
+        ],
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "string"
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SummaryRowDto"
+            }
+          }
+        }
+      },
+      "SummaryRowDto": {
+        "required": [
+          "key",
+          "quantity",
+          "amount",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lines": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
