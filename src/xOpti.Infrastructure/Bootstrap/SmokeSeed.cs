@@ -94,6 +94,26 @@ public static class SmokeSeed
             });
         }
 
+        if (!await context.RetailPrices.AnyAsync(price => price.Sku == "30110359", cancellationToken))
+        {
+            context.RetailPrices.Add(new RetailPrice
+            {
+                Sku = "30110359", RetailPriceValue = 49.99m, LeastSellingPrice = 49.99m,
+            });
+        }
+
+        if (!await context.Customers.AnyAsync(customer => customer.VipCode == "DEMO", cancellationToken))
+        {
+            // Legacy customer ids are assigned by the application, not the database.
+            var nextCustomerId = (await context.Customers.MaxAsync(
+                customer => (int?)customer.Id, cancellationToken) ?? 0) + 1;
+            context.Customers.Add(new Customer
+            {
+                Id = nextCustomerId, VipCode = "DEMO", FullName = "Demo Customer",
+                HomePhone = "604-555-0100",
+            });
+        }
+
         if (!await context.Preferences.AnyAsync(cancellationToken))
         {
             context.Preferences.Add(new Preference
@@ -101,6 +121,7 @@ public static class SmokeSeed
                 SerialNumber = "0000000001", Platform = "xOpti", ProductName = "Synergy",
                 UserName = "Operator", OwnerName = "Owner", BranchNumber = "0001",
                 GstNumber = string.Empty, PstNumber = string.Empty,
+                TaxARate = 5, TaxBRate = 7,
                 NextInvtControlNumber = 1000, NextInvtSku = 1,
                 NextInvoiceNumber = 1, NextSalesOrderNumber = 1,
             });

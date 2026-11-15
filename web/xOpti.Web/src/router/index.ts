@@ -37,6 +37,12 @@ export const routes: RouteRecordRaw[] = [
     meta: { permission: PermissionNames.ReportFinancial, feature: 'analytics', title: 'Analytics' },
   },
   {
+    path: '/admin/pos',
+    name: 'pos-order-entry',
+    component: () => import('@/features/pos/OrderEntryPage.vue'),
+    meta: { permission: PermissionNames.SalesOrderCreate, title: 'POS' },
+  },
+  {
     path: '/admin/staff',
     name: 'staff-admin',
     component: () => import('@/features/admin/StaffAdminPage.vue'),

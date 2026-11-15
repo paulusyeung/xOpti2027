@@ -6,7 +6,7 @@ using xOpti.Application.Pipeline;
 namespace xOpti.Application.Sales.Documents;
 
 public sealed record SalesDocumentLineDto(
-    int RowNo, string Sku, int Qty, decimal UnitAmount,
+    int RowNo, string Sku, int Qty, decimal UnitAmount, decimal DiscountAmount,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] decimal? UnitCost,
     decimal Amount, string? TaxCode);
 

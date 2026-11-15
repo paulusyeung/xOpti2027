@@ -1578,6 +1578,380 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/sales/orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    customerId?: number | string;
+                    status?: string;
+                    cursor?: string;
+                    pageSize?: number | string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfSalesDocumentDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateOrderRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SalesDocumentDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/orders/{txNumber}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdateOrderRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SalesDocumentDto"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/orders/{txNumber}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ReasonRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": boolean;
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/orders/{txNumber}/convert": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ConvertOrderRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SalesDocumentDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/customers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    search?: string;
+                    limit?: number | string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CustomerLookupDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    search?: string;
+                    limit?: number | string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SalesItemLookupDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/order-entry/context": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PosContextDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/documents/{txNumber}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SalesDocumentDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    customerId?: number | string;
+                    status?: string;
+                    cursor?: string;
+                    pageSize?: number | string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfSalesDocumentDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/inventory/issues": {
         parameters: {
             query?: never;
@@ -2179,6 +2553,10 @@ export interface components {
             token: string;
             newPassword: string;
         };
+        ConvertOrderRequest: {
+            tenders: components["schemas"]["TenderRequest"][];
+            reason: string;
+        };
         CounterDto: {
             prefix: string;
             /** Format: int32 */
@@ -2209,6 +2587,15 @@ export interface components {
             country: null | string;
             phone: null | string;
             postalCode: null | string;
+            reason: string;
+        };
+        CreateOrderRequest: {
+            /** Format: int32 */
+            customerId: number | string;
+            staffCode: string;
+            lines: components["schemas"]["OrderLineRequest"][];
+            /** Format: double */
+            depositAmount: number | string;
             reason: string;
         };
         CreateSkuRequest: {
@@ -2256,6 +2643,12 @@ export interface components {
             displayName: null | string;
             branch: null | string;
             permissions: string[];
+        };
+        CustomerLookupDto: {
+            /** Format: int32 */
+            id: number | string;
+            fullName: null | string;
+            vipCode: null | string;
         };
         DeactivateBranchRequest: {
             reason: string;
@@ -2404,6 +2797,16 @@ export interface components {
             amount: components["schemas"]["Money"];
             taxCode: null | string;
         };
+        OrderLineRequest: {
+            sku: string;
+            /** Format: int32 */
+            quantity: number | string;
+            /** Format: double */
+            unitAmount: null | number | string;
+            taxCode: string;
+            /** Format: double */
+            discountAmount: number | string;
+        };
         PagedResultOfBranchDto: {
             items: components["schemas"]["BranchDto"][];
             nextCursor: null | string;
@@ -2424,6 +2827,10 @@ export interface components {
             items: components["schemas"]["ReferenceItemDto"][];
             nextCursor: null | string;
         };
+        PagedResultOfSalesDocumentDto: {
+            items: components["schemas"]["SalesDocumentDto"][];
+            nextCursor: null | string;
+        };
         PagedResultOfStaffAccountDto: {
             items: components["schemas"]["StaffAccountDto"][];
             nextCursor: null | string;
@@ -2442,6 +2849,12 @@ export interface components {
         PermissionGrantDto: {
             permission: string;
             roles: string[];
+        };
+        PosContextDto: {
+            /** Format: double */
+            taxARate: number | string;
+            /** Format: double */
+            taxBRate: number | string;
         };
         PostStockTakeRequest: {
             reason: string;
@@ -2603,6 +3016,73 @@ export interface components {
         RoleGrantDto: {
             role: string;
             permissions: string[];
+        };
+        SalesDocumentDto: {
+            txNumber: string;
+            txType: string;
+            kind: string;
+            controlNumber: string;
+            /** Format: date-time */
+            dateOfEntry: string;
+            /** Format: int32 */
+            customerId: number | string;
+            customerName: null | string;
+            status: null | string;
+            statusLabel: string;
+            refNumber: null | string;
+            /** Format: double */
+            totalSale: number | string;
+            /** Format: double */
+            taxA: number | string;
+            /** Format: double */
+            taxB: number | string;
+            /** Format: double */
+            grossSale: number | string;
+            /** Format: double */
+            totalAmount: number | string;
+            /** Format: int32 */
+            totalQty: number | string;
+            /** Format: double */
+            paid: number | string;
+            /** Format: double */
+            balance: number | string;
+            lines: components["schemas"]["SalesDocumentLineDto"][];
+            payments: components["schemas"]["SalesDocumentPaymentDto"][];
+        };
+        SalesDocumentLineDto: {
+            /** Format: int32 */
+            rowNo: number | string;
+            sku: string;
+            /** Format: int32 */
+            qty: number | string;
+            /** Format: double */
+            unitAmount: number | string;
+            /** Format: double */
+            discountAmount: number | string;
+            /** Format: double */
+            unitCost: null | number | string;
+            /** Format: double */
+            amount: number | string;
+            taxCode: null | string;
+        };
+        SalesDocumentPaymentDto: {
+            /** Format: double */
+            paymentLineNo: number | string;
+            type: string;
+            /** Format: double */
+            amountTender: number | string;
+            /** Format: double */
+            totalThisPay: number | string;
+            reference: null | string;
+        };
+        SalesItemLookupDto: {
+            sku: string;
+            name: null | string;
+            /** Format: double */
+            retailPrice: null | number | string;
+            taxCode: null | string;
+            /** Format: int32 */
+            qtyOnHand: number | string;
         };
         SetBranchRequest: {
             branchCode: null | string;
@@ -2810,6 +3290,12 @@ export interface components {
             creditLimit: null | number | string;
             paymentTerms: null | string;
         };
+        TenderRequest: {
+            method: string;
+            /** Format: double */
+            amount: number | string;
+            reference: null | string;
+        };
         TransferStockRequest: {
             sku: string;
             fromBranch: string;
@@ -2825,6 +3311,15 @@ export interface components {
             sku: string;
             /** Format: int32 */
             quantity: number | string;
+        };
+        UpdateOrderRequest: {
+            /** Format: int32 */
+            customerId: number | string;
+            staffCode: string;
+            lines: components["schemas"]["OrderLineRequest"][];
+            /** Format: double */
+            depositAmount: number | string;
+            reason: string;
         };
         UpdatePreferencesRequest: {
             productName: string;

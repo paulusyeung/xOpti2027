@@ -61,6 +61,8 @@ public static class LegacyMapping
             e.Property(x => x.Qty).HasColumnName("qty");
             MoneyProp(e, x => x.UnitAmount, "unit_amount");
             MoneyProp(e, x => x.UnitCost, "unit_cost");
+            e.Property(x => x.MarkDownPercent).HasColumnName("mark_down_percent");
+            MoneyProp(e, x => x.MarkDownAmount, "mark_down_amount");
             MoneyProp(e, x => x.Amount, "amount");
             e.Property(x => x.TaxCode).HasColumnName("tax_code");
         });

@@ -41,7 +41,8 @@ public sealed class EfSalesDocumentStore(XOptiDbContext context) : ISalesDocumen
             .Where(row => row.TxNumber == header.TxNumber)
             .OrderBy(row => row.RowNo)
             .Select(row => new SalesDocumentLineDto((int)row.RowNo, row.Sku, row.Qty,
-                row.UnitAmount.Amount, row.UnitCost.Amount, row.Amount.Amount, row.TaxCode))
+                row.UnitAmount.Amount, row.MarkDownAmount.Amount, row.UnitCost.Amount,
+                row.Amount.Amount, row.TaxCode))
             .ToListAsync(ct);
         var payments = await context.TxPayments.AsNoTracking()
             .Where(row => row.TxNumber == header.TxNumber)

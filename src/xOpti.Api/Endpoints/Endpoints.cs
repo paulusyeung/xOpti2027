@@ -25,6 +25,7 @@ using xOpti.Application.Purchasing.SupplierDocuments;
 using xOpti.Application.Inventory.GetInventorySummary;
 using xOpti.Application.Reference;
 using xOpti.Application.Sales.Documents;
+using xOpti.Application.Sales.OrderEntry;
 using xOpti.Application.Settings;
 using xOpti.Application.Common;
 using xOpti.Application.Identity.ListBranches;
@@ -616,6 +617,100 @@ public static class Endpoints
         .RequireAuthorization($"perm:{PermissionNames.InventoryReceive}")
         .Produces<SupplierActivityDto>();
 
+        v1.MapPost("/sales/orders", async (
+            HttpContext http, CreateOrderRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var key = http.Request.Headers["Idempotency-Key"].FirstOrDefault();
+            var result = await dispatcher.DispatchAsync(new CreateOrderCommand(
+                request.CustomerId, request.StaffCode, request.Lines.Select(line => new OrderLineInput(line.Sku, line.Quantity, line.UnitAmount, line.TaxCode, line.DiscountAmount)).ToList(),
+                request.DepositAmount, request.Reason, key), cancellationToken);
+            return Results.Created($"/api/v1/sales/orders/{result.TxNumber}", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .AddEndpointFilter<IdempotencyKeyFilter>()
+        .Produces<SalesDocumentDto>(StatusCodes.Status201Created);
+
+        v1.MapPut("/sales/orders/{txNumber}", async (
+            string txNumber, UpdateOrderRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new UpdateOrderCommand(
+                txNumber, request.CustomerId, request.StaffCode,
+                request.Lines.Select(line => new OrderLineInput(line.Sku, line.Quantity, line.UnitAmount, line.TaxCode, line.DiscountAmount)).ToList(), request.DepositAmount, request.Reason),
+                cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<SalesDocumentDto>();
+
+        v1.MapPost("/sales/orders/{txNumber}/cancel", async (
+            string txNumber, ReasonRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new CancelOrderCommand(txNumber, request.Reason), cancellationToken);
+            return Results.Ok(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<bool>();
+
+        v1.MapPost("/sales/orders/{txNumber}/convert", async (
+            HttpContext http, string txNumber, ConvertOrderRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var key = http.Request.Headers["Idempotency-Key"].FirstOrDefault();
+            var result = await dispatcher.DispatchAsync(new ConvertOrderCommand(
+                txNumber, request.Tenders.Select(row => new TenderInput(row.Method, row.Amount, row.Reference)).ToList(),
+                request.Reason, key), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
+        .AddEndpointFilter<IdempotencyKeyFilter>()
+        .Produces<SalesDocumentDto>();
+
+        v1.MapGet("/sales/orders", async (
+            int? customerId, string? status, string? cursor, int? pageSize,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ListOrdersQuery(customerId, status, cursor, pageSize ?? 25), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<PagedResult<SalesDocumentDto>>();
+
+        v1.MapGet("/sales/customers", async (
+            string? search, int? limit, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new SearchPosCustomersQuery(search, limit ?? 20), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<IReadOnlyList<CustomerLookupDto>>();
+
+        v1.MapGet("/sales/items", async (
+            string? search, int? limit, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new SearchPosItemsQuery(search, limit ?? 20), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<IReadOnlyList<SalesItemLookupDto>>();
+
+        v1.MapGet("/sales/order-entry/context", async (
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetPosContextQuery(), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<PosContextDto>();
+
         v1.MapGet("/sales/documents/{txNumber}", async (
             string txNumber, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
         {
@@ -838,6 +933,7 @@ public static class Endpoints
 
 public sealed record SignInRequest(string? Username, string? Password);
 
+
 public sealed record CompleteResetRequest(string Username, string Token, string NewPassword);
 
 public sealed record CreateStaffRequest(
@@ -886,6 +982,22 @@ public sealed record ApproveStockTakeRequest(string Reason);
 public sealed record PostStockTakeRequest(string Reason);
 
 public sealed record ImportCountsRequest(string Csv, bool DryRun, string Reason);
+
+public sealed record OrderLineRequest(
+    string Sku, int Quantity, decimal? UnitAmount, string TaxCode, decimal DiscountAmount);
+
+public sealed record CreateOrderRequest(
+    int CustomerId, string StaffCode, IReadOnlyList<OrderLineRequest> Lines,
+    decimal DepositAmount, string Reason);
+
+public sealed record UpdateOrderRequest(
+    int CustomerId, string StaffCode, IReadOnlyList<OrderLineRequest> Lines,
+    decimal DepositAmount, string Reason);
+
+public sealed record ConvertOrderRequest(
+    IReadOnlyList<TenderRequest> Tenders, string Reason);
+
+public sealed record TenderRequest(string Method, decimal Amount, string? Reference);
 
 public sealed record IssueStockRequest(string Sku, string BranchCode, int Quantity, string Reason);
 

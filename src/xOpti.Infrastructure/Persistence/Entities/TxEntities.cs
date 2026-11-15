@@ -72,6 +72,10 @@ public class TxDetail
 
     public Money UnitCost { get; set; }
 
+    public double MarkDownPercent { get; set; }
+
+    public Money MarkDownAmount { get; set; }
+
     public Money Amount { get; set; }
 
     public string? TaxCode { get; set; }

@@ -8,10 +8,10 @@
 
 ## 2. Order entry and conversion
 
-- [ ] 2.1 Implement sale-order create/update/cancel commands with line validation, pricing, tax, discount, and sale-person attribution; verify handler and API tests cover valid and invalid orders.
-- [ ] 2.2 Implement SA control-number allocation and order search/resume; verify concurrent order creation produces distinct numbers.
-- [ ] 2.3 Implement order-to-invoice conversion with deposit application, inventory issue, RC numbering, idempotency, and audit; verify repeated conversion returns the original invoice.
-- [ ] 2.4 Build the POS order-entry screen with customer, SKU search, line editing, discount controls, totals, and save/resume; verify component tests and Playwright order flow.
+- [x] 2.1 Implement sale-order create/update/cancel commands with line validation, pricing, tax, discount, and sale-person attribution; verify handler and API tests cover valid and invalid orders.
+- [x] 2.2 Implement SA control-number allocation and order search/resume; verify concurrent order creation produces distinct numbers.
+- [x] 2.3 Implement order-to-invoice conversion with deposit application, inventory issue, RC numbering, idempotency, and audit; verify repeated conversion returns the original invoice.
+- [x] 2.4 Build the POS order-entry screen with customer, SKU search, line editing, discount controls, totals, and save/resume; verify component tests and Playwright order flow.
 
 ## 3. Retail invoice and refund
 
