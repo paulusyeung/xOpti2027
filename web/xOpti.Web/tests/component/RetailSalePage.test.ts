@@ -47,6 +47,12 @@ function stubApi(handler: (call: Call) => Response | undefined = () => undefined
     calls.push({ url, method, body })
     if (url.includes('/auth/csrf-token')) return json({ token: 'csrf' })
     if (url.includes('/sales/order-entry/context')) return json({ taxARate: 5, taxBRate: 7 })
+    if (url.includes('/sales/payment-methods')) {
+      return json([
+        { code: 'C', nameShort: 'CSH', nameLong: 'Cash' },
+        { code: 'K', nameShort: 'CRD', nameLong: 'Card' },
+      ])
+    }
     if (url.includes('/sales/customers')) return json([{ id: 500001, fullName: 'Retail Customer', vipCode: null }])
     if (url.includes('/sales/items')) {
       return json([{ sku: '99000002', name: 'Retail Frame', retailPrice: 50, taxCode: 'B', qtyOnHand: 10 }])
@@ -79,11 +85,11 @@ describe('RetailSalePage', () => {
     await flushPromises()
     await wrapper.find('[data-testid="pos-sale-sku-option-99000002"]').trigger('click')
     await wrapper.find('[data-testid="pos-sale-line-0-qty"] input').setValue('2')
-    await wrapper.find('[data-testid="pos-sale-tender"] input').setValue('120')
+    await wrapper.find('[data-testid="pos-sale-payment-amount-0"] input').setValue('120')
     await flushPromises()
 
     expect(wrapper.find('[data-testid="pos-sale-total"]').text()).toBe('112.00')
-    expect(wrapper.find('[data-testid="pos-sale-change"]').text()).toBe('8.00')
+    expect(wrapper.find('[data-testid="pos-sale-payment-change"]').text()).toBe('8.00')
 
     await wrapper.find('[data-testid="pos-sale-submit"]').trigger('click')
     await flushPromises()
@@ -92,7 +98,7 @@ describe('RetailSalePage', () => {
     const posted = calls.find((call) => call.method === 'POST' && call.url.includes('/sales/invoices'))
     expect(posted?.body).toMatchObject({
       customerId: 500001,
-      tenders: [{ method: 'C', amount: 120 }],
+      tenders: [{ method: 'C', amount: 120, reference: null }],
       lines: [{ sku: '99000002', quantity: 2, unitAmount: 50, discountAmount: 0, taxCode: 'B' }],
     })
 
@@ -100,6 +106,33 @@ describe('RetailSalePage', () => {
     await flushPromises()
     expect(wrapper.find('[data-testid="pos-sale-reprinted"]').text()).toContain('RC00001001')
     expect(wrapper.findAll('[data-testid="pos-document-total"]')[0].text()).toBe('112.00')
+    wrapper.unmount()
+  })
+
+  it.each([
+    ['declined', 'terminal-declined', 'declined'],
+    ['timeout', 'terminal-timeout', 'timed out'],
+  ])('shows a terminal %s message', async (_label, code, message) => {
+    stubApi((call) => {
+      if (call.method === 'POST' && call.url.includes('/sales/invoices')) {
+        return json({ type: 'https://errors.xopti/validation', title: 'Validation failed', status: 400,
+          errors: [{ field: 'Tenders', code, message: `The simulated terminal ${message}.` }] }, 400)
+      }
+      return undefined
+    })
+    const { wrapper } = await mountInApp(RetailSalePage, { path: '/' })
+    await flushPromises()
+    await wrapper.find('[data-testid="pos-sale-customer-search"] input').setValue('Retail')
+    await wrapper.find('[data-testid="pos-sale-customer-find"]').trigger('click')
+    await flushPromises()
+    await wrapper.find('[data-testid="pos-sale-customer-option-500001"]').trigger('click')
+    await wrapper.find('[data-testid="pos-sale-sku-search"] input').setValue('9900')
+    await wrapper.find('[data-testid="pos-sale-sku-find"]').trigger('click')
+    await flushPromises()
+    await wrapper.find('[data-testid="pos-sale-sku-option-99000002"]').trigger('click')
+    await wrapper.find('[data-testid="pos-sale-submit"]').trigger('click')
+    await flushPromises()
+    expect(wrapper.find('[data-testid="pos-sale-error"]').text()).toContain(message)
     wrapper.unmount()
   })
 

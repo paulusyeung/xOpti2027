@@ -79,4 +79,20 @@ export interface RefundableInvoice {
   refundedTaxA: number | string
   refundedTaxB: number | string
   lines: RefundableLine[]
+  tenders: RefundableTender[]
+}
+
+export interface RefundableTender {
+  paymentLineNo: number
+  type: string
+  amount: number | string
+  refundedAmount: number | string
+  refundableAmount: number | string
+  reference: string | null
+}
+
+export interface PaymentMethod {
+  code: string
+  nameShort: string
+  nameLong: string
 }

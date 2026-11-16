@@ -22,6 +22,10 @@ const refundable = {
     rowNo: 1, sku: '99000004', originalQuantity: 3, refundedQuantity: 0, refundableQuantity: 3,
     unitAmount: 50, discountAmount: 0, amount: 150, taxA: 7.5, taxB: 10.5, taxCode: 'B',
   }],
+  tenders: [{
+    paymentLineNo: 1, type: 'C', amount: 168, refundedAmount: 0, refundableAmount: 168,
+    reference: null,
+  }],
 }
 
 const invoice = {
@@ -67,6 +71,12 @@ function stubApi(handler: (call: Call) => Response | undefined = () => undefined
     calls.push({ url, method, body })
     if (url.includes('/auth/csrf-token')) return json({ token: 'csrf' })
     if (url.includes('/sales/order-entry/context')) return json({ taxARate: 5, taxBRate: 7 })
+    if (url.includes('/sales/payment-methods')) {
+      return json([
+        { code: 'C', nameShort: 'CSH', nameLong: 'Cash' },
+        { code: 'K', nameShort: 'CRD', nameLong: 'Card' },
+      ])
+    }
     if (url.includes('/refundable')) return json(refundable)
     if (url.includes('/sales/items')) {
       return json([{ sku: '99000004', name: 'Retail Frame', retailPrice: 50, taxCode: 'B', qtyOnHand: 10 }])
@@ -112,11 +122,34 @@ describe('RetailRefundPage', () => {
       originalTxNumber: 'RC00001001',
       lines: [{ originalRowNo: 1, quantity: 1, restock: true }],
       replacements: [{ sku: '99000004', quantity: 1, unitAmount: 50, discountAmount: 0, taxCode: 'B' }],
+      refundTenders: [],
+      saleTenders: [],
     })
 
     await wrapper.find('[data-testid="pos-refund-reprint"]').trigger('click')
     await flushPromises()
     expect(wrapper.find('[data-testid="pos-refund-reprinted"]').text()).toContain('RC00001001')
+    wrapper.unmount()
+  })
+
+  it('allocates a refund to the original tender', async () => {
+    const calls = stubApi((call) =>
+      call.method === 'POST' && call.url.includes('/sales/refunds') ? json(refund, 201) : undefined)
+    const { wrapper } = await mountInApp(RetailRefundPage, { path: '/' })
+    await flushPromises()
+    await wrapper.find('[data-testid="pos-refund-invoice"] input').setValue('RC00001001')
+    await wrapper.find('[data-testid="pos-refund-load"]').trigger('click')
+    await flushPromises()
+    await wrapper.find('[data-testid="pos-refund-line-1-qty"] input').setValue('1')
+    await flushPromises()
+    expect(wrapper.find('[data-testid="pos-refund-tender-0"]').text()).toContain('C')
+    expect(wrapper.find('[data-testid="pos-refund-tender-amount-0"]').text()).toBe('56.00')
+    await wrapper.find('[data-testid="pos-refund-submit"]').trigger('click')
+    await flushPromises()
+    const posted = calls.find((call) => call.method === 'POST' && call.url.includes('/sales/refunds'))
+    expect((posted?.body as { refundTenders: unknown[] }).refundTenders).toEqual([
+      { method: 'C', amount: 56, reference: null, originalPaymentLineNo: 1 },
+    ])
     wrapper.unmount()
   })
 

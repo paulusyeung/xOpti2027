@@ -47,6 +47,14 @@ public sealed class EfRetailSaleStore(
         return (preference?.TaxARate ?? 0, preference?.TaxBRate ?? 0);
     }
 
+    public async Task<IReadOnlyList<xOpti.Application.Payments.PaymentMethodDto>> PaymentMethodsAsync(
+        CancellationToken ct) =>
+        await context.PaymentMethods.AsNoTracking()
+            .OrderBy(row => row.PaymentCode)
+            .Select(row => new xOpti.Application.Payments.PaymentMethodDto(
+                row.PaymentCode, row.PaymentNameShort, row.PaymentNameLong))
+            .ToListAsync(ct);
+
     public Task<string> NextControlNumberAsync(CancellationToken ct) =>
         ControlNumberSequencer.NextAsync(context, ct);
 
@@ -71,47 +79,10 @@ public sealed class EfRetailSaleStore(
 
         await AddSaleLinesAsync(posting.TxNumber, posting.ControlNumber, now, posting.Lines, ct);
 
-        var remaining = decimal.Round(posting.GrossSale, 4);
-        var appliedTotal = 0m;
-        var change = 0m;
-        var paymentLine = 1;
-        foreach (var tender in posting.Tenders)
-        {
-            var method = tender.Method.Trim();
-            if (method.Length == 0)
-                throw Validation("Tenders", "method", "A tender method is required.");
-            if (remaining <= 0)
-                throw Validation("Tenders", "already-paid",
-                    "The invoice is already fully tendered; remove the extra payment.");
-
-            var amount = decimal.Round(tender.Amount, 4);
-            var isCash = string.Equals(method[..1], "C", StringComparison.OrdinalIgnoreCase);
-            var applied = amount;
-            if (amount > remaining)
-            {
-                if (!isCash)
-                    throw Validation("Tenders", "over-tender",
-                        $"A {method[..1]} tender cannot exceed the remaining balance {remaining:0.00}.");
-                applied = remaining;
-                change += amount - remaining;
-            }
-
-            context.TxPayments.Add(new TxPayment
-            {
-                TxNumber = posting.TxNumber, PaymentLineNo = paymentLine++, Type = method[..1],
-                AmountTender = Money.From(amount), EqAmount = Money.From(applied),
-                TotalThisPay = Money.From(applied), AuthorizationCode = tender.Reference,
-            });
-            appliedTotal += applied;
-            remaining = decimal.Round(remaining - applied, 4);
-        }
-
-        if (remaining != 0)
-            throw Validation("Tenders", "unpaid",
-                $"Tenders are short by {remaining:0.00}; the invoice was not posted.");
-
+        var (appliedTotal, change) = AddSaleTenders(
+            posting.TxNumber, posting.GrossSale, posting.Tenders, 1);
         header.ThisPaid = Money.From(appliedTotal);
-        header.Change = Money.From(decimal.Round(change, 4));
+        header.Change = Money.From(change);
         context.TxSalePersons.Add(new TxSalePerson
         {
             TxNumber = posting.TxNumber, SalesRowNo = 1, StaffCode = posting.StaffCode,
@@ -160,15 +131,31 @@ public sealed class EfRetailSaleStore(
                 detail.MarkDownAmount.Amount, amount, taxA, taxB, detail.TaxCode));
         }
 
+        var payments = await context.TxPayments.AsNoTracking()
+            .Where(row => row.TxNumber == invoiceNumber)
+            .OrderBy(row => row.PaymentLineNo).ToListAsync(ct);
+        var refundedByPayment = (await context.SalesRefundTenders.AsNoTracking()
+                .Where(row => row.OriginalTxNumber == invoiceNumber).ToListAsync(ct))
+            .GroupBy(row => row.OriginalPaymentLineNo)
+            .ToDictionary(group => group.Key, group => group.Sum(row => row.Amount));
+        var tenders = payments.Select(payment =>
+        {
+            var applied = payment.TotalThisPay.Amount;
+            var refunded = refundedByPayment.GetValueOrDefault(payment.PaymentLineNo);
+            return new RefundableTenderDto(payment.PaymentLineNo, payment.Type, applied,
+                refunded, Math.Max(0m, applied - refunded), payment.AuthorizationCode);
+        }).ToList();
+
         return new RefundableInvoiceDto(header.TxNumber, header.CustomerId, customerName,
             header.DateOfEntry, header.TotalSale.Amount, header.TaxA.Amount, header.TaxB.Amount,
-            header.TotalAmount.Amount, links.Sum(row => row.TaxA), links.Sum(row => row.TaxB), lines);
+            header.TotalAmount.Amount, links.Sum(row => row.TaxA), links.Sum(row => row.TaxB),
+            lines, tenders);
     }
 
     public async Task PostRefundAsync(RefundPosting posting, CancellationToken ct)
     {
         var now = posting.DateOfEntry;
-        context.TxHeaders.Add(new TxHeader
+        var refundHeader = new TxHeader
         {
             TxNumber = posting.TxNumber, ControlNumber = posting.ControlNumber,
             TxType = TransactionType.RetailRefund, DateOfEntry = now, DateOfCreation = now,
@@ -179,7 +166,8 @@ public sealed class EfRetailSaleStore(
             TotalAmount = Money.From(posting.GrossSale),
             TotalQty = posting.TotalQty,
             Status = "0",
-        });
+        };
+        context.TxHeaders.Add(refundHeader);
 
         var originalCosts = await context.TxDetails.AsNoTracking()
             .Where(row => row.TxNumber == posting.OriginalTxNumber)
@@ -231,6 +219,33 @@ public sealed class EfRetailSaleStore(
             rowNo++;
         }
 
+        var paymentLine = 1;
+        var refundedTendered = 0m;
+        foreach (var tender in posting.RefundTenders)
+        {
+            var method = tender.Method.Trim();
+            context.TxPayments.Add(new TxPayment
+            {
+                TxNumber = posting.TxNumber, PaymentLineNo = paymentLine, Type = method[..1],
+                AmountTender = Money.From(-tender.Amount), EqAmount = Money.From(-tender.Amount),
+                TotalThisPay = Money.From(-tender.Amount), AuthorizationCode = tender.Reference,
+            });
+            context.SalesRefundTenders.Add(new SalesRefundTender
+            {
+                RefundTxNumber = posting.TxNumber, PaymentLineNo = paymentLine,
+                OriginalTxNumber = posting.OriginalTxNumber,
+                OriginalPaymentLineNo = tender.OriginalPaymentLineNo ?? 0,
+                Amount = tender.Amount, Method = method[..1],
+            });
+            refundedTendered += tender.Amount;
+            paymentLine++;
+        }
+
+        var (saleApplied, change) = AddSaleTenders(
+            posting.TxNumber, Math.Max(0m, posting.TotalSale), posting.SaleTenders, paymentLine);
+        refundHeader.ThisPaid = Money.From(decimal.Round(saleApplied - refundedTendered, 4));
+        refundHeader.Change = Money.From(change);
+
         context.TxSalePersons.Add(new TxSalePerson
         {
             TxNumber = posting.TxNumber, SalesRowNo = 1, StaffCode = posting.StaffCode,
@@ -266,6 +281,50 @@ public sealed class EfRetailSaleStore(
                 Amount = Money.From(line.Amount), TaxCode = line.TaxCode,
             });
         }
+    }
+
+    private (decimal Applied, decimal Change) AddSaleTenders(
+        string txNumber, decimal total, IReadOnlyList<RetailTenderInput> tenders, int startLine)
+    {
+        var remaining = decimal.Round(total, 4);
+        var appliedTotal = 0m;
+        var change = 0m;
+        var paymentLine = startLine;
+        foreach (var tender in tenders)
+        {
+            var method = tender.Method.Trim();
+            if (method.Length == 0)
+                throw Validation("Tenders", "method", "A tender method is required.");
+            if (remaining <= 0)
+                throw Validation("Tenders", "already-paid",
+                    "The document is already fully tendered; remove the extra payment.");
+
+            var amount = decimal.Round(tender.Amount, 4);
+            var isCash = string.Equals(method[..1], "C", StringComparison.OrdinalIgnoreCase);
+            var applied = amount;
+            if (amount > remaining)
+            {
+                if (!isCash)
+                    throw Validation("Tenders", "over-tender",
+                        $"A {method[..1]} tender cannot exceed the remaining balance {remaining:0.00}.");
+                applied = remaining;
+                change += amount - remaining;
+            }
+
+            context.TxPayments.Add(new TxPayment
+            {
+                TxNumber = txNumber, PaymentLineNo = paymentLine++, Type = method[..1],
+                AmountTender = Money.From(amount), EqAmount = Money.From(applied),
+                TotalThisPay = Money.From(applied), AuthorizationCode = tender.Reference,
+            });
+            appliedTotal += applied;
+            remaining = decimal.Round(remaining - applied, 4);
+        }
+
+        if (remaining != 0)
+            throw Validation("Tenders", "unpaid",
+                $"Tenders are short by {remaining:0.00}; the document was not posted.");
+        return (decimal.Round(appliedTotal, 4), decimal.Round(change, 4));
     }
 
     private static ValidationFailedException Validation(string field, string code, string message) =>

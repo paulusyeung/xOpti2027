@@ -39,6 +39,24 @@ public static class SeedData
                 }
             }
 
+            foreach (var (code, shortName, longName) in new[]
+                     {
+                         ("C", "CSH", "Cash"),
+                         ("K", "CRD", "Card"),
+                     })
+            {
+                if (!await ctx.PaymentMethods.AnyAsync(x => x.PaymentCode == code))
+                {
+                    ctx.PaymentMethods.Add(new PaymentMethod
+                    {
+                        PaymentCode = code,
+                        PaymentNameShort = shortName,
+                        PaymentNameLong = longName,
+                        ExchangeRate = 1,
+                    });
+                }
+            }
+
             for (var i = 1; i <= 7; i++)
             {
                 var code = $"0{i}";

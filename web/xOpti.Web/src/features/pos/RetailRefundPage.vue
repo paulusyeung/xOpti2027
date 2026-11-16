@@ -3,8 +3,9 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { api, unwrap } from '@/api/client'
 import { AppError } from '@/api/problems'
 import DocumentPanel from './DocumentPanel.vue'
-import { normalizeTaxCode, round2, taxFor, type TaxRates } from './pricing'
-import type { PosDocument, PosItem, RefundableInvoice } from './types'
+import PaymentPanel, { type TenderRow } from './PaymentPanel.vue'
+import { normalizeTaxCode, round2, taxFor, tenderOutcome, type TaxRates } from './pricing'
+import type { PaymentMethod, PosDocument, PosItem, RefundableInvoice } from './types'
 
 interface RefundSelection {
   rowNo: number
@@ -37,6 +38,8 @@ const replacements = ref<ReplacementLine[]>([])
 const skuQuery = ref('')
 const skuResults = ref<PosItem[]>([])
 const rates = reactive<TaxRates>({ a: 0, b: 0 })
+const paymentMethods = ref<PaymentMethod[]>([])
+const saleTenders = ref<TenderRow[]>([])
 const staffCode = ref('0001')
 const reason = ref('customer refund')
 const busy = ref(false)
@@ -106,16 +109,49 @@ const refundTotals = computed(() => {
   }
 })
 
+const refundTenders = computed(() => {
+  if (!invoice.value || refundTotals.value.net >= 0) return [] as TenderRow[]
+  let remaining = round2(-refundTotals.value.net)
+  const rows: TenderRow[] = []
+  for (const tender of invoice.value.tenders) {
+    if (remaining <= 0) break
+    const available = Number(tender.refundableAmount)
+    if (available <= 0) continue
+    const amount = round2(Math.min(available, remaining))
+    rows.push({
+      method: tender.type,
+      amount,
+      reference: tender.reference ?? '',
+      originalPaymentLineNo: tender.paymentLineNo,
+    })
+    remaining = round2(remaining - amount)
+  }
+  return rows
+})
+
+const refundShortfall = computed(() => {
+  if (!invoice.value || refundTotals.value.net >= 0) return 0
+  const allocated = refundTenders.value.reduce((sum, tender) => sum + tender.amount, 0)
+  return round2(Math.max(0, -refundTotals.value.net - allocated))
+})
+
+const saleOutcome = computed(() =>
+  tenderOutcome(saleTenders.value, Math.max(0, refundTotals.value.net)))
+
 const canSubmit = computed(() =>
   invoice.value !== null
   && selections.value.some((line) => line.quantity > 0)
   && selections.value.every((line) => line.quantity >= 0 && line.quantity <= line.refundableQuantity)
-  && reason.value.trim().length >= 3)
+  && reason.value.trim().length >= 3
+  && (refundTotals.value.net > 0
+    ? saleOutcome.value.remaining === 0
+    : refundShortfall.value === 0))
 
 async function loadContext(): Promise<void> {
   const context = await unwrap(await api.client.GET('/api/v1/sales/order-entry/context'))
   rates.a = Number(context.taxARate)
   rates.b = Number(context.taxBRate)
+  paymentMethods.value = (await unwrap(await api.client.GET('/api/v1/sales/payment-methods', {}))) as unknown as PaymentMethod[]
 }
 
 async function fetchRefundable(): Promise<void> {
@@ -137,6 +173,7 @@ async function fetchRefundable(): Promise<void> {
     restock: true,
   }))
   replacements.value = []
+  saleTenders.value = []
 }
 
 async function loadInvoice(): Promise<void> {
@@ -226,8 +263,21 @@ async function postRefund(): Promise<void> {
           discountAmount: line.discountAmount,
           taxCode: line.taxCode,
         })),
+        refundTenders: refundTenders.value.map((tender) => ({
+          method: tender.method,
+          amount: tender.amount,
+          reference: tender.reference || null,
+          originalPaymentLineNo: tender.originalPaymentLineNo,
+        })),
+        saleTenders: saleTenders.value
+          .filter((tender) => Number(tender.amount) > 0)
+          .map((tender) => ({
+            method: tender.method,
+            amount: Number(tender.amount),
+            reference: tender.reference.trim() || null,
+          })),
       },
-    })) as PosDocument
+    })) as unknown as PosDocument
     posted.value = document
     notice.value = `${document.txNumber} posted for ${invoice.value.txNumber}.`
     await refreshRefundable()
@@ -392,8 +442,24 @@ onMounted(async () => {
             </div>
             <v-divider class="my-2" />
             <div class="d-flex justify-space-between text-body-1">
-              <strong>{{ refundTotals.net < 0 ? 'Refund due' : 'Balance due' }}</strong>
+              <strong>{{ refundTotals.net < 0 ? 'Refund due' : refundTotals.net > 0 ? 'Balance due' : 'Settled' }}</strong>
               <strong data-testid="pos-refund-net">{{ Math.abs(refundTotals.net).toFixed(2) }}</strong>
+            </div>
+            <div v-if="refundTenders.length" class="mt-3" data-testid="pos-refund-tenders">
+              <div class="text-subtitle-2 mb-1">Refund to original tenders</div>
+              <div v-for="(tender, index) in refundTenders" :key="index" class="d-flex justify-space-between text-body-2"
+                :data-testid="`pos-refund-tender-${index}`">
+                <span>{{ tender.method }} · line {{ tender.originalPaymentLineNo }}</span>
+                <span :data-testid="`pos-refund-tender-amount-${index}`">{{ tender.amount.toFixed(2) }}</span>
+              </div>
+            </div>
+            <v-alert v-if="refundShortfall > 0" type="warning" variant="tonal" class="mt-2"
+              data-testid="pos-refund-shortfall">
+              {{ refundShortfall.toFixed(2) }} has no refundable original tender.
+            </v-alert>
+            <div v-if="refundTotals.net > 0" class="mt-3">
+              <PaymentPanel v-model="saleTenders" :methods="paymentMethods"
+                :total="refundTotals.net" test-prefix="pos-refund-sale" />
             </div>
             <v-text-field v-model="reason" label="Reason" density="compact" class="mt-3"
               data-testid="pos-refund-reason" />

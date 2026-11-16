@@ -1485,6 +1485,44 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                     b.ToTable("sales_refund_line", "platform");
                 });
 
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.SalesRefundTender", b =>
+                {
+                    b.Property<string>("RefundTxNumber")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("refund_tx_number");
+
+                    b.Property<double>("PaymentLineNo")
+                        .HasColumnType("double precision")
+                        .HasColumnName("payment_line_no");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("amount");
+
+                    b.Property<string>("Method")
+                        .IsRequired()
+                        .HasMaxLength(1)
+                        .HasColumnType("character varying(1)")
+                        .HasColumnName("method");
+
+                    b.Property<double>("OriginalPaymentLineNo")
+                        .HasColumnType("double precision")
+                        .HasColumnName("original_payment_line_no");
+
+                    b.Property<string>("OriginalTxNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("original_tx_number");
+
+                    b.HasKey("RefundTxNumber", "PaymentLineNo")
+                        .HasName("pk_sales_refund_tender");
+
+                    b.ToTable("sales_refund_tender", "platform");
+                });
+
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.SchemaBaseline", b =>
                 {
                     b.Property<int>("Id")
@@ -1749,6 +1787,10 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                     b.Property<string>("TxNumber")
                         .HasColumnType("text")
                         .HasColumnName("tx_number");
+
+                    b.Property<decimal>("Change")
+                        .HasColumnType("numeric")
+                        .HasColumnName("change");
 
                     b.Property<string>("ControlNumber")
                         .IsRequired()

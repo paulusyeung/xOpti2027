@@ -47,3 +47,24 @@ export function taxFor(
       return { gst: 0, pst: 0, gross: amount }
   }
 }
+
+export interface TenderLike {
+  method: string
+  amount: number
+}
+
+export function tenderOutcome(tenders: TenderLike[], total: number) {
+  let remaining = round2(total)
+  let applied = 0
+  let change = 0
+  for (const tender of tenders) {
+    const amount = Number(tender.amount || 0)
+    if (amount <= 0 || remaining <= 0) continue
+    const isCash = tender.method.toUpperCase() === 'C'
+    const take = amount > remaining ? (isCash ? remaining : 0) : amount
+    applied += take
+    remaining = round2(remaining - take)
+    if (isCash && amount > take) change = round2(change + amount - take)
+  }
+  return { applied: round2(applied), remaining, change }
+}

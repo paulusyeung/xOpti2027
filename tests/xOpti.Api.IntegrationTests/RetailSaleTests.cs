@@ -82,13 +82,19 @@ public sealed class RetailSaleTests(ApiPostgresFixture fixture)
 
     private static object InvoiceBody(
         int customerId, string sku, int quantity = 1, decimal unitAmount = 50m,
-        decimal discount = 0m, string method = "C", decimal? tender = null) => new
+        decimal discount = 0m, string method = "C", decimal? tender = null,
+        string? reference = null) => new
     {
         customerId,
         staffCode = "0007",
         reason = "retail sale test",
         lines = new[] { new { sku, quantity, unitAmount, discountAmount = discount, taxCode = "B" } },
-        tenders = new[] { new { method, amount = tender ?? unitAmount * quantity, reference = (string?)null } },
+        tenders = new[] { new { method, amount = tender ?? unitAmount * quantity, reference } },
+    };
+
+    private static object RefundTender(decimal amount, double originalLine = 1) => new
+    {
+        method = "C", amount, reference = (string?)null, originalPaymentLineNo = originalLine,
     };
 
     [Fact]
@@ -169,7 +175,7 @@ public sealed class RetailSaleTests(ApiPostgresFixture fixture)
         }
 
         var response = await manager.PostAsync("/api/v1/sales/invoices",
-            InvoiceBody(customerId, sku, method: "K", tender: 100m),
+            InvoiceBody(customerId, sku, method: "K", tender: 100m, reference: "AUTH-1"),
             idempotencyKey: "rollback-" + Guid.NewGuid().ToString("N"));
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
@@ -215,6 +221,8 @@ public sealed class RetailSaleTests(ApiPostgresFixture fixture)
             reason = "partial refund",
             lines = new[] { new { originalRowNo = 1, quantity = 1, restock = true } },
             replacements = Array.Empty<object>(),
+            refundTenders = new[] { RefundTender(56m) },
+            saleTenders = Array.Empty<object>(),
         }, idempotencyKey: "rs-partial-" + Guid.NewGuid().ToString("N")),
             HttpStatusCode.Created, factory);
         var refundNumber = refund.GetProperty("txNumber").GetString()!;
@@ -234,6 +242,8 @@ public sealed class RetailSaleTests(ApiPostgresFixture fixture)
                 row => row.TxNumber == invoiceNumber)).Status);
             Assert.Equal(1, await verify.SalesRefundLines.CountAsync(row =>
                 row.RefundTxNumber == refundNumber && row.OriginalRowNo == 1));
+            Assert.Equal(56m, (await verify.SalesRefundTenders.SingleAsync(row =>
+                row.RefundTxNumber == refundNumber)).Amount);
         }
 
         var afterPartial = await ExpectAsync(
@@ -250,6 +260,8 @@ public sealed class RetailSaleTests(ApiPostgresFixture fixture)
             reason = "too many units",
             lines = new[] { new { originalRowNo = 1, quantity = 3, restock = false } },
             replacements = Array.Empty<object>(),
+            refundTenders = new[] { RefundTender(168m) },
+            saleTenders = Array.Empty<object>(),
         }, idempotencyKey: "rs-over-" + Guid.NewGuid().ToString("N"));
         Assert.Equal(HttpStatusCode.BadRequest, overRefund.StatusCode);
 
@@ -263,6 +275,8 @@ public sealed class RetailSaleTests(ApiPostgresFixture fixture)
             {
                 new { sku, quantity = 1, unitAmount = 50m, discountAmount = 0m, taxCode = "B" },
             },
+            refundTenders = new[] { RefundTender(56m) },
+            saleTenders = Array.Empty<object>(),
         }, idempotencyKey: "rs-exchange-" + Guid.NewGuid().ToString("N")),
             HttpStatusCode.Created, factory);
         var exchangeNumber = exchange.GetProperty("txNumber").GetString()!;
@@ -346,5 +360,253 @@ public sealed class RetailSaleTests(ApiPostgresFixture fixture)
         Assert.True(await verifyAudit.AuditLogs.AnyAsync(row =>
             row.Action == "sales.discount-override" && row.EntityId == invoiceNumber
             && row.Details!.Contains("99000005")));
+    }
+
+    [Fact]
+    public async Task SplitTender_WithCardReference_AndExactTotals()
+    {
+        var sku = "99000006";
+        var customerId = await SeedAsync(sku);
+        var factory = new XOptiApiFactory(fixture);
+        using var manager = new TestClient(factory);
+        await manager.FetchCsrfTokenAsync();
+        await manager.SignInAsync("manager", SeedData.Password);
+
+        var created = await ExpectAsync(await manager.PostAsync("/api/v1/sales/invoices", new
+        {
+            customerId,
+            staffCode = "0007",
+            reason = "split tender",
+            lines = new[] { new { sku, quantity = 2, unitAmount = 50m, discountAmount = 0m, taxCode = "B" } },
+            tenders = new[]
+            {
+                new { method = "C", amount = 50m, reference = (string?)null },
+                new { method = "K", amount = 62m, reference = "AUTH-SPLIT" },
+            },
+        }, idempotencyKey: "split-" + Guid.NewGuid().ToString("N")),
+            HttpStatusCode.Created, factory);
+
+        Assert.Equal(112m, created.GetProperty("totalAmount").GetDecimal());
+        Assert.Equal(112m, created.GetProperty("paid").GetDecimal());
+        Assert.Equal(0m, created.GetProperty("balance").GetDecimal());
+        Assert.Equal(2, created.GetProperty("payments").GetArrayLength());
+
+        await using var verify = fixture.NewContext();
+        var payments = await verify.TxPayments.Where(row =>
+            row.TxNumber == created.GetProperty("txNumber").GetString()).OrderBy(row => row.PaymentLineNo)
+            .ToListAsync();
+        Assert.Equal(new[] { "C", "K" }, payments.Select(row => row.Type));
+        Assert.Equal("AUTH-SPLIT", payments[1].AuthorizationCode);
+        Assert.Null(payments[1].CardNumber);
+    }
+
+    [Fact]
+    public async Task CardTender_RequiresManualReference_AndNeverStoresCardData()
+    {
+        var sku = "99000007";
+        var customerId = await SeedAsync(sku);
+        var factory = new XOptiApiFactory(fixture);
+        using var manager = new TestClient(factory);
+        await manager.FetchCsrfTokenAsync();
+        await manager.SignInAsync("manager", SeedData.Password);
+
+        var missingReference = await manager.PostAsync("/api/v1/sales/invoices",
+            InvoiceBody(customerId, sku, method: "K", tender: 56m),
+            idempotencyKey: "no-ref-" + Guid.NewGuid().ToString("N"));
+        Assert.Equal(HttpStatusCode.BadRequest, missingReference.StatusCode);
+        Assert.Contains("approval reference", await missingReference.Content.ReadAsStringAsync());
+
+        const string cardNumber = "4111111111111111";
+        var panReference = await manager.PostAsync("/api/v1/sales/invoices",
+            InvoiceBody(customerId, sku, method: "K", tender: 56m, reference: cardNumber),
+            idempotencyKey: "pan-ref-" + Guid.NewGuid().ToString("N"));
+        Assert.Equal(HttpStatusCode.BadRequest, panReference.StatusCode);
+        Assert.DoesNotContain(cardNumber, await panReference.Content.ReadAsStringAsync());
+
+        var created = await manager.PostAsync("/api/v1/sales/invoices", new
+        {
+            customerId,
+            staffCode = "0007",
+            reason = "card sale",
+            lines = new[] { new { sku, quantity = 1, unitAmount = 50m, discountAmount = 0m, taxCode = "B" } },
+            tenders = new[] { new { method = "K", amount = 56m, reference = "AUTH-42",
+                cardNumber } },
+        }, idempotencyKey: "card-" + Guid.NewGuid().ToString("N"));
+        var document = await ExpectAsync(created, HttpStatusCode.Created, factory);
+        var invoiceNumber = document.GetProperty("txNumber").GetString()!;
+        Assert.DoesNotContain(cardNumber, await created.Content.ReadAsStringAsync());
+
+        await using var verify = fixture.NewContext();
+        var payment = await verify.TxPayments.SingleAsync(row => row.TxNumber == invoiceNumber);
+        Assert.Equal("AUTH-42", payment.AuthorizationCode);
+        Assert.Null(payment.CardNumber);
+        Assert.All(factory.Logs.Snapshot(),
+            entry => Assert.DoesNotContain(cardNumber, entry.Message));
+    }
+
+    [Fact]
+    public async Task TerminalDeclineAndTimeout_RejectsWithoutPosting()
+    {
+        var sku = "99000008";
+        var customerId = await SeedAsync(sku);
+        var factory = new XOptiApiFactory(fixture,
+            new Dictionary<string, string?> { ["XOptiApi:PaymentTerminalMode"] = "simulated" });
+        using var manager = new TestClient(factory);
+        await manager.FetchCsrfTokenAsync();
+        await manager.SignInAsync("manager", SeedData.Password);
+
+        foreach (var (reference, expected) in new[]
+                 {
+                     ("SIM-DECLINE", "declined"),
+                     ("SIM-TIMEOUT", "timed out"),
+                 })
+        {
+            var response = await manager.PostAsync("/api/v1/sales/invoices",
+                InvoiceBody(customerId, sku, method: "K", tender: 56m, reference: reference),
+                idempotencyKey: "terminal-" + Guid.NewGuid().ToString("N"));
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            Assert.Contains(expected, (await response.Content.ReadAsStringAsync()).ToLowerInvariant());
+        }
+
+        await using var verify = fixture.NewContext();
+        Assert.Equal(10, (await verify.InventoryItems.SingleAsync(
+            row => row.Sku == sku)).QtyTotalOnHand);
+        Assert.False(await verify.TxHeaders.AnyAsync(row =>
+            row.CustomerId == customerId && row.TxType == xOpti.Domain.Values.TransactionType.RetailInvoice));
+    }
+
+    [Fact]
+    public async Task InvoiceAndRefund_ReplayOnDuplicateIdempotencyKey()
+    {
+        var sku = "99000009";
+        var customerId = await SeedAsync(sku);
+        var factory = new XOptiApiFactory(fixture);
+        using var manager = new TestClient(factory);
+        await manager.FetchCsrfTokenAsync();
+        await manager.SignInAsync("manager", SeedData.Password);
+
+        var body = InvoiceBody(customerId, sku, quantity: 1, tender: 56m);
+        var key = "replay-" + Guid.NewGuid().ToString("N");
+        var first = await ExpectAsync(await manager.PostAsync("/api/v1/sales/invoices", body, key),
+            HttpStatusCode.Created, factory);
+        var second = await ExpectAsync(await manager.PostAsync("/api/v1/sales/invoices", body, key),
+            HttpStatusCode.Created, factory);
+        Assert.Equal(first.GetProperty("txNumber").GetString(), second.GetProperty("txNumber").GetString());
+
+        await using (var verify = fixture.NewContext())
+        {
+            Assert.Equal(9, (await verify.InventoryItems.SingleAsync(
+                row => row.Sku == sku)).QtyTotalOnHand);
+            Assert.Equal(1, await verify.TxHeaders.CountAsync(row =>
+                row.CustomerId == customerId && row.TxType == xOpti.Domain.Values.TransactionType.RetailInvoice));
+        }
+
+        var refundBody = new
+        {
+            originalTxNumber = first.GetProperty("txNumber").GetString(),
+            staffCode = "0007",
+            reason = "replay refund",
+            lines = new[] { new { originalRowNo = 1, quantity = 1, restock = false } },
+            replacements = Array.Empty<object>(),
+            refundTenders = new[] { RefundTender(56m) },
+            saleTenders = Array.Empty<object>(),
+        };
+        var refundKey = "replay-refund-" + Guid.NewGuid().ToString("N");
+        var refund1 = await ExpectAsync(await manager.PostAsync("/api/v1/sales/refunds", refundBody, refundKey),
+            HttpStatusCode.Created, factory);
+        var refund2 = await ExpectAsync(await manager.PostAsync("/api/v1/sales/refunds", refundBody, refundKey),
+            HttpStatusCode.Created, factory);
+        Assert.Equal(refund1.GetProperty("txNumber").GetString(), refund2.GetProperty("txNumber").GetString());
+
+        await using var final = fixture.NewContext();
+        Assert.Equal(1, await final.TxHeaders.CountAsync(row =>
+            row.TxType == xOpti.Domain.Values.TransactionType.RetailRefund && row.CustomerId == customerId));
+    }
+
+    [Fact]
+    public async Task OrderDeposit_IsIdempotent_AndRequiresCardReference()
+    {
+        var sku = "99000010";
+        var customerId = await SeedAsync(sku);
+        var factory = new XOptiApiFactory(fixture);
+        using var manager = new TestClient(factory);
+        await manager.FetchCsrfTokenAsync();
+        await manager.SignInAsync("manager", SeedData.Password);
+
+        var order = await ExpectAsync(await manager.PostAsync("/api/v1/sales/orders", new
+        {
+            customerId,
+            staffCode = "0007",
+            depositAmount = 20m,
+            reason = "deposit order",
+            lines = new[] { new { sku, quantity = 2, unitAmount = 50m, discountAmount = 0m, taxCode = "B" } },
+        }, idempotencyKey: "deposit-order-" + Guid.NewGuid().ToString("N")),
+            HttpStatusCode.Created, factory);
+        var orderNumber = order.GetProperty("txNumber").GetString()!;
+
+        var noReference = await manager.PostAsync($"/api/v1/sales/orders/{orderNumber}/deposits", new
+        {
+            amount = 10m, method = "K", reference = (string?)null, reason = "card deposit",
+        }, idempotencyKey: "deposit-card-" + Guid.NewGuid().ToString("N"));
+        Assert.Equal(HttpStatusCode.BadRequest, noReference.StatusCode);
+
+        var key = "deposit-replay-" + Guid.NewGuid().ToString("N");
+        var body = new { amount = 10m, method = "C", reference = (string?)null, reason = "cash deposit" };
+        var first = await ExpectAsync(await manager.PostAsync(
+            $"/api/v1/sales/orders/{orderNumber}/deposits", body, key), HttpStatusCode.OK, factory);
+        var second = await ExpectAsync(await manager.PostAsync(
+            $"/api/v1/sales/orders/{orderNumber}/deposits", body, key), HttpStatusCode.OK, factory);
+        Assert.Equal(30m, first.GetProperty("paid").GetDecimal());
+        Assert.Equal(30m, second.GetProperty("paid").GetDecimal());
+        Assert.Equal(82m, second.GetProperty("balance").GetDecimal());
+
+        await using var verify = fixture.NewContext();
+        Assert.Equal(2, await verify.TxPayments.CountAsync(row => row.TxNumber == orderNumber));
+        Assert.True(await verify.AuditLogs.AnyAsync(row =>
+            row.Action == "order.deposit" && row.EntityId == orderNumber));
+    }
+
+    [Fact]
+    public async Task RefundTender_CannotExceedTheOriginalPaymentBalance()
+    {
+        var sku = "99000011";
+        var customerId = await SeedAsync(sku);
+        var factory = new XOptiApiFactory(fixture);
+        using var manager = new TestClient(factory);
+        await manager.FetchCsrfTokenAsync();
+        await manager.SignInAsync("manager", SeedData.Password);
+
+        var sale = await ExpectAsync(await manager.PostAsync("/api/v1/sales/invoices", new
+        {
+            customerId,
+            staffCode = "0007",
+            reason = "split sale for tender limit",
+            lines = new[] { new { sku, quantity = 1, unitAmount = 50m, discountAmount = 0m, taxCode = "B" } },
+            tenders = new[]
+            {
+                new { method = "C", amount = 30m, reference = (string?)null },
+                new { method = "K", amount = 26m, reference = "AUTH-LIMIT" },
+            },
+        }, idempotencyKey: "tender-limit-sale-" + Guid.NewGuid().ToString("N")),
+            HttpStatusCode.Created, factory);
+        var invoiceNumber = sale.GetProperty("txNumber").GetString()!;
+
+        var response = await manager.PostAsync("/api/v1/sales/refunds", new
+        {
+            originalTxNumber = invoiceNumber,
+            staffCode = "0007",
+            reason = "tender over limit",
+            lines = new[] { new { originalRowNo = 1, quantity = 1, restock = false } },
+            replacements = Array.Empty<object>(),
+            refundTenders = new[] { RefundTender(56m) },
+            saleTenders = Array.Empty<object>(),
+        }, idempotencyKey: "tender-limit-" + Guid.NewGuid().ToString("N"));
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Contains("remains refundable", await response.Content.ReadAsStringAsync());
+
+        await using var verify = fixture.NewContext();
+        Assert.False(await verify.TxHeaders.AnyAsync(row =>
+            row.TxType == xOpti.Domain.Values.TransactionType.RetailRefund
+            && row.TrackingNumber == invoiceNumber));
     }
 }

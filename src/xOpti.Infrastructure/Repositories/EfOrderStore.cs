@@ -99,6 +99,40 @@ public sealed class EfOrderStore(
         return (preference?.TaxARate ?? 0, preference?.TaxBRate ?? 0);
     }
 
+    public async Task<IReadOnlyList<xOpti.Application.Payments.PaymentMethodDto>> PaymentMethodsAsync(
+        CancellationToken ct) =>
+        await context.PaymentMethods.AsNoTracking()
+            .OrderBy(row => row.PaymentCode)
+            .Select(row => new xOpti.Application.Payments.PaymentMethodDto(
+                row.PaymentCode, row.PaymentNameShort, row.PaymentNameLong))
+            .ToListAsync(ct);
+
+    public async Task AddDepositAsync(string txNumber, decimal amount, string method,
+        string? reference, CancellationToken ct)
+    {
+        var header = await context.TxHeaders.SingleAsync(row => row.TxNumber == txNumber, ct);
+        var paidAmounts = await context.TxPayments.Where(row => row.TxNumber == txNumber)
+            .Select(row => row.TotalThisPay.Amount).ToListAsync(ct);
+        var paid = paidAmounts.Sum();
+        if (paid + amount > header.TotalAmount.Amount)
+            throw new xOpti.Application.Pipeline.ValidationFailedException(new[]
+            {
+                new xOpti.Application.Pipeline.ValidationFieldError("Amount", "over-balance",
+                    $"The deposit cannot exceed the balance {header.TotalAmount.Amount - paid:0.00}."),
+            });
+
+        var nextLine = await context.TxPayments.Where(row => row.TxNumber == txNumber)
+            .Select(row => (double?)row.PaymentLineNo).MaxAsync(ct) ?? 0d;
+        context.TxPayments.Add(new TxPayment
+        {
+            TxNumber = txNumber, PaymentLineNo = nextLine + 1, Type = "D",
+            AmountTender = Money.From(amount), EqAmount = Money.From(amount),
+            TotalThisPay = Money.From(amount), AuthorizationCode = reference,
+        });
+        header.ThisPaid = Money.From(decimal.Round(paid + amount, 4));
+        await context.SaveChangesAsync(ct);
+    }
+
     public Task<string> NextControlNumberAsync(CancellationToken ct) =>
         ControlNumberSequencer.NextAsync(context, ct);
 

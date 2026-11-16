@@ -18,9 +18,9 @@ test('sell, partially refund, exchange the remainder, and reprint', async ({ pag
   await page.getByTestId('pos-sale-sku-find').click()
   await page.getByTestId('pos-sale-sku-option-30110359').click()
   await page.getByTestId('pos-sale-line-0-qty').locator('input').fill('2')
-  await page.getByTestId('pos-sale-tender').locator('input').fill('120')
+  await page.getByTestId('pos-sale-payment-amount-0').locator('input').fill('120')
   await expect(page.getByTestId('pos-sale-total')).toHaveText('111.98')
-  await expect(page.getByTestId('pos-sale-change')).toHaveText('8.02')
+  await expect(page.getByTestId('pos-sale-payment-change')).toHaveText('8.02')
 
   await page.getByTestId('pos-sale-reason').locator('input').fill('e2e counter sale')
   await page.getByTestId('pos-sale-submit').click()

@@ -43,6 +43,8 @@ public class XOptiDbContext(DbContextOptions<XOptiDbContext> options)
 
     public DbSet<SalesRefundLine> SalesRefundLines => Set<SalesRefundLine>();
 
+    public DbSet<SalesRefundTender> SalesRefundTenders => Set<SalesRefundTender>();
+
     public DbSet<City> Cities => Set<City>();
 
     public DbSet<Province> Provinces => Set<Province>();

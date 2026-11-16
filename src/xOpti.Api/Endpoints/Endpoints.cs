@@ -26,6 +26,7 @@ using xOpti.Application.Inventory.GetInventorySummary;
 using xOpti.Application.Reference;
 using xOpti.Application.Sales.Documents;
 using xOpti.Application.Sales.OrderEntry;
+using xOpti.Application.Payments;
 using xOpti.Application.Sales.Retail;
 using xOpti.Application.Settings;
 using xOpti.Application.Common;
@@ -618,6 +619,15 @@ public static class Endpoints
         .RequireAuthorization($"perm:{PermissionNames.InventoryReceive}")
         .Produces<SupplierActivityDto>();
 
+        v1.MapGet("/sales/payment-methods", async (
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new ListPaymentMethodsQuery(), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
+        .Produces<IReadOnlyList<PaymentMethodDto>>();
+
         v1.MapPost("/sales/invoices", async (
             HttpContext http, PostRetailInvoiceRequest request, IRequestDispatcher dispatcher,
             CancellationToken cancellationToken) =>
@@ -628,7 +638,7 @@ public static class Endpoints
                 request.Lines.Select(line => new RetailLineInput(line.Sku, line.Quantity,
                     line.UnitAmount, line.DiscountAmount, line.TaxCode)).ToList(),
                 request.Tenders.Select(tender => new RetailTenderInput(
-                    tender.Method, tender.Amount, tender.Reference)).ToList(),
+                    tender.Method, tender.Amount, tender.Reference, tender.OriginalPaymentLineNo)).ToList(),
                 request.Reason, key), cancellationToken);
             return Results.Created($"/api/v1/sales/documents/{result.TxNumber}", result);
         })
@@ -657,6 +667,10 @@ public static class Endpoints
                     line.OriginalRowNo, line.Quantity, line.Restock)).ToList(),
                 request.Replacements.Select(line => new RetailLineInput(line.Sku, line.Quantity,
                     line.UnitAmount, line.DiscountAmount, line.TaxCode)).ToList(),
+                request.RefundTenders.Select(tender => new RetailTenderInput(
+                    tender.Method, tender.Amount, tender.Reference, tender.OriginalPaymentLineNo)).ToList(),
+                request.SaleTenders.Select(tender => new RetailTenderInput(
+                    tender.Method, tender.Amount, tender.Reference)).ToList(),
                 request.Reason, key), cancellationToken);
             return Results.Created($"/api/v1/sales/documents/{result.TxNumber}", result);
         })
@@ -689,6 +703,20 @@ public static class Endpoints
             return Results.Json(result);
         })
         .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<SalesDocumentDto>();
+
+        v1.MapPost("/sales/orders/{txNumber}/deposits", async (
+            HttpContext http, string txNumber, AddOrderDepositRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var key = http.Request.Headers["Idempotency-Key"].FirstOrDefault();
+            var result = await dispatcher.DispatchAsync(new AddOrderDepositCommand(
+                txNumber, request.Amount, request.Method, request.Reference, request.Reason, key),
+                cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .AddEndpointFilter<IdempotencyKeyFilter>()
         .Produces<SalesDocumentDto>();
 
         v1.MapPost("/sales/orders/{txNumber}/cancel", async (
@@ -1030,10 +1058,14 @@ public sealed record PostStockTakeRequest(string Reason);
 
 public sealed record ImportCountsRequest(string Csv, bool DryRun, string Reason);
 
+public sealed record AddOrderDepositRequest(
+    decimal Amount, string Method, string? Reference, string Reason);
+
 public sealed record RetailLineRequest(
     string Sku, int Quantity, decimal UnitAmount, decimal DiscountAmount, string TaxCode);
 
-public sealed record RetailTenderRequest(string Method, decimal Amount, string? Reference);
+public sealed record RetailTenderRequest(
+    string Method, decimal Amount, string? Reference, double? OriginalPaymentLineNo = null);
 
 public sealed record PostRetailInvoiceRequest(
     int CustomerId, string StaffCode, IReadOnlyList<RetailLineRequest> Lines,
@@ -1043,7 +1075,8 @@ public sealed record RefundLineRequest(int OriginalRowNo, int Quantity, bool Res
 
 public sealed record PostRetailRefundRequest(
     string OriginalTxNumber, string StaffCode, IReadOnlyList<RefundLineRequest> Lines,
-    IReadOnlyList<RetailLineRequest> Replacements, string Reason);
+    IReadOnlyList<RetailLineRequest> Replacements, IReadOnlyList<RetailTenderRequest> RefundTenders,
+    IReadOnlyList<RetailTenderRequest> SaleTenders, string Reason);
 
 public sealed record OrderLineRequest(
     string Sku, int Quantity, decimal? UnitAmount, string TaxCode, decimal DiscountAmount);

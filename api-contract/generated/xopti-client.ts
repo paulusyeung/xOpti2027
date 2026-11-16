@@ -1578,6 +1578,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/sales/payment-methods": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PaymentMethodDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/sales/invoices": {
         parameters: {
             query?: never;
@@ -1791,6 +1826,47 @@ export interface paths {
             };
         };
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/orders/{txNumber}/deposits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["AddOrderDepositRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SalesDocumentDto"];
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
@@ -2608,6 +2684,13 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        AddOrderDepositRequest: {
+            /** Format: double */
+            amount: number | string;
+            method: string;
+            reference: null | string;
+            reason: string;
+        };
         AdjustStockRequest: {
             sku: string;
             branchCode: string;
@@ -2957,6 +3040,11 @@ export interface components {
         PasswordResetCompletedDto: {
             userName: string;
         };
+        PaymentMethodDto: {
+            code: string;
+            nameShort: string;
+            nameLong: string;
+        };
         PermissionCatalogueDto: {
             permissions: components["schemas"]["PermissionGrantDto"][];
             unassignedPermissions: string[];
@@ -2984,6 +3072,8 @@ export interface components {
             staffCode: string;
             lines: components["schemas"]["RefundLineRequest"][];
             replacements: components["schemas"]["RetailLineRequest"][];
+            refundTenders: components["schemas"]["RetailTenderRequest"][];
+            saleTenders: components["schemas"]["RetailTenderRequest"][];
             reason: string;
         };
         PostStockTakeRequest: {
@@ -3109,6 +3199,7 @@ export interface components {
             /** Format: double */
             refundedTaxB: number | string;
             lines: components["schemas"]["RefundableLineDto"][];
+            tenders: components["schemas"]["RefundableTenderDto"][];
         };
         RefundableLineDto: {
             /** Format: int32 */
@@ -3131,6 +3222,18 @@ export interface components {
             /** Format: double */
             taxB: number | string;
             taxCode: null | string;
+        };
+        RefundableTenderDto: {
+            /** Format: double */
+            paymentLineNo: number | string;
+            type: string;
+            /** Format: double */
+            amount: number | string;
+            /** Format: double */
+            refundedAmount: number | string;
+            /** Format: double */
+            refundableAmount: number | string;
+            reference: null | string;
         };
         RefundLineRequest: {
             /** Format: int32 */
@@ -3189,6 +3292,8 @@ export interface components {
             /** Format: double */
             amount: number | string;
             reference: null | string;
+            /** Format: double */
+            originalPaymentLineNo?: null | number | string;
         };
         RetireReferenceRequest: {
             key: string;

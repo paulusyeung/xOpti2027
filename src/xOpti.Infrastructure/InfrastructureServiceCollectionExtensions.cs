@@ -28,6 +28,12 @@ public sealed record InfrastructureOptions
     /// </summary>
     public decimal PosDiscountThresholdPercent { get; init; }
 
+    /// <summary>
+    /// Payment terminal mode: "manual" requires an operator-entered opaque
+    /// reference; "simulated" is a disposable test harness.
+    /// </summary>
+    public string PaymentTerminalMode { get; init; } = "manual";
+
     /// <summary>Schedule/cron-lite expressions for enabled jobs.</summary>
     public IReadOnlyList<string> MaterializedViewRefreshStatements { get; init; } =
         new[] { "SELECT 1 /* example: replace with REFRESH MATERIALIZED VIEW analytics... */" };
@@ -102,6 +108,10 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddSingleton<xOpti.Application.Identity.Staff.IRoleCatalogue, Identity.RoleCatalogue>();
         services.AddSingleton<IClock, SystemClock>();
         services.AddSingleton<IPosPolicy, PosPolicy>();
+        services.AddSingleton<xOpti.Application.Payments.IPaymentTerminal>(sp =>
+            string.Equals(options.PaymentTerminalMode, "simulated", StringComparison.OrdinalIgnoreCase)
+                ? new SimulatedPaymentTerminal()
+                : new ManualPaymentTerminal());
         services.AddScoped<xOpti.Application.Identity.ListBranches.IBranchRepository, Repositories.EfBranchRepository>();
 
         services.AddScoped<Platform.IdempotencyStoreOptions>(_ =>

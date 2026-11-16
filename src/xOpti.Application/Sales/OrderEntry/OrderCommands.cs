@@ -3,6 +3,7 @@ using FluentValidation;
 using xOpti.Application.Authorization;
 using xOpti.Application.Common;
 using xOpti.Application.Pipeline;
+using xOpti.Application.Payments;
 using xOpti.Application.Ports;
 using xOpti.Application.Sales.Documents;
 using xOpti.Domain.Rules;
@@ -40,6 +41,9 @@ public interface IOrderStore
     Task<IReadOnlyDictionary<string, decimal?>> RetailPricesAsync(
         IEnumerable<string> skus, CancellationToken ct);
     Task<(double GstRate, double PstRate)> TaxRatesAsync(CancellationToken ct);
+    Task<IReadOnlyList<PaymentMethodDto>> PaymentMethodsAsync(CancellationToken ct);
+    Task AddDepositAsync(string txNumber, decimal amount, string method, string? reference,
+        CancellationToken ct);
     Task<string> NextControlNumberAsync(CancellationToken ct);
     Task CreateAsync(OrderPosting posting, CancellationToken ct);
     Task UpdateAsync(OrderPosting posting, CancellationToken ct);
@@ -291,7 +295,7 @@ public sealed class CancelOrderHandler(
 }
 
 public sealed class ConvertOrderHandler(
-    IUnitOfWork unitOfWork, IOrderStore store, IAuditRecorder audit, IClock clock)
+    IUnitOfWork unitOfWork, IOrderStore store, IAuditRecorder audit)
     : IRequestHandler<ConvertOrderCommand, SalesDocumentDto>
 {
     public Task<SalesDocumentDto> Handle(ConvertOrderCommand request, CancellationToken ct) =>
@@ -407,4 +411,72 @@ public sealed class GetPosContextHandler(IOrderStore store)
         var rates = await store.TaxRatesAsync(ct);
         return new PosContextDto(rates.GstRate, rates.PstRate);
     }
+}
+
+public sealed record AddOrderDepositCommand(
+    string TxNumber, decimal Amount, string Method, string? Reference, string Reason,
+    string? IdempotencyKey)
+    : ICommand<SalesDocumentDto>, IRequiresIdempotencyKey, IHasPermissions
+{
+    public IReadOnlyList<string> RequiredPermissions => new[] { PermissionNames.SalesOrderCreate };
+}
+
+public sealed class AddOrderDepositCommandValidator : AbstractValidator<AddOrderDepositCommand>
+{
+    public AddOrderDepositCommandValidator()
+    {
+        RuleFor(x => x.TxNumber).NotEmpty();
+        RuleFor(x => x.Amount).GreaterThan(0);
+        RuleFor(x => x.Method).NotEmpty().MaximumLength(2);
+        RuleFor(x => x.Reference).MaximumLength(30)
+            .Must(reference => reference is null
+                || !System.Text.RegularExpressions.Regex.IsMatch(reference, "\\d{12,}"))
+            .WithMessage("The reference must be an opaque terminal reference, not card data.");
+        RuleFor(x => x.Reason).NotEmpty().MinimumLength(3).MaximumLength(500);
+    }
+}
+
+public sealed class AddOrderDepositHandler(
+    IUnitOfWork unitOfWork, IOrderStore store, IAuditRecorder audit,
+    IPaymentTerminal terminal)
+    : IRequestHandler<AddOrderDepositCommand, SalesDocumentDto>
+{
+    public Task<SalesDocumentDto> Handle(AddOrderDepositCommand request, CancellationToken ct) =>
+        unitOfWork.ExecuteInTransactionAsync(async token =>
+        {
+            var order = await store.GetOrderAsync(request.TxNumber, token);
+            if (order is null || order.Kind != "Order")
+                throw new ValidationFailedException(new[]
+                {
+                    new ValidationFieldError("TxNumber", "not-found", "Sale order was not found."),
+                });
+            if (order.Status != "0")
+                throw new ValidationFailedException(new[]
+                {
+                    new ValidationFieldError("TxNumber", "not-open", "Only open orders can take a deposit."),
+                });
+            if (request.Amount > order.Balance)
+                throw new ValidationFailedException(new[]
+                {
+                    new ValidationFieldError("Amount", "over-balance",
+                        $"The deposit cannot exceed the balance {order.Balance:0.00}."),
+                });
+
+            var methods = await store.PaymentMethodsAsync(token);
+            await TenderAuthorization.AuthorizeAsync(
+                methods.Select(method => method.Code).ToHashSet(StringComparer.OrdinalIgnoreCase),
+                new[] { (request.Method, request.Amount, request.Reference) },
+                terminal, request.IdempotencyKey, token);
+
+            await store.AddDepositAsync(order.TxNumber, request.Amount, request.Method,
+                request.Reference, token);
+            await audit.RecordAsync(new AuditRecord("order.deposit", "TxHeader", order.TxNumber,
+                JsonSerializer.Serialize(new
+                {
+                    reason = request.Reason, amount = request.Amount,
+                    method = request.Method, reference = request.Reference,
+                })), token);
+            return await store.GetOrderAsync(order.TxNumber, token)
+                ?? throw new InvalidOperationException("Order was not found after the deposit.");
+        }, ct);
 }

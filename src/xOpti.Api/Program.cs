@@ -35,6 +35,7 @@ builder.Services.AddXOptiInfrastructure(new InfrastructureOptions
     FileStorageRoot = apiOptions.FileStorageRoot,
     IdempotencyRetention = apiOptions.IdempotencyRetention,
     PosDiscountThresholdPercent = apiOptions.PosDiscountThresholdPercent,
+    PaymentTerminalMode = apiOptions.PaymentTerminalMode,
     FontDirectories = apiOptions.FontDirectories,
     MaterializedViewRefreshStatements = apiOptions.MaterializedViewRefreshStatements,
 });

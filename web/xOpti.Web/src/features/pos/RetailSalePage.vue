@@ -3,8 +3,9 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { api, unwrap } from '@/api/client'
 import { AppError } from '@/api/problems'
 import DocumentPanel from './DocumentPanel.vue'
-import { normalizeTaxCode, round2, taxFor, type TaxRates } from './pricing'
-import type { PosCustomer, PosDocument, PosItem } from './types'
+import PaymentPanel, { type TenderRow } from './PaymentPanel.vue'
+import { normalizeTaxCode, round2, taxFor, tenderOutcome, type TaxRates } from './pricing'
+import type { PaymentMethod, PosCustomer, PosDocument, PosItem } from './types'
 
 interface SaleLine {
   sku: string
@@ -16,10 +17,6 @@ interface SaleLine {
 }
 
 const taxCodes = ['N', 'B', 'G', 'P', 'g', 'p']
-const methods = [
-  { title: 'Cash', value: 'C' },
-  { title: 'Card', value: 'K' },
-]
 const staffCode = ref('0001')
 const customerQuery = ref('')
 const customerResults = ref<PosCustomer[]>([])
@@ -28,8 +25,8 @@ const skuQuery = ref('')
 const skuResults = ref<PosItem[]>([])
 const lines = ref<SaleLine[]>([])
 const rates = reactive<TaxRates>({ a: 0, b: 0 })
-const tenderMethod = ref('C')
-const tenderAmount = ref(0)
+const paymentMethods = ref<PaymentMethod[]>([])
+const tenders = ref<TenderRow[]>([])
 const reason = ref('counter sale')
 const busy = ref(false)
 const forbidden = ref(false)
@@ -71,21 +68,22 @@ const totals = computed(() => {
   taxA = round2(taxA)
   taxB = round2(taxB)
   const total = round2(subtotal + taxA + taxB)
-  const tendered = Number(tenderAmount.value || 0) || total
-  const change = tenderMethod.value === 'C' ? Math.max(0, round2(tendered - total)) : 0
-  return { subtotal, taxA, taxB, total, tendered, change, short: round2(total - tendered) }
+  return { subtotal, taxA, taxB, total }
 })
+
+const paymentOutcome = computed(() => tenderOutcome(tenders.value, totals.value.total))
 
 const canPost = computed(() =>
   customer.value !== null
   && lines.value.length > 0
   && lines.value.every((line) => line.quantity > 0 && line.unitAmount >= 0 && line.discountAmount >= 0)
-  && (tenderMethod.value === 'C' ? totals.value.tendered >= totals.value.total : totals.value.tendered === totals.value.total))
+  && paymentOutcome.value.remaining === 0)
 
 async function loadContext(): Promise<void> {
   const context = await unwrap(await api.client.GET('/api/v1/sales/order-entry/context'))
   rates.a = Number(context.taxARate)
   rates.b = Number(context.taxBRate)
+  paymentMethods.value = (await unwrap(await api.client.GET('/api/v1/sales/payment-methods', {}))) as unknown as PaymentMethod[]
 }
 
 async function searchCustomers(): Promise<void> {
@@ -151,7 +149,7 @@ function resetSale(): void {
   lines.value = []
   skuResults.value = []
   skuQuery.value = ''
-  tenderAmount.value = 0
+  tenders.value = []
   posted.value = null
   reprinted.value = null
   error.value = null
@@ -181,11 +179,13 @@ async function postSale(): Promise<void> {
           discountAmount: line.discountAmount,
           taxCode: line.taxCode,
         })),
-        tenders: [{
-          method: tenderMethod.value,
-          amount: totals.value.tendered,
-          reference: null,
-        }],
+        tenders: tenders.value
+          .filter((tender) => Number(tender.amount) > 0)
+          .map((tender) => ({
+            method: tender.method,
+            amount: Number(tender.amount),
+            reference: tender.reference.trim() || null,
+          })),
       },
     })) as PosDocument
     posted.value = document
@@ -336,15 +336,9 @@ onMounted(async () => {
             <div class="d-flex justify-space-between text-body-1">
               <strong>Total</strong><strong data-testid="pos-sale-total">{{ totals.total.toFixed(2) }}</strong>
             </div>
-            <v-select v-model="tenderMethod" :items="methods" item-title="title" item-value="value"
-              label="Method" density="compact" class="mt-3" data-testid="pos-sale-method" />
-            <v-text-field v-model.number="tenderAmount" type="number" min="0" label="Amount tendered"
-              density="compact" :placeholder="totals.total.toFixed(2)" data-testid="pos-sale-tender" />
-            <div class="d-flex justify-space-between text-body-2">
-              <span>Change</span><span data-testid="pos-sale-change">{{ totals.change.toFixed(2) }}</span>
-            </div>
-            <div v-if="totals.short > 0" class="text-caption text-error" data-testid="pos-sale-short">
-              {{ totals.short.toFixed(2) }} still due.
+            <div class="mt-3">
+              <PaymentPanel v-model="tenders" :methods="paymentMethods"
+                :total="totals.total" test-prefix="pos-sale" />
             </div>
             <v-text-field v-model="reason" label="Reason" density="compact" class="mt-3"
               data-testid="pos-sale-reason" />

@@ -94,6 +94,18 @@ public static class PlatformMapping
             e.Property(x => x.TaxB).HasPrecision(19, 4).IsRequired();
         });
 
+        mb.Entity<SalesRefundTender>(e =>
+        {
+            e.ToTable("sales_refund_tender", "platform");
+            e.HasKey(x => new { x.RefundTxNumber, x.PaymentLineNo });
+            e.Property(x => x.RefundTxNumber).HasMaxLength(10).IsRequired();
+            e.Property(x => x.PaymentLineNo);
+            e.Property(x => x.OriginalTxNumber).HasMaxLength(10).IsRequired();
+            e.Property(x => x.OriginalPaymentLineNo);
+            e.Property(x => x.Amount).HasPrecision(19, 4).IsRequired();
+            e.Property(x => x.Method).HasMaxLength(1).IsRequired();
+        });
+
         mb.Entity<EntityRetirement>(e =>
         {
             e.ToTable("entity_retirement", "platform");

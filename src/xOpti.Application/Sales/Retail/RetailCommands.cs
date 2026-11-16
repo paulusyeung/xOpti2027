@@ -3,6 +3,7 @@ using FluentValidation;
 using xOpti.Application.Authorization;
 using xOpti.Application.Common;
 using xOpti.Application.Pipeline;
+using xOpti.Application.Payments;
 using xOpti.Application.Ports;
 using xOpti.Application.Sales.Documents;
 using xOpti.Domain.Values;
@@ -12,7 +13,8 @@ namespace xOpti.Application.Sales.Retail;
 public sealed record RetailLineInput(
     string Sku, int Quantity, decimal UnitAmount, decimal DiscountAmount, string TaxCode);
 
-public sealed record RetailTenderInput(string Method, decimal Amount, string? Reference);
+public sealed record RetailTenderInput(
+    string Method, decimal Amount, string? Reference, double? OriginalPaymentLineNo = null);
 
 public sealed record RefundLineInput(int OriginalRowNo, int Quantity, bool Restock);
 
@@ -21,10 +23,15 @@ public sealed record RefundableLineDto(
     decimal UnitAmount, decimal DiscountAmount, decimal Amount, decimal TaxA, decimal TaxB,
     string? TaxCode);
 
+public sealed record RefundableTenderDto(
+    double PaymentLineNo, string Type, decimal Amount, decimal RefundedAmount,
+    decimal RefundableAmount, string? Reference);
+
 public sealed record RefundableInvoiceDto(
     string TxNumber, int CustomerId, string? CustomerName, DateTimeOffset DateOfEntry,
     decimal TotalSale, decimal TaxA, decimal TaxB, decimal TotalAmount,
-    decimal RefundedTaxA, decimal RefundedTaxB, IReadOnlyList<RefundableLineDto> Lines);
+    decimal RefundedTaxA, decimal RefundedTaxB, IReadOnlyList<RefundableLineDto> Lines,
+    IReadOnlyList<RefundableTenderDto> Tenders);
 
 public sealed record RetailInvoicePosting(
     string TxNumber, string ControlNumber, int CustomerId, string StaffCode,
@@ -39,8 +46,10 @@ public sealed record RefundPostingLine(
 public sealed record RefundPosting(
     string TxNumber, string ControlNumber, string OriginalTxNumber, int CustomerId,
     string StaffCode, IReadOnlyList<RefundPostingLine> RefundLines,
-    IReadOnlyList<PricedLine> ReplacementLines, decimal TotalSale, decimal TaxA, decimal TaxB,
-    decimal GrossSale, int TotalQty, bool FullyRefunded, DateTimeOffset DateOfEntry);
+    IReadOnlyList<PricedLine> ReplacementLines, IReadOnlyList<RetailTenderInput> RefundTenders,
+    IReadOnlyList<RetailTenderInput> SaleTenders, decimal TotalSale, decimal TaxA, decimal TaxB,
+    decimal GrossSale, decimal Change, int TotalQty, bool FullyRefunded,
+    DateTimeOffset DateOfEntry);
 
 public interface IRetailSaleStore
 {
@@ -49,6 +58,7 @@ public interface IRetailSaleStore
     Task<IReadOnlyDictionary<string, decimal?>> RetailPricesAsync(
         IEnumerable<string> skus, CancellationToken ct);
     Task<(double GstRate, double PstRate)> TaxRatesAsync(CancellationToken ct);
+    Task<IReadOnlyList<PaymentMethodDto>> PaymentMethodsAsync(CancellationToken ct);
     Task<string> NextControlNumberAsync(CancellationToken ct);
     Task PostInvoiceAsync(RetailInvoicePosting posting, CancellationToken ct);
     Task<SalesDocumentDto?> GetDocumentAsync(string txNumber, CancellationToken ct);
@@ -66,7 +76,8 @@ public sealed record PostRetailInvoiceCommand(
 
 public sealed record PostRetailRefundCommand(
     string OriginalTxNumber, string StaffCode, IReadOnlyList<RefundLineInput> Lines,
-    IReadOnlyList<RetailLineInput> Replacements, string Reason, string? IdempotencyKey)
+    IReadOnlyList<RetailLineInput> Replacements, IReadOnlyList<RetailTenderInput> RefundTenders,
+    IReadOnlyList<RetailTenderInput> SaleTenders, string Reason, string? IdempotencyKey)
     : ICommand<SalesDocumentDto>, IRequiresIdempotencyKey, IHasPermissions
 {
     public IReadOnlyList<string> RequiredPermissions => new[] { PermissionNames.SalesInvoicePost };
@@ -96,7 +107,10 @@ public sealed class RetailTenderValidator : AbstractValidator<RetailTenderInput>
     {
         RuleFor(x => x.Method).NotEmpty().MaximumLength(2);
         RuleFor(x => x.Amount).GreaterThan(0);
-        RuleFor(x => x.Reference).MaximumLength(30);
+        RuleFor(x => x.Reference).MaximumLength(30)
+            .Must(reference => reference is null
+                || !System.Text.RegularExpressions.Regex.IsMatch(reference, "\\d{12,}"))
+            .WithMessage("The reference must be an opaque terminal reference, not card data.");
     }
 }
 
@@ -130,13 +144,16 @@ public sealed class PostRetailRefundCommandValidator : AbstractValidator<PostRet
             .Must(lines => lines.Select(line => line.OriginalRowNo).Distinct().Count() == lines.Count)
             .WithMessage("Each original line may appear only once.");
         RuleForEach(x => x.Replacements).SetValidator(new RetailLineValidator());
+        RuleForEach(x => x.RefundTenders).SetValidator(new RetailTenderValidator());
+        RuleForEach(x => x.SaleTenders).SetValidator(new RetailTenderValidator());
         RuleFor(x => x.Reason).NotEmpty().MinimumLength(3).MaximumLength(500);
     }
 }
 
 public sealed class PostRetailInvoiceHandler(
     IUnitOfWork unitOfWork, IRetailSaleStore store, IControlNumberAllocator allocator,
-    IAuditRecorder audit, IClock clock, ICurrentPrincipal principal, IPosPolicy policy)
+    IAuditRecorder audit, IClock clock, ICurrentPrincipal principal, IPosPolicy policy,
+    IPaymentTerminal terminal)
     : IRequestHandler<PostRetailInvoiceCommand, SalesDocumentDto>
 {
     public Task<SalesDocumentDto> Handle(PostRetailInvoiceCommand request, CancellationToken ct) =>
@@ -149,6 +166,7 @@ public sealed class PostRetailInvoiceHandler(
             var overrides = PriceOverrideRules.Validate(pricingLines, retailPrices,
                 PriceOverrideRules.CanOverride(principal), policy.DiscountThresholdPercent);
 
+            await AuthorizeTendersAsync(request.Tenders, request.IdempotencyKey, store, terminal, token);
             var priced = SalesPricing.Price(pricingLines, await store.TaxRatesAsync(token));
             var txNumber = await allocator.AllocateAsync(TransactionType.RetailInvoice, token);
             var control = await store.NextControlNumberAsync(token);
@@ -168,6 +186,17 @@ public sealed class PostRetailInvoiceHandler(
             return await store.GetDocumentAsync(txNumber.Value, token)
                 ?? throw new InvalidOperationException("Invoice was not found after posting.");
         }, ct);
+
+    internal static async Task AuthorizeTendersAsync(
+        IReadOnlyList<RetailTenderInput> tenders, string? idempotencyKey,
+        IRetailSaleStore store, IPaymentTerminal terminal, CancellationToken ct)
+    {
+        var configured = (await store.PaymentMethodsAsync(ct))
+            .Select(method => method.Code).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        await TenderAuthorization.AuthorizeAsync(configured,
+            tenders.Select(tender => (tender.Method, tender.Amount, tender.Reference)).ToList(),
+            terminal, idempotencyKey, ct);
+    }
 
     internal static async Task ValidateAsync(
         IRetailSaleStore store, int customerId, IReadOnlyList<string> skus, CancellationToken ct)
@@ -199,7 +228,7 @@ public sealed class GetRefundableInvoiceHandler(IRetailSaleStore store)
 
 public sealed class PostRetailRefundHandler(
     IUnitOfWork unitOfWork, IRetailSaleStore store, IControlNumberAllocator allocator,
-    IAuditRecorder audit, IClock clock)
+    IAuditRecorder audit, IClock clock, IPaymentTerminal terminal)
     : IRequestHandler<PostRetailRefundCommand, SalesDocumentDto>
 {
     public Task<SalesDocumentDto> Handle(PostRetailRefundCommand request, CancellationToken ct) =>
@@ -260,11 +289,15 @@ public sealed class PostRetailRefundHandler(
             var taxA = decimal.Round(replacements.TaxA - refundTaxA, 4);
             var taxB = decimal.Round(replacements.TaxB - refundTaxB, 4);
             var gross = decimal.Round(totalSale + taxA + taxB, 4);
+            var change = await ValidateSettlementAsync(
+                invoice, gross, request.RefundTenders, request.SaleTenders, request.IdempotencyKey,
+                store, terminal, token);
             var rsNumber = await allocator.AllocateAsync(TransactionType.RetailRefund, token);
             var control = await store.NextControlNumberAsync(token);
             var posting = new RefundPosting(rsNumber.Value, control, invoice.TxNumber,
-                invoice.CustomerId, request.StaffCode, refundLines, replacements.Lines, totalSale, taxA, taxB,
-                gross, replacements.TotalQty - totalRefundQty, fullyRefunded, clock.UtcNow);
+                invoice.CustomerId, request.StaffCode, refundLines, replacements.Lines,
+                request.RefundTenders, request.SaleTenders, totalSale, taxA, taxB,
+                gross, change, replacements.TotalQty - totalRefundQty, fullyRefunded, clock.UtcNow);
             await store.PostRefundAsync(posting, token);
 
             await audit.RecordAsync(new AuditRecord("retail.refund", "TxHeader", rsNumber.Value,
@@ -274,12 +307,108 @@ public sealed class PostRetailRefundHandler(
                     refund = totalRefundNet, replacement = replacements.TotalSale,
                     restocked = request.Lines.Where(line => line.Restock)
                         .Select(line => line.OriginalRowNo),
+                    refundTenders = request.RefundTenders.Select(tender => new
+                        { tender.Method, tender.Amount, tender.Reference,
+                            tender.OriginalPaymentLineNo }),
+                    saleTenders = request.SaleTenders.Select(tender => new
+                        { tender.Method, tender.Amount, tender.Reference }),
                     fullyRefunded,
                 })), token);
 
             return await store.GetDocumentAsync(rsNumber.Value, token)
                 ?? throw new InvalidOperationException("Refund was not found after posting.");
         }, ct);
+
+    private static async Task<decimal> ValidateSettlementAsync(
+        RefundableInvoiceDto invoice, decimal net, IReadOnlyList<RetailTenderInput> refundTenders,
+        IReadOnlyList<RetailTenderInput> saleTenders, string? idempotencyKey,
+        IRetailSaleStore store, IPaymentTerminal terminal, CancellationToken ct)
+    {
+        if (net == 0)
+        {
+            if (refundTenders.Count > 0 || saleTenders.Count > 0)
+                throw Validation("Tenders", "not-due",
+                    "The exchange settles to zero; remove the tender rows.");
+            return 0m;
+        }
+
+        if (net < 0)
+        {
+            var due = decimal.Round(-net, 4);
+            if (invoice.Tenders.Count == 0)
+            {
+                if (refundTenders.Count > 0)
+                    throw Validation("RefundTenders", "no-original-tenders",
+                        "The original invoice has no tender rows to refund against.");
+                return 0m;
+            }
+
+            if (refundTenders.Count == 0)
+                throw Validation("RefundTenders", "required",
+                    $"Refund tenders of {due:0.00} are required for this document.");
+            if (decimalsum(refundTenders) != due)
+                throw Validation("RefundTenders", "mismatch",
+                    $"Refund tenders must equal the refund due {due:0.00}.");
+
+            var remaining = invoice.Tenders.ToDictionary(
+                tender => tender.PaymentLineNo, tender => tender.RefundableAmount);
+            foreach (var tender in refundTenders)
+            {
+                if (tender.OriginalPaymentLineNo is null)
+                    throw Validation("RefundTenders", "original-payment-required",
+                        "Each refund tender must reference the original payment line.");
+                var original = invoice.Tenders.SingleOrDefault(row =>
+                    row.PaymentLineNo == tender.OriginalPaymentLineNo.Value);
+                if (original is null)
+                    throw Validation("RefundTenders", "original-payment-not-found",
+                        $"Original payment line {tender.OriginalPaymentLineNo} was not found.");
+                if (!string.Equals(original.Type, tender.Method, StringComparison.OrdinalIgnoreCase))
+                    throw Validation("RefundTenders", "method-mismatch",
+                        $"Refund method {tender.Method} does not match original tender {original.Type}.");
+                var available = remaining.GetValueOrDefault(original.PaymentLineNo);
+                if (tender.Amount > available)
+                    throw Validation("RefundTenders", "over-refund",
+                        $"Only {available:0.00} remains refundable on payment line {original.PaymentLineNo}.");
+                remaining[original.PaymentLineNo] = available - tender.Amount;
+            }
+
+            await PostRetailInvoiceHandler.AuthorizeTendersAsync(
+                refundTenders, idempotencyKey, store, terminal, ct);
+            return 0m;
+        }
+
+        if (saleTenders.Count == 0)
+            throw Validation("SaleTenders", "required",
+                $"A payment of {net:0.00} is due for this exchange.");
+        var applied = 0m;
+        var remainingDue = net;
+        foreach (var tender in saleTenders)
+        {
+            var isCash = string.Equals(tender.Method, "C", StringComparison.OrdinalIgnoreCase);
+            var take = tender.Amount;
+            if (take > remainingDue)
+            {
+                if (!isCash)
+                    throw Validation("SaleTenders", "over-tender",
+                        $"A {tender.Method} tender cannot exceed the balance due {remainingDue:0.00}.");
+                take = remainingDue;
+            }
+            applied += take;
+            remainingDue = decimal.Round(remainingDue - take, 4);
+        }
+        if (remainingDue != 0)
+            throw Validation("SaleTenders", "unpaid",
+                $"Exchange tenders are short by {remainingDue:0.00}.");
+        await PostRetailInvoiceHandler.AuthorizeTendersAsync(
+            saleTenders, idempotencyKey, store, terminal, ct);
+        return decimal.Round(saleTenders.Sum(tender => tender.Amount) - applied, 4);
+    }
+
+    private static decimal decimalsum(IReadOnlyList<RetailTenderInput> tenders) =>
+        decimal.Round(tenders.Sum(tender => tender.Amount), 4);
+
+    private static ValidationFailedException Validation(string field, string code, string message) =>
+        new(new[] { new ValidationFieldError(field, code, message) });
 
     private static decimal RefundTax(
         decimal originalTax, decimal alreadyRefunded, decimal refundNet,
@@ -312,4 +441,18 @@ public sealed class PostRetailRefundHandler(
             remainingB = decimal.Round(remainingB - lineTaxB, 4);
         }
     }
+}
+
+public sealed record ListPaymentMethodsQuery
+    : IQuery<IReadOnlyList<PaymentMethodDto>>, IHasPermissions
+{
+    public IReadOnlyList<string> RequiredPermissions => new[] { PermissionNames.SalesInvoicePost };
+}
+
+public sealed class ListPaymentMethodsHandler(IRetailSaleStore store)
+    : IRequestHandler<ListPaymentMethodsQuery, IReadOnlyList<PaymentMethodDto>>
+{
+    public Task<IReadOnlyList<PaymentMethodDto>> Handle(
+        ListPaymentMethodsQuery request, CancellationToken ct) =>
+        store.PaymentMethodsAsync(ct);
 }

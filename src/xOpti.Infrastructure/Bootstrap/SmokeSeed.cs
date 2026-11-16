@@ -114,6 +114,25 @@ public static class SmokeSeed
             });
         }
 
+        foreach (var (code, shortName, longName) in new[]
+                 {
+                     ("C", "CSH", "Cash"),
+                     ("K", "CRD", "Card"),
+                 })
+        {
+            if (!await context.PaymentMethods.AnyAsync(
+                    method => method.PaymentCode == code, cancellationToken))
+            {
+                context.PaymentMethods.Add(new PaymentMethod
+                {
+                    PaymentCode = code,
+                    PaymentNameShort = shortName,
+                    PaymentNameLong = longName,
+                    ExchangeRate = 1,
+                });
+            }
+        }
+
         if (!await context.Preferences.AnyAsync(cancellationToken))
         {
             context.Preferences.Add(new Preference

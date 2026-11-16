@@ -45,3 +45,19 @@ public class SalesRefundLine
 
     public decimal TaxB { get; set; }
 }
+
+/// <summary>App-owned link from a refund tender to the original payment line.</summary>
+public class SalesRefundTender
+{
+    public string RefundTxNumber { get; set; } = string.Empty;
+
+    public double PaymentLineNo { get; set; }
+
+    public string OriginalTxNumber { get; set; } = string.Empty;
+
+    public double OriginalPaymentLineNo { get; set; }
+
+    public decimal Amount { get; set; }
+
+    public string Method { get; set; } = string.Empty;
+}

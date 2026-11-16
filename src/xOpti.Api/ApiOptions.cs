@@ -32,6 +32,12 @@ public sealed class ApiOptions
     /// </summary>
     public decimal PosDiscountThresholdPercent { get; set; }
 
+    /// <summary>
+    /// Payment terminal mode: "manual" (default) requires an operator-entered
+    /// opaque reference; "simulated" is a disposable test harness.
+    /// </summary>
+    public string PaymentTerminalMode { get; set; } = "manual";
+
     /// <summary>Single-instance scheduled jobs; disable when scaling out.</summary>
     public bool JobsEnabled { get; set; }
 

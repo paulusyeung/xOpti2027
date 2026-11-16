@@ -1517,6 +1517,28 @@
         }
       }
     },
+    "/api/v1/sales/payment-methods": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PaymentMethodDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/sales/invoices": {
       "post": {
         "tags": [
@@ -1710,6 +1732,45 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UpdateOrderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalesDocumentDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sales/orders/{txNumber}/deposits": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "txNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddOrderDepositRequest"
               }
             }
           },
@@ -2442,6 +2503,37 @@
   },
   "components": {
     "schemas": {
+      "AddOrderDepositRequest": {
+        "required": [
+          "amount",
+          "method",
+          "reference",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "method": {
+            "type": "string"
+          },
+          "reference": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
       "AdjustStockRequest": {
         "required": [
           "sku",
@@ -4025,6 +4117,25 @@
           }
         }
       },
+      "PaymentMethodDto": {
+        "required": [
+          "code",
+          "nameShort",
+          "nameLong"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "nameShort": {
+            "type": "string"
+          },
+          "nameLong": {
+            "type": "string"
+          }
+        }
+      },
       "PermissionCatalogueDto": {
         "required": [
           "permissions",
@@ -4133,6 +4244,8 @@
           "staffCode",
           "lines",
           "replacements",
+          "refundTenders",
+          "saleTenders",
           "reason"
         ],
         "type": "object",
@@ -4153,6 +4266,18 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/RetailLineRequest"
+            }
+          },
+          "refundTenders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RetailTenderRequest"
+            }
+          },
+          "saleTenders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RetailTenderRequest"
             }
           },
           "reason": {
@@ -4648,7 +4773,8 @@
           "totalAmount",
           "refundedTaxA",
           "refundedTaxB",
-          "lines"
+          "lines",
+          "tenders"
         ],
         "type": "object",
         "properties": {
@@ -4725,6 +4851,12 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/RefundableLineDto"
+            }
+          },
+          "tenders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RefundableTenderDto"
             }
           }
         }
@@ -4821,6 +4953,60 @@
             "format": "double"
           },
           "taxCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "RefundableTenderDto": {
+        "required": [
+          "paymentLineNo",
+          "type",
+          "amount",
+          "refundedAmount",
+          "refundableAmount",
+          "reference"
+        ],
+        "type": "object",
+        "properties": {
+          "paymentLineNo": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "type": {
+            "type": "string"
+          },
+          "amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "refundedAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "refundableAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "reference": {
             "type": [
               "null",
               "string"
@@ -5077,6 +5263,15 @@
               "null",
               "string"
             ]
+          },
+          "originalPaymentLineNo": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?(?:[eE][+-]?\\d+)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },

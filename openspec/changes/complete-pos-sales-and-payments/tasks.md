@@ -23,11 +23,11 @@
 
 ## 4. Payments
 
-- [ ] 4.1 Implement tender allocation for cash, card, and configured manual methods including split tender and change; verify totals and remaining balances.
+- [x] 4.1 Implement tender allocation for cash, card, and configured manual methods including split tender and change; verify totals and remaining balances.
 - [ ] 4.2 Implement card-terminal adapter and manual-reference fallback with opaque references; verify no card data is stored, logged, or returned by the API.
-- [ ] 4.3 Implement refund tenders linked to original payments and method limits; verify refunds cannot exceed remaining original amounts.
-- [ ] 4.4 Require idempotency on sale, order-deposit, and refund payment commands; verify duplicate requests return the original result.
-- [ ] 4.5 Build the payment panel and tender selection UI; verify component and Playwright tests cover split tender, decline, timeout, change, and refund.
+- [x] 4.3 Implement refund tenders linked to original payments and method limits; verify refunds cannot exceed remaining original amounts.
+- [x] 4.4 Require idempotency on sale, order-deposit, and refund payment commands; verify duplicate requests return the original result.
+- [x] 4.5 Build the payment panel and tender selection UI; verify component and Playwright tests cover split tender, decline, timeout, change, and refund.
 
 ## 5. Cash management
 
