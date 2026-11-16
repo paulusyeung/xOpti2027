@@ -609,4 +609,63 @@ public sealed class RetailSaleTests(ApiPostgresFixture fixture)
             row.TxType == xOpti.Domain.Values.TransactionType.RetailRefund
             && row.TrackingNumber == invoiceNumber));
     }
+
+    [Fact]
+    public async Task Reprint_MarksDuplicate_AuditsActorTerminalAndTime_AndDoesNotMutateTheDocument()
+    {
+        var sku = "99000014";
+        var customerId = await SeedAsync(sku);
+        var factory = new XOptiApiFactory(fixture);
+        using var manager = new TestClient(factory);
+        await manager.FetchCsrfTokenAsync();
+        await manager.SignInAsync("manager", SeedData.Password);
+
+        var sale = await ExpectAsync(await manager.PostAsync("/api/v1/sales/invoices",
+            InvoiceBody(customerId, sku, quantity: 1, tender: 56m),
+            idempotencyKey: "print-sale-" + Guid.NewGuid().ToString("N")),
+            HttpStatusCode.Created, factory);
+        var invoiceNumber = sale.GetProperty("txNumber").GetString()!;
+
+        var firstPrint = await manager.PostAsync($"/api/v1/sales/documents/{invoiceNumber}/prints", new
+        {
+            reprint = false, format = "receipt", terminalCode = "01", reason = "print receipt",
+        });
+        Assert.Equal(HttpStatusCode.OK, firstPrint.StatusCode);
+        Assert.Equal("application/pdf", firstPrint.Content.Headers.ContentType?.MediaType);
+        Assert.Equal("%PDF", System.Text.Encoding.ASCII.GetString(
+            (await firstPrint.Content.ReadAsByteArrayAsync())[..4]));
+
+        var reprint = await manager.PostAsync($"/api/v1/sales/documents/{invoiceNumber}/prints", new
+        {
+            reprint = true, format = "receipt", terminalCode = "01", reason = "customer copy",
+        });
+        Assert.Equal(HttpStatusCode.OK, reprint.StatusCode);
+        Assert.Contains("-duplicate.pdf",
+            reprint.Content.Headers.ContentDisposition?.FileName ?? string.Empty);
+        Assert.Equal("%PDF", System.Text.Encoding.ASCII.GetString(
+            (await reprint.Content.ReadAsByteArrayAsync())[..4]));
+
+        await using (var verify = fixture.NewContext())
+        {
+            var audit = await verify.AuditLogs.SingleAsync(row =>
+                row.Action == "document.reprint" && row.EntityId == invoiceNumber);
+            Assert.NotNull(audit.ActorUserId);
+            Assert.NotNull(audit.ActorBranch);
+            Assert.Contains("\"terminal\":\"01\"", audit.Details);
+            Assert.NotNull(audit.OccurredAt);
+        }
+
+        var claim = await manager.PostAsync($"/api/v1/sales/documents/{invoiceNumber}/prints", new
+        {
+            reprint = false, format = "claim", terminalCode = "01", reason = "claim form",
+        });
+        Assert.Equal(HttpStatusCode.BadRequest, claim.StatusCode);
+        Assert.Contains("claim layouts are not approved", await claim.Content.ReadAsStringAsync());
+
+        var unchanged = await ExpectAsync(
+            await manager.GetAsync($"/api/v1/sales/documents/{invoiceNumber}"),
+            HttpStatusCode.OK, factory);
+        Assert.Equal(56m, unchanged.GetProperty("totalAmount").GetDecimal());
+        Assert.Equal(invoiceNumber, unchanged.GetProperty("txNumber").GetString());
+    }
 }

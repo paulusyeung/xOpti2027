@@ -2407,6 +2407,38 @@
         }
       }
     },
+    "/api/v1/sales/documents/{txNumber}/prints": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "txNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrintDocumentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/v1/sales/documents/{txNumber}": {
       "get": {
         "tags": [
@@ -5618,6 +5650,32 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "PrintDocumentRequest": {
+        "required": [
+          "reprint",
+          "format",
+          "terminalCode",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "reprint": {
+            "type": "boolean"
+          },
+          "format": {
+            "type": "string"
+          },
+          "terminalCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "reason": {
+            "type": "string"
           }
         }
       },

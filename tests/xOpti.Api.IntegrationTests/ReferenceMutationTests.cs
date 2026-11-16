@@ -104,7 +104,10 @@ public sealed class ReferenceMutationTests(ApiPostgresFixture fixture)
             "Category" => ($"{suffix[..2]}/{suffix[2..4]}/{suffix[4..6]}", (string?)null),
             "Brand" => (suffix[..4], (string?)null),
             "Material" => (suffix[..2], (string?)null),
-            "TaxMethod" => (suffix[..1], (string?)null),
+            // Tax codes are one character; keep the generated key outside the
+            // hex alphabet so it cannot collide with category tax methods used
+            // by POS tests.
+            "TaxMethod" => (((char)('G' + suffix[0] % 20)).ToString(), (string?)null),
             // Payment codes are one character; keep the generated key outside the
             // hex alphabet so it cannot collide with payment types posted by POS
             // tests ("C" cash, "D" deposit).

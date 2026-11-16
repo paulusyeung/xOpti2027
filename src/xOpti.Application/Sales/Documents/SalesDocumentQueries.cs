@@ -24,6 +24,7 @@ public sealed record SalesDocumentDto(
 public interface ISalesDocumentStore
 {
     Task<SalesDocumentDto?> GetAsync(string txNumber, CancellationToken ct);
+    Task<PosDocumentRenderDto?> GetRenderAsync(string txNumber, CancellationToken ct);
     Task<IReadOnlyList<SalesDocumentDto>> PageAsync(
         int? customerId, string? status, string? afterTxNumber, int limit, CancellationToken ct);
 }

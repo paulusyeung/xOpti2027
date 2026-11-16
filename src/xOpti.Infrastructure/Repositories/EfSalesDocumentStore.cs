@@ -14,6 +14,50 @@ public sealed class EfSalesDocumentStore(XOptiDbContext context) : ISalesDocumen
         return header is null ? null : await MapAsync(header, ct);
     }
 
+    public async Task<PosDocumentRenderDto?> GetRenderAsync(
+        string txNumber, CancellationToken ct)
+    {
+        var header = await context.TxHeaders.AsNoTracking()
+            .SingleOrDefaultAsync(row => row.TxNumber == txNumber, ct);
+        if (header is null) return null;
+
+        var customerName = await context.Customers.AsNoTracking()
+            .Where(row => row.Id == header.CustomerId).Select(row => row.FullName)
+            .SingleOrDefaultAsync(ct);
+        var staffCode = await context.TxSalePersons.AsNoTracking()
+            .Where(row => row.TxNumber == txNumber).Select(row => row.StaffCode)
+            .FirstOrDefaultAsync(ct);
+        var details = await context.TxDetails.AsNoTracking()
+            .Where(row => row.TxNumber == txNumber).OrderBy(row => row.RowNo).ToListAsync(ct);
+        var skus = details.Select(row => row.Sku).Distinct().ToList();
+        var names = await context.InventoryItems.AsNoTracking()
+            .Where(row => skus.Contains(row.Sku))
+            .ToDictionaryAsync(row => row.Sku, row => row.Name, ct);
+        var payments = await context.TxPayments.AsNoTracking()
+            .Where(row => row.TxNumber == txNumber).OrderBy(row => row.PaymentLineNo)
+            .ToListAsync(ct);
+
+        var (documentType, title) = header.TxType switch
+        {
+            TransactionType.RetailInvoice => ("Invoice", "Retail invoice"),
+            TransactionType.RetailRefund => ("Refund", "Refund / exchange"),
+            TransactionType.SalesOrder => ("Order", "Sale order"),
+            _ => ("Document", "Document"),
+        };
+        var paid = payments.Sum(row => row.TotalThisPay.Amount);
+        return new PosDocumentRenderDto(header.TxNumber, documentType, title, false,
+            header.DateOfEntry, header.CustomerId, customerName, staffCode,
+            header.TrackingNumber ?? header.RefNumber, header.Status,
+            header.TotalSale.Amount, header.TaxA.Amount, header.TaxB.Amount,
+            header.TotalAmount.Amount, header.Change.Amount, paid,
+            details.Select(row => new PosRenderLine((int)row.RowNo, row.Sku,
+                names.GetValueOrDefault(row.Sku), row.Qty, row.UnitAmount.Amount,
+                row.MarkDownAmount.Amount, row.Amount.Amount, row.TaxCode)).ToList(),
+            payments.Select(row => new PosRenderTender(row.PaymentLineNo, row.Type,
+                row.AmountTender.Amount, row.TotalThisPay.Amount, row.AuthorizationCode)).ToList(),
+            new[] { header.TxNumber });
+    }
+
     public async Task<IReadOnlyList<SalesDocumentDto>> PageAsync(
         int? customerId, string? status, string? afterTxNumber, int limit, CancellationToken ct)
     {

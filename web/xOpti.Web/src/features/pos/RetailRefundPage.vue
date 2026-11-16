@@ -4,6 +4,7 @@ import { api, unwrap } from '@/api/client'
 import { AppError } from '@/api/problems'
 import DocumentPanel from './DocumentPanel.vue'
 import PaymentPanel, { type TenderRow } from './PaymentPanel.vue'
+import { requestDocumentPrint } from './print'
 import { normalizeTaxCode, round2, taxFor, tenderOutcome, type TaxRates } from './pricing'
 import type { CashSession, PaymentMethod, PosDocument, PosItem, RefundableInvoice } from './types'
 
@@ -300,6 +301,12 @@ async function reprintOriginal(): Promise<void> {
   busy.value = true
   error.value = null
   try {
+    await requestDocumentPrint(invoice.value.txNumber, {
+      reprint: true,
+      format: 'invoice',
+      terminalCode: openSessions.value[0]?.terminalCode ?? null,
+      reason: 'reprint invoice',
+    })
     reprintTarget.value = (await unwrap(await api.client.GET('/api/v1/sales/documents/{txNumber}', {
       params: { path: { txNumber: invoice.value.txNumber } },
     }))) as PosDocument

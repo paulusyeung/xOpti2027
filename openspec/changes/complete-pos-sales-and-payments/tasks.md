@@ -41,7 +41,7 @@
 
 - [ ] 6.1 Implement invoice, receipt, order, and claim render data and approved layouts through the document-render port; verify deterministic PDF golden tests.
 - [ ] 6.2 Integrate receipt and claim printing on the approved POS client/printer path; verify printed samples match baseline dimensions and barcode encoding.
-- [ ] 6.3 Implement reprint audit and duplicate-copy marking; verify each reprint records actor, terminal, document, and time.
+- [x] 6.3 Implement reprint audit and duplicate-copy marking; verify each reprint records actor, terminal, document, and time.
 
 ## 7. Integration and rehearsal
 

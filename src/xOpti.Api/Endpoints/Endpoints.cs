@@ -918,6 +918,18 @@ public static class Endpoints
         .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
         .Produces<PosContextDto>();
 
+        v1.MapPost("/sales/documents/{txNumber}/prints", async (
+            string txNumber, PrintDocumentRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new PrintPosDocumentCommand(
+                txNumber, request.Reprint, request.Format, request.TerminalCode, request.Reason),
+                cancellationToken);
+            return Results.File(result.Content, result.ContentType, result.FileName);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
+        .Produces(StatusCodes.Status200OK, contentType: "application/pdf");
+
         v1.MapGet("/sales/documents/{txNumber}", async (
             string txNumber, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
         {
@@ -1189,6 +1201,9 @@ public sealed record ApproveStockTakeRequest(string Reason);
 public sealed record PostStockTakeRequest(string Reason);
 
 public sealed record ImportCountsRequest(string Csv, bool DryRun, string Reason);
+
+public sealed record PrintDocumentRequest(
+    bool Reprint, string Format, string? TerminalCode, string Reason);
 
 public sealed record OpenCashSessionRequest(
     string BranchCode, string TerminalCode, decimal OpeningFloat, string Reason);

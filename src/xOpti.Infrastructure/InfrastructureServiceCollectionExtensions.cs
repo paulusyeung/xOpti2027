@@ -122,6 +122,8 @@ public static class InfrastructureServiceCollectionExtensions
             new Platform.IdempotencyStoreOptions(options.IdempotencyRetention));
 
         services.AddSingleton<Documents.IDocumentRenderer, Documents.QuestPdfDocumentRenderer>();
+        services.AddSingleton<xOpti.Application.Sales.Documents.IPosDocumentRenderer,
+            Documents.QuestPdfPosDocumentRenderer>();
         services.AddSingleton<Documents.IFileStorage>(sp =>
             new Documents.LocalFileStorage(options.FileStorageRoot));
 

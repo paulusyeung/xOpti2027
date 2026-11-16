@@ -49,6 +49,8 @@ public sealed class QuestPdfDocumentRenderer : IDocumentRenderer
     public static string BarcodeFamily =>
         _barcodeFamily ?? throw new InvalidOperationException("No barcode font registered; configure FontDirectories with 3of9.TTF available.");
 
+    public static string? TryBarcodeFamily => _barcodeFamily;
+
     public DocumentFile RenderInvoiceStub(DocumentRequest request)
     {
         var document = Document.Create(container =>
