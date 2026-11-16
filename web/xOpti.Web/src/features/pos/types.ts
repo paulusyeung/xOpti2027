@@ -96,3 +96,83 @@ export interface PaymentMethod {
   nameShort: string
   nameLong: string
 }
+
+export interface CashSession {
+  id: number
+  branchCode: string
+  terminalCode: string
+  businessDate: string
+  status: string
+  openedAt: string
+  openedBy: string | null
+  openingFloat: number | string
+  expectedCash: number | string
+  suspendedAt: string | null
+  closedAt: string | null
+  closedBy: string | null
+  countedCash: number | string | null
+  variance: number | string | null
+  varianceReason: string | null
+}
+
+export interface CashCount {
+  id: number
+  kind: string
+  amount: number | string
+  countedAt: string
+  countedBy: string | null
+  variance: number | string | null
+  reason: string | null
+}
+
+export interface CashMovement {
+  id: number
+  kind: string
+  amount: number | string
+  reason: string
+  occurredAt: string
+  actor: string | null
+  destinationReference: string | null
+}
+
+export interface CashSessionDetail {
+  session: CashSession
+  counts: CashCount[]
+  movements: CashMovement[]
+}
+
+export interface CashJournalDocument {
+  txNumber: string
+  txType: string
+  totalSale: number | string
+  taxA: number | string
+  taxB: number | string
+  totalAmount: number | string
+  tenders: Array<{ method: string; applied: number | string }>
+}
+
+export interface CashJournal {
+  branchCode: string
+  businessDate: string
+  status: string
+  finalizedAt: string | null
+  finalizedBy: string | null
+  reason: string | null
+  totalSales: number | string
+  totalRefunds: number | string
+  taxA: number | string
+  taxB: number | string
+  cashTenders: number | string
+  cardTenders: number | string
+  otherTenders: number | string
+  paidIn: number | string
+  paidOut: number | string
+  pickups: number | string
+  deposits: number | string
+  expectedCash: number | string
+  countedCash: number | string
+  variance: number | string
+  sessions: CashSession[]
+  documents: CashJournalDocument[]
+  movements: CashMovement[]
+}

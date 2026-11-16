@@ -552,6 +552,131 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                     b.ToTable("cash_count", "platform");
                 });
 
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.CashDailyClose", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("BranchCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("branch_code");
+
+                    b.Property<DateOnly>("BusinessDate")
+                        .HasColumnType("date")
+                        .HasColumnName("business_date");
+
+                    b.Property<decimal>("CardTenders")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("card_tenders");
+
+                    b.Property<decimal>("CashTenders")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("cash_tenders");
+
+                    b.Property<decimal>("CountedCash")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("counted_cash");
+
+                    b.Property<decimal>("Deposits")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("deposits");
+
+                    b.Property<decimal>("ExpectedCash")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("expected_cash");
+
+                    b.Property<DateTimeOffset>("FinalizedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("finalized_at");
+
+                    b.Property<string>("FinalizedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("finalized_by");
+
+                    b.Property<decimal>("OtherTenders")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("other_tenders");
+
+                    b.Property<decimal>("PaidIn")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("paid_in");
+
+                    b.Property<decimal>("PaidOut")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("paid_out");
+
+                    b.Property<decimal>("Pickups")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("pickups");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("reason");
+
+                    b.Property<string>("SnapshotJson")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("snapshot_json");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("status");
+
+                    b.Property<decimal>("TaxA")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("tax_a");
+
+                    b.Property<decimal>("TaxB")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("tax_b");
+
+                    b.Property<decimal>("TotalRefunds")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("total_refunds");
+
+                    b.Property<decimal>("TotalSales")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("total_sales");
+
+                    b.Property<decimal>("Variance")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("variance");
+
+                    b.HasKey("Id")
+                        .HasName("pk_cash_daily_close");
+
+                    b.HasIndex("BranchCode", "BusinessDate")
+                        .IsUnique()
+                        .HasDatabaseName("ix_cash_daily_close_branch_code_business_date");
+
+                    b.ToTable("cash_daily_close", "platform");
+                });
+
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.CashMovement", b =>
                 {
                     b.Property<long>("Id")
@@ -617,6 +742,10 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(3)")
                         .HasColumnName("branch_code");
 
+                    b.Property<DateOnly>("BusinessDate")
+                        .HasColumnType("date")
+                        .HasColumnName("business_date");
+
                     b.Property<DateTimeOffset?>("ClosedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("closed_at");
@@ -680,6 +809,45 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasName("pk_cash_session");
 
                     b.ToTable("cash_session", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.CashSessionTransaction", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("OccurredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_at");
+
+                    b.Property<long>("SessionId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("session_id");
+
+                    b.Property<string>("TxNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("tx_number");
+
+                    b.Property<string>("TxType")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("character varying(2)")
+                        .HasColumnName("tx_type");
+
+                    b.HasKey("Id")
+                        .HasName("pk_cash_session_tx");
+
+                    b.HasIndex("TxNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ix_cash_session_tx_tx_number");
+
+                    b.ToTable("cash_session_tx", "platform");
                 });
 
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Category", b =>

@@ -36,7 +36,8 @@ public sealed record RefundableInvoiceDto(
 public sealed record RetailInvoicePosting(
     string TxNumber, string ControlNumber, int CustomerId, string StaffCode,
     IReadOnlyList<PricedLine> Lines, decimal TotalSale, decimal TaxA, decimal TaxB,
-    decimal GrossSale, IReadOnlyList<RetailTenderInput> Tenders, DateTimeOffset DateOfEntry);
+    decimal GrossSale, IReadOnlyList<RetailTenderInput> Tenders, long? SessionId,
+    DateTimeOffset DateOfEntry);
 
 public sealed record RefundPostingLine(
     int OriginalRowNo, string Sku, int Quantity, bool Restock,
@@ -48,7 +49,7 @@ public sealed record RefundPosting(
     string StaffCode, IReadOnlyList<RefundPostingLine> RefundLines,
     IReadOnlyList<PricedLine> ReplacementLines, IReadOnlyList<RetailTenderInput> RefundTenders,
     IReadOnlyList<RetailTenderInput> SaleTenders, decimal TotalSale, decimal TaxA, decimal TaxB,
-    decimal GrossSale, decimal Change, int TotalQty, bool FullyRefunded,
+    decimal GrossSale, decimal Change, int TotalQty, bool FullyRefunded, long? SessionId,
     DateTimeOffset DateOfEntry);
 
 public interface IRetailSaleStore
@@ -68,7 +69,7 @@ public interface IRetailSaleStore
 
 public sealed record PostRetailInvoiceCommand(
     int CustomerId, string StaffCode, IReadOnlyList<RetailLineInput> Lines,
-    IReadOnlyList<RetailTenderInput> Tenders, string Reason, string? IdempotencyKey)
+    IReadOnlyList<RetailTenderInput> Tenders, long? SessionId, string Reason, string? IdempotencyKey)
     : ICommand<SalesDocumentDto>, IRequiresIdempotencyKey, IHasPermissions
 {
     public IReadOnlyList<string> RequiredPermissions => new[] { PermissionNames.SalesInvoicePost };
@@ -77,7 +78,8 @@ public sealed record PostRetailInvoiceCommand(
 public sealed record PostRetailRefundCommand(
     string OriginalTxNumber, string StaffCode, IReadOnlyList<RefundLineInput> Lines,
     IReadOnlyList<RetailLineInput> Replacements, IReadOnlyList<RetailTenderInput> RefundTenders,
-    IReadOnlyList<RetailTenderInput> SaleTenders, string Reason, string? IdempotencyKey)
+    IReadOnlyList<RetailTenderInput> SaleTenders, long? SessionId, string Reason,
+    string? IdempotencyKey)
     : ICommand<SalesDocumentDto>, IRequiresIdempotencyKey, IHasPermissions
 {
     public IReadOnlyList<string> RequiredPermissions => new[] { PermissionNames.SalesInvoicePost };
@@ -172,7 +174,7 @@ public sealed class PostRetailInvoiceHandler(
             var control = await store.NextControlNumberAsync(token);
             var posting = new RetailInvoicePosting(txNumber.Value, control, request.CustomerId,
                 request.StaffCode, priced.Lines, priced.TotalSale, priced.TaxA, priced.TaxB,
-                priced.GrossSale, request.Tenders, clock.UtcNow);
+                priced.GrossSale, request.Tenders, request.SessionId, clock.UtcNow);
             await store.PostInvoiceAsync(posting, token);
 
             await audit.RecordAsync(new AuditRecord("retail.invoice", "TxHeader", txNumber.Value,
@@ -297,7 +299,8 @@ public sealed class PostRetailRefundHandler(
             var posting = new RefundPosting(rsNumber.Value, control, invoice.TxNumber,
                 invoice.CustomerId, request.StaffCode, refundLines, replacements.Lines,
                 request.RefundTenders, request.SaleTenders, totalSale, taxA, taxB,
-                gross, change, replacements.TotalQty - totalRefundQty, fullyRefunded, clock.UtcNow);
+                gross, change, replacements.TotalQty - totalRefundQty, fullyRefunded,
+                request.SessionId, clock.UtcNow);
             await store.PostRefundAsync(posting, token);
 
             await audit.RecordAsync(new AuditRecord("retail.refund", "TxHeader", rsNumber.Value,

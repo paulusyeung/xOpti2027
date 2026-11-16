@@ -31,11 +31,11 @@
 
 ## 5. Cash management
 
-- [ ] 5.1 Implement drawer open/resume/close with terminal, branch, float, and duplicate-session guards; verify session tests.
-- [ ] 5.2 Implement counts, over/short, blind-count policy, paid-in/paid-out, pickups, and deposits; verify expected-cash calculations.
-- [ ] 5.3 Implement daily close with terminal completeness, totals by tender, tax, refund, and cash movement; verify finalized totals are immutable.
-- [ ] 5.4 Implement the daily sales/refund/tender/cash journal; verify totals reconcile to posted documents.
-- [ ] 5.5 Build cash-session, count, movement, deposit, and daily-close screens; verify Playwright covers open, sale, paid-out, close, and variance.
+- [x] 5.1 Implement drawer open/resume/close with terminal, branch, float, and duplicate-session guards; verify session tests.
+- [x] 5.2 Implement counts, over/short, blind-count policy, paid-in/paid-out, pickups, and deposits; verify expected-cash calculations.
+- [x] 5.3 Implement daily close with terminal completeness, totals by tender, tax, refund, and cash movement; verify finalized totals are immutable.
+- [x] 5.4 Implement the daily sales/refund/tender/cash journal; verify totals reconcile to posted documents.
+- [x] 5.5 Build cash-session, count, movement, deposit, and daily-close screens; verify Playwright covers open, sale, paid-out, close, and variance.
 
 ## 6. Documents and printing
 

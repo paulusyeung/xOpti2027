@@ -47,6 +47,7 @@ function stubApi(handler: (call: Call) => Response | undefined = () => undefined
     calls.push({ url, method, body })
     if (url.includes('/auth/csrf-token')) return json({ token: 'csrf' })
     if (url.includes('/sales/order-entry/context')) return json({ taxARate: 5, taxBRate: 7 })
+    if (url.includes('/cash/sessions/open')) return json([])
     if (url.includes('/sales/payment-methods')) {
       return json([
         { code: 'C', nameShort: 'CSH', nameLong: 'Cash' },

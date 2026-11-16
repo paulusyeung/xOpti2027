@@ -55,6 +55,12 @@ export const routes: RouteRecordRaw[] = [
     meta: { permission: PermissionNames.SalesInvoicePost, title: 'POS refund' },
   },
   {
+    path: '/admin/pos/cash',
+    name: 'pos-cash',
+    component: () => import('@/features/pos/CashManagementPage.vue'),
+    meta: { permission: PermissionNames.SalesInvoicePost, title: 'Cash drawer' },
+  },
+  {
     path: '/admin/staff',
     name: 'staff-admin',
     component: () => import('@/features/admin/StaffAdminPage.vue'),

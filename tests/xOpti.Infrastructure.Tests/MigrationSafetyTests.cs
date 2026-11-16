@@ -107,9 +107,9 @@ public class SchemaMigrationJobTests(PostgresFixture fixture)
         {
             cmd.CommandText = "SELECT count(*) FROM information_schema.tables WHERE table_schema='platform'";
             // App-owned platform tables: schema baseline, entity retirement,
-            // idempotency keys, the three POS cash tables, refund lines, and
-            // refund tender links.
-            Assert.Equal(9L, Convert.ToInt64(await cmd.ExecuteScalarAsync()));
+            // idempotency keys, POS cash sessions/counts/movements, refund
+            // lines/tender links, session links, and daily closes.
+            Assert.Equal(11L, Convert.ToInt64(await cmd.ExecuteScalarAsync()));
         }
     }
 }

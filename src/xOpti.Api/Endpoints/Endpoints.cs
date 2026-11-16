@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using xOpti.Application.Authorization;
+using xOpti.Application.Cash;
 using xOpti.Application.Common;
 using xOpti.Application.Identity.ListBranches;
 using xOpti.Application.Identity.Staff;
@@ -619,6 +620,137 @@ public static class Endpoints
         .RequireAuthorization($"perm:{PermissionNames.InventoryReceive}")
         .Produces<SupplierActivityDto>();
 
+        v1.MapGet("/cash/sessions/open", async (
+            string branchCode, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ListOpenCashSessionsQuery(branchCode), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
+        .Produces<IReadOnlyList<CashSessionDto>>();
+
+        v1.MapGet("/cash/sessions", async (
+            string branchCode, DateOnly businessDate, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ListCashSessionsQuery(branchCode, businessDate), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
+        .Produces<IReadOnlyList<CashSessionDto>>();
+
+        v1.MapGet("/cash/sessions/{sessionId:long}", async (
+            long sessionId, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetCashSessionQuery(sessionId), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
+        .Produces<CashSessionDetailDto>();
+
+        v1.MapGet("/cash/sessions/{sessionId:long}/count-context", async (
+            long sessionId, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetCashCountContextQuery(sessionId), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
+        .Produces<CashCountContextDto>();
+
+        v1.MapPost("/cash/sessions", async (
+            OpenCashSessionRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new OpenCashSessionCommand(
+                request.BranchCode, request.TerminalCode, request.OpeningFloat, request.Reason),
+                cancellationToken);
+            return Results.Created($"/api/v1/cash/sessions/{result.Id}", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
+        .Produces<CashSessionDto>(StatusCodes.Status201Created);
+
+        v1.MapPost("/cash/sessions/{sessionId:long}/suspend", async (
+            long sessionId, ReasonRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new SuspendCashSessionCommand(sessionId, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
+        .Produces<CashSessionDto>();
+
+        v1.MapPost("/cash/sessions/{sessionId:long}/resume", async (
+            long sessionId, ReasonRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ResumeCashSessionCommand(sessionId, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
+        .Produces<CashSessionDto>();
+
+        v1.MapPost("/cash/sessions/{sessionId:long}/close", async (
+            long sessionId, CloseCashSessionRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new CloseCashSessionCommand(
+                sessionId, request.CountedCash, request.VarianceReason, request.Reason),
+                cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
+        .Produces<CashSessionDto>();
+
+        v1.MapPost("/cash/sessions/{sessionId:long}/counts", async (
+            long sessionId, CashCountRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new RecordCashCountCommand(
+                sessionId, request.Kind, request.Amount, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
+        .Produces<CashSessionDetailDto>();
+
+        v1.MapPost("/cash/sessions/{sessionId:long}/movements", async (
+            long sessionId, CashMovementRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new RecordCashMovementCommand(
+                sessionId, request.Kind, request.Amount, request.Reason,
+                request.DestinationReference), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
+        .Produces<CashSessionDetailDto>();
+
+        v1.MapGet("/cash/journal", async (
+            string branchCode, DateOnly businessDate, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetCashJournalQuery(branchCode, businessDate), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<CashJournalDto>();
+
+        v1.MapPost("/cash/daily-closes", async (
+            FinalizeDailyCloseRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new FinalizeDailyCloseCommand(
+                request.BranchCode, request.BusinessDate, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<CashJournalDto>();
+
         v1.MapGet("/sales/payment-methods", async (
             IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
         {
@@ -639,7 +771,7 @@ public static class Endpoints
                     line.UnitAmount, line.DiscountAmount, line.TaxCode)).ToList(),
                 request.Tenders.Select(tender => new RetailTenderInput(
                     tender.Method, tender.Amount, tender.Reference, tender.OriginalPaymentLineNo)).ToList(),
-                request.Reason, key), cancellationToken);
+                request.SessionId, request.Reason, key), cancellationToken);
             return Results.Created($"/api/v1/sales/documents/{result.TxNumber}", result);
         })
         .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
@@ -671,7 +803,7 @@ public static class Endpoints
                     tender.Method, tender.Amount, tender.Reference, tender.OriginalPaymentLineNo)).ToList(),
                 request.SaleTenders.Select(tender => new RetailTenderInput(
                     tender.Method, tender.Amount, tender.Reference)).ToList(),
-                request.Reason, key), cancellationToken);
+                request.SessionId, request.Reason, key), cancellationToken);
             return Results.Created($"/api/v1/sales/documents/{result.TxNumber}", result);
         })
         .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
@@ -1058,6 +1190,20 @@ public sealed record PostStockTakeRequest(string Reason);
 
 public sealed record ImportCountsRequest(string Csv, bool DryRun, string Reason);
 
+public sealed record OpenCashSessionRequest(
+    string BranchCode, string TerminalCode, decimal OpeningFloat, string Reason);
+
+public sealed record CloseCashSessionRequest(
+    decimal CountedCash, string? VarianceReason, string Reason);
+
+public sealed record CashCountRequest(string Kind, decimal Amount, string? Reason);
+
+public sealed record CashMovementRequest(
+    string Kind, decimal Amount, string Reason, string? DestinationReference);
+
+public sealed record FinalizeDailyCloseRequest(
+    string BranchCode, DateOnly BusinessDate, string Reason);
+
 public sealed record AddOrderDepositRequest(
     decimal Amount, string Method, string? Reference, string Reason);
 
@@ -1069,14 +1215,14 @@ public sealed record RetailTenderRequest(
 
 public sealed record PostRetailInvoiceRequest(
     int CustomerId, string StaffCode, IReadOnlyList<RetailLineRequest> Lines,
-    IReadOnlyList<RetailTenderRequest> Tenders, string Reason);
+    IReadOnlyList<RetailTenderRequest> Tenders, long? SessionId, string Reason);
 
 public sealed record RefundLineRequest(int OriginalRowNo, int Quantity, bool Restock);
 
 public sealed record PostRetailRefundRequest(
     string OriginalTxNumber, string StaffCode, IReadOnlyList<RefundLineRequest> Lines,
     IReadOnlyList<RetailLineRequest> Replacements, IReadOnlyList<RetailTenderRequest> RefundTenders,
-    IReadOnlyList<RetailTenderRequest> SaleTenders, string Reason);
+    IReadOnlyList<RetailTenderRequest> SaleTenders, long? SessionId, string Reason);
 
 public sealed record OrderLineRequest(
     string Sku, int Quantity, decimal? UnitAmount, string TaxCode, decimal DiscountAmount);

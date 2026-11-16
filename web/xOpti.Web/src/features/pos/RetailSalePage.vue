@@ -5,7 +5,7 @@ import { AppError } from '@/api/problems'
 import DocumentPanel from './DocumentPanel.vue'
 import PaymentPanel, { type TenderRow } from './PaymentPanel.vue'
 import { normalizeTaxCode, round2, taxFor, tenderOutcome, type TaxRates } from './pricing'
-import type { PaymentMethod, PosCustomer, PosDocument, PosItem } from './types'
+import type { CashSession, PaymentMethod, PosCustomer, PosDocument, PosItem } from './types'
 
 interface SaleLine {
   sku: string
@@ -27,6 +27,8 @@ const lines = ref<SaleLine[]>([])
 const rates = reactive<TaxRates>({ a: 0, b: 0 })
 const paymentMethods = ref<PaymentMethod[]>([])
 const tenders = ref<TenderRow[]>([])
+const openSessions = ref<CashSession[]>([])
+const sessionId = ref<number | null>(null)
 const reason = ref('counter sale')
 const busy = ref(false)
 const forbidden = ref(false)
@@ -84,6 +86,10 @@ async function loadContext(): Promise<void> {
   rates.a = Number(context.taxARate)
   rates.b = Number(context.taxBRate)
   paymentMethods.value = (await unwrap(await api.client.GET('/api/v1/sales/payment-methods', {}))) as unknown as PaymentMethod[]
+  openSessions.value = (await unwrap(await api.client.GET('/api/v1/cash/sessions/open', {
+    params: { query: { branchCode: '01' } },
+  }))) as unknown as CashSession[]
+  sessionId.value = openSessions.value[0]?.id ?? null
 }
 
 async function searchCustomers(): Promise<void> {
@@ -171,6 +177,7 @@ async function postSale(): Promise<void> {
       body: {
         customerId: customer.value.id,
         staffCode: staffCode.value,
+        sessionId: sessionId.value,
         reason: reason.value,
         lines: lines.value.map((line) => ({
           sku: line.sku,
@@ -336,6 +343,9 @@ onMounted(async () => {
             <div class="d-flex justify-space-between text-body-1">
               <strong>Total</strong><strong data-testid="pos-sale-total">{{ totals.total.toFixed(2) }}</strong>
             </div>
+            <v-select v-model="sessionId" :items="openSessions" item-title="terminalCode"
+              item-value="id" label="Drawer session" density="compact" class="mt-3"
+              data-testid="pos-sale-session" />
             <div class="mt-3">
               <PaymentPanel v-model="tenders" :methods="paymentMethods"
                 :total="totals.total" test-prefix="pos-sale" />

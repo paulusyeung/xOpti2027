@@ -87,6 +87,7 @@ public sealed class EfRetailSaleStore(
         {
             TxNumber = posting.TxNumber, SalesRowNo = 1, StaffCode = posting.StaffCode,
         });
+        await LinkSessionAsync(posting.SessionId, posting.TxNumber, "RC", now, ct);
         await context.SaveChangesAsync(ct);
     }
 
@@ -257,6 +258,7 @@ public sealed class EfRetailSaleStore(
                 row => row.TxNumber == posting.OriginalTxNumber, ct);
             original.Status = "1";
         }
+        await LinkSessionAsync(posting.SessionId, posting.TxNumber, "RS", now, ct);
         await context.SaveChangesAsync(ct);
     }
 
@@ -281,6 +283,21 @@ public sealed class EfRetailSaleStore(
                 Amount = Money.From(line.Amount), TaxCode = line.TaxCode,
             });
         }
+    }
+
+    private async Task LinkSessionAsync(long? sessionId, string txNumber, string txType,
+        DateTimeOffset now, CancellationToken ct)
+    {
+        if (sessionId is null) return;
+        var open = await context.CashSessions.AnyAsync(row =>
+            row.Id == sessionId && row.Status == "open", ct);
+        if (!open)
+            throw Validation("SessionId", "not-open",
+                "The drawer session is not open; resume or open a session before posting.");
+        context.CashSessionTransactions.Add(new CashSessionTransaction
+        {
+            SessionId = sessionId.Value, TxNumber = txNumber, TxType = txType, OccurredAt = now,
+        });
     }
 
     private (decimal Applied, decimal Change) AddSaleTenders(

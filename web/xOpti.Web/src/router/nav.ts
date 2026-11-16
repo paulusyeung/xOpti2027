@@ -30,6 +30,12 @@ export const NAV_ITEMS: readonly NavItem[] = [
     permission: PermissionNames.SalesInvoicePost,
   },
   {
+    to: '/admin/pos/cash',
+    title: 'Cash drawer',
+    icon: 'mdi-cash-lock',
+    permission: PermissionNames.SalesInvoicePost,
+  },
+  {
     to: '/admin/staff',
     title: 'Staff',
     icon: 'mdi-account-cog-outline',

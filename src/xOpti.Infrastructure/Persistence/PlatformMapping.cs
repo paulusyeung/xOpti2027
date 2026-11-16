@@ -41,6 +41,7 @@ public static class PlatformMapping
             e.Property(x => x.Id).UseIdentityAlwaysColumn();
             e.Property(x => x.BranchCode).HasMaxLength(3).IsRequired();
             e.Property(x => x.TerminalCode).HasMaxLength(20).IsRequired();
+            e.Property(x => x.BusinessDate).IsRequired();
             e.Property(x => x.Status).HasMaxLength(16).IsRequired();
             e.Property(x => x.OpenedAt);
             e.Property(x => x.OpenedBy).HasMaxLength(64);
@@ -78,6 +79,46 @@ public static class PlatformMapping
             e.Property(x => x.OccurredAt);
             e.Property(x => x.Actor).HasMaxLength(64);
             e.Property(x => x.DestinationReference).HasMaxLength(128);
+        });
+
+        mb.Entity<CashSessionTransaction>(e =>
+        {
+            e.ToTable("cash_session_tx", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.SessionId).IsRequired();
+            e.Property(x => x.TxNumber).HasMaxLength(10).IsRequired();
+            e.HasIndex(x => x.TxNumber).IsUnique();
+            e.Property(x => x.TxType).HasMaxLength(2).IsRequired();
+            e.Property(x => x.OccurredAt);
+        });
+
+        mb.Entity<CashDailyClose>(e =>
+        {
+            e.ToTable("cash_daily_close", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.BranchCode).HasMaxLength(3).IsRequired();
+            e.Property(x => x.BusinessDate).IsRequired();
+            e.HasIndex(x => new { x.BranchCode, x.BusinessDate }).IsUnique();
+            e.Property(x => x.Status).HasMaxLength(16).IsRequired();
+            e.Property(x => x.FinalizedAt);
+            e.Property(x => x.FinalizedBy).HasMaxLength(64);
+            e.Property(x => x.Reason).HasMaxLength(500).IsRequired();
+            foreach (var property in new[]
+                     {
+                         nameof(CashDailyClose.TotalSales), nameof(CashDailyClose.TotalRefunds),
+                         nameof(CashDailyClose.TaxA), nameof(CashDailyClose.TaxB),
+                         nameof(CashDailyClose.CashTenders), nameof(CashDailyClose.CardTenders),
+                         nameof(CashDailyClose.OtherTenders), nameof(CashDailyClose.PaidIn),
+                         nameof(CashDailyClose.PaidOut), nameof(CashDailyClose.Pickups),
+                         nameof(CashDailyClose.Deposits), nameof(CashDailyClose.ExpectedCash),
+                         nameof(CashDailyClose.CountedCash), nameof(CashDailyClose.Variance),
+                     })
+            {
+                e.Property<decimal>(property).HasPrecision(19, 4);
+            }
+            e.Property(x => x.SnapshotJson).HasColumnType("text").IsRequired();
         });
 
         mb.Entity<SalesRefundLine>(e =>

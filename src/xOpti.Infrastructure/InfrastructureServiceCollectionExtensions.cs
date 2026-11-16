@@ -28,6 +28,9 @@ public sealed record InfrastructureOptions
     /// </summary>
     public decimal PosDiscountThresholdPercent { get; init; }
 
+    /// <summary>Blind cash-count policy; false until the signed policy is supplied.</summary>
+    public bool BlindCashCount { get; init; }
+
     /// <summary>
     /// Payment terminal mode: "manual" requires an operator-entered opaque
     /// reference; "simulated" is a disposable test harness.
@@ -103,6 +106,7 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddScoped<xOpti.Application.Sales.OrderEntry.IOrderStore, Repositories.EfOrderStore>();
         services.AddScoped<xOpti.Application.Sales.Retail.IRetailSaleStore,
             Repositories.EfRetailSaleStore>();
+        services.AddScoped<xOpti.Application.Cash.ICashStore, Repositories.EfCashStore>();
         services.AddScoped<xOpti.Application.Settings.IPreferencesStore, Repositories.EfPreferencesStore>();
         services.AddScoped<xOpti.Application.Settings.IImportStore, Repositories.EfImportStore>();
         services.AddSingleton<xOpti.Application.Identity.Staff.IRoleCatalogue, Identity.RoleCatalogue>();

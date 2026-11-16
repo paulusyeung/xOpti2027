@@ -8,4 +8,7 @@ namespace xOpti.Application.Ports;
 public interface IPosPolicy
 {
     decimal DiscountThresholdPercent { get; }
+
+    /// <summary>Hide expected cash until a blind count is submitted.</summary>
+    bool BlindCashCount { get; }
 }

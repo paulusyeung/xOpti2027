@@ -6,4 +6,6 @@ namespace xOpti.Infrastructure;
 public sealed class PosPolicy(InfrastructureOptions options) : IPosPolicy
 {
     public decimal DiscountThresholdPercent => options.PosDiscountThresholdPercent;
+
+    public bool BlindCashCount => options.BlindCashCount;
 }

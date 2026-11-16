@@ -5,7 +5,7 @@ import { AppError } from '@/api/problems'
 import DocumentPanel from './DocumentPanel.vue'
 import PaymentPanel, { type TenderRow } from './PaymentPanel.vue'
 import { normalizeTaxCode, round2, taxFor, tenderOutcome, type TaxRates } from './pricing'
-import type { PaymentMethod, PosDocument, PosItem, RefundableInvoice } from './types'
+import type { CashSession, PaymentMethod, PosDocument, PosItem, RefundableInvoice } from './types'
 
 interface RefundSelection {
   rowNo: number
@@ -40,6 +40,8 @@ const skuResults = ref<PosItem[]>([])
 const rates = reactive<TaxRates>({ a: 0, b: 0 })
 const paymentMethods = ref<PaymentMethod[]>([])
 const saleTenders = ref<TenderRow[]>([])
+const openSessions = ref<CashSession[]>([])
+const sessionId = ref<number | null>(null)
 const staffCode = ref('0001')
 const reason = ref('customer refund')
 const busy = ref(false)
@@ -152,6 +154,10 @@ async function loadContext(): Promise<void> {
   rates.a = Number(context.taxARate)
   rates.b = Number(context.taxBRate)
   paymentMethods.value = (await unwrap(await api.client.GET('/api/v1/sales/payment-methods', {}))) as unknown as PaymentMethod[]
+  openSessions.value = (await unwrap(await api.client.GET('/api/v1/cash/sessions/open', {
+    params: { query: { branchCode: '01' } },
+  }))) as unknown as CashSession[]
+  sessionId.value = openSessions.value[0]?.id ?? null
 }
 
 async function fetchRefundable(): Promise<void> {
@@ -252,6 +258,7 @@ async function postRefund(): Promise<void> {
       body: {
         originalTxNumber: invoice.value.txNumber,
         staffCode: staffCode.value,
+        sessionId: sessionId.value,
         reason: reason.value,
         lines: selections.value
           .filter((line) => line.quantity > 0)
@@ -461,6 +468,9 @@ onMounted(async () => {
               <PaymentPanel v-model="saleTenders" :methods="paymentMethods"
                 :total="refundTotals.net" test-prefix="pos-refund-sale" />
             </div>
+            <v-select v-model="sessionId" :items="openSessions" item-title="terminalCode"
+              item-value="id" label="Drawer session" density="compact" class="mt-3"
+              data-testid="pos-refund-session" />
             <v-text-field v-model="reason" label="Reason" density="compact" class="mt-3"
               data-testid="pos-refund-reason" />
             <v-btn color="primary" class="mt-2" block :loading="busy" :disabled="!canSubmit"

@@ -32,6 +32,9 @@ public sealed class ApiOptions
     /// </summary>
     public decimal PosDiscountThresholdPercent { get; set; }
 
+    /// <summary>Blind cash-count policy; false until the signed policy is supplied.</summary>
+    public bool BlindCashCount { get; set; }
+
     /// <summary>
     /// Payment terminal mode: "manual" (default) requires an operator-entered
     /// opaque reference; "simulated" is a disposable test harness.

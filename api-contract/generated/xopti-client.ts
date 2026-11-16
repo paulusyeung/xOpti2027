@@ -1578,6 +1578,460 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/cash/sessions/open": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query: {
+                    branchCode: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CashSessionDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cash/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query: {
+                    branchCode: string;
+                    businessDate: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CashSessionDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["OpenCashSessionRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CashSessionDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cash/sessions/{sessionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    sessionId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CashSessionDetailDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cash/sessions/{sessionId}/count-context": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    sessionId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CashCountContextDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cash/sessions/{sessionId}/suspend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    sessionId: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ReasonRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CashSessionDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cash/sessions/{sessionId}/resume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    sessionId: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ReasonRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CashSessionDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cash/sessions/{sessionId}/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    sessionId: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CloseCashSessionRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CashSessionDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cash/sessions/{sessionId}/counts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    sessionId: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CashCountRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CashSessionDetailDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cash/sessions/{sessionId}/movements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    sessionId: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CashMovementRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CashSessionDetailDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cash/journal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query: {
+                    branchCode: string;
+                    businessDate: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CashJournalDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/cash/daily-closes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["FinalizeDailyCloseRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CashJournalDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/sales/payment-methods": {
         parameters: {
             query?: never;
@@ -2727,6 +3181,145 @@ export interface components {
             name: string;
             city: null | string;
         };
+        CashCountContextDto: {
+            /** Format: int64 */
+            sessionId: number | string;
+            /** Format: double */
+            openingFloat: number | string;
+            /** Format: double */
+            expectedCash: null | number | string;
+            blind: boolean;
+            counts: components["schemas"]["CashCountDto"][];
+            movements: components["schemas"]["CashMovementDto"][];
+        };
+        CashCountDto: {
+            /** Format: int64 */
+            id: number | string;
+            kind: string;
+            /** Format: double */
+            amount: number | string;
+            /** Format: date-time */
+            countedAt: string;
+            countedBy: null | string;
+            /** Format: double */
+            variance: null | number | string;
+            reason: null | string;
+        };
+        CashCountRequest: {
+            kind: string;
+            /** Format: double */
+            amount: number | string;
+            reason: null | string;
+        };
+        CashJournalDocumentDto: {
+            txNumber: string;
+            txType: string;
+            /** Format: double */
+            totalSale: number | string;
+            /** Format: double */
+            taxA: number | string;
+            /** Format: double */
+            taxB: number | string;
+            /** Format: double */
+            totalAmount: number | string;
+            tenders: components["schemas"]["CashJournalTenderDto"][];
+        };
+        CashJournalDto: {
+            branchCode: string;
+            /** Format: date */
+            businessDate: string;
+            status: string;
+            /** Format: date-time */
+            finalizedAt: null | string;
+            finalizedBy: null | string;
+            reason: null | string;
+            /** Format: double */
+            totalSales: number | string;
+            /** Format: double */
+            totalRefunds: number | string;
+            /** Format: double */
+            taxA: number | string;
+            /** Format: double */
+            taxB: number | string;
+            /** Format: double */
+            cashTenders: number | string;
+            /** Format: double */
+            cardTenders: number | string;
+            /** Format: double */
+            otherTenders: number | string;
+            /** Format: double */
+            paidIn: number | string;
+            /** Format: double */
+            paidOut: number | string;
+            /** Format: double */
+            pickups: number | string;
+            /** Format: double */
+            deposits: number | string;
+            /** Format: double */
+            expectedCash: number | string;
+            /** Format: double */
+            countedCash: number | string;
+            /** Format: double */
+            variance: number | string;
+            sessions: components["schemas"]["CashSessionDto"][];
+            documents: components["schemas"]["CashJournalDocumentDto"][];
+            movements: components["schemas"]["CashMovementDto"][];
+        };
+        CashJournalTenderDto: {
+            method: string;
+            /** Format: double */
+            applied: number | string;
+        };
+        CashMovementDto: {
+            /** Format: int64 */
+            id: number | string;
+            kind: string;
+            /** Format: double */
+            amount: number | string;
+            reason: string;
+            /** Format: date-time */
+            occurredAt: string;
+            actor: null | string;
+            destinationReference: null | string;
+        };
+        CashMovementRequest: {
+            kind: string;
+            /** Format: double */
+            amount: number | string;
+            reason: string;
+            destinationReference: null | string;
+        };
+        CashSessionDetailDto: {
+            session: components["schemas"]["CashSessionDto"];
+            counts: components["schemas"]["CashCountDto"][];
+            movements: components["schemas"]["CashMovementDto"][];
+        };
+        CashSessionDto: {
+            /** Format: int64 */
+            id: number | string;
+            branchCode: string;
+            terminalCode: string;
+            /** Format: date */
+            businessDate: string;
+            status: string;
+            /** Format: date-time */
+            openedAt: string;
+            openedBy: null | string;
+            /** Format: double */
+            openingFloat: number | string;
+            /** Format: double */
+            expectedCash: number | string;
+            /** Format: date-time */
+            suspendedAt: null | string;
+            /** Format: date-time */
+            closedAt: null | string;
+            closedBy: null | string;
+            /** Format: double */
+            countedCash: null | number | string;
+            /** Format: double */
+            variance: null | number | string;
+            varianceReason: null | string;
+        };
         CatalogueItemDto: {
             sku: string;
             name: null | string;
@@ -2744,6 +3337,12 @@ export interface components {
         };
         ChangeRoleRequest: {
             role: string;
+            reason: string;
+        };
+        CloseCashSessionRequest: {
+            /** Format: double */
+            countedCash: number | string;
+            varianceReason: null | string;
             reason: string;
         };
         CompleteResetRequest: {
@@ -2863,6 +3462,12 @@ export interface components {
             country: null | string;
             phone: null | string;
             postalCode: null | string;
+        };
+        FinalizeDailyCloseRequest: {
+            branchCode: string;
+            /** Format: date */
+            businessDate: string;
+            reason: string;
         };
         ImportCountsRequest: {
             csv: string;
@@ -2995,6 +3600,13 @@ export interface components {
             amount: components["schemas"]["Money"];
             taxCode: null | string;
         };
+        OpenCashSessionRequest: {
+            branchCode: string;
+            terminalCode: string;
+            /** Format: double */
+            openingFloat: number | string;
+            reason: string;
+        };
         OrderLineRequest: {
             sku: string;
             /** Format: int32 */
@@ -3065,6 +3677,8 @@ export interface components {
             staffCode: string;
             lines: components["schemas"]["RetailLineRequest"][];
             tenders: components["schemas"]["RetailTenderRequest"][];
+            /** Format: int64 */
+            sessionId: null | number | string;
             reason: string;
         };
         PostRetailRefundRequest: {
@@ -3074,6 +3688,8 @@ export interface components {
             replacements: components["schemas"]["RetailLineRequest"][];
             refundTenders: components["schemas"]["RetailTenderRequest"][];
             saleTenders: components["schemas"]["RetailTenderRequest"][];
+            /** Format: int64 */
+            sessionId: null | number | string;
             reason: string;
         };
         PostStockTakeRequest: {

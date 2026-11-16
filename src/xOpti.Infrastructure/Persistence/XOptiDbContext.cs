@@ -41,6 +41,10 @@ public class XOptiDbContext(DbContextOptions<XOptiDbContext> options)
 
     public DbSet<CashMovement> CashMovements => Set<CashMovement>();
 
+    public DbSet<CashSessionTransaction> CashSessionTransactions => Set<CashSessionTransaction>();
+
+    public DbSet<CashDailyClose> CashDailyCloses => Set<CashDailyClose>();
+
     public DbSet<SalesRefundLine> SalesRefundLines => Set<SalesRefundLine>();
 
     public DbSet<SalesRefundTender> SalesRefundTenders => Set<SalesRefundTender>();
