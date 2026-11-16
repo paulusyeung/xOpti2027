@@ -22,6 +22,12 @@ public sealed record InfrastructureOptions
     /// <summary>Directories scanned for bundled fonts (e.g. 3of9.TTF).</summary>
     public IReadOnlyList<string> FontDirectories { get; init; } = Array.Empty<string>();
 
+    /// <summary>
+    /// Manual discount percentage allowed without the price-override
+    /// permission. Zero until the signed discount policy is supplied.
+    /// </summary>
+    public decimal PosDiscountThresholdPercent { get; init; }
+
     /// <summary>Schedule/cron-lite expressions for enabled jobs.</summary>
     public IReadOnlyList<string> MaterializedViewRefreshStatements { get; init; } =
         new[] { "SELECT 1 /* example: replace with REFRESH MATERIALIZED VIEW analytics... */" };
@@ -89,10 +95,13 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddScoped<xOpti.Application.Sales.Documents.ISalesDocumentStore,
             Repositories.EfSalesDocumentStore>();
         services.AddScoped<xOpti.Application.Sales.OrderEntry.IOrderStore, Repositories.EfOrderStore>();
+        services.AddScoped<xOpti.Application.Sales.Retail.IRetailSaleStore,
+            Repositories.EfRetailSaleStore>();
         services.AddScoped<xOpti.Application.Settings.IPreferencesStore, Repositories.EfPreferencesStore>();
         services.AddScoped<xOpti.Application.Settings.IImportStore, Repositories.EfImportStore>();
         services.AddSingleton<xOpti.Application.Identity.Staff.IRoleCatalogue, Identity.RoleCatalogue>();
         services.AddSingleton<IClock, SystemClock>();
+        services.AddSingleton<IPosPolicy, PosPolicy>();
         services.AddScoped<xOpti.Application.Identity.ListBranches.IBranchRepository, Repositories.EfBranchRepository>();
 
         services.AddScoped<Platform.IdempotencyStoreOptions>(_ =>

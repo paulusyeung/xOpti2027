@@ -52,12 +52,13 @@ public sealed class EfSalesDocumentStore(XOptiDbContext context) : ISalesDocumen
                 row.AuthorizationCode ?? (row.CardNumber == null ? null : "CARD-REF")))
             .ToListAsync(ct);
 
-        var paid = payments.Sum(row => row.AmountTender);
+        var paid = payments.Sum(row => row.AppliedAmount);
         return new SalesDocumentDto(header.TxNumber, header.TxType.ToLegacyCode(), Kind(header.TxType),
             header.ControlNumber, header.DateOfEntry, header.CustomerId, customerName,
             header.Status, StatusLabel(header.Status), header.RefNumber,
             header.TotalSale.Amount, header.TaxA.Amount, header.TaxB.Amount,
-            header.GrossSale.Amount, header.TotalAmount.Amount, header.TotalQty, paid,
+            header.GrossSale.Amount, header.Change.Amount, header.TotalAmount.Amount,
+            header.TotalQty, paid,
             decimal.Round(header.TotalAmount.Amount - paid, 2), lines, payments);
     }
 

@@ -94,6 +94,7 @@ public static class SeedData
                      ("manager", RolePermissionMatrix.Manager),
                      ("clerk", RolePermissionMatrix.Clerk),
                      ("purchasing", RolePermissionMatrix.Purchasing),
+                     ("optician", RolePermissionMatrix.Optician),
                      ("admin", RolePermissionMatrix.Admin),
                      ("locked-target", RolePermissionMatrix.Clerk),
                      ("unlocked-reset", RolePermissionMatrix.Clerk),

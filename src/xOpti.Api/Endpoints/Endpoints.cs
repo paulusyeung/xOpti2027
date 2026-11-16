@@ -26,6 +26,7 @@ using xOpti.Application.Inventory.GetInventorySummary;
 using xOpti.Application.Reference;
 using xOpti.Application.Sales.Documents;
 using xOpti.Application.Sales.OrderEntry;
+using xOpti.Application.Sales.Retail;
 using xOpti.Application.Settings;
 using xOpti.Application.Common;
 using xOpti.Application.Identity.ListBranches;
@@ -617,6 +618,52 @@ public static class Endpoints
         .RequireAuthorization($"perm:{PermissionNames.InventoryReceive}")
         .Produces<SupplierActivityDto>();
 
+        v1.MapPost("/sales/invoices", async (
+            HttpContext http, PostRetailInvoiceRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var key = http.Request.Headers["Idempotency-Key"].FirstOrDefault();
+            var result = await dispatcher.DispatchAsync(new PostRetailInvoiceCommand(
+                request.CustomerId, request.StaffCode,
+                request.Lines.Select(line => new RetailLineInput(line.Sku, line.Quantity,
+                    line.UnitAmount, line.DiscountAmount, line.TaxCode)).ToList(),
+                request.Tenders.Select(tender => new RetailTenderInput(
+                    tender.Method, tender.Amount, tender.Reference)).ToList(),
+                request.Reason, key), cancellationToken);
+            return Results.Created($"/api/v1/sales/documents/{result.TxNumber}", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
+        .AddEndpointFilter<IdempotencyKeyFilter>()
+        .Produces<SalesDocumentDto>(StatusCodes.Status201Created);
+
+        v1.MapGet("/sales/invoices/{txNumber}/refundable", async (
+            string txNumber, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetRefundableInvoiceQuery(txNumber), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
+        .Produces<RefundableInvoiceDto>();
+
+        v1.MapPost("/sales/refunds", async (
+            HttpContext http, PostRetailRefundRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var key = http.Request.Headers["Idempotency-Key"].FirstOrDefault();
+            var result = await dispatcher.DispatchAsync(new PostRetailRefundCommand(
+                request.OriginalTxNumber, request.StaffCode,
+                request.Lines.Select(line => new RefundLineInput(
+                    line.OriginalRowNo, line.Quantity, line.Restock)).ToList(),
+                request.Replacements.Select(line => new RetailLineInput(line.Sku, line.Quantity,
+                    line.UnitAmount, line.DiscountAmount, line.TaxCode)).ToList(),
+                request.Reason, key), cancellationToken);
+            return Results.Created($"/api/v1/sales/documents/{result.TxNumber}", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
+        .AddEndpointFilter<IdempotencyKeyFilter>()
+        .Produces<SalesDocumentDto>(StatusCodes.Status201Created);
+
         v1.MapPost("/sales/orders", async (
             HttpContext http, CreateOrderRequest request, IRequestDispatcher dispatcher,
             CancellationToken cancellationToken) =>
@@ -982,6 +1029,21 @@ public sealed record ApproveStockTakeRequest(string Reason);
 public sealed record PostStockTakeRequest(string Reason);
 
 public sealed record ImportCountsRequest(string Csv, bool DryRun, string Reason);
+
+public sealed record RetailLineRequest(
+    string Sku, int Quantity, decimal UnitAmount, decimal DiscountAmount, string TaxCode);
+
+public sealed record RetailTenderRequest(string Method, decimal Amount, string? Reference);
+
+public sealed record PostRetailInvoiceRequest(
+    int CustomerId, string StaffCode, IReadOnlyList<RetailLineRequest> Lines,
+    IReadOnlyList<RetailTenderRequest> Tenders, string Reason);
+
+public sealed record RefundLineRequest(int OriginalRowNo, int Quantity, bool Restock);
+
+public sealed record PostRetailRefundRequest(
+    string OriginalTxNumber, string StaffCode, IReadOnlyList<RefundLineRequest> Lines,
+    IReadOnlyList<RetailLineRequest> Replacements, string Reason);
 
 public sealed record OrderLineRequest(
     string Sku, int Quantity, decimal? UnitAmount, string TaxCode, decimal DiscountAmount);

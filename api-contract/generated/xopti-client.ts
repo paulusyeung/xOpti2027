@@ -1578,6 +1578,121 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/sales/invoices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["PostRetailInvoiceRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SalesDocumentDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/invoices/{txNumber}/refundable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RefundableInvoiceDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/refunds": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["PostRetailRefundRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["SalesDocumentDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/sales/orders": {
         parameters: {
             query?: never;
@@ -2856,6 +2971,21 @@ export interface components {
             /** Format: double */
             taxBRate: number | string;
         };
+        PostRetailInvoiceRequest: {
+            /** Format: int32 */
+            customerId: number | string;
+            staffCode: string;
+            lines: components["schemas"]["RetailLineRequest"][];
+            tenders: components["schemas"]["RetailTenderRequest"][];
+            reason: string;
+        };
+        PostRetailRefundRequest: {
+            originalTxNumber: string;
+            staffCode: string;
+            lines: components["schemas"]["RefundLineRequest"][];
+            replacements: components["schemas"]["RetailLineRequest"][];
+            reason: string;
+        };
         PostStockTakeRequest: {
             reason: string;
         };
@@ -2959,6 +3089,56 @@ export interface components {
             exchangeRate: null | number | string;
             reason: string;
         };
+        RefundableInvoiceDto: {
+            txNumber: string;
+            /** Format: int32 */
+            customerId: number | string;
+            customerName: null | string;
+            /** Format: date-time */
+            dateOfEntry: string;
+            /** Format: double */
+            totalSale: number | string;
+            /** Format: double */
+            taxA: number | string;
+            /** Format: double */
+            taxB: number | string;
+            /** Format: double */
+            totalAmount: number | string;
+            /** Format: double */
+            refundedTaxA: number | string;
+            /** Format: double */
+            refundedTaxB: number | string;
+            lines: components["schemas"]["RefundableLineDto"][];
+        };
+        RefundableLineDto: {
+            /** Format: int32 */
+            rowNo: number | string;
+            sku: string;
+            /** Format: int32 */
+            originalQuantity: number | string;
+            /** Format: int32 */
+            refundedQuantity: number | string;
+            /** Format: int32 */
+            refundableQuantity: number | string;
+            /** Format: double */
+            unitAmount: number | string;
+            /** Format: double */
+            discountAmount: number | string;
+            /** Format: double */
+            amount: number | string;
+            /** Format: double */
+            taxA: number | string;
+            /** Format: double */
+            taxB: number | string;
+            taxCode: null | string;
+        };
+        RefundLineRequest: {
+            /** Format: int32 */
+            originalRowNo: number | string;
+            /** Format: int32 */
+            quantity: number | string;
+            restock: boolean;
+        };
         RejectStockLineRequest: {
             sku: string;
             lotNo: string;
@@ -2993,6 +3173,22 @@ export interface components {
         RenameBranchRequest: {
             name: string;
             expectedCurrentName?: null | string;
+        };
+        RetailLineRequest: {
+            sku: string;
+            /** Format: int32 */
+            quantity: number | string;
+            /** Format: double */
+            unitAmount: number | string;
+            /** Format: double */
+            discountAmount: number | string;
+            taxCode: string;
+        };
+        RetailTenderRequest: {
+            method: string;
+            /** Format: double */
+            amount: number | string;
+            reference: null | string;
         };
         RetireReferenceRequest: {
             key: string;
@@ -3039,6 +3235,8 @@ export interface components {
             /** Format: double */
             grossSale: number | string;
             /** Format: double */
+            change: number | string;
+            /** Format: double */
             totalAmount: number | string;
             /** Format: int32 */
             totalQty: number | string;
@@ -3072,7 +3270,7 @@ export interface components {
             /** Format: double */
             amountTender: number | string;
             /** Format: double */
-            totalThisPay: number | string;
+            appliedAmount: number | string;
             reference: null | string;
         };
         SalesItemLookupDto: {

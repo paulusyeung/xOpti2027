@@ -37,6 +37,8 @@ public interface IOrderStore
     Task<IReadOnlyList<SalesItemLookupDto>> SearchItemsAsync(
         string? search, int limit, CancellationToken ct);
     Task<IReadOnlyList<string>> MissingSkusAsync(IEnumerable<string> skus, CancellationToken ct);
+    Task<IReadOnlyDictionary<string, decimal?>> RetailPricesAsync(
+        IEnumerable<string> skus, CancellationToken ct);
     Task<(double GstRate, double PstRate)> TaxRatesAsync(CancellationToken ct);
     Task<string> NextControlNumberAsync(CancellationToken ct);
     Task CreateAsync(OrderPosting posting, CancellationToken ct);
@@ -151,97 +153,54 @@ internal static class OrderPricing
         IReadOnlyList<OrderLineInput> lines, decimal deposit,
         (double GstRate, double PstRate) rates, DateTimeOffset now)
     {
-        var computed = new List<OrderComputedLine>();
-        foreach (var line in lines)
-        {
-            var unit = line.UnitAmount ?? 0m;
-            var lineGross = decimal.Round(unit * line.Quantity, 4);
-            if (line.DiscountAmount > lineGross)
-                throw new ValidationFailedException(new[]
-                {
-                    new ValidationFieldError("DiscountAmount", "over-line",
-                        $"The discount on {line.Sku} cannot exceed the line amount."),
-                });
-            var amount = decimal.Round(lineGross - line.DiscountAmount, 4);
-            var code = TaxCodeFor(line.TaxCode, rates);
-            if (!code.IsSuccess)
-                throw new ValidationFailedException(new[]
-                {
-                    new ValidationFieldError("TaxCode", "invalid-tax-configuration", code.Error),
-                });
-            var tax = TaxCalculator.Calculate(code.Value, Money.From(amount));
-            if (!tax.IsSuccess)
-                throw new ValidationFailedException(new[]
-                {
-                    new ValidationFieldError("TaxCode", "tax-calculation", tax.Error),
-                });
-            computed.Add(new OrderComputedLine(line.Sku, line.Quantity, unit, line.DiscountAmount,
-                amount, line.TaxCode, tax.Value.Gst.Amount, tax.Value.Pst.Amount));
-        }
+        var priced = SalesPricing.Price(
+            lines.Select(line => new PricingLineInput(line.Sku, line.Quantity,
+                line.UnitAmount ?? 0m, line.DiscountAmount, line.TaxCode)).ToList(),
+            rates);
+        var computed = priced.Lines
+            .Select(line => new OrderComputedLine(line.Sku, line.Quantity, line.UnitAmount,
+                line.DiscountAmount, line.Amount, line.TaxCode, line.TaxA, line.TaxB))
+            .ToList();
 
-        var totalSale = computed.Sum(row => row.Amount);
-        var taxA = computed.Sum(row => row.TaxA);
-        var taxB = computed.Sum(row => row.TaxB);
-        var gross = decimal.Round(totalSale + taxA + taxB, 4);
-        if (deposit > gross)
+        if (deposit > priced.GrossSale)
             throw new ValidationFailedException(new[]
             {
                 new ValidationFieldError("DepositAmount", "over-total",
                     "The deposit cannot exceed the order total."),
             });
         var posting = new OrderPosting(txNumber, controlNumber, customerId, staffCode, computed,
-            totalSale, taxA, taxB, gross, deposit, computed.Sum(row => row.Quantity), now);
+            priced.TotalSale, priced.TaxA, priced.TaxB, priced.GrossSale, deposit,
+            priced.TotalQty, now);
         return (posting, computed);
     }
-
-    private static xOpti.Domain.Common.Result<TaxCode> TaxCodeFor(
-        string? code, (double GstRate, double PstRate) rates)
-    {
-        var gst = (decimal)rates.GstRate / 100m;
-        var pst = (decimal)rates.PstRate / 100m;
-        return TaxMethodFor(code) switch
-        {
-            TaxMethod.Exempt => TaxCode.Create(TaxMethod.Exempt, 0m, 0m),
-            TaxMethod.GstOnly => TaxCode.Create(TaxMethod.GstOnly, gst, 0m),
-            TaxMethod.PstOnly => TaxCode.Create(TaxMethod.PstOnly, 0m, pst),
-            var method => TaxCode.Create(method, gst, pst),
-        };
-    }
-
-    public static TaxMethod TaxMethodFor(string? code) => code switch
-    {
-        "N" => TaxMethod.Exempt,
-        "B" => TaxMethod.GstPlusPst,
-        "G" => TaxMethod.GstOnly,
-        "P" => TaxMethod.PstOnly,
-        "g" => TaxMethod.GstIncluded,
-        "p" => TaxMethod.PstOnGst,
-        _ => TaxMethod.Exempt,
-    };
 }
 
 public sealed class CreateOrderHandler(
     IUnitOfWork unitOfWork, IOrderStore store, IControlNumberAllocator allocator,
-    IAuditRecorder audit, IClock clock)
+    IAuditRecorder audit, IClock clock, ICurrentPrincipal principal, IPosPolicy policy)
     : IRequestHandler<CreateOrderCommand, SalesDocumentDto>
 {
     public Task<SalesDocumentDto> Handle(CreateOrderCommand request, CancellationToken ct) =>
         unitOfWork.ExecuteInTransactionAsync(async token =>
         {
-            await ValidateAsync(store, request.CustomerId, request.Lines, token);
+            var (lines, overrides) = await ValidateAndResolveAsync(
+                store, request.CustomerId, request.Lines, principal, policy, token);
             var txNumber = await allocator.AllocateAsync(TransactionType.SalesOrder, token);
             var control = await store.NextControlNumberAsync(token);
             var (posting, _) = OrderPricing.Compute(txNumber.Value, control, request.CustomerId,
-                request.StaffCode, request.Lines, request.DepositAmount,
+                request.StaffCode, lines, request.DepositAmount,
                 await store.TaxRatesAsync(token), clock.UtcNow);
             await store.CreateAsync(posting, token);
             await audit.RecordAsync(new AuditRecord("order.create", "TxHeader", txNumber.Value,
                 JsonSerializer.Serialize(new { reason = request.Reason, total = posting.GrossSale })), token);
+            await PriceOverrideRules.RecordAuditAsync(audit, txNumber.Value, overrides, request.Reason, token);
             return await store.GetOrderAsync(txNumber.Value, token) ?? throw new InvalidOperationException();
         }, ct);
 
-    internal static async Task ValidateAsync(IOrderStore store, int customerId,
-        IReadOnlyList<OrderLineInput> lines, CancellationToken ct)
+    internal static async Task<(List<OrderLineInput> Lines, IReadOnlyList<PriceOverrideNote> Overrides)>
+        ValidateAndResolveAsync(
+            IOrderStore store, int customerId, IReadOnlyList<OrderLineInput> lines,
+            ICurrentPrincipal principal, IPosPolicy policy, CancellationToken ct)
     {
         if (!await store.CustomerExistsAsync(customerId, ct))
             throw new ValidationFailedException(new[]
@@ -254,11 +213,24 @@ public sealed class CreateOrderHandler(
             {
                 new ValidationFieldError("Sku", "not-found", $"Unknown SKU(s): {string.Join(", ", missing)}."),
             });
+
+        var retailPrices = await store.RetailPricesAsync(lines.Select(line => line.Sku), ct);
+        var resolved = lines.Select(line => line with
+        {
+            UnitAmount = line.UnitAmount ?? retailPrices.GetValueOrDefault(line.Sku) ?? 0m,
+        }).ToList();
+        var overrides = PriceOverrideRules.Validate(
+            resolved.Select(line => new PricingLineInput(line.Sku, line.Quantity,
+                line.UnitAmount ?? 0m, line.DiscountAmount, line.TaxCode)).ToList(),
+            retailPrices, PriceOverrideRules.CanOverride(principal), policy.DiscountThresholdPercent);
+        return (resolved, overrides);
     }
+
 }
 
 public sealed class UpdateOrderHandler(
-    IUnitOfWork unitOfWork, IOrderStore store, IAuditRecorder audit)
+    IUnitOfWork unitOfWork, IOrderStore store, IAuditRecorder audit,
+    ICurrentPrincipal principal, IPosPolicy policy)
     : IRequestHandler<UpdateOrderCommand, SalesDocumentDto>
 {
     public Task<SalesDocumentDto> Handle(UpdateOrderCommand request, CancellationToken ct) =>
@@ -276,15 +248,18 @@ public sealed class UpdateOrderHandler(
                     new ValidationFieldError("TxNumber", "not-editable", "Only open orders can be updated."),
                 });
 
-            await CreateOrderHandler.ValidateAsync(store, request.CustomerId, request.Lines, token);
+            var (lines, overrides) = await CreateOrderHandler.ValidateAndResolveAsync(
+                store, request.CustomerId, request.Lines, principal, policy, token);
             // Detail rows share the header's composite key, so an edit keeps the
             // original entry timestamp instead of restamping the lines.
             var (posting, _) = OrderPricing.Compute(existing.TxNumber, existing.ControlNumber,
-                request.CustomerId, request.StaffCode, request.Lines, request.DepositAmount,
+                request.CustomerId, request.StaffCode, lines, request.DepositAmount,
                 await store.TaxRatesAsync(token), existing.DateOfEntry);
             await store.UpdateAsync(posting, token);
             await audit.RecordAsync(new AuditRecord("order.update", "TxHeader", existing.TxNumber,
                 JsonSerializer.Serialize(new { reason = request.Reason, total = posting.GrossSale })), token);
+            await PriceOverrideRules.RecordAuditAsync(
+                audit, existing.TxNumber, overrides, request.Reason, token);
             return await store.GetOrderAsync(existing.TxNumber, token) ?? existing;
         }, ct);
 }

@@ -25,3 +25,23 @@ public class TxSOrderExtra
     public bool? Msd { get; set; }
     public int? Remarks { get; set; }
 }
+
+/// <summary>App-owned link from a refund line to the original invoice line.</summary>
+public class SalesRefundLine
+{
+    public string RefundTxNumber { get; set; } = string.Empty;
+
+    public double RefundRowNo { get; set; }
+
+    public string OriginalTxNumber { get; set; } = string.Empty;
+
+    public double OriginalRowNo { get; set; }
+
+    public int Quantity { get; set; }
+
+    public bool Restocked { get; set; }
+
+    public decimal TaxA { get; set; }
+
+    public decimal TaxB { get; set; }
+}

@@ -1517,6 +1517,93 @@
         }
       }
     },
+    "/api/v1/sales/invoices": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostRetailInvoiceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalesDocumentDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sales/invoices/{txNumber}/refundable": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "txNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefundableInvoiceDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sales/refunds": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostRetailRefundRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalesDocumentDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/sales/orders": {
       "post": {
         "tags": [
@@ -4002,6 +4089,77 @@
           }
         }
       },
+      "PostRetailInvoiceRequest": {
+        "required": [
+          "customerId",
+          "staffCode",
+          "lines",
+          "tenders",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "customerId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "staffCode": {
+            "type": "string"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RetailLineRequest"
+            }
+          },
+          "tenders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RetailTenderRequest"
+            }
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "PostRetailRefundRequest": {
+        "required": [
+          "originalTxNumber",
+          "staffCode",
+          "lines",
+          "replacements",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "originalTxNumber": {
+            "type": "string"
+          },
+          "staffCode": {
+            "type": "string"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RefundLineRequest"
+            }
+          },
+          "replacements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RetailLineRequest"
+            }
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
       "PostStockTakeRequest": {
         "required": [
           "reason"
@@ -4478,6 +4636,227 @@
           }
         }
       },
+      "RefundableInvoiceDto": {
+        "required": [
+          "txNumber",
+          "customerId",
+          "customerName",
+          "dateOfEntry",
+          "totalSale",
+          "taxA",
+          "taxB",
+          "totalAmount",
+          "refundedTaxA",
+          "refundedTaxB",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "txNumber": {
+            "type": "string"
+          },
+          "customerId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "customerName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "dateOfEntry": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "totalSale": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxA": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxB": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "refundedTaxA": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "refundedTaxB": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RefundableLineDto"
+            }
+          }
+        }
+      },
+      "RefundableLineDto": {
+        "required": [
+          "rowNo",
+          "sku",
+          "originalQuantity",
+          "refundedQuantity",
+          "refundableQuantity",
+          "unitAmount",
+          "discountAmount",
+          "amount",
+          "taxA",
+          "taxB",
+          "taxCode"
+        ],
+        "type": "object",
+        "properties": {
+          "rowNo": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "originalQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "refundedQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "refundableQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "unitAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "discountAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxA": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxB": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "RefundLineRequest": {
+        "required": [
+          "originalRowNo",
+          "quantity",
+          "restock"
+        ],
+        "type": "object",
+        "properties": {
+          "originalRowNo": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "restock": {
+            "type": "boolean"
+          }
+        }
+      },
       "RejectStockLineRequest": {
         "required": [
           "sku",
@@ -4632,6 +5011,75 @@
           }
         }
       },
+      "RetailLineRequest": {
+        "required": [
+          "sku",
+          "quantity",
+          "unitAmount",
+          "discountAmount",
+          "taxCode"
+        ],
+        "type": "object",
+        "properties": {
+          "sku": {
+            "type": "string"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "unitAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "discountAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxCode": {
+            "type": "string"
+          }
+        }
+      },
+      "RetailTenderRequest": {
+        "required": [
+          "method",
+          "amount",
+          "reference"
+        ],
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": "string"
+          },
+          "amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "reference": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "RetireReferenceRequest": {
         "required": [
           "key",
@@ -4757,6 +5205,7 @@
           "taxA",
           "taxB",
           "grossSale",
+          "change",
           "totalAmount",
           "totalQty",
           "paid",
@@ -4836,6 +5285,14 @@
             "format": "double"
           },
           "grossSale": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "change": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "number",
@@ -4967,7 +5424,7 @@
           "paymentLineNo",
           "type",
           "amountTender",
-          "totalThisPay",
+          "appliedAmount",
           "reference"
         ],
         "type": "object",
@@ -4991,7 +5448,7 @@
             ],
             "format": "double"
           },
-          "totalThisPay": {
+          "appliedAmount": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d+)?$",
             "type": [
               "number",

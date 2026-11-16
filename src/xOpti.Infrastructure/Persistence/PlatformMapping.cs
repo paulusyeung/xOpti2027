@@ -80,6 +80,20 @@ public static class PlatformMapping
             e.Property(x => x.DestinationReference).HasMaxLength(128);
         });
 
+        mb.Entity<SalesRefundLine>(e =>
+        {
+            e.ToTable("sales_refund_line", "platform");
+            e.HasKey(x => new { x.RefundTxNumber, x.RefundRowNo });
+            e.Property(x => x.RefundTxNumber).HasMaxLength(10).IsRequired();
+            e.Property(x => x.RefundRowNo);
+            e.Property(x => x.OriginalTxNumber).HasMaxLength(10).IsRequired();
+            e.Property(x => x.OriginalRowNo);
+            e.Property(x => x.Quantity).IsRequired();
+            e.Property(x => x.Restocked).IsRequired();
+            e.Property(x => x.TaxA).HasPrecision(19, 4).IsRequired();
+            e.Property(x => x.TaxB).HasPrecision(19, 4).IsRequired();
+        });
+
         mb.Entity<EntityRetirement>(e =>
         {
             e.ToTable("entity_retirement", "platform");

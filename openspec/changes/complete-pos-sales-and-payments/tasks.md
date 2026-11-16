@@ -15,11 +15,11 @@
 
 ## 3. Retail invoice and refund
 
-- [ ] 3.1 Implement direct retail invoice posting with pricing, tax, discount, inventory costing, tender, and audit; verify a failed payment rolls back all effects.
-- [ ] 3.2 Implement invoice lookup and reprint data; verify reprints preserve original prices, taxes, tenders, and document numbers.
-- [ ] 3.3 Implement refund/exchange posting with original-line references, refundable balances, restock policy, and RS numbering; verify over-refund is rejected.
-- [ ] 3.4 Build the POS invoice and refund screens; verify Playwright covers sale, partial refund, exchange, and reprint.
-- [ ] 3.5 Enforce permissioned price overrides and discount thresholds; verify unauthorized overrides are denied and authorized overrides are audited.
+- [x] 3.1 Implement direct retail invoice posting with pricing, tax, discount, inventory costing, tender, and audit; verify a failed payment rolls back all effects.
+- [x] 3.2 Implement invoice lookup and reprint data; verify reprints preserve original prices, taxes, tenders, and document numbers.
+- [x] 3.3 Implement refund/exchange posting with original-line references, refundable balances, restock policy, and RS numbering; verify over-refund is rejected.
+- [x] 3.4 Build the POS invoice and refund screens; verify Playwright covers sale, partial refund, exchange, and reprint.
+- [x] 3.5 Enforce permissioned price overrides and discount thresholds; verify unauthorized overrides are denied and authorized overrides are audited.
 
 ## 4. Payments
 

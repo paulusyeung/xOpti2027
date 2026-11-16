@@ -11,12 +11,12 @@ public sealed record SalesDocumentLineDto(
     decimal Amount, string? TaxCode);
 
 public sealed record SalesDocumentPaymentDto(
-    double PaymentLineNo, string Type, decimal AmountTender, decimal TotalThisPay, string? Reference);
+    double PaymentLineNo, string Type, decimal AmountTender, decimal AppliedAmount, string? Reference);
 
 public sealed record SalesDocumentDto(
     string TxNumber, string TxType, string Kind, string ControlNumber, DateTimeOffset DateOfEntry,
     int CustomerId, string? CustomerName, string? Status, string StatusLabel, string? RefNumber,
-    decimal TotalSale, decimal TaxA, decimal TaxB, decimal GrossSale, decimal TotalAmount,
+    decimal TotalSale, decimal TaxA, decimal TaxB, decimal GrossSale, decimal Change, decimal TotalAmount,
     int TotalQty, decimal Paid, decimal Balance,
     IReadOnlyList<SalesDocumentLineDto> Lines,
     IReadOnlyList<SalesDocumentPaymentDto> Payments);

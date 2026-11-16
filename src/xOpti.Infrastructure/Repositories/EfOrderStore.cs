@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using xOpti.Application.Ports;
 using xOpti.Application.Sales.Documents;
 using xOpti.Application.Sales.OrderEntry;
-using xOpti.Domain.Rules;
 using xOpti.Domain.Values;
 using xOpti.Infrastructure.Persistence;
 using xOpti.Infrastructure.Persistence.Entities;
@@ -77,6 +76,20 @@ public sealed class EfOrderStore(
             .Select(row => row.Sku).ToListAsync(ct);
         var known = found.ToHashSet(StringComparer.OrdinalIgnoreCase);
         return requested.Where(sku => !known.Contains(sku)).ToList();
+    }
+
+    public async Task<IReadOnlyDictionary<string, decimal?>> RetailPricesAsync(
+        IEnumerable<string> skus, CancellationToken ct)
+    {
+        var requested = skus.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        var rows = await context.RetailPrices.AsNoTracking()
+            .Where(price => requested.Contains(price.Sku))
+            .Select(price => new { price.Sku, price.RetailPriceValue })
+            .ToListAsync(ct);
+        var prices = requested.ToDictionary(
+            sku => sku, _ => (decimal?)null, StringComparer.OrdinalIgnoreCase);
+        foreach (var row in rows) prices[row.Sku] = row.RetailPriceValue;
+        return prices;
     }
 
     public async Task<(double GstRate, double PstRate)> TaxRatesAsync(CancellationToken ct)
@@ -186,7 +199,7 @@ public sealed class EfOrderStore(
         var totalCost = 0m;
         foreach (var line in lines)
         {
-            var lineCost = await ConsumeAsync(line.Sku, line.Qty, invoiceNumber.Value, now, ct);
+            var lineCost = await InventoryPosting.ConsumeAsync(context, line.Sku, line.Qty, invoiceNumber.Value, now, ct);
             totalCost += lineCost;
             context.TxDetails.Add(new TxDetail
             {
@@ -224,62 +237,6 @@ public sealed class EfOrderStore(
         await context.SaveChangesAsync(ct);
 
         return new ConversionOutcome(invoiceNumber.Value, lines.Sum(row => row.Qty), totalCost);
-    }
-
-    private async Task<decimal> ConsumeAsync(
-        string sku, int quantity, string issueDocument, DateTimeOffset now, CancellationToken ct)
-    {
-        var inventory = await context.InventoryItems.SingleAsync(row => row.Sku == sku, ct);
-        var code = await (from item in context.InventoryItems.AsNoTracking()
-                          join category in context.Categories.AsNoTracking()
-                              on new { item.DepartmentCode, item.ClassCode, item.CategoryCode }
-                              equals new { category.DepartmentCode, category.ClassCode, category.CategoryCode }
-                          where item.Sku == sku
-                          select category.CostingMethod).SingleOrDefaultAsync(ct);
-        var method = code?.Trim() switch
-        {
-            "2" => CategoryCostingMethod.Lifo,
-            "3" => CategoryCostingMethod.Average,
-            _ => CategoryCostingMethod.Fifo,
-        };
-
-        var lots = await context.LotRecords.Where(row => row.Sku == sku && row.QtyOnHand > 0)
-            .OrderBy(row => row.DateReceived).ThenBy(row => row.LotNo).ToListAsync(ct);
-        var layers = lots.Select((lot, index) => CostLayer.Create(lot.LotNo, lot.DateReceived, index,
-            lot.UnitAmountPurchased, Quantity.From(lot.QtyOnHand)).Value).ToList();
-        var result = CostingPolicy.Issue(layers, issueDocument, Quantity.From(quantity), method,
-            inventory.AverageCost);
-        if (!result.IsSuccess)
-        {
-            throw new InvalidOperationException(result.Error);
-        }
-
-        foreach (var consumption in result.Value.Consumptions)
-        {
-            var lot = lots.Single(row => row.LotNo == consumption.SourceDocument);
-            lot.QtyOnHand -= (int)consumption.Quantity.Value;
-            lot.QtyUsed += (int)consumption.Quantity.Value;
-        }
-
-        var deficitQuantity = (int)result.Value.DeficitQuantity.Value;
-        if (deficitQuantity > 0)
-        {
-            context.LotRecords.Add(new InvtLotRecord
-            {
-                Sku = sku, LotNo = "DEF" + issueDocument[^7..], DateReceived = now,
-                SupplierCode = string.Empty, QtyPurchased = 0, QtyUsed = 0,
-                QtyOnHand = -deficitQuantity, UnitAmountPurchased = inventory.AverageCost,
-                TotalAmountPurchased = Money.From(decimal.Round(
-                    inventory.AverageCost.Amount * deficitQuantity, 4)),
-            });
-        }
-
-        inventory.QtyTotalOnHand -= quantity;
-        inventory.DateLastIssued = now;
-        var branch = await context.BranchInventory.SingleOrDefaultAsync(row =>
-            row.BranchCode == "01" && row.Sku == sku, ct);
-        if (branch is not null) branch.QtyOnHand -= quantity;
-        return result.Value.TotalCost.Amount;
     }
 
     private TxHeader Header(OrderPosting posting, TransactionType type, string status) => new()

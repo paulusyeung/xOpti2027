@@ -1440,6 +1440,51 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.SalesRefundLine", b =>
+                {
+                    b.Property<string>("RefundTxNumber")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("refund_tx_number");
+
+                    b.Property<double>("RefundRowNo")
+                        .HasColumnType("double precision")
+                        .HasColumnName("refund_row_no");
+
+                    b.Property<double>("OriginalRowNo")
+                        .HasColumnType("double precision")
+                        .HasColumnName("original_row_no");
+
+                    b.Property<string>("OriginalTxNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("original_tx_number");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer")
+                        .HasColumnName("quantity");
+
+                    b.Property<bool>("Restocked")
+                        .HasColumnType("boolean")
+                        .HasColumnName("restocked");
+
+                    b.Property<decimal>("TaxA")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("tax_a");
+
+                    b.Property<decimal>("TaxB")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("tax_b");
+
+                    b.HasKey("RefundTxNumber", "RefundRowNo")
+                        .HasName("pk_sales_refund_line");
+
+                    b.ToTable("sales_refund_line", "platform");
+                });
+
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.SchemaBaseline", b =>
                 {
                     b.Property<int>("Id")
@@ -1653,6 +1698,14 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("control_number");
+
+                    b.Property<decimal>("MarkDownAmount")
+                        .HasColumnType("numeric")
+                        .HasColumnName("mark_down_amount");
+
+                    b.Property<double>("MarkDownPercent")
+                        .HasColumnType("double precision")
+                        .HasColumnName("mark_down_percent");
 
                     b.Property<int>("Qty")
                         .HasColumnType("integer")

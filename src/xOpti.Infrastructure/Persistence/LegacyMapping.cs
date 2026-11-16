@@ -39,6 +39,7 @@ public static class LegacyMapping
             MoneyProp(e, x => x.TotalAmount, "total_amount");
             e.Property(x => x.TotalQty).HasColumnName("total_qty");
             MoneyProp(e, x => x.ThisPaid, "this_paid");
+            MoneyProp(e, x => x.Change, "change");
             e.Property(x => x.Status).HasColumnName("status");
             e.HasMany(x => x.Details)
                 .WithOne()

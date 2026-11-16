@@ -43,6 +43,18 @@ export const routes: RouteRecordRaw[] = [
     meta: { permission: PermissionNames.SalesOrderCreate, title: 'POS' },
   },
   {
+    path: '/admin/pos/sale',
+    name: 'pos-sale',
+    component: () => import('@/features/pos/RetailSalePage.vue'),
+    meta: { permission: PermissionNames.SalesInvoicePost, title: 'POS sale' },
+  },
+  {
+    path: '/admin/pos/refund',
+    name: 'pos-refund',
+    component: () => import('@/features/pos/RetailRefundPage.vue'),
+    meta: { permission: PermissionNames.SalesInvoicePost, title: 'POS refund' },
+  },
+  {
     path: '/admin/staff',
     name: 'staff-admin',
     component: () => import('@/features/admin/StaffAdminPage.vue'),

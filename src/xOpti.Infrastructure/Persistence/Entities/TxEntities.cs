@@ -45,6 +45,8 @@ public class TxHeader
 
     public Money ThisPaid { get; set; }
 
+    public Money Change { get; set; }
+
     public string? Status { get; set; }
 
     public List<TxDetail> Details { get; set; } = new();

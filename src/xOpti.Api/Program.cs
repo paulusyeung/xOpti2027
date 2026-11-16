@@ -34,6 +34,7 @@ builder.Services.AddXOptiInfrastructure(new InfrastructureOptions
     ConnectionString = connectionString,
     FileStorageRoot = apiOptions.FileStorageRoot,
     IdempotencyRetention = apiOptions.IdempotencyRetention,
+    PosDiscountThresholdPercent = apiOptions.PosDiscountThresholdPercent,
     FontDirectories = apiOptions.FontDirectories,
     MaterializedViewRefreshStatements = apiOptions.MaterializedViewRefreshStatements,
 });

@@ -18,6 +18,18 @@ export const NAV_ITEMS: readonly NavItem[] = [
     permission: PermissionNames.SalesOrderCreate,
   },
   {
+    to: '/admin/pos/sale',
+    title: 'POS sale',
+    icon: 'mdi-cash-register',
+    permission: PermissionNames.SalesInvoicePost,
+  },
+  {
+    to: '/admin/pos/refund',
+    title: 'POS refund',
+    icon: 'mdi-cash-refund',
+    permission: PermissionNames.SalesInvoicePost,
+  },
+  {
     to: '/admin/staff',
     title: 'Staff',
     icon: 'mdi-account-cog-outline',

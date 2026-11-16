@@ -26,6 +26,12 @@ public sealed class ApiOptions
     /// <summary>Enables the /api/v1/_internal/fault endpoint for integration tests only.</summary>
     public bool FaultInjectionEnabled { get; set; }
 
+    /// <summary>
+    /// Manual discount percentage allowed without the price-override
+    /// permission. Zero until the signed discount policy is supplied.
+    /// </summary>
+    public decimal PosDiscountThresholdPercent { get; set; }
+
     /// <summary>Single-instance scheduled jobs; disable when scaling out.</summary>
     public bool JobsEnabled { get; set; }
 
