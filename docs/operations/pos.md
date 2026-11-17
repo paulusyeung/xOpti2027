@@ -161,3 +161,26 @@ Tests: `PosTenantBranchTests.SaleUsesTheDrawerBranchInventory_AndBranchQueriesSt
 - Approved receipt, order, and claim layouts; claim data model.
 - Printer models, paper sizes, and barcode baseline for on-site printing.
 - Approved correction/reopen workflow for finalized daily closes.
+
+## Migrated-data rehearsal
+
+`scripts/pos-rehearsal.py` exercises the full counter day against a clone of
+the migrated legacy database: order → invoice conversion, direct split tender,
+partial refund, paid-in/pickup/deposit, drawer close, daily close, and journal
+reconciliation. It creates a new customer and SKU so the legacy documents are
+never modified.
+
+Preparation for a disposable rehearsal database:
+
+1. Clone the migrated snapshot (`create database ... template ...`).
+2. Apply app-owned migrations with `dotnet ef database update`.
+3. Record the current schema baseline in `platform.schema_baseline`.
+4. Seed disposable accounts with the API `--seed-smoke` command.
+5. Start the API against the clone.
+6. Run `python3 scripts/pos-rehearsal.py` and archive its JSON output.
+
+Reference run: 552,350 legacy transactions present; rehearsal created `SA`,
+two `RC`, and `RS` documents, left inventory/branch inventory at 16, produced
+sales 200.00, refunds 50.00, GST 7.50, PST 10.50, cash 96.00, card 52.00,
+expected/counted cash 281.00, and zero variance. All three new documents were
+linked to their drawer sessions.

@@ -30,11 +30,11 @@ test('declines, times out, then posts a split tender with change', async ({ page
   await chooseCard(page)
 
   await page.getByTestId('pos-sale-payment-amount-0').locator('input').fill('55.99')
-  await page.getByTestId('pos-sale-payment-reference-0').locator('input').fill('SIM-DECLINE')
+  await page.getByTestId('pos-sale-payment-reference-0').locator('input').fill('SIM-DECL')
   await page.getByTestId('pos-sale-submit').click()
   await expect(page.getByTestId('pos-sale-error')).toContainText('declined')
 
-  await page.getByTestId('pos-sale-payment-reference-0').locator('input').fill('SIM-TIMEOUT')
+  await page.getByTestId('pos-sale-payment-reference-0').locator('input').fill('SIM-TIME')
   await page.getByTestId('pos-sale-submit').click()
   await expect(page.getByTestId('pos-sale-error')).toContainText('timed out')
 

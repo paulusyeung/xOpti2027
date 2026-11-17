@@ -30,13 +30,13 @@ public sealed class SimulatedPaymentTerminal : IPaymentTerminal
         TerminalPaymentRequest request, CancellationToken cancellationToken)
     {
         var reference = request.Reference?.Trim();
-        if (string.Equals(reference, "SIM-DECLINE", StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(reference, "SIM-DECL", StringComparison.OrdinalIgnoreCase))
         {
             return Task.FromResult(new TerminalPaymentResult(
                 TerminalPaymentStatus.Declined, null, "The simulated terminal declined the payment."));
         }
 
-        if (string.Equals(reference, "SIM-TIMEOUT", StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(reference, "SIM-TIME", StringComparison.OrdinalIgnoreCase))
         {
             return Task.FromResult(new TerminalPaymentResult(
                 TerminalPaymentStatus.Timeout, null, "The simulated terminal timed out."));

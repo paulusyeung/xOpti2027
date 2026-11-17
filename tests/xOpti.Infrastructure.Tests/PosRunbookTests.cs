@@ -38,6 +38,8 @@ public class PosRunbookTests
         }
 
         Assert.Contains("Expected cash = opening float", text);
+        Assert.Contains("Migrated-data rehearsal", text);
+        Assert.True(File.Exists(Path.Combine(root.FullName, "scripts", "pos-rehearsal.py")));
         Assert.Contains("totals are immutable", text);
         Assert.Contains("DUPLICATE COPY", text);
     }

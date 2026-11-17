@@ -457,8 +457,8 @@ public sealed class RetailSaleTests(ApiPostgresFixture fixture)
 
         foreach (var (reference, expected) in new[]
                  {
-                     ("SIM-DECLINE", "declined"),
-                     ("SIM-TIMEOUT", "timed out"),
+                     ("SIM-DECL", "declined"),
+                     ("SIM-TIME", "timed out"),
                  })
         {
             var response = await manager.PostAsync("/api/v1/sales/invoices",

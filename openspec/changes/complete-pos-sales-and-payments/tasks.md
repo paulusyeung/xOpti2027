@@ -46,7 +46,7 @@
 ## 7. Integration and rehearsal
 
 - [x] 7.1 Run POS concurrency tests across multiple terminals posting the same SKUs and counters; verify no lost updates, duplicate numbers, or negative cached totals.
-- [ ] 7.2 Run a full-day rehearsal against migrated data: orders, invoices, refunds, split tenders, cash sessions, and daily close; verify all totals reconcile.
+- [x] 7.2 Run a full-day rehearsal against migrated data: orders, invoices, refunds, split tenders, cash sessions, and daily close; verify all totals reconcile.
 - [x] 7.3 Run API integration and Playwright suites against PostgreSQL; verify tenant-free single-company behavior and branch scoping.
 - [x] 7.4 Document POS operator procedures, override policy, refund policy, and end-of-day close; verify the runbook matches automated flows.
 

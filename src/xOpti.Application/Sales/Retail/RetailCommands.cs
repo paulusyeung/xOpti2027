@@ -109,7 +109,7 @@ public sealed class RetailTenderValidator : AbstractValidator<RetailTenderInput>
     {
         RuleFor(x => x.Method).NotEmpty().MaximumLength(2);
         RuleFor(x => x.Amount).GreaterThan(0);
-        RuleFor(x => x.Reference).MaximumLength(30)
+        RuleFor(x => x.Reference).MaximumLength(10)
             .Must(reference => reference is null
                 || !System.Text.RegularExpressions.Regex.IsMatch(reference, "\\d{12,}"))
             .WithMessage("The reference must be an opaque terminal reference, not card data.");
