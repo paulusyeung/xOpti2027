@@ -3,6 +3,7 @@ using FluentValidation;
 using xOpti.Application.Authorization;
 using xOpti.Application.Common;
 using xOpti.Application.Pipeline;
+using xOpti.Application.Optical;
 using xOpti.Application.Payments;
 using xOpti.Application.Ports;
 using xOpti.Application.Sales.Documents;
@@ -298,7 +299,8 @@ public sealed class CancelOrderHandler(
 }
 
 public sealed class ConvertOrderHandler(
-    IUnitOfWork unitOfWork, IOrderStore store, IAuditRecorder audit)
+    IUnitOfWork unitOfWork, IOrderStore store, IAuditRecorder audit,
+    IOpticalOrderStore opticalStore, IPrescriptionPolicy prescriptionPolicy)
     : IRequestHandler<ConvertOrderCommand, SalesDocumentDto>
 {
     public Task<SalesDocumentDto> Handle(ConvertOrderCommand request, CancellationToken ct) =>
@@ -321,6 +323,15 @@ public sealed class ConvertOrderHandler(
                 throw new ValidationFailedException(new[]
                 {
                     new ValidationFieldError("TxNumber", "not-convertible", "Only open orders can be invoiced."),
+                });
+
+            var opticalIssues = await opticalStore.ConversionIssuesAsync(
+                request.TxNumber, prescriptionPolicy.RequireVerificationBeforeOrder, token);
+            if (opticalIssues.Count > 0)
+                throw new ValidationFailedException(new[]
+                {
+                    new ValidationFieldError("Optical", "not-ready",
+                        string.Join(" ", opticalIssues)),
                 });
 
             // Only the outstanding balance is tendered; the deposit is already on

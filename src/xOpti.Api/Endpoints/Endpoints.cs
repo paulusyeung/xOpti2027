@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using xOpti.Application.Authorization;
 using xOpti.Application.Cash;
+using xOpti.Application.Claims;
+using xOpti.Application.Customers;
 using xOpti.Application.Common;
 using xOpti.Application.Identity.ListBranches;
 using xOpti.Application.Identity.Staff;
@@ -27,7 +29,9 @@ using xOpti.Application.Inventory.GetInventorySummary;
 using xOpti.Application.Reference;
 using xOpti.Application.Sales.Documents;
 using xOpti.Application.Sales.OrderEntry;
+using xOpti.Application.Optical;
 using xOpti.Application.Payments;
+using xOpti.Application.Prescriptions;
 using xOpti.Application.Sales.Retail;
 using xOpti.Application.Settings;
 using xOpti.Application.Common;
@@ -620,6 +624,367 @@ public static class Endpoints
         .RequireAuthorization($"perm:{PermissionNames.InventoryReceive}")
         .Produces<SupplierActivityDto>();
 
+        v1.MapGet("/claims/plans", async (
+            bool? currentOnly, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ListInsurancePlansQuery(currentOnly ?? true), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<IReadOnlyList<PlanDto>>();
+
+        v1.MapPost("/claims/plans", async (
+            CreateInsurancePlanRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new CreateInsurancePlanCommand(
+                new CreatePlanInput(request.PlanCode, request.Name, request.PayerName,
+                    request.Rules), request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<PlanDto>();
+
+        v1.MapGet("/claims/members", async (
+            int customerId, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetInsuranceMembersQuery(customerId), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<IReadOnlyList<MemberDto>>();
+
+        v1.MapPost("/claims/members", async (
+            AssignInsuranceMemberRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new AssignInsuranceMemberCommand(
+                request.CustomerId, request.PlanId, request.MemberNumber, request.GroupNumber,
+                request.EffectiveFrom, request.EffectiveTo, request.EligibilityNote,
+                request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<MemberDto>();
+
+        v1.MapPost("/claims", async (
+            CreateClaimRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new CreateClaimCommand(
+                new CreateClaimInput(request.InvoiceTxNumber, request.MemberId,
+                    request.InvoiceRowNumbers), request.Reason), cancellationToken);
+            return Results.Created($"/api/v1/claims/{result.Id}", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<ClaimDto>(StatusCodes.Status201Created);
+
+        v1.MapGet("/claims", async (
+            string? invoiceTxNumber, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ListClaimsQuery(invoiceTxNumber), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<IReadOnlyList<ClaimDto>>();
+
+        v1.MapGet("/claims/reconciliation", async (
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetClaimReconciliationQuery(), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<IReadOnlyList<ClaimReconciliationDto>>();
+
+        v1.MapGet("/claims/{claimId:long}/receipt", async (
+            long claimId, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetClaimReceiptQuery(claimId), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<ClaimReceiptDto>();
+
+        v1.MapPost("/claims/{claimId:long}/receipt/prints", async (
+            long claimId, ClaimReceiptPrintRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new PrintClaimReceiptCommand(
+                claimId, request.Reprint, request.TerminalCode, request.Reason),
+                cancellationToken);
+            return Results.File(result.Content, result.ContentType, result.FileName);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
+
+        v1.MapGet("/claims/rbic", async (
+            DateOnly from, DateOnly to, string? reason, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new ExportRbicCommand(
+                from, to, reason ?? "RBIC export"), cancellationToken);
+            return Results.File(result.Content, result.ContentType, result.FileName);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
+
+        v1.MapGet("/claims/{claimId:long}", async (
+            long claimId, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetClaimQuery(claimId), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<ClaimDto>();
+
+        v1.MapPost("/claims/{claimId:long}/adjudicate", async (
+            long claimId, AdjudicateClaimRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new AdjudicateClaimCommand(
+                claimId, request.ApprovedAmount, request.Reason, request.Reference,
+                request.Note), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<ClaimDto>();
+
+        v1.MapPost("/claims/{claimId:long}/reject", async (
+            long claimId, ReasonRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new RejectClaimCommand(claimId, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<ClaimDto>();
+
+        v1.MapPost("/claims/{claimId:long}/resubmit", async (
+            long claimId, ResubmitClaimRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new ResubmitClaimCommand(
+                claimId, request.Reason, request.Reference), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<ClaimDto>();
+
+        v1.MapPost("/claims/{claimId:long}/payments", async (
+            long claimId, ClaimPaymentRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new AddClaimPaymentCommand(
+                claimId, request.Amount, request.Method, request.Reference, request.Reason),
+                cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<ClaimDto>();
+
+        v1.MapGet("/customers", async (
+            string? search, string? cursor, int? pageSize, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new SearchCustomersQuery(search, cursor, pageSize ?? 25), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<PagedResult<CustomerSummaryDto>>();
+
+        v1.MapGet("/customers/duplicates", async (
+            string? fullName, string? phone, string? email, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new FindCustomerDuplicatesQuery(fullName, phone, email), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<IReadOnlyList<CustomerDuplicateDto>>();
+
+        v1.MapGet("/customers/{customerId:int}", async (
+            int customerId, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetCustomerQuery(customerId), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<CustomerViewDto>();
+
+        v1.MapPost("/customers", async (
+            CustomerWriteRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new CreateCustomerCommand(
+                request.Input, request.ConfirmDuplicate, request.Reason), cancellationToken);
+            return Results.Created($"/api/v1/customers/{result.Customer.Id}", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<CustomerViewDto>(StatusCodes.Status201Created);
+
+        v1.MapPut("/customers/{customerId:int}", async (
+            int customerId, CustomerWriteRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new UpdateCustomerCommand(
+                customerId, request.Input, request.ConfirmDuplicate, request.Reason),
+                cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<CustomerViewDto>();
+
+        v1.MapGet("/customers/{customerId:int}/prescriptions", async (
+            int customerId, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetPrescriptionHistoryQuery(customerId), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.PrescriptionView}")
+        .Produces<PrescriptionHistoryDto>();
+
+        v1.MapPost("/customers/{customerId:int}/prescriptions/spectacle", async (
+            int customerId, SpectaclePrescriptionRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new SaveSpectaclePrescriptionCommand(
+                customerId, new SpectaclePrescriptionInput(request.IssuedOn, request.PrescriberId,
+                    new SpectacleEyeValues(request.Right.Sphere, request.Right.Cylinder,
+                        request.Right.Axis, request.Right.Add, request.Right.Prism,
+                        request.Right.Base, request.Right.Pd),
+                    new SpectacleEyeValues(request.Left.Sphere, request.Left.Cylinder,
+                        request.Left.Axis, request.Left.Add, request.Left.Prism,
+                        request.Left.Base, request.Left.Pd),
+                    request.Notes), request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.PrescriptionEnter}")
+        .Produces<PrescriptionHistoryDto>();
+
+        v1.MapPost("/customers/{customerId:int}/prescriptions/contact", async (
+            int customerId, ContactLensPrescriptionRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new SaveContactLensPrescriptionCommand(
+                customerId, new ContactLensPrescriptionInput(request.IssuedOn, request.PrescriberId,
+                    request.Brand, request.BaseCurve, request.Diameter, request.RightPower,
+                    request.RightCylinder, request.RightAxis, request.LeftPower,
+                    request.LeftCylinder, request.LeftAxis, request.ReplacementSchedule,
+                    request.Notes), request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.PrescriptionEnter}")
+        .Produces<PrescriptionHistoryDto>();
+
+        v1.MapPost("/customers/{customerId:int}/prescriptions/verify", async (
+            int customerId, VerifyPrescriptionRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new VerifyPrescriptionCommand(
+                customerId, request.Type, request.VersionId, request.Note, request.Reason),
+                cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.PrescriptionEnter}")
+        .Produces<PrescriptionHistoryDto>();
+
+        v1.MapPost("/customers/{customerId:int}/medical-notes", async (
+            int customerId, MedicalNoteRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new AddMedicalNoteCommand(customerId, request.Note, request.Reason),
+                cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.PrescriptionEnter}")
+        .Produces<PrescriptionHistoryDto>();
+
+        v1.MapPost("/customers/{customerId:int}/attachments", async (
+            int customerId, HttpRequest http, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            if (!http.HasFormContentType)
+                return Results.BadRequest("A multipart attachment upload is required.");
+            var form = await http.ReadFormAsync(cancellationToken);
+            var file = form.Files.GetFile("file");
+            if (file is null) return Results.BadRequest("A file is required.");
+            using var stream = new MemoryStream();
+            await file.CopyToAsync(stream, cancellationToken);
+            var result = await dispatcher.DispatchAsync(new UploadPatientAttachmentCommand(
+                customerId, form["kind"].ToString(), form["prescriptionType"].ToString(),
+                long.TryParse(form["versionId"], out var versionId) ? versionId : null,
+                file.FileName, file.ContentType, stream.ToArray(),
+                form["reason"].ToString()), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.PrescriptionEnter}")
+        .Produces<PrescriptionHistoryDto>();
+
+        v1.MapGet("/customers/attachments/{attachmentId:long}", async (
+            long attachmentId, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetPatientAttachmentQuery(attachmentId), cancellationToken);
+            return Results.File(result.Content, result.Metadata.ContentType,
+                result.Metadata.FileName);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.PrescriptionView}");
+
+        v1.MapGet("/customers/{customerId:int}/account", async (
+            int customerId, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetCustomerAccountQuery(customerId), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<CustomerBalanceDto>();
+
+        v1.MapGet("/customers/{customerId:int}/history", async (
+            int customerId, DateOnly? from, DateOnly? to, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetCustomerHistoryQuery(customerId, from, to), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<CustomerHistoryDto>();
+
+        v1.MapGet("/customers/{customerId:int}/statement", async (
+            int customerId, DateOnly from, DateOnly to, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetCustomerStatementQuery(customerId, from, to), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<CustomerStatementDto>();
+
+        v1.MapPost("/customers/merge", async (
+            MergeCustomersRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new MergeCustomersCommand(
+                request.SourceId, request.TargetId, request.Phone, request.Email,
+                request.FullName, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<CustomerViewDto>();
+
         v1.MapGet("/cash/sessions/open", async (
             string branchCode, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
         {
@@ -836,6 +1201,40 @@ public static class Endpoints
         })
         .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
         .Produces<SalesDocumentDto>();
+
+        v1.MapGet("/sales/orders/{txNumber}/optical", async (
+            string txNumber, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetOpticalOrderQuery(txNumber), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<OpticalOrderDto>();
+
+        v1.MapPut("/sales/orders/{txNumber}/optical", async (
+            string txNumber, SaveOpticalOrderRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new SaveOpticalOrderCommand(
+                txNumber, request.Frames, request.Lenses, request.Contacts, request.Reason),
+                cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<OpticalOrderDto>();
+
+        v1.MapPost("/sales/orders/{txNumber}/optical/status", async (
+            string txNumber, OpticalStatusRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new RecordOpticalStatusCommand(
+                txNumber, request.Status, request.Reference, request.Notes, request.Reason),
+                cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.SalesOrderCreate}")
+        .Produces<OpticalOrderDto>();
 
         v1.MapPost("/sales/orders/{txNumber}/deposits", async (
             HttpContext http, string txNumber, AddOrderDepositRequest request,
@@ -1201,6 +1600,60 @@ public sealed record ApproveStockTakeRequest(string Reason);
 public sealed record PostStockTakeRequest(string Reason);
 
 public sealed record ImportCountsRequest(string Csv, bool DryRun, string Reason);
+
+public sealed record ClaimReceiptPrintRequest(
+    bool Reprint, string? TerminalCode, string Reason);
+
+public sealed record CreateInsurancePlanRequest(
+    string PlanCode, string Name, string PayerName,
+    IReadOnlyList<CoverageRuleInput> Rules, string Reason);
+
+public sealed record AssignInsuranceMemberRequest(
+    int CustomerId, long PlanId, string MemberNumber, string? GroupNumber,
+    DateOnly EffectiveFrom, DateOnly? EffectiveTo, string? EligibilityNote, string Reason);
+
+public sealed record CreateClaimRequest(
+    string InvoiceTxNumber, long MemberId, IReadOnlyList<int> InvoiceRowNumbers, string Reason);
+
+public sealed record AdjudicateClaimRequest(
+    decimal ApprovedAmount, string Reason, string? Reference, string? Note);
+
+public sealed record ResubmitClaimRequest(string Reason, string? Reference);
+
+public sealed record ClaimPaymentRequest(
+    decimal Amount, string Method, string? Reference, string Reason);
+
+public sealed record SaveOpticalOrderRequest(
+    IReadOnlyList<FrameDetailInput> Frames, IReadOnlyList<LensDetailInput> Lenses,
+    IReadOnlyList<ContactDetailInput> Contacts, string Reason);
+
+public sealed record OpticalStatusRequest(
+    string Status, string? Reference, string? Notes, string Reason);
+
+public sealed record SpectacleEyeRequest(
+    decimal? Sphere, decimal? Cylinder, int? Axis, decimal? Add, decimal? Prism,
+    decimal? Base, decimal? Pd);
+
+public sealed record SpectaclePrescriptionRequest(
+    DateTimeOffset IssuedOn, int? PrescriberId, SpectacleEyeRequest Right,
+    SpectacleEyeRequest Left, string? Notes, string Reason);
+
+public sealed record ContactLensPrescriptionRequest(
+    DateTimeOffset IssuedOn, int? PrescriberId, string? Brand, decimal? BaseCurve,
+    decimal? Diameter, decimal? RightPower, decimal? RightCylinder, int? RightAxis,
+    decimal? LeftPower, decimal? LeftCylinder, int? LeftAxis,
+    string? ReplacementSchedule, string? Notes, string Reason);
+
+public sealed record VerifyPrescriptionRequest(
+    string Type, long VersionId, string? Note, string Reason);
+
+public sealed record MedicalNoteRequest(string Note, string Reason);
+
+public sealed record CustomerWriteRequest(
+    CustomerInput Input, bool ConfirmDuplicate, string Reason);
+
+public sealed record MergeCustomersRequest(
+    int SourceId, int TargetId, string? Phone, string? Email, string? FullName, string Reason);
 
 public sealed record PrintDocumentRequest(
     bool Reprint, string Format, string? TerminalCode, string Reason);

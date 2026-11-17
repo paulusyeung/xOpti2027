@@ -158,6 +158,11 @@ public static class SmokeSeed
         }
 
         await context.SaveChangesAsync(cancellationToken);
+        // Explicit legacy ids were used for the demo customer; keep the shared
+        // customer sequence ahead of the seeded rows.
+        await context.Database.ExecuteSqlRawAsync(
+            "SELECT setval('public.customer_id_seq', GREATEST((SELECT COALESCE(MAX(id),0) FROM public.customer), 1))",
+            cancellationToken);
 
         foreach (var (name, role) in new[]
                  {

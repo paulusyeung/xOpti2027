@@ -1578,6 +1578,1127 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/claims/plans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    currentOnly?: boolean;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PlanDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateInsurancePlanRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PlanDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/claims/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query: {
+                    customerId: number | string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MemberDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["AssignInsuranceMemberRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MemberDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/claims": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    invoiceTxNumber?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClaimDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateClaimRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClaimDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/claims/reconciliation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClaimReconciliationDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/claims/{claimId}/receipt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    claimId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClaimReceiptDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/claims/{claimId}/receipt/prints": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    claimId: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ClaimReceiptPrintRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/claims/rbic": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query: {
+                    from: string;
+                    to: string;
+                    reason?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/claims/{claimId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    claimId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClaimDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/claims/{claimId}/adjudicate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    claimId: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["AdjudicateClaimRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClaimDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/claims/{claimId}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    claimId: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ReasonRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClaimDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/claims/{claimId}/resubmit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    claimId: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ResubmitClaimRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClaimDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/claims/{claimId}/payments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    claimId: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ClaimPaymentRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ClaimDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/customers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    search?: string;
+                    cursor?: string;
+                    pageSize?: number | string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfCustomerSummaryDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CustomerWriteRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CustomerViewDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/customers/duplicates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    fullName?: string;
+                    phone?: string;
+                    email?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CustomerDuplicateDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/customers/{customerId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    customerId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CustomerViewDto"];
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    customerId: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CustomerWriteRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CustomerViewDto"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/customers/{customerId}/prescriptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    customerId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PrescriptionHistoryDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/customers/{customerId}/prescriptions/spectacle": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    customerId: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["SpectaclePrescriptionRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PrescriptionHistoryDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/customers/{customerId}/prescriptions/contact": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    customerId: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ContactLensPrescriptionRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PrescriptionHistoryDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/customers/{customerId}/prescriptions/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    customerId: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["VerifyPrescriptionRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PrescriptionHistoryDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/customers/{customerId}/medical-notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    customerId: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["MedicalNoteRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PrescriptionHistoryDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/customers/{customerId}/attachments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    customerId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PrescriptionHistoryDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/customers/attachments/{attachmentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    attachmentId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/customers/{customerId}/account": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    customerId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CustomerBalanceDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/customers/{customerId}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                };
+                header?: never;
+                path: {
+                    customerId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CustomerHistoryDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/customers/{customerId}/statement": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query: {
+                    from: string;
+                    to: string;
+                };
+                header?: never;
+                path: {
+                    customerId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CustomerStatementDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/customers/merge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["MergeCustomersRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["CustomerViewDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/cash/sessions/open": {
         parameters: {
             query?: never;
@@ -2280,6 +3401,109 @@ export interface paths {
             };
         };
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/orders/{txNumber}/optical": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OpticalOrderDto"];
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["SaveOpticalOrderRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OpticalOrderDto"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/sales/orders/{txNumber}/optical/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["OpticalStatusRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["OpticalOrderDto"];
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;
@@ -3184,6 +4408,13 @@ export interface components {
             reference: null | string;
             reason: string;
         };
+        AdjudicateClaimRequest: {
+            /** Format: double */
+            approvedAmount: number | string;
+            reason: string;
+            reference: null | string;
+            note: null | string;
+        };
         AdjustStockRequest: {
             sku: string;
             branchCode: string;
@@ -3202,6 +4433,20 @@ export interface components {
             newOnHand: number | string;
         };
         ApproveStockTakeRequest: {
+            reason: string;
+        };
+        AssignInsuranceMemberRequest: {
+            /** Format: int32 */
+            customerId: number | string;
+            /** Format: int64 */
+            planId: number | string;
+            memberNumber: string;
+            groupNumber: null | string;
+            /** Format: date */
+            effectiveFrom: string;
+            /** Format: date */
+            effectiveTo: null | string;
+            eligibilityNote: null | string;
             reason: string;
         };
         BarcodeTagDto: {
@@ -3378,6 +4623,154 @@ export interface components {
             role: string;
             reason: string;
         };
+        ClaimDto: {
+            /** Format: int64 */
+            id: number | string;
+            claimNumber: string;
+            invoiceTxNumber: string;
+            /** Format: int32 */
+            customerId: number | string;
+            /** Format: int64 */
+            planId: number | string;
+            /** Format: int32 */
+            planVersion: number | string;
+            /** Format: int64 */
+            memberId: number | string;
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: double */
+            totalBilled: number | string;
+            /** Format: double */
+            coveredAmount: number | string;
+            /** Format: double */
+            patientAmount: number | string;
+            /** Format: double */
+            approvedAmount: number | string;
+            /** Format: double */
+            adjustmentAmount: number | string;
+            /** Format: double */
+            paidAmount: number | string;
+            rejectionReason: null | string;
+            /** Format: int64 */
+            resubmissionOf: null | number | string;
+            lines: components["schemas"]["ClaimLineDto"][];
+            events: components["schemas"]["ClaimEventDto"][];
+            payments: components["schemas"]["ClaimPaymentDto"][];
+        };
+        ClaimEventDto: {
+            /** Format: int64 */
+            id: number | string;
+            eventType: string;
+            status: null | string;
+            /** Format: double */
+            amount: null | number | string;
+            reason: null | string;
+            reference: null | string;
+            /** Format: date-time */
+            occurredAt: string;
+            actor: null | string;
+        };
+        ClaimLineDto: {
+            /** Format: int32 */
+            lineNumber: number | string;
+            /** Format: int32 */
+            invoiceRowNo: number | string;
+            sku: string;
+            /** Format: double */
+            billedAmount: number | string;
+            eligible: boolean;
+            /** Format: double */
+            coveragePercent: number | string;
+            /** Format: double */
+            coveredAmount: number | string;
+            /** Format: double */
+            patientAmount: number | string;
+            ineligibleReason: null | string;
+        };
+        ClaimPaymentDto: {
+            /** Format: int64 */
+            id: number | string;
+            /** Format: double */
+            amount: number | string;
+            method: string;
+            reference: null | string;
+            /** Format: date-time */
+            receivedAt: string;
+            actor: null | string;
+        };
+        ClaimPaymentRequest: {
+            /** Format: double */
+            amount: number | string;
+            method: string;
+            reference: null | string;
+            reason: string;
+        };
+        ClaimReceiptDto: {
+            /** Format: int64 */
+            claimId: number | string;
+            claimNumber: string;
+            invoiceTxNumber: string;
+            /** Format: int32 */
+            customerId: number | string;
+            customerName: null | string;
+            planName: string;
+            payerName: string;
+            /** Format: int32 */
+            planVersion: number | string;
+            /** Format: date-time */
+            createdAt: string;
+            status: string;
+            /** Format: double */
+            totalBilled: number | string;
+            /** Format: double */
+            coveredAmount: number | string;
+            /** Format: double */
+            patientAmount: number | string;
+            /** Format: double */
+            approvedAmount: number | string;
+            /** Format: double */
+            adjustmentAmount: number | string;
+            /** Format: double */
+            paidAmount: number | string;
+            lines: components["schemas"]["ClaimReceiptLineDto"][];
+        };
+        ClaimReceiptLineDto: {
+            /** Format: int32 */
+            lineNumber: number | string;
+            sku: string;
+            /** Format: double */
+            billedAmount: number | string;
+            /** Format: double */
+            coveredAmount: number | string;
+            /** Format: double */
+            patientAmount: number | string;
+            eligible: boolean;
+            ineligibleReason: null | string;
+        };
+        ClaimReceiptPrintRequest: {
+            reprint: boolean;
+            terminalCode: null | string;
+            reason: string;
+        };
+        ClaimReconciliationDto: {
+            /** Format: int64 */
+            claimId: number | string;
+            claimNumber: string;
+            invoiceTxNumber: string;
+            /** Format: int32 */
+            customerId: number | string;
+            /** Format: double */
+            invoiceTotal: number | string;
+            /** Format: double */
+            coveredAmount: number | string;
+            /** Format: double */
+            approvedAmount: number | string;
+            /** Format: double */
+            paidAmount: number | string;
+            /** Format: double */
+            difference: number | string;
+        };
         CloseCashSessionRequest: {
             /** Format: double */
             countedCash: number | string;
@@ -3388,6 +4781,100 @@ export interface components {
             username: string;
             token: string;
             newPassword: string;
+        };
+        ContactDetailDto: {
+            /** Format: int32 */
+            lineNumber: number | string;
+            /** Format: int64 */
+            prescriptionVersionId: null | number | string;
+            right: components["schemas"]["OpticalEyeValues"];
+            left: components["schemas"]["OpticalEyeValues"];
+            history: null | string;
+            medical: null | string;
+            allergy: null | string;
+            reason: null | string;
+            evaluation: null | string;
+            test: null | string;
+            specialInstruction: null | string;
+        };
+        ContactDetailInput: {
+            /** Format: int32 */
+            lineNumber: number | string;
+            /** Format: int64 */
+            prescriptionVersionId: null | number | string;
+            right: components["schemas"]["OpticalEyeValues"];
+            left: components["schemas"]["OpticalEyeValues"];
+            history: null | string;
+            medical: null | string;
+            allergy: null | string;
+            reason: null | string;
+            evaluation: null | string;
+            test: null | string;
+            specialInstruction: null | string;
+        };
+        ContactLensPrescriptionRequest: {
+            /** Format: date-time */
+            issuedOn: string;
+            /** Format: int32 */
+            prescriberId: null | number | string;
+            brand: null | string;
+            /** Format: double */
+            baseCurve: null | number | string;
+            /** Format: double */
+            diameter: null | number | string;
+            /** Format: double */
+            rightPower: null | number | string;
+            /** Format: double */
+            rightCylinder: null | number | string;
+            /** Format: int32 */
+            rightAxis: null | number | string;
+            /** Format: double */
+            leftPower: null | number | string;
+            /** Format: double */
+            leftCylinder: null | number | string;
+            /** Format: int32 */
+            leftAxis: null | number | string;
+            replacementSchedule: null | string;
+            notes: null | string;
+            reason: string;
+        };
+        ContactVersionDto: {
+            /** Format: int64 */
+            id: number | string;
+            /** Format: int32 */
+            customerId: number | string;
+            /** Format: int32 */
+            versionNumber: number | string;
+            source: string;
+            /** Format: date-time */
+            issuedOn: string;
+            /** Format: int32 */
+            prescriberId: null | number | string;
+            brand: null | string;
+            /** Format: double */
+            baseCurve: null | number | string;
+            /** Format: double */
+            diameter: null | number | string;
+            /** Format: double */
+            rightPower: null | number | string;
+            /** Format: double */
+            rightCylinder: null | number | string;
+            /** Format: int32 */
+            rightAxis: null | number | string;
+            /** Format: double */
+            leftPower: null | number | string;
+            /** Format: double */
+            leftCylinder: null | number | string;
+            /** Format: int32 */
+            leftAxis: null | number | string;
+            replacementSchedule: null | string;
+            notes: null | string;
+            reason: string;
+            isCurrent: boolean;
+            /** Format: date-time */
+            verifiedAt: null | string;
+            verifiedBy: null | string;
+            verificationNote: null | string;
         };
         ConvertOrderRequest: {
             tenders: components["schemas"]["TenderRequest"][];
@@ -3408,6 +4895,33 @@ export interface components {
             field: string;
             message: string;
         };
+        CoverageRuleDto: {
+            /** Format: int64 */
+            id: number | string;
+            categoryCode: null | string;
+            sku: null | string;
+            /** Format: double */
+            coveragePercent: number | string;
+            /** Format: double */
+            annualMaximum: number | string;
+            requiresPreauthorization: boolean;
+        };
+        CoverageRuleInput: {
+            categoryCode: null | string;
+            sku: null | string;
+            /** Format: double */
+            coveragePercent: number | string;
+            /** Format: double */
+            annualMaximum: number | string;
+            requiresPreauthorization: boolean;
+        };
+        CreateClaimRequest: {
+            invoiceTxNumber: string;
+            /** Format: int64 */
+            memberId: number | string;
+            invoiceRowNumbers: (number | string)[];
+            reason: string;
+        };
         CreateContactRequest: {
             firstName: string;
             initial: null | string;
@@ -3425,6 +4939,13 @@ export interface components {
             country: null | string;
             phone: null | string;
             postalCode: null | string;
+            reason: string;
+        };
+        CreateInsurancePlanRequest: {
+            planCode: string;
+            name: string;
+            payerName: string;
+            rules: components["schemas"]["CoverageRuleInput"][];
             reason: string;
         };
         CreateOrderRequest: {
@@ -3482,11 +5003,185 @@ export interface components {
             branch: null | string;
             permissions: string[];
         };
+        CustomerBalanceDto: {
+            /** Format: int32 */
+            customerId: number | string;
+            /** Format: double */
+            charges: number | string;
+            /** Format: double */
+            payments: number | string;
+            /** Format: double */
+            refunds: number | string;
+            /** Format: double */
+            balance: number | string;
+            /** Format: double */
+            creditLimit: number | string;
+            overCreditLimit: boolean;
+        };
+        CustomerDetailDto: {
+            /** Format: int32 */
+            id: number | string;
+            vipCode: null | string;
+            salutation: null | string;
+            firstName: null | string;
+            initial: null | string;
+            lastName: null | string;
+            fullName: null | string;
+            /** Format: date-time */
+            birthday: null | string;
+            homeAddress: null | string;
+            /** Format: int32 */
+            homeCity: number | string;
+            homeProvince: null | string;
+            homePostalCode: null | string;
+            homeCountry: null | string;
+            homePhone: null | string;
+            homeFax: null | string;
+            cellular: null | string;
+            email: null | string;
+            bizCompanyName: null | string;
+            bizJobTitle: null | string;
+            bizAddress: null | string;
+            /** Format: int32 */
+            bizCity: number | string;
+            bizProvince: null | string;
+            bizPostalCode: null | string;
+            bizCountry: null | string;
+            bizPhone: null | string;
+            bizFax: null | string;
+            /** Format: double */
+            creditLimit: number | string;
+            paymentTerms: null | string;
+            /** Format: double */
+            vipMarkDownPct: number | string;
+            summaryFlag: null | boolean;
+            accountingFlag: null | boolean;
+            remarks: null | string;
+        };
+        CustomerDuplicateDto: {
+            /** Format: int32 */
+            id: number | string;
+            fullName: null | string;
+            homePhone: null | string;
+            email: null | string;
+            reason: string;
+        };
+        CustomerHistoryDto: {
+            /** Format: int32 */
+            customerId: number | string;
+            items: components["schemas"]["CustomerPurchaseDto"][];
+        };
+        CustomerInput: {
+            vipCode: null | string;
+            salutation: null | string;
+            firstName: null | string;
+            initial: null | string;
+            lastName: null | string;
+            fullName: null | string;
+            /** Format: date-time */
+            birthday: null | string;
+            homeAddress: null | string;
+            /** Format: int32 */
+            homeCity: number | string;
+            homeProvince: null | string;
+            homePostalCode: null | string;
+            homeCountry: null | string;
+            homePhone: null | string;
+            homeFax: null | string;
+            cellular: null | string;
+            email: null | string;
+            bizCompanyName: null | string;
+            bizJobTitle: null | string;
+            bizAddress: null | string;
+            /** Format: int32 */
+            bizCity: number | string;
+            bizProvince: null | string;
+            bizPostalCode: null | string;
+            bizCountry: null | string;
+            bizPhone: null | string;
+            bizFax: null | string;
+            /** Format: double */
+            creditLimit: number | string;
+            paymentTerms: null | string;
+            /** Format: double */
+            vipMarkDownPct: number | string;
+            summaryFlag: null | boolean;
+            accountingFlag: null | boolean;
+            remarks: null | string;
+        };
         CustomerLookupDto: {
             /** Format: int32 */
             id: number | string;
             fullName: null | string;
             vipCode: null | string;
+        };
+        CustomerMedicalDto: {
+            /** Format: int32 */
+            customerId: number | string;
+            /** Format: date-time */
+            insMaturityDate: null | string;
+            careCardNo: null | string;
+            careCardValidPeriod: null | string;
+            careCardType: null | string;
+            prescriptionLensFlag: null | boolean;
+            prescriptionContactFlag: null | boolean;
+        };
+        CustomerPurchaseDto: {
+            txNumber: string;
+            txType: string;
+            /** Format: date-time */
+            dateOfEntry: string;
+            /** Format: double */
+            totalSale: number | string;
+            /** Format: double */
+            taxA: number | string;
+            /** Format: double */
+            taxB: number | string;
+            /** Format: double */
+            totalAmount: number | string;
+            /** Format: double */
+            paid: number | string;
+            status: null | string;
+            refNumber: null | string;
+        };
+        CustomerStatementDto: {
+            /** Format: int32 */
+            customerId: number | string;
+            /** Format: date */
+            from: string;
+            /** Format: date */
+            to: string;
+            /** Format: double */
+            openingBalance: number | string;
+            /** Format: double */
+            charges: number | string;
+            /** Format: double */
+            payments: number | string;
+            /** Format: double */
+            refunds: number | string;
+            /** Format: double */
+            closingBalance: number | string;
+            items: components["schemas"]["CustomerPurchaseDto"][];
+        };
+        CustomerSummaryDto: {
+            /** Format: int32 */
+            id: number | string;
+            vipCode: null | string;
+            displayName: null | string;
+            homePhone: null | string;
+            email: null | string;
+            homeCity: null | string;
+            accountNumber: null | string;
+        };
+        CustomerViewDto: {
+            customer: components["schemas"]["CustomerDetailDto"];
+            /** Format: int32 */
+            resolvedFrom: null | number | string;
+        };
+        CustomerWriteRequest: {
+            input: components["schemas"]["CustomerInput"];
+            confirmDuplicate: boolean;
+            reason: string;
         };
         DeactivateBranchRequest: {
             reason: string;
@@ -3509,6 +5204,48 @@ export interface components {
             /** Format: date */
             businessDate: string;
             reason: string;
+        };
+        FrameDetailDto: {
+            /** Format: int32 */
+            lineNumber: number | string;
+            supply: boolean;
+            enclosed: boolean;
+            follow: boolean;
+            lenses: boolean;
+            mode: null | string;
+            color: null | string;
+            eyeSize: null | string;
+            /** Format: int32 */
+            bridge: number | string;
+            /** Format: int32 */
+            temple: number | string;
+            r1: null | string;
+            r2: null | string;
+            r3: null | string;
+            a: null | string;
+            b: null | string;
+            specialInstruction: null | string;
+        };
+        FrameDetailInput: {
+            /** Format: int32 */
+            lineNumber: number | string;
+            supply: boolean;
+            enclosed: boolean;
+            follow: boolean;
+            lenses: boolean;
+            mode: null | string;
+            color: null | string;
+            eyeSize: null | string;
+            /** Format: int32 */
+            bridge: null | number | string;
+            /** Format: int32 */
+            temple: null | number | string;
+            r1: null | string;
+            r2: null | string;
+            r3: null | string;
+            a: null | string;
+            b: null | string;
+            specialInstruction: null | string;
         };
         ImportCountsRequest: {
             csv: string;
@@ -3598,6 +5335,44 @@ export interface components {
             deficitLotNo: null | string;
             consumptions: components["schemas"]["IssueConsumptionDto"][];
         };
+        LensDetailDto: {
+            /** Format: int32 */
+            lineNumber: number | string;
+            /** Format: int64 */
+            prescriptionVersionId: null | number | string;
+            right: components["schemas"]["OpticalEyeValues"];
+            left: components["schemas"]["OpticalEyeValues"];
+            rightStyle: null | string;
+            leftStyle: null | string;
+            type: null | string;
+            hardening: null | string;
+            material: null | string;
+            coating: null | string;
+            tint: null | string;
+            others: null | string;
+            hardCoat: boolean;
+            arCoat: boolean;
+            uv: boolean;
+        };
+        LensDetailInput: {
+            /** Format: int32 */
+            lineNumber: number | string;
+            /** Format: int64 */
+            prescriptionVersionId: null | number | string;
+            right: components["schemas"]["OpticalEyeValues"];
+            left: components["schemas"]["OpticalEyeValues"];
+            rightStyle: null | string;
+            leftStyle: null | string;
+            type: null | string;
+            hardening: null | string;
+            material: null | string;
+            coating: null | string;
+            tint: null | string;
+            others: null | string;
+            hardCoat: boolean;
+            arCoat: boolean;
+            uv: boolean;
+        };
         LevelRuleDto: {
             /** Format: int32 */
             minLevel: number | string;
@@ -3621,6 +5396,49 @@ export interface components {
             qtyOnHand: number | string;
             unitCost: null | components["schemas"]["Money"];
             extendedCost: null | components["schemas"]["Money"];
+        };
+        MedicalNoteDto: {
+            /** Format: int64 */
+            id: number | string;
+            /** Format: int32 */
+            customerId: number | string;
+            note: string;
+            /** Format: date-time */
+            recordedAt: string;
+            recordedBy: null | string;
+        };
+        MedicalNoteRequest: {
+            note: string;
+            reason: string;
+        };
+        MemberDto: {
+            /** Format: int64 */
+            id: number | string;
+            /** Format: int32 */
+            customerId: number | string;
+            /** Format: int64 */
+            planId: number | string;
+            planCode: string;
+            /** Format: int32 */
+            planVersion: number | string;
+            memberNumber: string;
+            groupNumber: null | string;
+            /** Format: date */
+            effectiveFrom: string;
+            /** Format: date */
+            effectiveTo: null | string;
+            eligibilityNote: null | string;
+            isActive: boolean;
+        };
+        MergeCustomersRequest: {
+            /** Format: int32 */
+            sourceId: number | string;
+            /** Format: int32 */
+            targetId: number | string;
+            phone: null | string;
+            email: null | string;
+            fullName: null | string;
+            reason: string;
         };
         Money: {
             /** Format: double */
@@ -3648,6 +5466,56 @@ export interface components {
             openingFloat: number | string;
             reason: string;
         };
+        OpticalEventDto: {
+            /** Format: int64 */
+            id: number | string;
+            status: string;
+            /** Format: date-time */
+            occurredAt: string;
+            actor: null | string;
+            reference: null | string;
+            notes: null | string;
+        };
+        OpticalEyeValues: {
+            /** Format: double */
+            sphere: null | number | string;
+            /** Format: double */
+            cylinder: null | number | string;
+            /** Format: int32 */
+            axis: null | number | string;
+            /** Format: double */
+            pd: null | number | string;
+            /** Format: double */
+            add: null | number | string;
+            /** Format: double */
+            prism: null | number | string;
+            /** Format: double */
+            base: null | number | string;
+            /** Format: double */
+            segHeight: null | number | string;
+            /** Format: double */
+            oc: null | number | string;
+            /** Format: double */
+            vd: null | number | string;
+        };
+        OpticalOrderDto: {
+            txNumber: string;
+            /** Format: int32 */
+            customerId: number | string;
+            customerName: null | string;
+            orderStatus: null | string;
+            frames: components["schemas"]["FrameDetailDto"][];
+            lenses: components["schemas"]["LensDetailDto"][];
+            contacts: components["schemas"]["ContactDetailDto"][];
+            events: components["schemas"]["OpticalEventDto"][];
+            status: string;
+        };
+        OpticalStatusRequest: {
+            status: string;
+            reference: null | string;
+            notes: null | string;
+            reason: string;
+        };
         OrderLineRequest: {
             sku: string;
             /** Format: int32 */
@@ -3664,6 +5532,10 @@ export interface components {
         };
         PagedResultOfCatalogueItemDto: {
             items: components["schemas"]["CatalogueItemDto"][];
+            nextCursor: null | string;
+        };
+        PagedResultOfCustomerSummaryDto: {
+            items: components["schemas"]["CustomerSummaryDto"][];
             nextCursor: null | string;
         };
         PagedResultOfDoctorDto: {
@@ -3693,6 +5565,23 @@ export interface components {
         PasswordResetCompletedDto: {
             userName: string;
         };
+        PatientAttachmentDto: {
+            /** Format: int64 */
+            id: number | string;
+            /** Format: int32 */
+            customerId: number | string;
+            kind: string;
+            prescriptionType: null | string;
+            /** Format: int64 */
+            prescriptionVersionId: null | number | string;
+            fileName: string;
+            contentType: string;
+            /** Format: int64 */
+            size: number | string;
+            /** Format: date-time */
+            uploadedAt: string;
+            uploadedBy: null | string;
+        };
         PaymentMethodDto: {
             code: string;
             nameShort: string;
@@ -3705,6 +5594,18 @@ export interface components {
         PermissionGrantDto: {
             permission: string;
             roles: string[];
+        };
+        PlanDto: {
+            /** Format: int64 */
+            id: number | string;
+            planCode: string;
+            /** Format: int32 */
+            version: number | string;
+            name: string;
+            payerName: string;
+            isCurrent: boolean;
+            isActive: boolean;
+            rules: components["schemas"]["CoverageRuleDto"][];
         };
         PosContextDto: {
             /** Format: double */
@@ -3771,6 +5672,15 @@ export interface components {
             counters: components["schemas"]["CounterDto"][];
             requiredFamilies: string[];
             missingFamilies: string[];
+        };
+        PrescriptionHistoryDto: {
+            /** Format: int32 */
+            customerId: number | string;
+            medical: null | components["schemas"]["CustomerMedicalDto"];
+            spectacle: components["schemas"]["SpectacleVersionDto"][];
+            contact: components["schemas"]["ContactVersionDto"][];
+            medicalNotes: components["schemas"]["MedicalNoteDto"][];
+            attachments: components["schemas"]["PatientAttachmentDto"][];
         };
         PrintDocumentRequest: {
             reprint: boolean;
@@ -3940,6 +5850,10 @@ export interface components {
             name: string;
             expectedCurrentName?: null | string;
         };
+        ResubmitClaimRequest: {
+            reason: string;
+            reference: null | string;
+        };
         RetailLineRequest: {
             sku: string;
             /** Format: int32 */
@@ -4050,6 +5964,12 @@ export interface components {
             /** Format: int32 */
             qtyOnHand: number | string;
         };
+        SaveOpticalOrderRequest: {
+            frames: components["schemas"]["FrameDetailInput"][];
+            lenses: components["schemas"]["LensDetailInput"][];
+            contacts: components["schemas"]["ContactDetailInput"][];
+            reason: string;
+        };
         SetBranchRequest: {
             branchCode: null | string;
             reason: string;
@@ -4106,6 +6026,70 @@ export interface components {
             gradeB: null | number | string;
             /** Format: double */
             gradeC: null | number | string;
+        };
+        SpectacleEyeRequest: {
+            /** Format: double */
+            sphere: null | number | string;
+            /** Format: double */
+            cylinder: null | number | string;
+            /** Format: int32 */
+            axis: null | number | string;
+            /** Format: double */
+            add: null | number | string;
+            /** Format: double */
+            prism: null | number | string;
+            /** Format: double */
+            base: null | number | string;
+            /** Format: double */
+            pd: null | number | string;
+        };
+        SpectacleEyeValues: {
+            /** Format: double */
+            sphere: null | number | string;
+            /** Format: double */
+            cylinder: null | number | string;
+            /** Format: int32 */
+            axis: null | number | string;
+            /** Format: double */
+            add: null | number | string;
+            /** Format: double */
+            prism: null | number | string;
+            /** Format: double */
+            base: null | number | string;
+            /** Format: double */
+            pd: null | number | string;
+        };
+        SpectaclePrescriptionRequest: {
+            /** Format: date-time */
+            issuedOn: string;
+            /** Format: int32 */
+            prescriberId: null | number | string;
+            right: components["schemas"]["SpectacleEyeRequest"];
+            left: components["schemas"]["SpectacleEyeRequest"];
+            notes: null | string;
+            reason: string;
+        };
+        SpectacleVersionDto: {
+            /** Format: int64 */
+            id: number | string;
+            /** Format: int32 */
+            customerId: number | string;
+            /** Format: int32 */
+            versionNumber: number | string;
+            source: string;
+            /** Format: date-time */
+            issuedOn: string;
+            /** Format: int32 */
+            prescriberId: null | number | string;
+            right: components["schemas"]["SpectacleEyeValues"];
+            left: components["schemas"]["SpectacleEyeValues"];
+            notes: null | string;
+            reason: string;
+            isCurrent: boolean;
+            /** Format: date-time */
+            verifiedAt: null | string;
+            verifiedBy: null | string;
+            verificationNote: null | string;
         };
         StaffAccountDto: {
             id: string;
@@ -4324,6 +6308,13 @@ export interface components {
             difference: null | number | string;
             /** Format: double */
             averageCost: null | number | string;
+        };
+        VerifyPrescriptionRequest: {
+            type: string;
+            /** Format: int64 */
+            versionId: number | string;
+            note: null | string;
+            reason: string;
         };
     };
     responses: never;

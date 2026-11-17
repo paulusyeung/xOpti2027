@@ -44,6 +44,22 @@ public sealed class EfSalesDocumentStore(XOptiDbContext context) : ISalesDocumen
             TransactionType.SalesOrder => ("Order", "Sale order"),
             _ => ("Document", "Document"),
         };
+        var frames = await context.TxSOrderFrames.AsNoTracking()
+            .Where(row => row.TxNumber == txNumber).OrderBy(row => row.LineNumber).ToListAsync(ct);
+        var lenses = await context.TxSOrderLenses.AsNoTracking()
+            .Where(row => row.TxNumber == txNumber).OrderBy(row => row.LineNumber).ToListAsync(ct);
+        var contacts = await context.TxSOrderConts.AsNoTracking()
+            .Where(row => row.TxNumber == txNumber).OrderBy(row => row.LineNumber).ToListAsync(ct);
+        var opticalLines = new List<string>();
+        opticalLines.AddRange(frames.Select(row =>
+            $"Frame line {(int)row.LineNumber}: {row.Mode} · eye {row.EyeSize} · bridge {row.Bridge} · temple {row.Temple}"));
+        opticalLines.AddRange(lenses.Select(row =>
+            $"Lens line {(int)row.LineNumber}: R {row.RightSphere:0.00}/{row.RightCylinder:0.00} x{row.RightAxis}"
+            + $" · L {row.LeftSphere:0.00}/{row.LeftCylinder:0.00} x{row.LeftAxis} · {row.Type}"));
+        opticalLines.AddRange(contacts.Select(row =>
+            $"Contact line {(int)row.LineNumber}: R {row.RightSphere:0.00}/{row.RightCylinder:0.00} x{row.RightAxis}"
+            + $" · L {row.LeftSphere:0.00}/{row.LeftCylinder:0.00} x{row.LeftAxis}"));
+
         var paid = payments.Sum(row => row.TotalThisPay.Amount);
         return new PosDocumentRenderDto(header.TxNumber, documentType, title, false,
             header.DateOfEntry, header.CustomerId, customerName, staffCode,
@@ -55,7 +71,7 @@ public sealed class EfSalesDocumentStore(XOptiDbContext context) : ISalesDocumen
                 row.MarkDownAmount.Amount, row.Amount.Amount, row.TaxCode)).ToList(),
             payments.Select(row => new PosRenderTender(row.PaymentLineNo, row.Type,
                 row.AmountTender.Amount, row.TotalThisPay.Amount, row.AuthorizationCode)).ToList(),
-            new[] { header.TxNumber });
+            new[] { header.TxNumber }, opticalLines);
     }
 
     public async Task<IReadOnlyList<SalesDocumentDto>> PageAsync(

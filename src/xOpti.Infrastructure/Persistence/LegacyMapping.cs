@@ -139,11 +139,123 @@ public static class LegacyMapping
             e.HasKey(x => x.Id);
             e.Property(x => x.Id).HasColumnName("id").ValueGeneratedNever();
             e.Property(x => x.VipCode).HasColumnName("vip_code");
+            e.Property(x => x.FirstName).HasColumnName("first_name");
+            e.Property(x => x.Initial).HasColumnName("initial");
+            e.Property(x => x.LastName).HasColumnName("last_name");
             e.Property(x => x.FullName).HasColumnName("full_name");
-            e.Property(x => x.Email).HasColumnName("email");
+            e.Property(x => x.Salutation).HasColumnName("salutation");
+            e.Property(x => x.Birthday).HasColumnName("birthday").HasConversion(Converters.UtcTimestampNullable);
+            e.Property(x => x.HomeAddress).HasColumnName("home_address");
+            e.Property(x => x.HomeCity).HasColumnName("home_city");
+            e.Property(x => x.HomeProvince).HasColumnName("home_province");
+            e.Property(x => x.HomePostalCode).HasColumnName("home_postal_code");
+            e.Property(x => x.HomeCountry).HasColumnName("home_country");
             e.Property(x => x.HomePhone).HasColumnName("home_phone");
+            e.Property(x => x.HomeFax).HasColumnName("home_fax");
+            e.Property(x => x.Cellular).HasColumnName("cellular");
+            e.Property(x => x.Email).HasColumnName("email");
+            e.Property(x => x.BizCompanyName).HasColumnName("biz_company_name");
+            e.Property(x => x.BizJobTitle).HasColumnName("biz_job_title");
+            e.Property(x => x.BizAddress).HasColumnName("biz_address");
+            e.Property(x => x.BizCity).HasColumnName("biz_city");
+            e.Property(x => x.BizProvince).HasColumnName("biz_province");
+            e.Property(x => x.BizPostalCode).HasColumnName("biz_postal_code");
+            e.Property(x => x.BizCountry).HasColumnName("biz_country");
+            e.Property(x => x.BizPhone).HasColumnName("biz_phone");
+            e.Property(x => x.BizFax).HasColumnName("biz_fax");
             MoneyProp(e, x => x.CreditLimit, "credit_limit");
+            e.Property(x => x.PaymentTerms).HasColumnName("payment_terms");
+            e.Property(x => x.VipMarkDownPct).HasColumnName("vip_mark_down_pct");
+            e.Property(x => x.SummaryFlag).HasColumnName("summary_flag");
+            e.Property(x => x.AccountingFlag).HasColumnName("accounting_flag");
+            e.Property(x => x.Remarks).HasColumnName("remarks");
             AddXminConcurrency(e);
+        });
+
+        mb.Entity<CustomerAccount>(e =>
+        {
+            e.ToTable("customer_accounts", t => t.ExcludeFromMigrations());
+            e.HasKey(x => x.CustomerId);
+            e.Property(x => x.CustomerId).HasColumnName("customer_id").ValueGeneratedNever();
+            e.Property(x => x.JointDate).HasColumnName("joint_date").HasConversion(Converters.UtcTimestampNullable);
+            MoneyProp(e, x => x.TtlAmtPurchased, "ttl_amt_purchased");
+            MoneyProp(e, x => x.TtlAmtRefund, "ttl_amt_refund");
+            MoneyProp(e, x => x.TtlAmtMrkdwnApplied, "ttl_amt_mrkdwn_applied");
+            MoneyProp(e, x => x.TtlAmtCpnUsed, "ttl_amt_cpn_used");
+            MoneyProp(e, x => x.YtdAmtPurchased, "ytd_amt_purchased");
+            MoneyProp(e, x => x.YtdAmtRefund, "ytd_amt_refund");
+            MoneyProp(e, x => x.YtdAmtMrkdwnApplied, "ytd_amt_mrkdwn_applied");
+            MoneyProp(e, x => x.YtdAmtCpnUsed, "ytd_amt_cpn_used");
+            e.Property(x => x.LastPurchaseDate).HasColumnName("last_purchase_date").HasConversion(Converters.UtcTimestampNullable);
+        });
+
+        mb.Entity<CustomerMedical>(e =>
+        {
+            e.ToTable("customer_medical", t => t.ExcludeFromMigrations());
+            e.HasKey(x => x.CustomerId);
+            e.Property(x => x.CustomerId).HasColumnName("customer_id").ValueGeneratedNever();
+            e.Property(x => x.InsMaturityDate).HasColumnName("ins_maturity_date").HasConversion(Converters.UtcTimestampNullable);
+            e.Property(x => x.CareCardNo).HasColumnName("care_card_no");
+            e.Property(x => x.CareCardValidPeriod).HasColumnName("care_card_valid_period");
+            e.Property(x => x.CareCardType).HasColumnName("care_card_type");
+            e.Property(x => x.PrescriptionLensFlag).HasColumnName("prescription_lens_flag");
+            e.Property(x => x.PrescriptionContactFlag).HasColumnName("prescription_contact_flag");
+        });
+
+        mb.Entity<CustomerPresLens>(e =>
+        {
+            e.ToTable("customer_pres_lens", t => t.ExcludeFromMigrations());
+            e.HasKey(x => x.CustomerId);
+            e.Property(x => x.CustomerId).HasColumnName("customer_id").ValueGeneratedNever();
+            e.Property(x => x.IssuedOn).HasColumnName("issued_on").HasConversion(Converters.UtcTimestampNullable);
+            e.Property(x => x.IssuedByDr).HasColumnName("issued_by_dr");
+            e.Property(x => x.RightSphere).HasColumnName("right_sphere");
+            e.Property(x => x.RightCylinder).HasColumnName("right_cylinder");
+            e.Property(x => x.RightAxis).HasColumnName("right_axis");
+            e.Property(x => x.RightPdDist).HasColumnName("right_pd_dist");
+            e.Property(x => x.RightPdNear).HasColumnName("right_pd_near");
+            e.Property(x => x.RightPrism).HasColumnName("right_prism");
+            e.Property(x => x.RightAdd).HasColumnName("right_add");
+            e.Property(x => x.RightPupil).HasColumnName("right_pupil");
+            e.Property(x => x.LeftSphere).HasColumnName("left_sphere");
+            e.Property(x => x.LeftCylinder).HasColumnName("left_cylinder");
+            e.Property(x => x.LeftAxis).HasColumnName("left_axis");
+            e.Property(x => x.LeftPdDist).HasColumnName("left_pd_dist");
+            e.Property(x => x.LeftPdNear).HasColumnName("left_pd_near");
+            e.Property(x => x.LeftPrism).HasColumnName("left_prism");
+            e.Property(x => x.LeftAdd).HasColumnName("left_add");
+            e.Property(x => x.LeftPupil).HasColumnName("left_pupil");
+        });
+
+        mb.Entity<CustomerPresContact>(e =>
+        {
+            e.ToTable("customer_pres_contact", t => t.ExcludeFromMigrations());
+            e.HasKey(x => x.CustomerId);
+            e.Property(x => x.CustomerId).HasColumnName("customer_id").ValueGeneratedNever();
+            e.Property(x => x.IssuedOn).HasColumnName("issued_on").HasConversion(Converters.UtcTimestampNullable);
+            e.Property(x => x.IssuedByDr).HasColumnName("issued_by_dr");
+            e.Property(x => x.RightSphere).HasColumnName("right_sphere");
+            e.Property(x => x.RightCylinder).HasColumnName("right_cylinder");
+            e.Property(x => x.RightAxis).HasColumnName("right_axis");
+            e.Property(x => x.RightKReadingV).HasColumnName("right_k_reading_v");
+            e.Property(x => x.RightKReadingH).HasColumnName("right_k_reading_h");
+            e.Property(x => x.RightPalp).HasColumnName("right_palp");
+            e.Property(x => x.RightCorn).HasColumnName("right_corn");
+            e.Property(x => x.RightPupil).HasColumnName("right_pupil");
+            e.Property(x => x.LeftSphere).HasColumnName("left_sphere");
+            e.Property(x => x.LeftCylinder).HasColumnName("left_cylinder");
+            e.Property(x => x.LeftAxis).HasColumnName("left_axis");
+            e.Property(x => x.LeftKReadingV).HasColumnName("left_k_reading_v");
+            e.Property(x => x.LeftKReadingH).HasColumnName("left_k_reading_h");
+            e.Property(x => x.LeftPalp).HasColumnName("left_palp");
+            e.Property(x => x.LeftCorn).HasColumnName("left_corn");
+            e.Property(x => x.LeftPupil).HasColumnName("left_pupil");
+            e.Property(x => x.History).HasColumnName("history");
+            e.Property(x => x.Medical).HasColumnName("medical");
+            e.Property(x => x.Allergy).HasColumnName("allergy");
+            e.Property(x => x.Reason).HasColumnName("reason");
+            e.Property(x => x.Evaluation).HasColumnName("evaluation");
+            e.Property(x => x.Test).HasColumnName("test");
         });
 
         mb.Entity<Preference>(e =>

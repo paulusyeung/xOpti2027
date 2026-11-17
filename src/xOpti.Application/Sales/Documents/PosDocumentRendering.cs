@@ -21,7 +21,7 @@ public sealed record PosDocumentRenderDto(
     string? OriginalTxNumber, string? Status,
     decimal Subtotal, decimal TaxA, decimal TaxB, decimal Total, decimal Change, decimal Paid,
     IReadOnlyList<PosRenderLine> Lines, IReadOnlyList<PosRenderTender> Tenders,
-    IReadOnlyList<string> Barcodes);
+    IReadOnlyList<string> Barcodes, IReadOnlyList<string>? OpticalLines = null);
 
 public sealed record RenderedDocument(byte[] Content, string ContentType, string FileName);
 

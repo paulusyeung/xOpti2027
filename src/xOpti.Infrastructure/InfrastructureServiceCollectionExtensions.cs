@@ -37,6 +37,12 @@ public sealed record InfrastructureOptions
     /// </summary>
     public string PaymentTerminalMode { get; init; } = "manual";
 
+    /// <summary>Require a verified current prescription before optical conversion.</summary>
+    public bool RequirePrescriptionVerification { get; init; }
+
+    /// <summary>Maximum patient attachment size; 10 MiB until the signed policy lands.</summary>
+    public long PrescriptionAttachmentMaxBytes { get; init; } = 10 * 1024 * 1024;
+
     /// <summary>Schedule/cron-lite expressions for enabled jobs.</summary>
     public IReadOnlyList<string> MaterializedViewRefreshStatements { get; init; } =
         new[] { "SELECT 1 /* example: replace with REFRESH MATERIALIZED VIEW analytics... */" };
@@ -107,11 +113,18 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddScoped<xOpti.Application.Sales.Retail.IRetailSaleStore,
             Repositories.EfRetailSaleStore>();
         services.AddScoped<xOpti.Application.Cash.ICashStore, Repositories.EfCashStore>();
+        services.AddScoped<xOpti.Application.Customers.ICustomerStore, Repositories.EfCustomerStore>();
+        services.AddScoped<xOpti.Application.Prescriptions.IPrescriptionStore,
+            Repositories.EfPrescriptionStore>();
+        services.AddScoped<xOpti.Application.Optical.IOpticalOrderStore,
+            Repositories.EfOpticalOrderStore>();
+        services.AddScoped<xOpti.Application.Claims.IClaimStore, Repositories.EfClaimStore>();
         services.AddScoped<xOpti.Application.Settings.IPreferencesStore, Repositories.EfPreferencesStore>();
         services.AddScoped<xOpti.Application.Settings.IImportStore, Repositories.EfImportStore>();
         services.AddSingleton<xOpti.Application.Identity.Staff.IRoleCatalogue, Identity.RoleCatalogue>();
         services.AddSingleton<IClock, SystemClock>();
         services.AddSingleton<IPosPolicy, PosPolicy>();
+        services.AddSingleton<IPrescriptionPolicy, PrescriptionPolicy>();
         services.AddSingleton<xOpti.Application.Payments.IPaymentTerminal>(sp =>
             string.Equals(options.PaymentTerminalMode, "simulated", StringComparison.OrdinalIgnoreCase)
                 ? new SimulatedPaymentTerminal()
@@ -124,6 +137,8 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddSingleton<Documents.IDocumentRenderer, Documents.QuestPdfDocumentRenderer>();
         services.AddSingleton<xOpti.Application.Sales.Documents.IPosDocumentRenderer,
             Documents.QuestPdfPosDocumentRenderer>();
+        services.AddSingleton<xOpti.Application.Claims.IClaimDocumentRenderer,
+            Documents.ClaimDocumentRenderer>();
         services.AddSingleton<Documents.IFileStorage>(sp =>
             new Documents.LocalFileStorage(options.FileStorageRoot));
 

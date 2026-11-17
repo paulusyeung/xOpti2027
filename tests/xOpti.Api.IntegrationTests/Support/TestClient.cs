@@ -106,6 +106,18 @@ public sealed class TestClient : IDisposable
         return response;
     }
 
+    public async Task<HttpResponseMessage> PostMultipartAsync(
+        string path, MultipartFormDataContent content, string? csrf = null)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, path) { Content = content };
+        var token = csrf ?? CsrfToken;
+        if (token is not null) request.Headers.Add("X-CSRF-TOKEN", token);
+        ApplyCookies(request);
+        var response = await Http.SendAsync(request);
+        StoreCookies(response);
+        return response;
+    }
+
     public async Task<HttpResponseMessage> PutAsync(string path, object body)
     {
         var request = new HttpRequestMessage(HttpMethod.Put, path)

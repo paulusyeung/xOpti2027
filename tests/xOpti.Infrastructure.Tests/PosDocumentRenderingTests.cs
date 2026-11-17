@@ -70,6 +70,21 @@ public class PosDocumentRenderingTests
     }
 
     [Fact]
+    public void OpticalDetails_AreIncludedInTheDocumentPlan()
+    {
+        var document = Document() with
+        {
+            OpticalLines = new[] { "Lens line 1: R 1.25/-0.50 x90 · L -1.75/-1.25 x85" },
+        };
+
+        var plan = string.Join("\n", PosDocumentLayout.Build(document));
+
+        Assert.Contains("Optical: Lens line 1", plan);
+        var pdf = Renderer().Render(document, "invoice");
+        Assert.Equal("%PDF", Encoding.ASCII.GetString(pdf.Content[..4]));
+    }
+
+    [Fact]
     public void DuplicateReprint_IsMarkedAndDiffersFromTheOriginal()
     {
         var renderer = Renderer();

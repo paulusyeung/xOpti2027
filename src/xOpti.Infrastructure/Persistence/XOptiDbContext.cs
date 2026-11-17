@@ -49,6 +49,50 @@ public class XOptiDbContext(DbContextOptions<XOptiDbContext> options)
 
     public DbSet<SalesRefundTender> SalesRefundTenders => Set<SalesRefundTender>();
 
+    public DbSet<CustomerAccount> CustomerAccounts => Set<CustomerAccount>();
+
+    public DbSet<CustomerMedical> CustomerMedicals => Set<CustomerMedical>();
+
+    public DbSet<CustomerPresLens> CustomerPresLenses => Set<CustomerPresLens>();
+
+    public DbSet<CustomerPresContact> CustomerPresContacts => Set<CustomerPresContact>();
+
+    public DbSet<CustomerAlias> CustomerAliases => Set<CustomerAlias>();
+
+    public DbSet<SpectaclePrescriptionVersion> SpectaclePrescriptionVersions =>
+        Set<SpectaclePrescriptionVersion>();
+
+    public DbSet<ContactLensPrescriptionVersion> ContactLensPrescriptionVersions =>
+        Set<ContactLensPrescriptionVersion>();
+
+    public DbSet<MedicalNote> MedicalNotes => Set<MedicalNote>();
+
+    public DbSet<PatientAttachment> PatientAttachments => Set<PatientAttachment>();
+
+    public DbSet<TxSOrderCont> TxSOrderConts => Set<TxSOrderCont>();
+
+    public DbSet<TxSOrderFrame> TxSOrderFrames => Set<TxSOrderFrame>();
+
+    public DbSet<TxSOrderLens> TxSOrderLenses => Set<TxSOrderLens>();
+
+    public DbSet<OpticalOrderEvent> OpticalOrderEvents => Set<OpticalOrderEvent>();
+
+    public DbSet<OpticalOrderPrescription> OpticalOrderPrescriptions => Set<OpticalOrderPrescription>();
+
+    public DbSet<InsurancePlan> InsurancePlans => Set<InsurancePlan>();
+
+    public DbSet<CoverageRule> CoverageRules => Set<CoverageRule>();
+
+    public DbSet<InsuranceMember> InsuranceMembers => Set<InsuranceMember>();
+
+    public DbSet<InsuranceClaim> Claims => Set<InsuranceClaim>();
+
+    public DbSet<ClaimLine> ClaimLines => Set<ClaimLine>();
+
+    public DbSet<ClaimEvent> ClaimEvents => Set<ClaimEvent>();
+
+    public DbSet<ClaimPayment> ClaimPayments => Set<ClaimPayment>();
+
     public DbSet<City> Cities => Set<City>();
 
     public DbSet<Province> Provinces => Set<Province>();

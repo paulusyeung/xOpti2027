@@ -36,6 +36,8 @@ builder.Services.AddXOptiInfrastructure(new InfrastructureOptions
     IdempotencyRetention = apiOptions.IdempotencyRetention,
     PosDiscountThresholdPercent = apiOptions.PosDiscountThresholdPercent,
     BlindCashCount = apiOptions.BlindCashCount,
+    RequirePrescriptionVerification = apiOptions.RequirePrescriptionVerification,
+    PrescriptionAttachmentMaxBytes = apiOptions.PrescriptionAttachmentMaxBytes,
     PaymentTerminalMode = apiOptions.PaymentTerminalMode,
     FontDirectories = apiOptions.FontDirectories,
     MaterializedViewRefreshStatements = apiOptions.MaterializedViewRefreshStatements,

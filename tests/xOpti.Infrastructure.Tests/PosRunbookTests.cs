@@ -40,6 +40,19 @@ public class PosRunbookTests
         Assert.Contains("Expected cash = opening float", text);
         Assert.Contains("Migrated-data rehearsal", text);
         Assert.True(File.Exists(Path.Combine(root.FullName, "scripts", "pos-rehearsal.py")));
+        var optical = Path.Combine(root.FullName, "docs", "operations", "optical-claims.md");
+        Assert.True(File.Exists(optical));
+        var opticalText = File.ReadAllText(optical);
+        foreach (var heading in new[]
+                 {
+                     "Customer records and duplicates", "PII and PHI access", "Prescriptions",
+                     "Optical orders", "Insurance plans, members, and claims",
+                     "Claim receipt and RBIC", "Migrated-data rehearsal",
+                 })
+        {
+            Assert.Contains(heading, opticalText);
+        }
+        Assert.True(File.Exists(Path.Combine(root.FullName, "scripts", "optical-claim-rehearsal.py")));
         Assert.Contains("totals are immutable", text);
         Assert.Contains("DUPLICATE COPY", text);
     }

@@ -86,6 +86,13 @@ public sealed class QuestPdfPosDocumentRenderer : IPosDocumentRenderer
                         if (document.Change != 0) totals.Item().Text($"Change {document.Change:0.00}");
                     });
 
+                    if (document.OpticalLines is { Count: > 0 })
+                    {
+                        column.Item().PaddingTop(6).Text("Optical details").Bold();
+                        foreach (var optical in document.OpticalLines)
+                            column.Item().Text(optical);
+                    }
+
                     if (document.Tenders.Count > 0)
                     {
                         column.Item().PaddingTop(6).Text("Tenders").Bold();

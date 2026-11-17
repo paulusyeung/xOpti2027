@@ -81,6 +81,275 @@ public static class PlatformMapping
             e.Property(x => x.DestinationReference).HasMaxLength(128);
         });
 
+        mb.Entity<SpectaclePrescriptionVersion>(e =>
+        {
+            e.ToTable("rx_spectacle_version", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.CustomerId).IsRequired();
+            e.Property(x => x.VersionNumber).IsRequired();
+            e.HasIndex(x => new { x.CustomerId, x.VersionNumber }).IsUnique();
+            e.HasIndex(x => new { x.CustomerId, x.IsCurrent })
+                .HasFilter("is_current = true").IsUnique();
+            e.Property(x => x.IssuedOn);
+            e.Property(x => x.PrescriberId);
+            foreach (var name in new[]
+                     {
+                         nameof(SpectaclePrescriptionVersion.RightSphere),
+                         nameof(SpectaclePrescriptionVersion.RightCylinder),
+                         nameof(SpectaclePrescriptionVersion.RightAdd),
+                         nameof(SpectaclePrescriptionVersion.RightPrism),
+                         nameof(SpectaclePrescriptionVersion.RightBase),
+                         nameof(SpectaclePrescriptionVersion.RightPd),
+                         nameof(SpectaclePrescriptionVersion.LeftSphere),
+                         nameof(SpectaclePrescriptionVersion.LeftCylinder),
+                         nameof(SpectaclePrescriptionVersion.LeftAdd),
+                         nameof(SpectaclePrescriptionVersion.LeftPrism),
+                         nameof(SpectaclePrescriptionVersion.LeftBase),
+                         nameof(SpectaclePrescriptionVersion.LeftPd),
+                     })
+            {
+                e.Property<decimal?>(name).HasPrecision(8, 4);
+            }
+            e.Property(x => x.Notes).HasMaxLength(2000);
+            e.Property(x => x.Reason).HasMaxLength(500).IsRequired();
+            e.Property(x => x.CreatedAt);
+            e.Property(x => x.CreatedBy).HasMaxLength(64);
+            e.Property(x => x.IsCurrent);
+            e.Property(x => x.VerifiedAt);
+            e.Property(x => x.VerifiedBy).HasMaxLength(64);
+            e.Property(x => x.VerificationNote).HasMaxLength(500);
+        });
+
+        mb.Entity<ContactLensPrescriptionVersion>(e =>
+        {
+            e.ToTable("rx_contact_version", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.CustomerId).IsRequired();
+            e.Property(x => x.VersionNumber).IsRequired();
+            e.HasIndex(x => new { x.CustomerId, x.VersionNumber }).IsUnique();
+            e.HasIndex(x => new { x.CustomerId, x.IsCurrent })
+                .HasFilter("is_current = true").IsUnique();
+            e.Property(x => x.IssuedOn);
+            e.Property(x => x.PrescriberId);
+            e.Property(x => x.Brand).HasMaxLength(80);
+            foreach (var name in new[]
+                     {
+                         nameof(ContactLensPrescriptionVersion.BaseCurve),
+                         nameof(ContactLensPrescriptionVersion.Diameter),
+                         nameof(ContactLensPrescriptionVersion.RightPower),
+                         nameof(ContactLensPrescriptionVersion.RightCylinder),
+                         nameof(ContactLensPrescriptionVersion.LeftPower),
+                         nameof(ContactLensPrescriptionVersion.LeftCylinder),
+                     })
+            {
+                e.Property<decimal?>(name).HasPrecision(8, 4);
+            }
+            e.Property(x => x.ReplacementSchedule).HasMaxLength(40);
+            e.Property(x => x.Notes).HasMaxLength(2000);
+            e.Property(x => x.Reason).HasMaxLength(500).IsRequired();
+            e.Property(x => x.CreatedAt);
+            e.Property(x => x.CreatedBy).HasMaxLength(64);
+            e.Property(x => x.IsCurrent);
+            e.Property(x => x.VerifiedAt);
+            e.Property(x => x.VerifiedBy).HasMaxLength(64);
+            e.Property(x => x.VerificationNote).HasMaxLength(500);
+        });
+
+        mb.Entity<InsurancePlan>(e =>
+        {
+            e.ToTable("insurance_plan", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.PlanCode).HasMaxLength(40).IsRequired();
+            e.HasIndex(x => new { x.PlanCode, x.Version }).IsUnique();
+            e.HasIndex(x => new { x.PlanCode, x.IsCurrent }).HasFilter("is_current = true").IsUnique();
+            e.Property(x => x.Version).IsRequired();
+            e.Property(x => x.Name).HasMaxLength(120).IsRequired();
+            e.Property(x => x.PayerName).HasMaxLength(120).IsRequired();
+            e.Property(x => x.IsCurrent);
+            e.Property(x => x.IsActive);
+            e.Property(x => x.CreatedAt);
+            e.Property(x => x.CreatedBy).HasMaxLength(64);
+        });
+
+        mb.Entity<CoverageRule>(e =>
+        {
+            e.ToTable("coverage_rule", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.PlanId).IsRequired();
+            e.HasIndex(x => x.PlanId);
+            e.Property(x => x.CategoryCode).HasMaxLength(20);
+            e.Property(x => x.Sku).HasMaxLength(13);
+            e.Property(x => x.CoveragePercent).HasPrecision(7, 4);
+            e.Property(x => x.AnnualMaximum).HasPrecision(19, 4);
+            e.Property(x => x.RequiresPreauthorization);
+        });
+
+        mb.Entity<InsuranceMember>(e =>
+        {
+            e.ToTable("insurance_member", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.CustomerId).IsRequired();
+            e.HasIndex(x => x.CustomerId);
+            e.Property(x => x.PlanId).IsRequired();
+            e.Property(x => x.MemberNumber).HasMaxLength(60).IsRequired();
+            e.Property(x => x.GroupNumber).HasMaxLength(60);
+            e.Property(x => x.EffectiveFrom);
+            e.Property(x => x.EffectiveTo);
+            e.Property(x => x.EligibilityNote).HasMaxLength(500);
+            e.Property(x => x.IsActive);
+            e.Property(x => x.CreatedAt);
+            e.Property(x => x.CreatedBy).HasMaxLength(64);
+        });
+
+        mb.Entity<InsuranceClaim>(e =>
+        {
+            e.ToTable("claim", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.ClaimNumber).HasMaxLength(30).IsRequired();
+            e.HasIndex(x => x.ClaimNumber).IsUnique();
+            e.HasIndex(x => x.InvoiceTxNumber);
+            e.Property(x => x.InvoiceTxNumber).HasMaxLength(10).IsRequired();
+            e.Property(x => x.CustomerId).IsRequired();
+            e.Property(x => x.PlanId).IsRequired();
+            e.Property(x => x.PlanVersion).IsRequired();
+            e.Property(x => x.MemberId).IsRequired();
+            e.Property(x => x.Status).HasMaxLength(30).IsRequired();
+            e.Property(x => x.CreatedAt);
+            e.Property(x => x.CreatedBy).HasMaxLength(64);
+            foreach (var name in new[]
+                     {
+                         nameof(InsuranceClaim.TotalBilled), nameof(InsuranceClaim.CoveredAmount),
+                         nameof(InsuranceClaim.PatientAmount), nameof(InsuranceClaim.ApprovedAmount),
+                         nameof(InsuranceClaim.AdjustmentAmount), nameof(InsuranceClaim.PaidAmount),
+                     })
+            {
+                e.Property<decimal>(name).HasPrecision(19, 4);
+            }
+            e.Property(x => x.RejectionReason).HasMaxLength(500);
+            e.Property(x => x.ResubmissionOf);
+        });
+
+        mb.Entity<ClaimLine>(e =>
+        {
+            e.ToTable("claim_line", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.ClaimId).IsRequired();
+            e.HasIndex(x => x.ClaimId);
+            e.Property(x => x.LineNumber).IsRequired();
+            e.Property(x => x.InvoiceRowNo).IsRequired();
+            e.Property(x => x.Sku).HasMaxLength(13).IsRequired();
+            e.Property(x => x.BilledAmount).HasPrecision(19, 4);
+            e.Property(x => x.Eligible);
+            e.Property(x => x.CoveragePercent).HasPrecision(7, 4);
+            e.Property(x => x.CoveredAmount).HasPrecision(19, 4);
+            e.Property(x => x.PatientAmount).HasPrecision(19, 4);
+            e.Property(x => x.IneligibleReason).HasMaxLength(300);
+        });
+
+        mb.Entity<ClaimEvent>(e =>
+        {
+            e.ToTable("claim_event", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.ClaimId).IsRequired();
+            e.HasIndex(x => new { x.ClaimId, x.OccurredAt });
+            e.Property(x => x.EventType).HasMaxLength(40).IsRequired();
+            e.Property(x => x.Status).HasMaxLength(30);
+            e.Property(x => x.Amount).HasPrecision(19, 4);
+            e.Property(x => x.Reason).HasMaxLength(500);
+            e.Property(x => x.Reference).HasMaxLength(100);
+            e.Property(x => x.OccurredAt);
+            e.Property(x => x.Actor).HasMaxLength(64);
+        });
+
+        mb.Entity<ClaimPayment>(e =>
+        {
+            e.ToTable("claim_payment", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.ClaimId).IsRequired();
+            e.HasIndex(x => x.ClaimId);
+            e.Property(x => x.Amount).HasPrecision(19, 4);
+            e.Property(x => x.Method).HasMaxLength(20).IsRequired();
+            e.Property(x => x.Reference).HasMaxLength(100);
+            e.Property(x => x.ReceivedAt);
+            e.Property(x => x.Actor).HasMaxLength(64);
+        });
+
+        mb.Entity<OpticalOrderEvent>(e =>
+        {
+            e.ToTable("optical_order_event", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.TxNumber).HasMaxLength(10).IsRequired();
+            e.HasIndex(x => new { x.TxNumber, x.OccurredAt });
+            e.Property(x => x.Status).HasMaxLength(20).IsRequired();
+            e.Property(x => x.OccurredAt);
+            e.Property(x => x.Actor).HasMaxLength(64);
+            e.Property(x => x.Reference).HasMaxLength(80);
+            e.Property(x => x.Notes).HasMaxLength(1000);
+        });
+
+        mb.Entity<OpticalOrderPrescription>(e =>
+        {
+            e.ToTable("optical_order_rx", "platform");
+            e.HasKey(x => new { x.TxNumber, x.LineNumber });
+            e.Property(x => x.TxNumber).HasMaxLength(10).IsRequired();
+            e.Property(x => x.LineNumber);
+            e.Property(x => x.CustomerId).IsRequired();
+            e.Property(x => x.PrescriptionType).HasMaxLength(20).IsRequired();
+            e.Property(x => x.PrescriptionVersionId).IsRequired();
+        });
+
+        mb.Entity<MedicalNote>(e =>
+        {
+            e.ToTable("medical_note", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.CustomerId).IsRequired();
+            e.HasIndex(x => x.CustomerId);
+            e.Property(x => x.Note).HasMaxLength(4000).IsRequired();
+            e.Property(x => x.RecordedAt);
+            e.Property(x => x.RecordedBy).HasMaxLength(64);
+        });
+
+        mb.Entity<PatientAttachment>(e =>
+        {
+            e.ToTable("patient_attachment", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.CustomerId).IsRequired();
+            e.HasIndex(x => x.CustomerId);
+            e.Property(x => x.Kind).HasMaxLength(40).IsRequired();
+            e.Property(x => x.PrescriptionType).HasMaxLength(20);
+            e.Property(x => x.PrescriptionVersionId);
+            e.Property(x => x.FileName).HasMaxLength(255).IsRequired();
+            e.Property(x => x.ContentType).HasMaxLength(100).IsRequired();
+            e.Property(x => x.Size);
+            e.Property(x => x.StorageKey).HasMaxLength(255).IsRequired();
+            e.Property(x => x.UploadedAt);
+            e.Property(x => x.UploadedBy).HasMaxLength(64);
+        });
+
+        mb.Entity<CustomerAlias>(e =>
+        {
+            e.ToTable("customer_alias", "platform");
+            e.HasKey(x => x.AliasId);
+            e.Property(x => x.AliasId).ValueGeneratedNever();
+            e.Property(x => x.CanonicalId).IsRequired();
+            e.HasIndex(x => x.CanonicalId);
+            e.Property(x => x.MergedAt);
+            e.Property(x => x.MergedBy).HasMaxLength(64);
+            e.Property(x => x.Reason).HasMaxLength(500).IsRequired();
+        });
+
         mb.Entity<CashSessionTransaction>(e =>
         {
             e.ToTable("cash_session_tx", "platform");

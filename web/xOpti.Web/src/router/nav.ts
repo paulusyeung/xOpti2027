@@ -12,6 +12,30 @@ export interface NavItem {
 export const NAV_ITEMS: readonly NavItem[] = [
   { to: '/', title: 'Home', icon: 'mdi-home-outline' },
   {
+    to: '/admin/claims',
+    title: 'Claims',
+    icon: 'mdi-shield-check-outline',
+    permission: PermissionNames.ReportFinancial,
+  },
+  {
+    to: '/admin/optical',
+    title: 'Optical orders',
+    icon: 'mdi-glasses',
+    permission: PermissionNames.SalesOrderCreate,
+  },
+  {
+    to: '/admin/prescriptions',
+    title: 'Prescriptions',
+    icon: 'mdi-eye-outline',
+    permission: PermissionNames.PrescriptionView,
+  },
+  {
+    to: '/admin/customers',
+    title: 'Customers',
+    icon: 'mdi-account-group-outline',
+    permission: PermissionNames.SalesOrderCreate,
+  },
+  {
     to: '/admin/pos',
     title: 'POS',
     icon: 'mdi-point-of-sale',

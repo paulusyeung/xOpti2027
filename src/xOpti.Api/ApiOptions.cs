@@ -41,6 +41,12 @@ public sealed class ApiOptions
     /// </summary>
     public string PaymentTerminalMode { get; set; } = "manual";
 
+    /// <summary>Require a verified current prescription before optical conversion.</summary>
+    public bool RequirePrescriptionVerification { get; set; }
+
+    /// <summary>Maximum patient attachment size; 10 MiB until the signed policy lands.</summary>
+    public long PrescriptionAttachmentMaxBytes { get; set; } = 10 * 1024 * 1024;
+
     /// <summary>Single-instance scheduled jobs; disable when scaling out.</summary>
     public bool JobsEnabled { get; set; }
 

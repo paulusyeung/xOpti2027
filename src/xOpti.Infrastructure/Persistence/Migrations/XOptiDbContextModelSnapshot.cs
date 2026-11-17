@@ -933,6 +933,279 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.InsuranceClaim", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("AdjustmentAmount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("adjustment_amount");
+
+                    b.Property<decimal>("ApprovedAmount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("approved_amount");
+
+                    b.Property<string>("ClaimNumber")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("claim_number");
+
+                    b.Property<decimal>("CoveredAmount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("covered_amount");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("created_by");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("customer_id");
+
+                    b.Property<string>("InvoiceTxNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("invoice_tx_number");
+
+                    b.Property<long>("MemberId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("member_id");
+
+                    b.Property<decimal>("PaidAmount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("paid_amount");
+
+                    b.Property<decimal>("PatientAmount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("patient_amount");
+
+                    b.Property<long>("PlanId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("plan_id");
+
+                    b.Property<int>("PlanVersion")
+                        .HasColumnType("integer")
+                        .HasColumnName("plan_version");
+
+                    b.Property<string>("RejectionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("rejection_reason");
+
+                    b.Property<long?>("ResubmissionOf")
+                        .HasColumnType("bigint")
+                        .HasColumnName("resubmission_of");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("status");
+
+                    b.Property<decimal>("TotalBilled")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("total_billed");
+
+                    b.HasKey("Id")
+                        .HasName("pk_claim");
+
+                    b.HasIndex("ClaimNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ix_claim_claim_number");
+
+                    b.HasIndex("InvoiceTxNumber")
+                        .HasDatabaseName("ix_claim_invoice_tx_number");
+
+                    b.ToTable("claim", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.ClaimEvent", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Actor")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("actor");
+
+                    b.Property<decimal?>("Amount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("amount");
+
+                    b.Property<long>("ClaimId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("claim_id");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("event_type");
+
+                    b.Property<DateTimeOffset>("OccurredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_at");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("reason");
+
+                    b.Property<string>("Reference")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("reference");
+
+                    b.Property<string>("Status")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id")
+                        .HasName("pk_claim_event");
+
+                    b.HasIndex("ClaimId", "OccurredAt")
+                        .HasDatabaseName("ix_claim_event_claim_id_occurred_at");
+
+                    b.ToTable("claim_event", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.ClaimLine", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("BilledAmount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("billed_amount");
+
+                    b.Property<long>("ClaimId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("claim_id");
+
+                    b.Property<decimal>("CoveragePercent")
+                        .HasPrecision(7, 4)
+                        .HasColumnType("numeric(7,4)")
+                        .HasColumnName("coverage_percent");
+
+                    b.Property<decimal>("CoveredAmount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("covered_amount");
+
+                    b.Property<bool>("Eligible")
+                        .HasColumnType("boolean")
+                        .HasColumnName("eligible");
+
+                    b.Property<string>("IneligibleReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("ineligible_reason");
+
+                    b.Property<int>("InvoiceRowNo")
+                        .HasColumnType("integer")
+                        .HasColumnName("invoice_row_no");
+
+                    b.Property<int>("LineNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("line_number");
+
+                    b.Property<decimal>("PatientAmount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("patient_amount");
+
+                    b.Property<string>("Sku")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("character varying(13)")
+                        .HasColumnName("sku");
+
+                    b.HasKey("Id")
+                        .HasName("pk_claim_line");
+
+                    b.HasIndex("ClaimId")
+                        .HasDatabaseName("ix_claim_line_claim_id");
+
+                    b.ToTable("claim_line", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.ClaimPayment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Actor")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("actor");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("amount");
+
+                    b.Property<long>("ClaimId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("claim_id");
+
+                    b.Property<string>("Method")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("method");
+
+                    b.Property<DateTimeOffset>("ReceivedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("received_at");
+
+                    b.Property<string>("Reference")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("reference");
+
+                    b.HasKey("Id")
+                        .HasName("pk_claim_payment");
+
+                    b.HasIndex("ClaimId")
+                        .HasDatabaseName("ix_claim_payment_claim_id");
+
+                    b.ToTable("claim_payment", "platform");
+                });
+
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Class", b =>
                 {
                     b.Property<string>("Department")
@@ -960,6 +1233,132 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.ContactLensPrescriptionVersion", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal?>("BaseCurve")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("base_curve");
+
+                    b.Property<string>("Brand")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("brand");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("created_by");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("customer_id");
+
+                    b.Property<decimal?>("Diameter")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("diameter");
+
+                    b.Property<bool>("IsCurrent")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_current");
+
+                    b.Property<DateTimeOffset>("IssuedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("issued_on");
+
+                    b.Property<int?>("LeftAxis")
+                        .HasColumnType("integer")
+                        .HasColumnName("left_axis");
+
+                    b.Property<decimal?>("LeftCylinder")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("left_cylinder");
+
+                    b.Property<decimal?>("LeftPower")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("left_power");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("notes");
+
+                    b.Property<int?>("PrescriberId")
+                        .HasColumnType("integer")
+                        .HasColumnName("prescriber_id");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("reason");
+
+                    b.Property<string>("ReplacementSchedule")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("replacement_schedule");
+
+                    b.Property<int?>("RightAxis")
+                        .HasColumnType("integer")
+                        .HasColumnName("right_axis");
+
+                    b.Property<decimal?>("RightCylinder")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("right_cylinder");
+
+                    b.Property<decimal?>("RightPower")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("right_power");
+
+                    b.Property<string>("VerificationNote")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("verification_note");
+
+                    b.Property<DateTimeOffset?>("VerifiedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("verified_at");
+
+                    b.Property<string>("VerifiedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("verified_by");
+
+                    b.Property<int>("VersionNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("version_number");
+
+                    b.HasKey("Id")
+                        .HasName("pk_rx_contact_version");
+
+                    b.HasIndex("CustomerId", "IsCurrent")
+                        .IsUnique()
+                        .HasDatabaseName("ix_rx_contact_version_customer_id_is_current")
+                        .HasFilter("is_current = true");
+
+                    b.HasIndex("CustomerId", "VersionNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ix_rx_contact_version_customer_id_version_number");
+
+                    b.ToTable("rx_contact_version", "platform");
+                });
+
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Country", b =>
                 {
                     b.Property<string>("CountryCode")
@@ -984,11 +1383,105 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.CoverageRule", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("AnnualMaximum")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("annual_maximum");
+
+                    b.Property<string>("CategoryCode")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("category_code");
+
+                    b.Property<decimal>("CoveragePercent")
+                        .HasPrecision(7, 4)
+                        .HasColumnType("numeric(7,4)")
+                        .HasColumnName("coverage_percent");
+
+                    b.Property<long>("PlanId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("plan_id");
+
+                    b.Property<bool>("RequiresPreauthorization")
+                        .HasColumnType("boolean")
+                        .HasColumnName("requires_preauthorization");
+
+                    b.Property<string>("Sku")
+                        .HasMaxLength(13)
+                        .HasColumnType("character varying(13)")
+                        .HasColumnName("sku");
+
+                    b.HasKey("Id")
+                        .HasName("pk_coverage_rule");
+
+                    b.HasIndex("PlanId")
+                        .HasDatabaseName("ix_coverage_rule_plan_id");
+
+                    b.ToTable("coverage_rule", "platform");
+                });
+
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("integer")
                         .HasColumnName("id");
+
+                    b.Property<bool?>("AccountingFlag")
+                        .HasColumnType("boolean")
+                        .HasColumnName("accounting_flag");
+
+                    b.Property<DateTime?>("Birthday")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("birthday");
+
+                    b.Property<string>("BizAddress")
+                        .HasColumnType("text")
+                        .HasColumnName("biz_address");
+
+                    b.Property<int>("BizCity")
+                        .HasColumnType("integer")
+                        .HasColumnName("biz_city");
+
+                    b.Property<string>("BizCompanyName")
+                        .HasColumnType("text")
+                        .HasColumnName("biz_company_name");
+
+                    b.Property<string>("BizCountry")
+                        .HasColumnType("text")
+                        .HasColumnName("biz_country");
+
+                    b.Property<string>("BizFax")
+                        .HasColumnType("text")
+                        .HasColumnName("biz_fax");
+
+                    b.Property<string>("BizJobTitle")
+                        .HasColumnType("text")
+                        .HasColumnName("biz_job_title");
+
+                    b.Property<string>("BizPhone")
+                        .HasColumnType("text")
+                        .HasColumnName("biz_phone");
+
+                    b.Property<string>("BizPostalCode")
+                        .HasColumnType("text")
+                        .HasColumnName("biz_postal_code");
+
+                    b.Property<string>("BizProvince")
+                        .HasColumnType("text")
+                        .HasColumnName("biz_province");
+
+                    b.Property<string>("Cellular")
+                        .HasColumnType("text")
+                        .HasColumnName("cellular");
 
                     b.Property<decimal>("CreditLimit")
                         .HasColumnType("numeric")
@@ -998,17 +1491,73 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("email");
 
+                    b.Property<string>("FirstName")
+                        .HasColumnType("text")
+                        .HasColumnName("first_name");
+
                     b.Property<string>("FullName")
                         .HasColumnType("text")
                         .HasColumnName("full_name");
+
+                    b.Property<string>("HomeAddress")
+                        .HasColumnType("text")
+                        .HasColumnName("home_address");
+
+                    b.Property<int>("HomeCity")
+                        .HasColumnType("integer")
+                        .HasColumnName("home_city");
+
+                    b.Property<string>("HomeCountry")
+                        .HasColumnType("text")
+                        .HasColumnName("home_country");
+
+                    b.Property<string>("HomeFax")
+                        .HasColumnType("text")
+                        .HasColumnName("home_fax");
 
                     b.Property<string>("HomePhone")
                         .HasColumnType("text")
                         .HasColumnName("home_phone");
 
+                    b.Property<string>("HomePostalCode")
+                        .HasColumnType("text")
+                        .HasColumnName("home_postal_code");
+
+                    b.Property<string>("HomeProvince")
+                        .HasColumnType("text")
+                        .HasColumnName("home_province");
+
+                    b.Property<string>("Initial")
+                        .HasColumnType("text")
+                        .HasColumnName("initial");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("text")
+                        .HasColumnName("last_name");
+
+                    b.Property<string>("PaymentTerms")
+                        .HasColumnType("text")
+                        .HasColumnName("payment_terms");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("text")
+                        .HasColumnName("remarks");
+
+                    b.Property<string>("Salutation")
+                        .HasColumnType("text")
+                        .HasColumnName("salutation");
+
+                    b.Property<bool?>("SummaryFlag")
+                        .HasColumnType("boolean")
+                        .HasColumnName("summary_flag");
+
                     b.Property<string>("VipCode")
                         .HasColumnType("text")
                         .HasColumnName("vip_code");
+
+                    b.Property<double>("VipMarkDownPct")
+                        .HasColumnType("double precision")
+                        .HasColumnName("vip_mark_down_pct");
 
                     b.Property<uint>("xmin")
                         .IsConcurrencyToken()
@@ -1020,6 +1569,332 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasName("pk_customer");
 
                     b.ToTable("customer", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.CustomerAccount", b =>
+                {
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("customer_id");
+
+                    b.Property<DateTime?>("JointDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("joint_date");
+
+                    b.Property<DateTime?>("LastPurchaseDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_purchase_date");
+
+                    b.Property<decimal>("TtlAmtCpnUsed")
+                        .HasColumnType("numeric")
+                        .HasColumnName("ttl_amt_cpn_used");
+
+                    b.Property<decimal>("TtlAmtMrkdwnApplied")
+                        .HasColumnType("numeric")
+                        .HasColumnName("ttl_amt_mrkdwn_applied");
+
+                    b.Property<decimal>("TtlAmtPurchased")
+                        .HasColumnType("numeric")
+                        .HasColumnName("ttl_amt_purchased");
+
+                    b.Property<decimal>("TtlAmtRefund")
+                        .HasColumnType("numeric")
+                        .HasColumnName("ttl_amt_refund");
+
+                    b.Property<decimal>("YtdAmtCpnUsed")
+                        .HasColumnType("numeric")
+                        .HasColumnName("ytd_amt_cpn_used");
+
+                    b.Property<decimal>("YtdAmtMrkdwnApplied")
+                        .HasColumnType("numeric")
+                        .HasColumnName("ytd_amt_mrkdwn_applied");
+
+                    b.Property<decimal>("YtdAmtPurchased")
+                        .HasColumnType("numeric")
+                        .HasColumnName("ytd_amt_purchased");
+
+                    b.Property<decimal>("YtdAmtRefund")
+                        .HasColumnType("numeric")
+                        .HasColumnName("ytd_amt_refund");
+
+                    b.HasKey("CustomerId")
+                        .HasName("pk_customer_accounts");
+
+                    b.ToTable("customer_accounts", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.CustomerAlias", b =>
+                {
+                    b.Property<int>("AliasId")
+                        .HasColumnType("integer")
+                        .HasColumnName("alias_id");
+
+                    b.Property<int>("CanonicalId")
+                        .HasColumnType("integer")
+                        .HasColumnName("canonical_id");
+
+                    b.Property<DateTimeOffset>("MergedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("merged_at");
+
+                    b.Property<string>("MergedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("merged_by");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("reason");
+
+                    b.HasKey("AliasId")
+                        .HasName("pk_customer_alias");
+
+                    b.HasIndex("CanonicalId")
+                        .HasDatabaseName("ix_customer_alias_canonical_id");
+
+                    b.ToTable("customer_alias", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.CustomerMedical", b =>
+                {
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("customer_id");
+
+                    b.Property<string>("CareCardNo")
+                        .HasColumnType("text")
+                        .HasColumnName("care_card_no");
+
+                    b.Property<string>("CareCardType")
+                        .HasColumnType("text")
+                        .HasColumnName("care_card_type");
+
+                    b.Property<string>("CareCardValidPeriod")
+                        .HasColumnType("text")
+                        .HasColumnName("care_card_valid_period");
+
+                    b.Property<DateTime?>("InsMaturityDate")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("ins_maturity_date");
+
+                    b.Property<bool?>("PrescriptionContactFlag")
+                        .HasColumnType("boolean")
+                        .HasColumnName("prescription_contact_flag");
+
+                    b.Property<bool?>("PrescriptionLensFlag")
+                        .HasColumnType("boolean")
+                        .HasColumnName("prescription_lens_flag");
+
+                    b.HasKey("CustomerId")
+                        .HasName("pk_customer_medical");
+
+                    b.ToTable("customer_medical", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.CustomerPresContact", b =>
+                {
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("customer_id");
+
+                    b.Property<string>("Allergy")
+                        .HasColumnType("text")
+                        .HasColumnName("allergy");
+
+                    b.Property<string>("Evaluation")
+                        .HasColumnType("text")
+                        .HasColumnName("evaluation");
+
+                    b.Property<string>("History")
+                        .HasColumnType("text")
+                        .HasColumnName("history");
+
+                    b.Property<int>("IssuedByDr")
+                        .HasColumnType("integer")
+                        .HasColumnName("issued_by_dr");
+
+                    b.Property<DateTime?>("IssuedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("issued_on");
+
+                    b.Property<int>("LeftAxis")
+                        .HasColumnType("integer")
+                        .HasColumnName("left_axis");
+
+                    b.Property<double>("LeftCorn")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_corn");
+
+                    b.Property<double>("LeftCylinder")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_cylinder");
+
+                    b.Property<double>("LeftKReadingH")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_k_reading_h");
+
+                    b.Property<double>("LeftKReadingV")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_k_reading_v");
+
+                    b.Property<double>("LeftPalp")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_palp");
+
+                    b.Property<double>("LeftPupil")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_pupil");
+
+                    b.Property<double>("LeftSphere")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_sphere");
+
+                    b.Property<string>("Medical")
+                        .HasColumnType("text")
+                        .HasColumnName("medical");
+
+                    b.Property<string>("Reason")
+                        .HasColumnType("text")
+                        .HasColumnName("reason");
+
+                    b.Property<int>("RightAxis")
+                        .HasColumnType("integer")
+                        .HasColumnName("right_axis");
+
+                    b.Property<double>("RightCorn")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_corn");
+
+                    b.Property<double>("RightCylinder")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_cylinder");
+
+                    b.Property<double>("RightKReadingH")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_k_reading_h");
+
+                    b.Property<double>("RightKReadingV")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_k_reading_v");
+
+                    b.Property<double>("RightPalp")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_palp");
+
+                    b.Property<double>("RightPupil")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_pupil");
+
+                    b.Property<double>("RightSphere")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_sphere");
+
+                    b.Property<string>("Test")
+                        .HasColumnType("text")
+                        .HasColumnName("test");
+
+                    b.HasKey("CustomerId")
+                        .HasName("pk_customer_pres_contact");
+
+                    b.ToTable("customer_pres_contact", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.CustomerPresLens", b =>
+                {
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("customer_id");
+
+                    b.Property<int>("IssuedByDr")
+                        .HasColumnType("integer")
+                        .HasColumnName("issued_by_dr");
+
+                    b.Property<DateTime?>("IssuedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("issued_on");
+
+                    b.Property<double>("LeftAdd")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_add");
+
+                    b.Property<int>("LeftAxis")
+                        .HasColumnType("integer")
+                        .HasColumnName("left_axis");
+
+                    b.Property<double>("LeftCylinder")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_cylinder");
+
+                    b.Property<double>("LeftPdDist")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_pd_dist");
+
+                    b.Property<double>("LeftPdNear")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_pd_near");
+
+                    b.Property<double>("LeftPrism")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_prism");
+
+                    b.Property<double>("LeftPupil")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_pupil");
+
+                    b.Property<double>("LeftSphere")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_sphere");
+
+                    b.Property<double>("RightAdd")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_add");
+
+                    b.Property<int>("RightAxis")
+                        .HasColumnType("integer")
+                        .HasColumnName("right_axis");
+
+                    b.Property<double>("RightCylinder")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_cylinder");
+
+                    b.Property<double>("RightPdDist")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_pd_dist");
+
+                    b.Property<double>("RightPdNear")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_pd_near");
+
+                    b.Property<double>("RightPrism")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_prism");
+
+                    b.Property<double>("RightPupil")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_pupil");
+
+                    b.Property<double>("RightSphere")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_sphere");
+
+                    b.HasKey("CustomerId")
+                        .HasName("pk_customer_pres_lens");
+
+                    b.ToTable("customer_pres_lens", null, t =>
                         {
                             t.ExcludeFromMigrations();
                         });
@@ -1161,6 +2036,132 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasName("pk_idempotency_record");
 
                     b.ToTable("idempotency_record", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.InsuranceMember", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("created_by");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("customer_id");
+
+                    b.Property<DateOnly>("EffectiveFrom")
+                        .HasColumnType("date")
+                        .HasColumnName("effective_from");
+
+                    b.Property<DateOnly?>("EffectiveTo")
+                        .HasColumnType("date")
+                        .HasColumnName("effective_to");
+
+                    b.Property<string>("EligibilityNote")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("eligibility_note");
+
+                    b.Property<string>("GroupNumber")
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
+                        .HasColumnName("group_number");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("MemberNumber")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
+                        .HasColumnName("member_number");
+
+                    b.Property<long>("PlanId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("plan_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_insurance_member");
+
+                    b.HasIndex("CustomerId")
+                        .HasDatabaseName("ix_insurance_member_customer_id");
+
+                    b.ToTable("insurance_member", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.InsurancePlan", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("created_by");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<bool>("IsCurrent")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_current");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("PayerName")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("payer_name");
+
+                    b.Property<string>("PlanCode")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("plan_code");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("integer")
+                        .HasColumnName("version");
+
+                    b.HasKey("Id")
+                        .HasName("pk_insurance_plan");
+
+                    b.HasIndex("PlanCode", "IsCurrent")
+                        .IsUnique()
+                        .HasDatabaseName("ix_insurance_plan_plan_code_is_current")
+                        .HasFilter("is_current = true");
+
+                    b.HasIndex("PlanCode", "Version")
+                        .IsUnique()
+                        .HasDatabaseName("ix_insurance_plan_plan_code_version");
+
+                    b.ToTable("insurance_plan", "platform");
                 });
 
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Inventory", b =>
@@ -1414,6 +2415,191 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         {
                             t.ExcludeFromMigrations();
                         });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.MedicalNote", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("customer_id");
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)")
+                        .HasColumnName("note");
+
+                    b.Property<DateTimeOffset>("RecordedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("recorded_at");
+
+                    b.Property<string>("RecordedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("recorded_by");
+
+                    b.HasKey("Id")
+                        .HasName("pk_medical_note");
+
+                    b.HasIndex("CustomerId")
+                        .HasDatabaseName("ix_medical_note_customer_id");
+
+                    b.ToTable("medical_note", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.OpticalOrderEvent", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Actor")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("actor");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("notes");
+
+                    b.Property<DateTimeOffset>("OccurredAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_at");
+
+                    b.Property<string>("Reference")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("reference");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("TxNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("tx_number");
+
+                    b.HasKey("Id")
+                        .HasName("pk_optical_order_event");
+
+                    b.HasIndex("TxNumber", "OccurredAt")
+                        .HasDatabaseName("ix_optical_order_event_tx_number_occurred_at");
+
+                    b.ToTable("optical_order_event", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.OpticalOrderPrescription", b =>
+                {
+                    b.Property<string>("TxNumber")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("tx_number");
+
+                    b.Property<double>("LineNumber")
+                        .HasColumnType("double precision")
+                        .HasColumnName("line_number");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("customer_id");
+
+                    b.Property<string>("PrescriptionType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("prescription_type");
+
+                    b.Property<long>("PrescriptionVersionId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("prescription_version_id");
+
+                    b.HasKey("TxNumber", "LineNumber")
+                        .HasName("pk_optical_order_rx");
+
+                    b.ToTable("optical_order_rx", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.PatientAttachment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("content_type");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("customer_id");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("file_name");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("kind");
+
+                    b.Property<string>("PrescriptionType")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("prescription_type");
+
+                    b.Property<long?>("PrescriptionVersionId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("prescription_version_id");
+
+                    b.Property<long>("Size")
+                        .HasColumnType("bigint")
+                        .HasColumnName("size");
+
+                    b.Property<string>("StorageKey")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("storage_key");
+
+                    b.Property<DateTimeOffset>("UploadedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("uploaded_at");
+
+                    b.Property<string>("UploadedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("uploaded_by");
+
+                    b.HasKey("Id")
+                        .HasName("pk_patient_attachment");
+
+                    b.HasIndex("CustomerId")
+                        .HasDatabaseName("ix_patient_attachment_customer_id");
+
+                    b.ToTable("patient_attachment", "platform");
                 });
 
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.PaymentMethod", b =>
@@ -1723,6 +2909,152 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasName("pk_schema_baseline");
 
                     b.ToTable("schema_baseline", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.SpectaclePrescriptionVersion", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("created_by");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("customer_id");
+
+                    b.Property<bool>("IsCurrent")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_current");
+
+                    b.Property<DateTimeOffset>("IssuedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("issued_on");
+
+                    b.Property<decimal?>("LeftAdd")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("left_add");
+
+                    b.Property<int?>("LeftAxis")
+                        .HasColumnType("integer")
+                        .HasColumnName("left_axis");
+
+                    b.Property<decimal?>("LeftBase")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("left_base");
+
+                    b.Property<decimal?>("LeftCylinder")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("left_cylinder");
+
+                    b.Property<decimal?>("LeftPd")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("left_pd");
+
+                    b.Property<decimal?>("LeftPrism")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("left_prism");
+
+                    b.Property<decimal?>("LeftSphere")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("left_sphere");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("notes");
+
+                    b.Property<int?>("PrescriberId")
+                        .HasColumnType("integer")
+                        .HasColumnName("prescriber_id");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("reason");
+
+                    b.Property<decimal?>("RightAdd")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("right_add");
+
+                    b.Property<int?>("RightAxis")
+                        .HasColumnType("integer")
+                        .HasColumnName("right_axis");
+
+                    b.Property<decimal?>("RightBase")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("right_base");
+
+                    b.Property<decimal?>("RightCylinder")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("right_cylinder");
+
+                    b.Property<decimal?>("RightPd")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("right_pd");
+
+                    b.Property<decimal?>("RightPrism")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("right_prism");
+
+                    b.Property<decimal?>("RightSphere")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("right_sphere");
+
+                    b.Property<string>("VerificationNote")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("verification_note");
+
+                    b.Property<DateTimeOffset?>("VerifiedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("verified_at");
+
+                    b.Property<string>("VerifiedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("verified_by");
+
+                    b.Property<int>("VersionNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("version_number");
+
+                    b.HasKey("Id")
+                        .HasName("pk_rx_spectacle_version");
+
+                    b.HasIndex("CustomerId", "IsCurrent")
+                        .IsUnique()
+                        .HasDatabaseName("ix_rx_spectacle_version_customer_id_is_current")
+                        .HasFilter("is_current = true");
+
+                    b.HasIndex("CustomerId", "VersionNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ix_rx_spectacle_version_customer_id_version_number");
+
+                    b.ToTable("rx_spectacle_version", "platform");
                 });
 
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.Supplier", b =>
@@ -2134,6 +3466,125 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.TxSOrderCont", b =>
+                {
+                    b.Property<string>("TxNumber")
+                        .HasColumnType("text")
+                        .HasColumnName("tx_number");
+
+                    b.Property<double>("LineNumber")
+                        .HasColumnType("double precision")
+                        .HasColumnName("line_number");
+
+                    b.Property<string>("Allergy")
+                        .HasColumnType("text")
+                        .HasColumnName("allergy");
+
+                    b.Property<string>("Evaluation")
+                        .HasColumnType("text")
+                        .HasColumnName("evaluation");
+
+                    b.Property<string>("History")
+                        .HasColumnType("text")
+                        .HasColumnName("history");
+
+                    b.Property<int>("IssuedBy")
+                        .HasColumnType("integer")
+                        .HasColumnName("issued_by");
+
+                    b.Property<DateTime?>("IssuedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("issued_on");
+
+                    b.Property<int>("LeftAxis")
+                        .HasColumnType("integer")
+                        .HasColumnName("left_axis");
+
+                    b.Property<double>("LeftCorn")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_corn");
+
+                    b.Property<double>("LeftCylinder")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_cylinder");
+
+                    b.Property<double>("LeftKReadingH")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_k_reading_h");
+
+                    b.Property<double>("LeftKReadingV")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_k_reading_v");
+
+                    b.Property<double>("LeftPalp")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_palp");
+
+                    b.Property<double>("LeftPupil")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_pupil");
+
+                    b.Property<double>("LeftSphere")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_sphere");
+
+                    b.Property<string>("Medical")
+                        .HasColumnType("text")
+                        .HasColumnName("medical");
+
+                    b.Property<string>("Reason")
+                        .HasColumnType("text")
+                        .HasColumnName("reason");
+
+                    b.Property<int>("RightAxis")
+                        .HasColumnType("integer")
+                        .HasColumnName("right_axis");
+
+                    b.Property<double>("RightCorn")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_corn");
+
+                    b.Property<double>("RightCylinder")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_cylinder");
+
+                    b.Property<double>("RightKReadingH")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_k_reading_h");
+
+                    b.Property<double>("RightKReadingV")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_k_reading_v");
+
+                    b.Property<double>("RightPalp")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_palp");
+
+                    b.Property<double>("RightPupil")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_pupil");
+
+                    b.Property<double>("RightSphere")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_sphere");
+
+                    b.Property<string>("SpecialInstruction")
+                        .HasColumnType("text")
+                        .HasColumnName("special_instruction");
+
+                    b.Property<string>("Test")
+                        .HasColumnType("text")
+                        .HasColumnName("test");
+
+                    b.HasKey("TxNumber", "LineNumber")
+                        .HasName("pk_tx_s_order_cont");
+
+                    b.ToTable("tx_s_order_cont", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.TxSOrderExtra", b =>
                 {
                     b.Property<string>("TxNumber")
@@ -2164,6 +3615,252 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasName("pk_tx_s_order_extra");
 
                     b.ToTable("tx_s_order_extra", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.TxSOrderFrame", b =>
+                {
+                    b.Property<string>("TxNumber")
+                        .HasColumnType("text")
+                        .HasColumnName("tx_number");
+
+                    b.Property<double>("LineNumber")
+                        .HasColumnType("double precision")
+                        .HasColumnName("line_number");
+
+                    b.Property<string>("A")
+                        .HasColumnType("text")
+                        .HasColumnName("a");
+
+                    b.Property<string>("B")
+                        .HasColumnType("text")
+                        .HasColumnName("b");
+
+                    b.Property<int>("Bridge")
+                        .HasColumnType("integer")
+                        .HasColumnName("bridge");
+
+                    b.Property<string>("Color")
+                        .HasColumnType("text")
+                        .HasColumnName("color");
+
+                    b.Property<bool?>("Enclosed")
+                        .HasColumnType("boolean")
+                        .HasColumnName("enclosed");
+
+                    b.Property<string>("EyeSize")
+                        .HasColumnType("text")
+                        .HasColumnName("eye_size");
+
+                    b.Property<bool?>("Follow")
+                        .HasColumnType("boolean")
+                        .HasColumnName("follow");
+
+                    b.Property<bool?>("Lenses")
+                        .HasColumnType("boolean")
+                        .HasColumnName("lenses");
+
+                    b.Property<string>("Mode")
+                        .HasColumnType("text")
+                        .HasColumnName("mode");
+
+                    b.Property<string>("R1")
+                        .HasColumnType("text")
+                        .HasColumnName("r1");
+
+                    b.Property<string>("R2")
+                        .HasColumnType("text")
+                        .HasColumnName("r2");
+
+                    b.Property<string>("R3")
+                        .HasColumnType("text")
+                        .HasColumnName("r3");
+
+                    b.Property<string>("SpecialInstruction")
+                        .HasColumnType("text")
+                        .HasColumnName("special_instruction");
+
+                    b.Property<bool?>("Supply")
+                        .HasColumnType("boolean")
+                        .HasColumnName("supply");
+
+                    b.Property<int>("Temple")
+                        .HasColumnType("integer")
+                        .HasColumnName("temple");
+
+                    b.HasKey("TxNumber", "LineNumber")
+                        .HasName("pk_tx_s_order_frame");
+
+                    b.ToTable("tx_s_order_frame", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.TxSOrderLens", b =>
+                {
+                    b.Property<string>("TxNumber")
+                        .HasColumnType("text")
+                        .HasColumnName("tx_number");
+
+                    b.Property<double>("LineNumber")
+                        .HasColumnType("double precision")
+                        .HasColumnName("line_number");
+
+                    b.Property<bool?>("ArCoat")
+                        .HasColumnType("boolean")
+                        .HasColumnName("ar_coat");
+
+                    b.Property<string>("Coating")
+                        .HasColumnType("text")
+                        .HasColumnName("coating");
+
+                    b.Property<bool?>("HardCoat")
+                        .HasColumnType("boolean")
+                        .HasColumnName("hard_coat");
+
+                    b.Property<string>("Hardening")
+                        .HasColumnType("text")
+                        .HasColumnName("hardening");
+
+                    b.Property<int>("IssuedBy")
+                        .HasColumnType("integer")
+                        .HasColumnName("issued_by");
+
+                    b.Property<DateTime?>("IssuedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("issued_on");
+
+                    b.Property<double>("LeftAdd")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_add");
+
+                    b.Property<int>("LeftAxis")
+                        .HasColumnType("integer")
+                        .HasColumnName("left_axis");
+
+                    b.Property<double>("LeftBase")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_base");
+
+                    b.Property<double>("LeftCylinder")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_cylinder");
+
+                    b.Property<double>("LeftOc")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_oc");
+
+                    b.Property<double>("LeftPdDist")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_pd_dist");
+
+                    b.Property<double>("LeftPdNear")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_pd_near");
+
+                    b.Property<double>("LeftPrism")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_prism");
+
+                    b.Property<double>("LeftPupil")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_pupil");
+
+                    b.Property<double>("LeftSegHt")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_seg_ht");
+
+                    b.Property<double>("LeftSphere")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_sphere");
+
+                    b.Property<string>("LeftStyle")
+                        .HasColumnType("text")
+                        .HasColumnName("left_style");
+
+                    b.Property<double>("LeftVd")
+                        .HasColumnType("double precision")
+                        .HasColumnName("left_vd");
+
+                    b.Property<string>("Material")
+                        .HasColumnType("text")
+                        .HasColumnName("material");
+
+                    b.Property<string>("Others")
+                        .HasColumnType("text")
+                        .HasColumnName("others");
+
+                    b.Property<double>("RightAdd")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_add");
+
+                    b.Property<int>("RightAxis")
+                        .HasColumnType("integer")
+                        .HasColumnName("right_axis");
+
+                    b.Property<double>("RightBase")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_base");
+
+                    b.Property<double>("RightCylinder")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_cylinder");
+
+                    b.Property<double>("RightOc")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_oc");
+
+                    b.Property<double>("RightPdDist")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_pd_dist");
+
+                    b.Property<double>("RightPdNear")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_pd_near");
+
+                    b.Property<double>("RightPrism")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_prism");
+
+                    b.Property<double>("RightPupil")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_pupil");
+
+                    b.Property<double>("RightSegHt")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_seg_ht");
+
+                    b.Property<double>("RightSphere")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_sphere");
+
+                    b.Property<string>("RightStyle")
+                        .HasColumnType("text")
+                        .HasColumnName("right_style");
+
+                    b.Property<double>("RightVd")
+                        .HasColumnType("double precision")
+                        .HasColumnName("right_vd");
+
+                    b.Property<string>("Tint")
+                        .HasColumnType("text")
+                        .HasColumnName("tint");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("text")
+                        .HasColumnName("type");
+
+                    b.Property<bool?>("Uv")
+                        .HasColumnType("boolean")
+                        .HasColumnName("uv");
+
+                    b.HasKey("TxNumber", "LineNumber")
+                        .HasName("pk_tx_s_order_lens");
+
+                    b.ToTable("tx_s_order_lens", null, t =>
                         {
                             t.ExcludeFromMigrations();
                         });

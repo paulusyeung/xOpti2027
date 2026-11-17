@@ -40,6 +40,8 @@ public static class PosDocumentLayout
                     : $" ref {tender.Reference}"));
         }
 
+        foreach (var optical in document.OpticalLines ?? Array.Empty<string>())
+            lines.Add($"Optical: {optical}");
         foreach (var barcode in document.Barcodes) lines.Add($"*{barcode}*");
         lines.Add(document.Duplicate ? "DUPLICATE · xOpti POS" : "CUSTOMER COPY · xOpti POS");
         return lines;

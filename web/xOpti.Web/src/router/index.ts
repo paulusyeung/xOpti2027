@@ -37,6 +37,30 @@ export const routes: RouteRecordRaw[] = [
     meta: { permission: PermissionNames.ReportFinancial, feature: 'analytics', title: 'Analytics' },
   },
   {
+    path: '/admin/claims',
+    name: 'claims',
+    component: () => import('@/features/claims/ClaimsPage.vue'),
+    meta: { permission: PermissionNames.ReportFinancial, title: 'Claims' },
+  },
+  {
+    path: '/admin/optical',
+    name: 'optical-orders',
+    component: () => import('@/features/optical/OpticalOrderPage.vue'),
+    meta: { permission: PermissionNames.SalesOrderCreate, title: 'Optical orders' },
+  },
+  {
+    path: '/admin/prescriptions',
+    name: 'prescriptions',
+    component: () => import('@/features/prescriptions/PrescriptionPage.vue'),
+    meta: { permission: PermissionNames.PrescriptionView, title: 'Prescriptions' },
+  },
+  {
+    path: '/admin/customers',
+    name: 'customer-directory',
+    component: () => import('@/features/customers/CustomerDirectoryPage.vue'),
+    meta: { permission: PermissionNames.SalesOrderCreate, title: 'Customers' },
+  },
+  {
     path: '/admin/pos',
     name: 'pos-order-entry',
     component: () => import('@/features/pos/OrderEntryPage.vue'),

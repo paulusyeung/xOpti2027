@@ -73,13 +73,65 @@ public class Customer
 
     public string? VipCode { get; set; }
 
+    public string? FirstName { get; set; }
+
+    public string? Initial { get; set; }
+
+    public string? LastName { get; set; }
+
     public string? FullName { get; set; }
 
-    public string? Email { get; set; }
+    public string? Salutation { get; set; }
+
+    public DateTimeOffset? Birthday { get; set; }
+
+    public string? HomeAddress { get; set; }
+
+    public int HomeCity { get; set; }
+
+    public string? HomeProvince { get; set; }
+
+    public string? HomePostalCode { get; set; }
+
+    public string? HomeCountry { get; set; }
 
     public string? HomePhone { get; set; }
 
+    public string? HomeFax { get; set; }
+
+    public string? Cellular { get; set; }
+
+    public string? Email { get; set; }
+
+    public string? BizCompanyName { get; set; }
+
+    public string? BizJobTitle { get; set; }
+
+    public string? BizAddress { get; set; }
+
+    public int BizCity { get; set; }
+
+    public string? BizProvince { get; set; }
+
+    public string? BizPostalCode { get; set; }
+
+    public string? BizCountry { get; set; }
+
+    public string? BizPhone { get; set; }
+
+    public string? BizFax { get; set; }
+
     public Money CreditLimit { get; set; }
+
+    public string? PaymentTerms { get; set; }
+
+    public double VipMarkDownPct { get; set; }
+
+    public bool? SummaryFlag { get; set; }
+
+    public bool? AccountingFlag { get; set; }
+
+    public string? Remarks { get; set; }
 }
 
 public class Preference
