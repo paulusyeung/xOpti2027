@@ -199,7 +199,8 @@ public sealed class EfOrderStore(
         await documents.GetAsync(invoiceNumber, ct);
 
     public async Task<ConversionOutcome?> ConvertAsync(
-        string txNumber, IReadOnlyList<TenderInput> tenders, string? actor, CancellationToken ct)
+        string txNumber, IReadOnlyList<TenderInput> tenders, long? sessionId, string? actor,
+        CancellationToken ct)
     {
         var order = await context.TxHeaders.AsNoTracking().SingleOrDefaultAsync(row => row.TxNumber == txNumber, ct);
         if (order is null || order.TxType != TransactionType.SalesOrder || order.Status != "0") return null;
@@ -214,6 +215,20 @@ public sealed class EfOrderStore(
         var tenderTotal = tenders.Sum(row => row.Amount);
         if (decimal.Round(deposit + tenderTotal, 4) < decimal.Round(order.TotalAmount.Amount, 4))
             return null;
+
+        var branchCode = "01";
+        if (sessionId is not null)
+        {
+            var session = await context.CashSessions.AsNoTracking().SingleOrDefaultAsync(row =>
+                row.Id == sessionId && row.Status == "open", ct);
+            if (session is null)
+                throw new xOpti.Application.Pipeline.ValidationFailedException(new[]
+                {
+                    new xOpti.Application.Pipeline.ValidationFieldError("SessionId", "not-open",
+                        "The drawer session is not open; resume or open a session before posting."),
+                });
+            branchCode = session.BranchCode;
+        }
 
         var invoiceNumber = await allocator.AllocateAsync(TransactionType.RetailInvoice, ct);
         var control = await NextControlNumberAsync(ct);
@@ -233,7 +248,8 @@ public sealed class EfOrderStore(
         var totalCost = 0m;
         foreach (var line in lines)
         {
-            var lineCost = await InventoryPosting.ConsumeAsync(context, line.Sku, line.Qty, invoiceNumber.Value, now, ct);
+            var lineCost = await InventoryPosting.ConsumeAsync(
+                context, line.Sku, line.Qty, invoiceNumber.Value, now, branchCode, ct);
             totalCost += lineCost;
             context.TxDetails.Add(new TxDetail
             {
@@ -243,6 +259,15 @@ public sealed class EfOrderStore(
                 UnitCost = Money.From(line.Qty == 0 ? 0m : decimal.Round(lineCost / line.Qty, 4)),
                 MarkDownAmount = line.MarkDownAmount, Amount = line.Amount,
                 TaxCode = line.TaxCode, Remarks = line.Remarks,
+            });
+        }
+
+        if (sessionId is not null)
+        {
+            context.CashSessionTransactions.Add(new CashSessionTransaction
+            {
+                SessionId = sessionId.Value, TxNumber = invoiceNumber.Value,
+                TxType = "RC", OccurredAt = now,
             });
         }
 

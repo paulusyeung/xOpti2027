@@ -14,8 +14,9 @@ internal static class InventoryPosting
 {
     public static async Task<decimal> ConsumeAsync(
         XOptiDbContext context, string sku, int quantity, string issueDocument,
-        DateTimeOffset now, CancellationToken ct)
+        DateTimeOffset now, string branchCode, CancellationToken ct)
     {
+        await LockAsync(context, sku, ct);
         var inventory = await context.InventoryItems.SingleAsync(row => row.Sku == sku, ct);
         var code = await (from item in context.InventoryItems.AsNoTracking()
                           join category in context.Categories.AsNoTracking()
@@ -61,7 +62,7 @@ internal static class InventoryPosting
             });
         }
 
-        ApplyOnHand(context, sku, -quantity);
+        ApplyOnHand(context, sku, -quantity, branchCode);
         inventory.DateLastIssued = now;
         return result.Value.TotalCost.Amount;
     }
@@ -73,8 +74,9 @@ internal static class InventoryPosting
     /// </summary>
     public static async Task RestockAsync(
         XOptiDbContext context, string sku, int quantity, decimal unitCost,
-        string restockDocument, DateTimeOffset now, CancellationToken ct)
+        string restockDocument, DateTimeOffset now, string branchCode, CancellationToken ct)
     {
+        await LockAsync(context, sku, ct);
         var lotNo = "RS" + restockDocument[^8..];
         var existing = await context.LotRecords.SingleOrDefaultAsync(
             row => row.Sku == sku && row.LotNo == lotNo, ct);
@@ -95,17 +97,22 @@ internal static class InventoryPosting
                 existing.TotalAmountPurchased.Amount + unitCost * quantity, 4));
         }
 
-        ApplyOnHand(context, sku, quantity);
+        ApplyOnHand(context, sku, quantity, branchCode);
         var inventory = await context.InventoryItems.SingleAsync(row => row.Sku == sku, ct);
         inventory.DateLastReceived = now;
     }
 
-    private static void ApplyOnHand(XOptiDbContext context, string sku, int delta)
+    /// <summary>Serializes stock mutations for a SKU within the caller's transaction.</summary>
+    private static Task LockAsync(XOptiDbContext context, string sku, CancellationToken ct) =>
+        context.Database.ExecuteSqlInterpolatedAsync(
+            $"SELECT 1 FROM public.inventory WHERE sku = {sku} FOR UPDATE", ct);
+
+    private static void ApplyOnHand(XOptiDbContext context, string sku, int delta, string branchCode)
     {
         var inventory = context.InventoryItems.Single(row => row.Sku == sku);
         inventory.QtyTotalOnHand += delta;
         var branch = context.BranchInventory.SingleOrDefault(row =>
-            row.BranchCode == "01" && row.Sku == sku);
+            row.BranchCode == branchCode && row.Sku == sku);
         if (branch is not null) branch.QtyOnHand += delta;
     }
 }

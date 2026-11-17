@@ -91,7 +91,7 @@ public sealed class CashManagementTests(ApiPostgresFixture fixture)
 
         var opened = await ExpectAsync(await manager.PostAsync("/api/v1/cash/sessions", new
         {
-            branchCode = "01", terminalCode = "01", openingFloat = 100m, reason = "open drawer",
+            branchCode = "03", terminalCode = "01", openingFloat = 100m, reason = "open drawer",
         }), HttpStatusCode.Created, factory);
         var sessionId = opened.GetProperty("id").GetInt64();
         Assert.Equal("open", opened.GetProperty("status").GetString());
@@ -99,7 +99,7 @@ public sealed class CashManagementTests(ApiPostgresFixture fixture)
 
         var duplicate = await manager.PostAsync("/api/v1/cash/sessions", new
         {
-            branchCode = "01", terminalCode = "01", openingFloat = 50m, reason = "duplicate",
+            branchCode = "03", terminalCode = "01", openingFloat = 50m, reason = "duplicate",
         });
         Assert.Equal(HttpStatusCode.BadRequest, duplicate.StatusCode);
 
@@ -168,13 +168,13 @@ public sealed class CashManagementTests(ApiPostgresFixture fixture)
 
         var second = await ExpectAsync(await manager.PostAsync("/api/v1/cash/sessions", new
         {
-            branchCode = "01", terminalCode = "02", openingFloat = 0m, reason = "second terminal",
+            branchCode = "03", terminalCode = "02", openingFloat = 0m, reason = "second terminal",
         }), HttpStatusCode.Created, factory);
         var secondId = second.GetProperty("id").GetInt64();
 
         var blocked = await manager.PostAsync("/api/v1/cash/daily-closes", new
         {
-            branchCode = "01", businessDate, reason = "finalize day",
+            branchCode = "03", businessDate, reason = "finalize day",
         });
         Assert.Equal(HttpStatusCode.BadRequest, blocked.StatusCode);
         Assert.Contains("02", await blocked.Content.ReadAsStringAsync());
@@ -186,7 +186,7 @@ public sealed class CashManagementTests(ApiPostgresFixture fixture)
 
         var final = await ExpectAsync(await manager.PostAsync("/api/v1/cash/daily-closes", new
         {
-            branchCode = "01", businessDate, reason = "finalize day",
+            branchCode = "03", businessDate, reason = "finalize day",
         }), HttpStatusCode.OK, factory);
         Assert.Equal("final", final.GetProperty("status").GetString());
         Assert.Equal(50m, final.GetProperty("totalSales").GetDecimal());
@@ -203,14 +203,14 @@ public sealed class CashManagementTests(ApiPostgresFixture fixture)
         Assert.Equal(2, final.GetProperty("sessions").GetArrayLength());
 
         var journal = await ExpectAsync(
-            await manager.GetAsync($"/api/v1/cash/journal?branchCode=01&businessDate={businessDate:yyyy-MM-dd}"),
+            await manager.GetAsync($"/api/v1/cash/journal?branchCode=03&businessDate={businessDate:yyyy-MM-dd}"),
             HttpStatusCode.OK, factory);
         Assert.Equal("final", journal.GetProperty("status").GetString());
         Assert.Equal(151m, journal.GetProperty("expectedCash").GetDecimal());
 
         var repeat = await manager.PostAsync("/api/v1/cash/daily-closes", new
         {
-            branchCode = "01", businessDate, reason = "finalize again",
+            branchCode = "03", businessDate, reason = "finalize again",
         });
         Assert.Equal(HttpStatusCode.BadRequest, repeat.StatusCode);
         Assert.Contains("already finalized", await repeat.Content.ReadAsStringAsync());
@@ -219,7 +219,7 @@ public sealed class CashManagementTests(ApiPostgresFixture fixture)
         Assert.Equal(1, await verify.CashSessionTransactions.CountAsync(row =>
             row.SessionId == sessionId && row.TxNumber == invoiceNumber));
         Assert.Equal(1, await verify.CashDailyCloses.CountAsync(row =>
-            row.BranchCode == "01" && row.BusinessDate == businessDate));
+            row.BranchCode == "03" && row.BusinessDate == businessDate));
     }
 
     [Fact]
@@ -233,7 +233,7 @@ public sealed class CashManagementTests(ApiPostgresFixture fixture)
 
         var opened = await ExpectAsync(await manager.PostAsync("/api/v1/cash/sessions", new
         {
-            branchCode = "01", terminalCode = "09", openingFloat = 50m, reason = "blind open",
+            branchCode = "06", terminalCode = "09", openingFloat = 50m, reason = "blind open",
         }), HttpStatusCode.Created, factory);
         var sessionId = opened.GetProperty("id").GetInt64();
 
@@ -269,7 +269,7 @@ public sealed class CashManagementTests(ApiPostgresFixture fixture)
         await optician.SignInAsync("optician", SeedData.Password);
         var businessDate = DateOnly.FromDateTime(DateTime.UtcNow);
         var response = await optician.GetAsync(
-            $"/api/v1/cash/journal?branchCode=01&businessDate={businessDate:yyyy-MM-dd}");
+            $"/api/v1/cash/journal?branchCode=03&businessDate={businessDate:yyyy-MM-dd}");
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
 
@@ -286,7 +286,7 @@ public sealed class CashManagementTests(ApiPostgresFixture fixture)
 
         var opened = await ExpectAsync(await manager.PostAsync("/api/v1/cash/sessions", new
         {
-            branchCode = "02", terminalCode = "01", openingFloat = 0m, reason = "refund drawer",
+            branchCode = "04", terminalCode = "01", openingFloat = 0m, reason = "refund drawer",
         }), HttpStatusCode.Created, factory);
         var sessionId = opened.GetProperty("id").GetInt64();
 
@@ -324,7 +324,7 @@ public sealed class CashManagementTests(ApiPostgresFixture fixture)
 
         var final = await ExpectAsync(await manager.PostAsync("/api/v1/cash/daily-closes", new
         {
-            branchCode = "02", businessDate, reason = "finalize refund day",
+            branchCode = "04", businessDate, reason = "finalize refund day",
         }), HttpStatusCode.OK, factory);
         Assert.Equal(100m, final.GetProperty("totalSales").GetDecimal());
         Assert.Equal(50m, final.GetProperty("totalRefunds").GetDecimal());

@@ -3901,6 +3901,7 @@
       "ConvertOrderRequest": {
         "required": [
           "tenders",
+          "sessionId",
           "reason"
         ],
         "type": "object",
@@ -3910,6 +3911,15 @@
             "items": {
               "$ref": "#/components/schemas/TenderRequest"
             }
+          },
+          "sessionId": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int64"
           },
           "reason": {
             "type": "string"

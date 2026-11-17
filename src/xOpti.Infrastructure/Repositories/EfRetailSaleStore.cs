@@ -64,6 +64,7 @@ public sealed class EfRetailSaleStore(
     public async Task PostInvoiceAsync(RetailInvoicePosting posting, CancellationToken ct)
     {
         var now = posting.DateOfEntry;
+        var branchCode = await SessionBranchAsync(posting.SessionId, ct);
         var header = new TxHeader
         {
             TxNumber = posting.TxNumber, ControlNumber = posting.ControlNumber,
@@ -77,7 +78,8 @@ public sealed class EfRetailSaleStore(
         };
         context.TxHeaders.Add(header);
 
-        await AddSaleLinesAsync(posting.TxNumber, posting.ControlNumber, now, posting.Lines, ct);
+        await AddSaleLinesAsync(posting.TxNumber, posting.ControlNumber, now,
+            posting.Lines, branchCode, ct);
 
         var (appliedTotal, change) = AddSaleTenders(
             posting.TxNumber, posting.GrossSale, posting.Tenders, 1);
@@ -156,6 +158,7 @@ public sealed class EfRetailSaleStore(
     public async Task PostRefundAsync(RefundPosting posting, CancellationToken ct)
     {
         var now = posting.DateOfEntry;
+        var branchCode = await SessionBranchAsync(posting.SessionId, ct);
         var refundHeader = new TxHeader
         {
             TxNumber = posting.TxNumber, ControlNumber = posting.ControlNumber,
@@ -197,14 +200,14 @@ public sealed class EfRetailSaleStore(
 
             if (line.Restock)
                 await InventoryPosting.RestockAsync(context, line.Sku, line.Quantity,
-                    cost.Amount, posting.TxNumber, now, ct);
+                    cost.Amount, posting.TxNumber, now, branchCode, ct);
             rowNo++;
         }
 
         foreach (var replacement in posting.ReplacementLines)
         {
             var cost = await InventoryPosting.ConsumeAsync(context, replacement.Sku,
-                replacement.Quantity, posting.TxNumber, now, ct);
+                replacement.Quantity, posting.TxNumber, now, branchCode, ct);
             context.TxDetails.Add(new TxDetail
             {
                 ControlNumber = posting.ControlNumber, TxType = TransactionType.RetailRefund,
@@ -264,13 +267,13 @@ public sealed class EfRetailSaleStore(
 
     private async Task AddSaleLinesAsync(
         string txNumber, string controlNumber, DateTimeOffset now,
-        IReadOnlyList<PricedLine> lines, CancellationToken ct)
+        IReadOnlyList<PricedLine> lines, string branchCode, CancellationToken ct)
     {
         var rowNo = 1;
         foreach (var line in lines)
         {
             var cost = await InventoryPosting.ConsumeAsync(
-                context, line.Sku, line.Quantity, txNumber, now, ct);
+                context, line.Sku, line.Quantity, txNumber, now, branchCode, ct);
             context.TxDetails.Add(new TxDetail
             {
                 ControlNumber = controlNumber, TxType = TransactionType.RetailInvoice,
@@ -283,6 +286,16 @@ public sealed class EfRetailSaleStore(
                 Amount = Money.From(line.Amount), TaxCode = line.TaxCode,
             });
         }
+    }
+
+    private async Task<string> SessionBranchAsync(long? sessionId, CancellationToken ct)
+    {
+        if (sessionId is null) return "01";
+        var session = await context.CashSessions.AsNoTracking().SingleOrDefaultAsync(row =>
+            row.Id == sessionId && row.Status == "open", ct);
+        return session?.BranchCode
+            ?? throw Validation("SessionId", "not-open",
+                "The drawer session is not open; resume or open a session before posting.");
     }
 
     private async Task LinkSessionAsync(long? sessionId, string txNumber, string txType,

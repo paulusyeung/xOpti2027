@@ -869,7 +869,7 @@ public static class Endpoints
             var key = http.Request.Headers["Idempotency-Key"].FirstOrDefault();
             var result = await dispatcher.DispatchAsync(new ConvertOrderCommand(
                 txNumber, request.Tenders.Select(row => new TenderInput(row.Method, row.Amount, row.Reference)).ToList(),
-                request.Reason, key), cancellationToken);
+                request.SessionId, request.Reason, key), cancellationToken);
             return Results.Json(result);
         })
         .RequireAuthorization($"perm:{PermissionNames.SalesInvoicePost}")
@@ -1251,7 +1251,7 @@ public sealed record UpdateOrderRequest(
     decimal DepositAmount, string Reason);
 
 public sealed record ConvertOrderRequest(
-    IReadOnlyList<TenderRequest> Tenders, string Reason);
+    IReadOnlyList<TenderRequest> Tenders, long? SessionId, string Reason);
 
 public sealed record TenderRequest(string Method, decimal Amount, string? Reference);
 

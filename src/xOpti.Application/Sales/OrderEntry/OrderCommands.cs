@@ -52,7 +52,8 @@ public interface IOrderStore
     Task<IReadOnlyList<SalesDocumentDto>> PageOrdersAsync(
         int? customerId, string? status, string? afterTxNumber, int limit, CancellationToken ct);
     Task<ConversionOutcome?> ConvertAsync(
-        string txNumber, IReadOnlyList<TenderInput> tenders, string? actor, CancellationToken ct);
+        string txNumber, IReadOnlyList<TenderInput> tenders, long? sessionId, string? actor,
+        CancellationToken ct);
     Task<SalesDocumentDto?> GetInvoiceAsync(string invoiceNumber, CancellationToken ct);
 }
 
@@ -83,7 +84,8 @@ public sealed record CancelOrderCommand(string TxNumber, string Reason)
 }
 
 public sealed record ConvertOrderCommand(
-    string TxNumber, IReadOnlyList<TenderInput> Tenders, string Reason, string? IdempotencyKey)
+    string TxNumber, IReadOnlyList<TenderInput> Tenders, long? SessionId, string Reason,
+    string? IdempotencyKey)
     : ICommand<SalesDocumentDto>, IRequiresIdempotencyKey, IHasPermissions
 {
     public IReadOnlyList<string> RequiredPermissions => new[] { PermissionNames.SalesInvoicePost };
@@ -330,7 +332,8 @@ public sealed class ConvertOrderHandler(
                         $"Tenders must equal the outstanding balance {order.Balance:0.00}."),
                 });
 
-            var outcome = await store.ConvertAsync(request.TxNumber, request.Tenders, null, token)
+            var outcome = await store.ConvertAsync(
+                request.TxNumber, request.Tenders, request.SessionId, null, token)
                 ?? throw new ValidationFailedException(new[]
                 {
                     new ValidationFieldError("TxNumber", "conversion-failed", "Order could not be converted."),

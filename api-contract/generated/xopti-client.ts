@@ -3391,6 +3391,8 @@ export interface components {
         };
         ConvertOrderRequest: {
             tenders: components["schemas"]["TenderRequest"][];
+            /** Format: int64 */
+            sessionId: null | number | string;
             reason: string;
         };
         CounterDto: {
