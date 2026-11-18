@@ -109,7 +109,7 @@ public class SchemaMigrationJobTests(PostgresFixture fixture)
             // App-owned platform tables: schema baseline, retirement, idempotency,
             // POS cash/refund links, customer aliases, prescription versions and
             // attachments, optical events, and insurance/claim metadata.
-            Assert.Equal(25L, Convert.ToInt64(await cmd.ExecuteScalarAsync()));
+            Assert.Equal(33L, Convert.ToInt64(await cmd.ExecuteScalarAsync()));
         }
     }
 }

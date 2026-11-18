@@ -52,14 +52,30 @@ internal static class InventoryPosting
         var deficitQuantity = (int)result.Value.DeficitQuantity.Value;
         if (deficitQuantity > 0)
         {
-            context.LotRecords.Add(new InvtLotRecord
+            // Deficit lot numbers are bounded to ten characters, so document
+            // suffixes can recur across days. Coalesce into the existing lot
+            // instead of failing the posting on a primary-key collision.
+            var lotNo = "DEF" + issueDocument[^7..];
+            var existingDeficit = await context.LotRecords.SingleOrDefaultAsync(
+                row => row.Sku == sku && row.LotNo == lotNo, ct);
+            if (existingDeficit is null)
             {
-                Sku = sku, LotNo = "DEF" + issueDocument[^7..], DateReceived = now,
-                SupplierCode = string.Empty, QtyPurchased = 0, QtyUsed = 0,
-                QtyOnHand = -deficitQuantity, UnitAmountPurchased = inventory.AverageCost,
-                TotalAmountPurchased = Money.From(decimal.Round(
-                    inventory.AverageCost.Amount * deficitQuantity, 4)),
-            });
+                context.LotRecords.Add(new InvtLotRecord
+                {
+                    Sku = sku, LotNo = lotNo, DateReceived = now,
+                    SupplierCode = string.Empty, QtyPurchased = 0, QtyUsed = 0,
+                    QtyOnHand = -deficitQuantity, UnitAmountPurchased = inventory.AverageCost,
+                    TotalAmountPurchased = Money.From(decimal.Round(
+                        inventory.AverageCost.Amount * deficitQuantity, 4)),
+                });
+            }
+            else
+            {
+                existingDeficit.QtyOnHand -= deficitQuantity;
+                existingDeficit.TotalAmountPurchased = Money.From(decimal.Round(
+                    existingDeficit.TotalAmountPurchased.Amount
+                    + inventory.AverageCost.Amount * deficitQuantity, 4));
+            }
         }
 
         ApplyOnHand(context, sku, -quantity, branchCode);

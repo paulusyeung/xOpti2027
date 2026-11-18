@@ -125,6 +125,22 @@ public class XOptiDbContext(DbContextOptions<XOptiDbContext> options)
 
     public DbSet<WholesalePrice> WholesalePrices => Set<WholesalePrice>();
 
+    public DbSet<WholesaleAccount> WholesaleAccounts => Set<WholesaleAccount>();
+
+    public DbSet<WholesalePriceList> WholesalePriceLists => Set<WholesalePriceList>();
+
+    public DbSet<WholesalePriceListItem> WholesalePriceListItems => Set<WholesalePriceListItem>();
+
+    public DbSet<WholesaleDocumentLine> WholesaleDocumentLines => Set<WholesaleDocumentLine>();
+
+    public DbSet<WholesaleDocument> WholesaleDocuments => Set<WholesaleDocument>();
+
+    public DbSet<WholesaleTender> WholesaleTenders => Set<WholesaleTender>();
+
+    public DbSet<WholesaleBackorder> WholesaleBackorders => Set<WholesaleBackorder>();
+
+    public DbSet<WholesaleReturnLine> WholesaleReturnLines => Set<WholesaleReturnLine>();
+
     public DbSet<BarCodePool> BarCodePool => Set<BarCodePool>();
 
     public DbSet<TxSalePerson> TxSalePersons => Set<TxSalePerson>();

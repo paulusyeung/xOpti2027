@@ -37,6 +37,24 @@ export const routes: RouteRecordRaw[] = [
     meta: { permission: PermissionNames.ReportFinancial, feature: 'analytics', title: 'Analytics' },
   },
   {
+    path: '/admin/wholesale/returns',
+    name: 'wholesale-returns',
+    component: () => import('@/features/wholesale/WholesaleReturnPage.vue'),
+    meta: { permission: PermissionNames.WholesaleInvoicePost, title: 'Wholesale returns' },
+  },
+  {
+    path: '/admin/wholesale/invoices',
+    name: 'wholesale-invoices',
+    component: () => import('@/features/wholesale/WholesaleInvoicePage.vue'),
+    meta: { permission: PermissionNames.WholesaleInvoicePost, title: 'Wholesale invoices' },
+  },
+  {
+    path: '/admin/wholesale',
+    name: 'wholesale',
+    component: () => import('@/features/wholesale/WholesalePage.vue'),
+    meta: { permission: PermissionNames.WholesaleInvoicePost, title: 'Wholesale' },
+  },
+  {
     path: '/admin/claims',
     name: 'claims',
     component: () => import('@/features/claims/ClaimsPage.vue'),

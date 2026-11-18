@@ -33,9 +33,18 @@ public sealed class StockTakeVarianceTests(ApiPostgresFixture fixture)
             before = (await context.InventoryItems.SingleAsync(row => row.Sku == "30110359")).QtyTotalOnHand;
         }
 
+        // The snapshot contains every inventory SKU. Count the untouched rows at
+        // their computer quantity so this test exercises variance approval rather
+        // than depending on which other tests ran first, then force one variance.
+        var snapshot = await manager.GetAsync($"/api/v1/inventory/stock-takes/{headerId}/variances");
+        using var snapshotBody = JsonDocument.Parse(await snapshot.Content.ReadAsStringAsync());
+        var csvRows = snapshotBody.RootElement.GetProperty("rows").EnumerateArray()
+            .Select(row => row.GetProperty("sku").GetString() == "30110359"
+                ? "30110359,3"
+                : $"{row.GetProperty("sku").GetString()},{row.GetProperty("computerQty").GetDecimal()}");
         await manager.PostAsync($"/api/v1/inventory/stock-takes/{headerId}/counts", new
         {
-            csv = "sku,qty\n30110359,3", dryRun = false, reason = "counted",
+            csv = "sku,qty\n" + string.Join("\n", csvRows), dryRun = false, reason = "counted",
         });
 
         var variances = await manager.GetAsync($"/api/v1/inventory/stock-takes/{headerId}/variances");

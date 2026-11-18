@@ -933,110 +933,6 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         });
                 });
 
-            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.InsuranceClaim", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
-
-                    b.Property<decimal>("AdjustmentAmount")
-                        .HasPrecision(19, 4)
-                        .HasColumnType("numeric(19,4)")
-                        .HasColumnName("adjustment_amount");
-
-                    b.Property<decimal>("ApprovedAmount")
-                        .HasPrecision(19, 4)
-                        .HasColumnType("numeric(19,4)")
-                        .HasColumnName("approved_amount");
-
-                    b.Property<string>("ClaimNumber")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)")
-                        .HasColumnName("claim_number");
-
-                    b.Property<decimal>("CoveredAmount")
-                        .HasPrecision(19, 4)
-                        .HasColumnType("numeric(19,4)")
-                        .HasColumnName("covered_amount");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("CreatedBy")
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)")
-                        .HasColumnName("created_by");
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("integer")
-                        .HasColumnName("customer_id");
-
-                    b.Property<string>("InvoiceTxNumber")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("character varying(10)")
-                        .HasColumnName("invoice_tx_number");
-
-                    b.Property<long>("MemberId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("member_id");
-
-                    b.Property<decimal>("PaidAmount")
-                        .HasPrecision(19, 4)
-                        .HasColumnType("numeric(19,4)")
-                        .HasColumnName("paid_amount");
-
-                    b.Property<decimal>("PatientAmount")
-                        .HasPrecision(19, 4)
-                        .HasColumnType("numeric(19,4)")
-                        .HasColumnName("patient_amount");
-
-                    b.Property<long>("PlanId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("plan_id");
-
-                    b.Property<int>("PlanVersion")
-                        .HasColumnType("integer")
-                        .HasColumnName("plan_version");
-
-                    b.Property<string>("RejectionReason")
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)")
-                        .HasColumnName("rejection_reason");
-
-                    b.Property<long?>("ResubmissionOf")
-                        .HasColumnType("bigint")
-                        .HasColumnName("resubmission_of");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)")
-                        .HasColumnName("status");
-
-                    b.Property<decimal>("TotalBilled")
-                        .HasPrecision(19, 4)
-                        .HasColumnType("numeric(19,4)")
-                        .HasColumnName("total_billed");
-
-                    b.HasKey("Id")
-                        .HasName("pk_claim");
-
-                    b.HasIndex("ClaimNumber")
-                        .IsUnique()
-                        .HasDatabaseName("ix_claim_claim_number");
-
-                    b.HasIndex("InvoiceTxNumber")
-                        .HasDatabaseName("ix_claim_invoice_tx_number");
-
-                    b.ToTable("claim", "platform");
-                });
-
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.ClaimEvent", b =>
                 {
                     b.Property<long>("Id")
@@ -2036,6 +1932,110 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         .HasName("pk_idempotency_record");
 
                     b.ToTable("idempotency_record", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.InsuranceClaim", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("AdjustmentAmount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("adjustment_amount");
+
+                    b.Property<decimal>("ApprovedAmount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("approved_amount");
+
+                    b.Property<string>("ClaimNumber")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("claim_number");
+
+                    b.Property<decimal>("CoveredAmount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("covered_amount");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("created_by");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("customer_id");
+
+                    b.Property<string>("InvoiceTxNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("invoice_tx_number");
+
+                    b.Property<long>("MemberId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("member_id");
+
+                    b.Property<decimal>("PaidAmount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("paid_amount");
+
+                    b.Property<decimal>("PatientAmount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("patient_amount");
+
+                    b.Property<long>("PlanId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("plan_id");
+
+                    b.Property<int>("PlanVersion")
+                        .HasColumnType("integer")
+                        .HasColumnName("plan_version");
+
+                    b.Property<string>("RejectionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("rejection_reason");
+
+                    b.Property<long?>("ResubmissionOf")
+                        .HasColumnType("bigint")
+                        .HasColumnName("resubmission_of");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("status");
+
+                    b.Property<decimal>("TotalBilled")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("total_billed");
+
+                    b.HasKey("Id")
+                        .HasName("pk_claim");
+
+                    b.HasIndex("ClaimNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ix_claim_claim_number");
+
+                    b.HasIndex("InvoiceTxNumber")
+                        .HasDatabaseName("ix_claim_invoice_tx_number");
+
+                    b.ToTable("claim", "platform");
                 });
 
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.InsuranceMember", b =>
@@ -3890,6 +3890,340 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.WholesaleAccount", b =>
+                {
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("customer_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("created_by");
+
+                    b.Property<bool>("CreditHold")
+                        .HasColumnType("boolean")
+                        .HasColumnName("credit_hold");
+
+                    b.Property<decimal>("CreditLimit")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("credit_limit");
+
+                    b.Property<bool>("IsWholesale")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_wholesale");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("notes");
+
+                    b.Property<string>("PriceGrade")
+                        .HasMaxLength(1)
+                        .HasColumnType("character varying(1)")
+                        .HasColumnName("price_grade");
+
+                    b.Property<string>("RepresentativeStaffCode")
+                        .HasMaxLength(4)
+                        .HasColumnType("character varying(4)")
+                        .HasColumnName("representative_staff_code");
+
+                    b.Property<string>("TaxTreatment")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("tax_treatment");
+
+                    b.Property<string>("TermsCode")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("terms_code");
+
+                    b.Property<int>("TermsDays")
+                        .HasColumnType("integer")
+                        .HasColumnName("terms_days");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("CustomerId")
+                        .HasName("pk_wholesale_account");
+
+                    b.HasIndex("RepresentativeStaffCode")
+                        .HasDatabaseName("ix_wholesale_account_representative_staff_code");
+
+                    b.ToTable("wholesale_account", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.WholesaleBackorder", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("integer")
+                        .HasColumnName("customer_id");
+
+                    b.Property<DateTimeOffset?>("FulfilledAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("fulfilled_at");
+
+                    b.Property<string>("FulfilledByTxNumber")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("fulfilled_by_tx_number");
+
+                    b.Property<int>("OrderedQuantity")
+                        .HasColumnType("integer")
+                        .HasColumnName("ordered_quantity");
+
+                    b.Property<int>("OriginalRowNo")
+                        .HasColumnType("integer")
+                        .HasColumnName("original_row_no");
+
+                    b.Property<string>("OriginalTxNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("original_tx_number");
+
+                    b.Property<int>("RemainingQuantity")
+                        .HasColumnType("integer")
+                        .HasColumnName("remaining_quantity");
+
+                    b.Property<int>("ShippedQuantity")
+                        .HasColumnType("integer")
+                        .HasColumnName("shipped_quantity");
+
+                    b.Property<string>("Sku")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("character varying(13)")
+                        .HasColumnName("sku");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id")
+                        .HasName("pk_wholesale_backorder");
+
+                    b.HasIndex("CustomerId")
+                        .HasDatabaseName("ix_wholesale_backorder_customer_id");
+
+                    b.HasIndex("Status")
+                        .HasDatabaseName("ix_wholesale_backorder_status");
+
+                    b.HasIndex("OriginalTxNumber", "OriginalRowNo")
+                        .IsUnique()
+                        .HasDatabaseName("ix_wholesale_backorder_original_tx_number_original_row_no");
+
+                    b.ToTable("wholesale_backorder", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.WholesaleDocument", b =>
+                {
+                    b.Property<string>("TxNumber")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("tx_number");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateOnly?>("DueDate")
+                        .HasColumnType("date")
+                        .HasColumnName("due_date");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("kind");
+
+                    b.Property<string>("OriginalInvoiceNumber")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("original_invoice_number");
+
+                    b.Property<DateTimeOffset?>("PostedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("posted_at");
+
+                    b.Property<string>("PostedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("posted_by");
+
+                    b.Property<string>("PurchaseOrderNumber")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("purchase_order_number");
+
+                    b.Property<string>("ShipToAddress")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("ship_to_address");
+
+                    b.Property<string>("ShipToName")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("ship_to_name");
+
+                    b.Property<string>("ShippingInstructions")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("shipping_instructions");
+
+                    b.Property<string>("ShippingMethod")
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
+                        .HasColumnName("shipping_method");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("TermsCode")
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("terms_code");
+
+                    b.Property<int>("TermsDays")
+                        .HasColumnType("integer")
+                        .HasColumnName("terms_days");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("updated_by");
+
+                    b.Property<string>("VoidReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("void_reason");
+
+                    b.Property<DateTimeOffset?>("VoidedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("voided_at");
+
+                    b.Property<string>("VoidedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("voided_by");
+
+                    b.HasKey("TxNumber")
+                        .HasName("pk_wholesale_document");
+
+                    b.HasIndex("Kind")
+                        .HasDatabaseName("ix_wholesale_document_kind");
+
+                    b.HasIndex("OriginalInvoiceNumber")
+                        .HasDatabaseName("ix_wholesale_document_original_invoice_number");
+
+                    b.HasIndex("Status")
+                        .HasDatabaseName("ix_wholesale_document_status");
+
+                    b.ToTable("wholesale_document", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.WholesaleDocumentLine", b =>
+                {
+                    b.Property<string>("TxNumber")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("tx_number");
+
+                    b.Property<double>("RowNo")
+                        .HasColumnType("double precision")
+                        .HasColumnName("row_no");
+
+                    b.Property<decimal>("AppliedUnitPrice")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("applied_unit_price");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("IsOverride")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_override");
+
+                    b.Property<decimal>("ListUnitPrice")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("list_unit_price");
+
+                    b.Property<string>("OverrideBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("override_by");
+
+                    b.Property<string>("OverrideReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("override_reason");
+
+                    b.Property<string>("PriceListCode")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("price_list_code");
+
+                    b.Property<int>("PriceListVersion")
+                        .HasColumnType("integer")
+                        .HasColumnName("price_list_version");
+
+                    b.Property<decimal>("TaxA")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("tax_a");
+
+                    b.Property<decimal>("TaxB")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("tax_b");
+
+                    b.HasKey("TxNumber", "RowNo")
+                        .HasName("pk_wholesale_document_line");
+
+                    b.ToTable("wholesale_document_line", "platform");
+                });
+
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.WholesalePrice", b =>
                 {
                     b.Property<string>("Sku")
@@ -3919,6 +4253,226 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         {
                             t.ExcludeFromMigrations();
                         });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.WholesalePriceList", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("code");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("created_by");
+
+                    b.Property<bool>("IsCurrent")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_current");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("name");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("integer")
+                        .HasColumnName("version");
+
+                    b.HasKey("Id")
+                        .HasName("pk_wholesale_price_list");
+
+                    b.HasIndex("Code", "IsCurrent")
+                        .IsUnique()
+                        .HasDatabaseName("ix_wholesale_price_list_code_is_current")
+                        .HasFilter("is_current = true");
+
+                    b.HasIndex("Code", "Version")
+                        .IsUnique()
+                        .HasDatabaseName("ix_wholesale_price_list_code_version");
+
+                    b.ToTable("wholesale_price_list", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.WholesalePriceListItem", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("price");
+
+                    b.Property<long>("PriceListId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("price_list_id");
+
+                    b.Property<string>("Sku")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("character varying(13)")
+                        .HasColumnName("sku");
+
+                    b.HasKey("Id")
+                        .HasName("pk_wholesale_price_list_item");
+
+                    b.HasIndex("PriceListId", "Sku")
+                        .IsUnique()
+                        .HasDatabaseName("ix_wholesale_price_list_item_price_list_id_sku");
+
+                    b.ToTable("wholesale_price_list_item", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.WholesaleReturnLine", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("amount");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("discount_amount");
+
+                    b.Property<string>("DispositionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("disposition_reason");
+
+                    b.Property<string>("OriginalInvoiceNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("original_invoice_number");
+
+                    b.Property<int>("OriginalRowNo")
+                        .HasColumnType("integer")
+                        .HasColumnName("original_row_no");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer")
+                        .HasColumnName("quantity");
+
+                    b.Property<bool>("Restock")
+                        .HasColumnType("boolean")
+                        .HasColumnName("restock");
+
+                    b.Property<int>("ReturnRowNo")
+                        .HasColumnType("integer")
+                        .HasColumnName("return_row_no");
+
+                    b.Property<string>("ReturnTxNumber")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("return_tx_number");
+
+                    b.Property<string>("Sku")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("character varying(13)")
+                        .HasColumnName("sku");
+
+                    b.Property<decimal>("TaxA")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("tax_a");
+
+                    b.Property<decimal>("TaxB")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("tax_b");
+
+                    b.Property<string>("TaxCode")
+                        .HasMaxLength(1)
+                        .HasColumnType("character varying(1)")
+                        .HasColumnName("tax_code");
+
+                    b.Property<decimal>("UnitAmount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("unit_amount");
+
+                    b.Property<decimal>("UnitCost")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("unit_cost");
+
+                    b.HasKey("Id")
+                        .HasName("pk_wholesale_return_line");
+
+                    b.HasIndex("OriginalInvoiceNumber", "OriginalRowNo")
+                        .HasDatabaseName("ix_wholesale_return_line_original_invoice_number_original_row_");
+
+                    b.HasIndex("ReturnTxNumber", "ReturnRowNo")
+                        .IsUnique()
+                        .HasDatabaseName("ix_wholesale_return_line_return_tx_number_return_row_no");
+
+                    b.ToTable("wholesale_return_line", "platform");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.WholesaleTender", b =>
+                {
+                    b.Property<string>("TxNumber")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("tx_number");
+
+                    b.Property<int>("LineNo")
+                        .HasColumnType("integer")
+                        .HasColumnName("line_no");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("numeric(19,4)")
+                        .HasColumnName("amount");
+
+                    b.Property<string>("Method")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("character varying(2)")
+                        .HasColumnName("method");
+
+                    b.Property<string>("Reference")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("reference");
+
+                    b.HasKey("TxNumber", "LineNo")
+                        .HasName("pk_wholesale_tender");
+
+                    b.ToTable("wholesale_tender", "platform");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

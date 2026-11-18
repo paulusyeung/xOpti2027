@@ -1578,6 +1578,1035 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/wholesale/invoices/{txNumber}/packing-list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    includePrices?: boolean;
+                };
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesalePackingListDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/invoices/{txNumber}/packing-list/prints": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["WholesalePackingListPrintRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/customers/{customerId}/balance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    customerId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesaleBalanceDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/customers/{customerId}/statement": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query: {
+                    from: string;
+                    to: string;
+                };
+                header?: never;
+                path: {
+                    customerId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesaleStatementDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/customers/{customerId}/statement/render": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query: {
+                    from: string;
+                    to: string;
+                };
+                header?: never;
+                path: {
+                    customerId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesaleStatementRenderDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/customers/{customerId}/statement/prints": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    customerId: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["WholesaleStatementPrintRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/invoices/{txNumber}/returnable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesaleReturnableInvoiceDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/returns/{txNumber}/render": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesaleReturnRenderDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/returns/{txNumber}/prints": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["WholesaleReturnPrintRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/returns": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    customerId?: number | string;
+                    status?: string;
+                    cursor?: string;
+                    pageSize?: number | string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfWholesaleReturnDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["WholesaleReturnWriteRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesaleReturnDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/returns/{txNumber}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesaleReturnDto"];
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["WholesaleReturnWriteRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesaleReturnDto"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/returns/{txNumber}/post": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["WholesaleReturnPostRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesaleReturnDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/invoices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    customerId?: number | string;
+                    status?: string;
+                    cursor?: string;
+                    pageSize?: number | string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfWholesaleInvoiceDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["WholesaleInvoiceWriteRequest"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesaleInvoiceDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/invoices/{txNumber}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesaleInvoiceDto"];
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["WholesaleInvoiceWriteRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesaleInvoiceDto"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/invoices/{txNumber}/backorders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesaleBackorderDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/invoices/{txNumber}/render": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesaleInvoiceRenderDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/invoices/{txNumber}/prints": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["WholesaleInvoicePrintRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/invoices/{txNumber}/post": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["WholesaleInvoicePostRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesaleInvoiceDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/price-lists": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesalePriceListDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["PublishWholesalePriceListRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesalePriceListDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/price-lists/import-legacy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ReasonRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": number | string;
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/customers/{customerId}/price": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query: {
+                    sku: string;
+                    unitPrice?: number | string;
+                    overrideReason?: string;
+                };
+                header?: never;
+                path: {
+                    customerId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesalePriceQuoteDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/documents/{txNumber}/lines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    txNumber: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesaleDocumentLineDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/wholesale/accounts/{customerId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    customerId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesaleAccountDto"];
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    customerId: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["WholesaleAccountWriteRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["WholesaleAccountDto"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/claims/plans": {
         parameters: {
             query?: never;
@@ -5526,6 +6555,20 @@ export interface components {
             /** Format: double */
             discountAmount: number | string;
         };
+        PackingListLineDto: {
+            /** Format: int32 */
+            rowNo: number | string;
+            sku: string;
+            description: null | string;
+            /** Format: int32 */
+            quantity: number | string;
+            /** Format: int32 */
+            backorderQuantity: number | string;
+            /** Format: double */
+            unitAmount: null | number | string;
+            /** Format: double */
+            amount: null | number | string;
+        };
         PagedResultOfBranchDto: {
             items: components["schemas"]["BranchDto"][];
             nextCursor: null | string;
@@ -5560,6 +6603,14 @@ export interface components {
         };
         PagedResultOfSupplierDto: {
             items: components["schemas"]["SupplierDto"][];
+            nextCursor: null | string;
+        };
+        PagedResultOfWholesaleInvoiceDto: {
+            items: components["schemas"]["WholesaleInvoiceDto"][];
+            nextCursor: null | string;
+        };
+        PagedResultOfWholesaleReturnDto: {
+            items: components["schemas"]["WholesaleReturnDto"][];
             nextCursor: null | string;
         };
         PasswordResetCompletedDto: {
@@ -5686,6 +6737,15 @@ export interface components {
             reprint: boolean;
             format: string;
             terminalCode: null | string;
+            reason: string;
+        };
+        PublishWholesalePriceListInput: {
+            code: string;
+            name: string;
+            items: components["schemas"]["WholesalePriceItemInput"][];
+        };
+        PublishWholesalePriceListRequest: {
+            input: components["schemas"]["PublishWholesalePriceListInput"];
             reason: string;
         };
         ReasonRequest: {
@@ -6315,6 +7375,448 @@ export interface components {
             versionId: number | string;
             note: null | string;
             reason: string;
+        };
+        WholesaleAccountDto: {
+            /** Format: int32 */
+            customerId: number | string;
+            isWholesale: boolean;
+            priceGrade: null | string;
+            termsCode: null | string;
+            /** Format: int32 */
+            termsDays: number | string;
+            /** Format: double */
+            creditLimit: number | string;
+            taxTreatment: null | string;
+            representativeStaffCode: null | string;
+            creditHold: boolean;
+            notes: null | string;
+            /** Format: date-time */
+            createdAt: string;
+            createdBy: null | string;
+            /** Format: date-time */
+            updatedAt: null | string;
+            updatedBy: null | string;
+        };
+        WholesaleAccountInput: {
+            priceGrade: null | string;
+            termsCode: null | string;
+            /** Format: int32 */
+            termsDays: number | string;
+            /** Format: double */
+            creditLimit: number | string;
+            taxTreatment: null | string;
+            representativeStaffCode: null | string;
+            creditHold: boolean;
+            notes: null | string;
+        };
+        WholesaleAccountWriteRequest: {
+            input: components["schemas"]["WholesaleAccountInput"];
+            reason: string;
+        };
+        WholesaleBackorderDto: {
+            /** Format: int64 */
+            id: number | string;
+            originalTxNumber: string;
+            /** Format: int32 */
+            originalRowNo: number | string;
+            /** Format: int32 */
+            customerId: number | string;
+            sku: string;
+            /** Format: int32 */
+            orderedQuantity: number | string;
+            /** Format: int32 */
+            shippedQuantity: number | string;
+            /** Format: int32 */
+            remainingQuantity: number | string;
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
+            fulfilledByTxNumber: null | string;
+            /** Format: date-time */
+            fulfilledAt: null | string;
+        };
+        WholesaleBalanceDto: {
+            /** Format: int32 */
+            customerId: number | string;
+            customerName: null | string;
+            /** Format: double */
+            invoiced: number | string;
+            /** Format: double */
+            returned: number | string;
+            /** Format: double */
+            payments: number | string;
+            /** Format: double */
+            balance: number | string;
+            /** Format: double */
+            creditLimit: number | string;
+            overCreditLimit: boolean;
+        };
+        WholesaleDocumentLineDto: {
+            txNumber: string;
+            /** Format: double */
+            rowNo: number | string;
+            priceListCode: string;
+            /** Format: int32 */
+            priceListVersion: number | string;
+            /** Format: double */
+            listUnitPrice: number | string;
+            /** Format: double */
+            appliedUnitPrice: number | string;
+            isOverride: boolean;
+            overrideReason: null | string;
+            overrideBy: null | string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        WholesaleInvoiceDto: {
+            txNumber: string;
+            /** Format: int32 */
+            customerId: number | string;
+            customerName: null | string;
+            staffCode: null | string;
+            status: string;
+            /** Format: date-time */
+            dateOfEntry: string;
+            termsCode: null | string;
+            /** Format: int32 */
+            termsDays: number | string;
+            /** Format: date */
+            dueDate: null | string;
+            shippingMethod: null | string;
+            shipToName: null | string;
+            shipToAddress: null | string;
+            shippingInstructions: null | string;
+            purchaseOrderNumber: null | string;
+            /** Format: double */
+            totalSale: number | string;
+            /** Format: double */
+            taxA: number | string;
+            /** Format: double */
+            taxB: number | string;
+            /** Format: double */
+            totalAmount: number | string;
+            /** Format: double */
+            paid: number | string;
+            /** Format: int32 */
+            totalQty: number | string;
+            /** Format: date-time */
+            postedAt: null | string;
+            postedBy: null | string;
+            lines: components["schemas"]["WholesaleInvoiceLineDto"][];
+            tenders: components["schemas"]["WholesaleTenderInput"][];
+        };
+        WholesaleInvoiceLineDto: {
+            /** Format: int32 */
+            rowNo: number | string;
+            sku: string;
+            description: null | string;
+            /** Format: int32 */
+            quantity: number | string;
+            /** Format: double */
+            unitAmount: number | string;
+            /** Format: double */
+            discountAmount: number | string;
+            /** Format: double */
+            amount: number | string;
+            /** Format: double */
+            taxA: number | string;
+            /** Format: double */
+            taxB: number | string;
+            taxCode: null | string;
+            priceListCode: null | string;
+            /** Format: int32 */
+            priceListVersion: null | number | string;
+            /** Format: double */
+            listUnitPrice: number | string;
+            isOverride: boolean;
+            overrideReason: null | string;
+            /** Format: int32 */
+            backorderQuantity: number | string;
+        };
+        WholesaleInvoicePostRequest: {
+            tenders: null | components["schemas"]["WholesaleTenderInput"][];
+            reason: string;
+        };
+        WholesaleInvoicePrintRequest: {
+            reprint: boolean;
+            terminalCode: null | string;
+            reason: string;
+        };
+        WholesaleInvoiceRenderDto: {
+            invoice: components["schemas"]["WholesaleInvoiceDto"];
+            duplicate: boolean;
+        };
+        WholesaleInvoiceWriteRequest: {
+            /** Format: int32 */
+            customerId: number | string;
+            staffCode: string;
+            lines: components["schemas"]["WholesaleLineInput"][];
+            tenders: components["schemas"]["WholesaleTenderInput"][];
+            shipping: components["schemas"]["WholesaleShippingInput"];
+            reason: string;
+        };
+        WholesaleLineInput: {
+            sku: string;
+            /** Format: int32 */
+            quantity: number | string;
+            /** Format: double */
+            unitAmount: null | number | string;
+            /** Format: double */
+            discountAmount: number | string;
+            taxCode: string;
+            overrideReason?: null | string;
+            description?: null | string;
+            /**
+             * Format: int32
+             * @default 0
+             */
+            backorderQuantity: number | string;
+        };
+        WholesalePackingListDto: {
+            txNumber: string;
+            status: string;
+            /** Format: date-time */
+            dateOfEntry: string;
+            /** Format: int32 */
+            customerId: number | string;
+            customerName: null | string;
+            purchaseOrderNumber: null | string;
+            shippingMethod: null | string;
+            shipToName: null | string;
+            shipToAddress: null | string;
+            shippingInstructions: null | string;
+            includesPrices: boolean;
+            lines: components["schemas"]["PackingListLineDto"][];
+        };
+        WholesalePackingListPrintRequest: {
+            includePrices: boolean;
+            reprint: boolean;
+            terminalCode: null | string;
+            reason: string;
+        };
+        WholesalePriceItemDto: {
+            sku: string;
+            /** Format: double */
+            price: number | string;
+        };
+        WholesalePriceItemInput: {
+            sku: string;
+            /** Format: double */
+            price: number | string;
+        };
+        WholesalePriceListDto: {
+            /** Format: int64 */
+            id: number | string;
+            code: string;
+            name: string;
+            /** Format: int32 */
+            version: number | string;
+            isCurrent: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            items: components["schemas"]["WholesalePriceItemDto"][];
+        };
+        WholesalePriceQuoteDto: {
+            /** Format: int32 */
+            customerId: number | string;
+            sku: string;
+            priceListCode: string;
+            /** Format: int32 */
+            priceListVersion: number | string;
+            /** Format: double */
+            listUnitPrice: number | string;
+            /** Format: double */
+            appliedUnitPrice: number | string;
+            isOverride: boolean;
+            overrideReason: null | string;
+            overrideBy: null | string;
+        };
+        WholesaleReturnableInvoiceDto: {
+            txNumber: string;
+            /** Format: int32 */
+            customerId: number | string;
+            customerName: null | string;
+            /** Format: date-time */
+            dateOfEntry: string;
+            /** Format: double */
+            totalSale: number | string;
+            /** Format: double */
+            taxA: number | string;
+            /** Format: double */
+            taxB: number | string;
+            /** Format: double */
+            totalAmount: number | string;
+            termsCode: null | string;
+            /** Format: int32 */
+            termsDays: number | string;
+            lines: components["schemas"]["WholesaleReturnableLineDto"][];
+        };
+        WholesaleReturnableLineDto: {
+            /** Format: int32 */
+            rowNo: number | string;
+            sku: string;
+            /** Format: int32 */
+            originalQuantity: number | string;
+            /** Format: int32 */
+            returnedQuantity: number | string;
+            /** Format: int32 */
+            availableQuantity: number | string;
+            /** Format: double */
+            unitAmount: number | string;
+            /** Format: double */
+            unitCost: number | string;
+            /** Format: double */
+            discountAmount: number | string;
+            /** Format: double */
+            amount: number | string;
+            /** Format: double */
+            taxA: number | string;
+            /** Format: double */
+            taxB: number | string;
+            /** Format: double */
+            availableAmount: number | string;
+            taxCode: null | string;
+        };
+        WholesaleReturnDto: {
+            txNumber: string;
+            originalInvoiceNumber: string;
+            /** Format: int32 */
+            customerId: number | string;
+            customerName: null | string;
+            staffCode: null | string;
+            status: string;
+            /** Format: date-time */
+            dateOfEntry: string;
+            termsCode: null | string;
+            /** Format: int32 */
+            termsDays: number | string;
+            /** Format: double */
+            totalSale: number | string;
+            /** Format: double */
+            taxA: number | string;
+            /** Format: double */
+            taxB: number | string;
+            /** Format: double */
+            totalAmount: number | string;
+            /** Format: double */
+            refunded: number | string;
+            /** Format: date-time */
+            postedAt: null | string;
+            postedBy: null | string;
+            lines: components["schemas"]["WholesaleReturnLineDto"][];
+            tenders: components["schemas"]["WholesaleTenderInput"][];
+        };
+        WholesaleReturnLineDto: {
+            /** Format: int32 */
+            rowNo: number | string;
+            /** Format: int32 */
+            originalRowNo: number | string;
+            sku: string;
+            /** Format: int32 */
+            quantity: number | string;
+            /** Format: double */
+            unitAmount: number | string;
+            /** Format: double */
+            unitCost: number | string;
+            /** Format: double */
+            discountAmount: number | string;
+            /** Format: double */
+            amount: number | string;
+            /** Format: double */
+            taxA: number | string;
+            /** Format: double */
+            taxB: number | string;
+            taxCode: null | string;
+            restock: boolean;
+            dispositionReason: null | string;
+        };
+        WholesaleReturnLineInput: {
+            /** Format: int32 */
+            originalRowNo: number | string;
+            /** Format: int32 */
+            quantity: number | string;
+            restock: boolean;
+            dispositionReason?: null | string;
+        };
+        WholesaleReturnPostRequest: {
+            tenders: null | components["schemas"]["WholesaleTenderInput"][];
+            reason: string;
+        };
+        WholesaleReturnPrintRequest: {
+            reprint: boolean;
+            terminalCode: null | string;
+            reason: string;
+        };
+        WholesaleReturnRenderDto: {
+            return: components["schemas"]["WholesaleReturnDto"];
+            duplicate: boolean;
+        };
+        WholesaleReturnWriteRequest: {
+            originalInvoiceNumber: string;
+            staffCode: string;
+            lines: components["schemas"]["WholesaleReturnLineInput"][];
+            tenders: components["schemas"]["WholesaleTenderInput"][];
+            reason: string;
+        };
+        WholesaleShippingInput: {
+            shippingMethod: null | string;
+            shipToName: null | string;
+            shipToAddress: null | string;
+            shippingInstructions: null | string;
+            purchaseOrderNumber: null | string;
+            /** Format: date */
+            dueDate: null | string;
+        };
+        WholesaleStatementDto: {
+            /** Format: int32 */
+            customerId: number | string;
+            customerName: null | string;
+            /** Format: date */
+            from: string;
+            /** Format: date */
+            to: string;
+            /** Format: double */
+            openingBalance: number | string;
+            /** Format: double */
+            invoiced: number | string;
+            /** Format: double */
+            returned: number | string;
+            /** Format: double */
+            payments: number | string;
+            /** Format: double */
+            closingBalance: number | string;
+            /** Format: double */
+            creditLimit: number | string;
+            overCreditLimit: boolean;
+            items: components["schemas"]["WholesaleStatementItemDto"][];
+        };
+        WholesaleStatementItemDto: {
+            documentType: string;
+            txNumber: string;
+            /** Format: date */
+            date: string;
+            /** Format: double */
+            amount: number | string;
+            description: null | string;
+        };
+        WholesaleStatementPrintRequest: {
+            /** Format: date */
+            from: string;
+            /** Format: date */
+            to: string;
+            reprint: boolean;
+            terminalCode: null | string;
+            reason: string;
+        };
+        WholesaleStatementRenderDto: {
+            statement: components["schemas"]["WholesaleStatementDto"];
+            duplicate: boolean;
+        };
+        WholesaleTenderInput: {
+            method: string;
+            /** Format: double */
+            amount: number | string;
+            reference: null | string;
         };
     };
     responses: never;

@@ -20,6 +20,7 @@ services:
       ConnectionStrings__XOptiDatabase: Host=postgres;Database=xopti;Username=postgres;Password=${XOPTI_PG_PASSWORD:-xopti}
       XOPTI_DATA_PROTECTION_KEYS: /var/lib/xopti/dpkeys
       XOptiApi__PaymentTerminalMode: ${XOPTI_PAYMENT_TERMINAL_MODE:-manual}
+      XOptiApi__WholesaleBackordersEnabled: ${XOPTI_WHOLESALE_BACKORDERS_ENABLED:-false}
     volumes:
       - filevolume:/var/lib/xopti/files
       - dataprotection:/var/lib/xopti/dpkeys

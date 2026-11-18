@@ -8,6 +8,165 @@ public static class PlatformMapping
 {
     public static void Configure(ModelBuilder mb)
     {
+        mb.Entity<WholesaleDocument>(e =>
+        {
+            e.ToTable("wholesale_document", "platform");
+            e.HasKey(x => x.TxNumber);
+            e.Property(x => x.TxNumber).HasMaxLength(10);
+            e.Property(x => x.Kind).HasMaxLength(10).IsRequired();
+            e.HasIndex(x => x.Kind);
+            e.Property(x => x.Status).HasMaxLength(16).IsRequired();
+            e.HasIndex(x => x.Status);
+            e.Property(x => x.TermsCode).HasMaxLength(20);
+            e.Property(x => x.TermsDays).IsRequired();
+            e.Property(x => x.DueDate);
+            e.Property(x => x.ShippingMethod).HasMaxLength(60);
+            e.Property(x => x.ShipToName).HasMaxLength(120);
+            e.Property(x => x.ShipToAddress).HasMaxLength(500);
+            e.Property(x => x.ShippingInstructions).HasMaxLength(1000);
+            e.Property(x => x.PurchaseOrderNumber).HasMaxLength(40);
+            e.Property(x => x.OriginalInvoiceNumber).HasMaxLength(10);
+            e.HasIndex(x => x.OriginalInvoiceNumber);
+            e.Property(x => x.CreatedAt);
+            e.Property(x => x.CreatedBy).HasMaxLength(64);
+            e.Property(x => x.UpdatedAt);
+            e.Property(x => x.UpdatedBy).HasMaxLength(64);
+            e.Property(x => x.PostedAt);
+            e.Property(x => x.PostedBy).HasMaxLength(64);
+            e.Property(x => x.VoidedAt);
+            e.Property(x => x.VoidedBy).HasMaxLength(64);
+            e.Property(x => x.VoidReason).HasMaxLength(500);
+        });
+
+        mb.Entity<WholesaleReturnLine>(e =>
+        {
+            e.ToTable("wholesale_return_line", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.ReturnTxNumber).HasMaxLength(10).IsRequired();
+            e.HasIndex(x => new { x.ReturnTxNumber, x.ReturnRowNo }).IsUnique();
+            e.Property(x => x.ReturnRowNo).IsRequired();
+            e.Property(x => x.OriginalInvoiceNumber).HasMaxLength(10).IsRequired();
+            e.HasIndex(x => new { x.OriginalInvoiceNumber, x.OriginalRowNo });
+            e.Property(x => x.OriginalRowNo).IsRequired();
+            e.Property(x => x.Sku).HasMaxLength(13).IsRequired();
+            e.Property(x => x.Quantity).IsRequired();
+            e.Property(x => x.UnitAmount).HasConversion(Converters.MoneyDecimal).HasPrecision(19, 4);
+            e.Property(x => x.UnitCost).HasConversion(Converters.MoneyDecimal).HasPrecision(19, 4);
+            e.Property(x => x.DiscountAmount).HasConversion(Converters.MoneyDecimal)
+                .HasPrecision(19, 4);
+            e.Property(x => x.Amount).HasConversion(Converters.MoneyDecimal).HasPrecision(19, 4);
+            e.Property(x => x.TaxA).HasConversion(Converters.MoneyDecimal).HasPrecision(19, 4);
+            e.Property(x => x.TaxB).HasConversion(Converters.MoneyDecimal).HasPrecision(19, 4);
+            e.Property(x => x.TaxCode).HasMaxLength(1);
+            e.Property(x => x.Restock).IsRequired();
+            e.Property(x => x.DispositionReason).HasMaxLength(500);
+            e.Property(x => x.CreatedAt);
+        });
+
+        mb.Entity<WholesaleBackorder>(e =>
+        {
+            e.ToTable("wholesale_backorder", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.OriginalTxNumber).HasMaxLength(10).IsRequired();
+            e.Property(x => x.OriginalRowNo).IsRequired();
+            e.HasIndex(x => new { x.OriginalTxNumber, x.OriginalRowNo }).IsUnique();
+            e.Property(x => x.CustomerId).IsRequired();
+            e.HasIndex(x => x.CustomerId);
+            e.Property(x => x.Sku).HasMaxLength(13).IsRequired();
+            e.Property(x => x.OrderedQuantity).IsRequired();
+            e.Property(x => x.ShippedQuantity).IsRequired();
+            e.Property(x => x.RemainingQuantity).IsRequired();
+            e.Property(x => x.Status).HasMaxLength(16).IsRequired();
+            e.HasIndex(x => x.Status);
+            e.Property(x => x.CreatedAt);
+            e.Property(x => x.FulfilledByTxNumber).HasMaxLength(10);
+            e.Property(x => x.FulfilledAt);
+        });
+
+        mb.Entity<WholesaleTender>(e =>
+        {
+            e.ToTable("wholesale_tender", "platform");
+            e.HasKey(x => new { x.TxNumber, x.LineNo });
+            e.Property(x => x.TxNumber).HasMaxLength(10);
+            e.Property(x => x.LineNo);
+            e.Property(x => x.Method).HasMaxLength(2).IsRequired();
+            e.Property(x => x.Amount).HasConversion(Converters.MoneyDecimal)
+                .HasPrecision(19, 4);
+            e.Property(x => x.Reference).HasMaxLength(10);
+        });
+
+        mb.Entity<WholesalePriceList>(e =>
+        {
+            e.ToTable("wholesale_price_list", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.Code).HasMaxLength(20).IsRequired();
+            e.Property(x => x.Name).HasMaxLength(120).IsRequired();
+            e.Property(x => x.Version).IsRequired();
+            e.HasIndex(x => new { x.Code, x.Version }).IsUnique();
+            e.HasIndex(x => new { x.Code, x.IsCurrent })
+                .HasFilter("is_current = true").IsUnique();
+            e.Property(x => x.IsCurrent).IsRequired();
+            e.Property(x => x.CreatedAt);
+            e.Property(x => x.CreatedBy).HasMaxLength(64);
+        });
+
+        mb.Entity<WholesalePriceListItem>(e =>
+        {
+            e.ToTable("wholesale_price_list_item", "platform");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.PriceListId).IsRequired();
+            e.HasIndex(x => new { x.PriceListId, x.Sku }).IsUnique();
+            e.Property(x => x.Sku).HasMaxLength(13).IsRequired();
+            e.Property(x => x.Price).HasConversion(Converters.MoneyDecimal)
+                .HasPrecision(19, 4);
+        });
+
+        mb.Entity<WholesaleDocumentLine>(e =>
+        {
+            e.ToTable("wholesale_document_line", "platform");
+            e.HasKey(x => new { x.TxNumber, x.RowNo });
+            e.Property(x => x.TxNumber).HasMaxLength(10);
+            e.Property(x => x.RowNo);
+            e.Property(x => x.PriceListCode).HasMaxLength(20).IsRequired();
+            e.Property(x => x.PriceListVersion).IsRequired();
+            e.Property(x => x.ListUnitPrice).HasConversion(Converters.MoneyDecimal)
+                .HasPrecision(19, 4);
+            e.Property(x => x.AppliedUnitPrice).HasConversion(Converters.MoneyDecimal)
+                .HasPrecision(19, 4);
+            e.Property(x => x.TaxA).HasConversion(Converters.MoneyDecimal).HasPrecision(19, 4);
+            e.Property(x => x.TaxB).HasConversion(Converters.MoneyDecimal).HasPrecision(19, 4);
+            e.Property(x => x.IsOverride).IsRequired();
+            e.Property(x => x.OverrideReason).HasMaxLength(500);
+            e.Property(x => x.OverrideBy).HasMaxLength(64);
+            e.Property(x => x.CreatedAt);
+        });
+
+        mb.Entity<WholesaleAccount>(e =>
+        {
+            e.ToTable("wholesale_account", "platform");
+            e.HasKey(x => x.CustomerId);
+            e.Property(x => x.CustomerId).ValueGeneratedNever();
+            e.Property(x => x.IsWholesale).IsRequired();
+            e.Property(x => x.PriceGrade).HasMaxLength(1);
+            e.Property(x => x.TermsCode).HasMaxLength(20);
+            e.Property(x => x.TermsDays).IsRequired();
+            e.Property(x => x.CreditLimit).HasConversion(Converters.MoneyDecimal)
+                .HasPrecision(19, 4);
+            e.Property(x => x.TaxTreatment).HasMaxLength(20);
+            e.Property(x => x.RepresentativeStaffCode).HasMaxLength(4);
+            e.HasIndex(x => x.RepresentativeStaffCode);
+            e.Property(x => x.CreditHold).IsRequired();
+            e.Property(x => x.Notes).HasMaxLength(1000);
+            e.Property(x => x.CreatedAt);
+            e.Property(x => x.CreatedBy).HasMaxLength(64);
+            e.Property(x => x.UpdatedAt);
+            e.Property(x => x.UpdatedBy).HasMaxLength(64);
+        });
+
         mb.Entity<AuditLog>(e =>
         {
             e.ToTable("audit_log", "platform");

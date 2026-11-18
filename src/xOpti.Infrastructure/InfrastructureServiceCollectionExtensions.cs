@@ -43,6 +43,9 @@ public sealed record InfrastructureOptions
     /// <summary>Maximum patient attachment size; 10 MiB until the signed policy lands.</summary>
     public long PrescriptionAttachmentMaxBytes { get; init; } = 10 * 1024 * 1024;
 
+    /// <summary>Enable line-level wholesale backorders; the signed baseline decides.</summary>
+    public bool WholesaleBackordersEnabled { get; init; }
+
     /// <summary>Schedule/cron-lite expressions for enabled jobs.</summary>
     public IReadOnlyList<string> MaterializedViewRefreshStatements { get; init; } =
         new[] { "SELECT 1 /* example: replace with REFRESH MATERIALIZED VIEW analytics... */" };
@@ -119,12 +122,23 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddScoped<xOpti.Application.Optical.IOpticalOrderStore,
             Repositories.EfOpticalOrderStore>();
         services.AddScoped<xOpti.Application.Claims.IClaimStore, Repositories.EfClaimStore>();
+        services.AddScoped<xOpti.Application.Wholesale.IWholesaleAccountStore,
+            Repositories.EfWholesaleAccountStore>();
+        services.AddScoped<xOpti.Application.Wholesale.IWholesalePricingStore,
+            Repositories.EfWholesalePricingStore>();
+        services.AddScoped<xOpti.Application.Wholesale.IWholesaleInvoiceStore,
+            Repositories.EfWholesaleInvoiceStore>();
+        services.AddScoped<xOpti.Application.Wholesale.IWholesaleReturnStore,
+            Repositories.EfWholesaleReturnStore>();
+        services.AddScoped<xOpti.Application.Wholesale.IWholesaleStatementStore,
+            Repositories.EfWholesaleStatementStore>();
         services.AddScoped<xOpti.Application.Settings.IPreferencesStore, Repositories.EfPreferencesStore>();
         services.AddScoped<xOpti.Application.Settings.IImportStore, Repositories.EfImportStore>();
         services.AddSingleton<xOpti.Application.Identity.Staff.IRoleCatalogue, Identity.RoleCatalogue>();
         services.AddSingleton<IClock, SystemClock>();
         services.AddSingleton<IPosPolicy, PosPolicy>();
         services.AddSingleton<IPrescriptionPolicy, PrescriptionPolicy>();
+        services.AddSingleton<IWholesalePolicy, WholesalePolicy>();
         services.AddSingleton<xOpti.Application.Payments.IPaymentTerminal>(sp =>
             string.Equals(options.PaymentTerminalMode, "simulated", StringComparison.OrdinalIgnoreCase)
                 ? new SimulatedPaymentTerminal()
@@ -139,6 +153,12 @@ public static class InfrastructureServiceCollectionExtensions
             Documents.QuestPdfPosDocumentRenderer>();
         services.AddSingleton<xOpti.Application.Claims.IClaimDocumentRenderer,
             Documents.ClaimDocumentRenderer>();
+        services.AddSingleton<xOpti.Application.Wholesale.IWholesaleInvoiceDocumentRenderer,
+            Documents.WholesaleInvoiceDocumentRenderer>();
+        services.AddSingleton<xOpti.Application.Wholesale.IWholesaleReturnDocumentRenderer,
+            Documents.WholesaleReturnDocumentRenderer>();
+        services.AddSingleton<xOpti.Application.Reporting.IReportRenderer,
+            Documents.QuestPdfReportRenderer>();
         services.AddSingleton<Documents.IFileStorage>(sp =>
             new Documents.LocalFileStorage(options.FileStorageRoot));
 

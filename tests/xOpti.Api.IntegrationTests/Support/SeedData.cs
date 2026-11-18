@@ -26,7 +26,7 @@ public static class SeedData
 
         await using (var ctx = new XOptiDbContext(options))
         {
-            foreach (var prefix in new[] { "RC", "RS", "SR", "RJ", "SJ", "WC", "SA" })
+            foreach (var prefix in new[] { "RC", "RS", "SR", "RJ", "SJ", "WC", "WR", "SA" })
             {
                 if (!await ctx.PrefTxNumbers.AnyAsync(x => x.TxPrefix == prefix))
                 {

@@ -31,6 +31,7 @@ using xOpti.Application.Sales.Documents;
 using xOpti.Application.Sales.OrderEntry;
 using xOpti.Application.Optical;
 using xOpti.Application.Payments;
+using xOpti.Application.Wholesale;
 using xOpti.Application.Prescriptions;
 using xOpti.Application.Sales.Retail;
 using xOpti.Application.Settings;
@@ -623,6 +624,329 @@ public static class Endpoints
         })
         .RequireAuthorization($"perm:{PermissionNames.InventoryReceive}")
         .Produces<SupplierActivityDto>();
+
+        v1.MapGet("/wholesale/invoices/{txNumber}/packing-list", async (
+            string txNumber, bool? includePrices, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetWholesalePackingListQuery(
+                txNumber, includePrices ?? false), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .Produces<WholesalePackingListDto>();
+
+        v1.MapPost("/wholesale/invoices/{txNumber}/packing-list/prints", async (
+            string txNumber, WholesalePackingListPrintRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new PrintWholesalePackingListCommand(
+                txNumber, request.IncludePrices, request.Reprint, request.TerminalCode,
+                request.Reason), cancellationToken);
+            return Results.File(result.Content, result.ContentType, result.FileName);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}");
+
+        v1.MapGet("/wholesale/customers/{customerId:int}/balance", async (
+            int customerId, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetWholesaleBalanceQuery(customerId), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .Produces<WholesaleBalanceDto>();
+
+        v1.MapGet("/wholesale/customers/{customerId:int}/statement", async (
+            int customerId, DateOnly from, DateOnly to, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetWholesaleStatementQuery(customerId, from, to), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<WholesaleStatementDto>();
+
+        v1.MapGet("/wholesale/customers/{customerId:int}/statement/render", async (
+            int customerId, DateOnly from, DateOnly to, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetWholesaleStatementRenderQuery(customerId, from, to), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<WholesaleStatementRenderDto>();
+
+        v1.MapPost("/wholesale/customers/{customerId:int}/statement/prints", async (
+            int customerId, WholesaleStatementPrintRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new PrintWholesaleStatementCommand(
+                customerId, request.From, request.To, request.Reprint,
+                request.TerminalCode, request.Reason), cancellationToken);
+            return Results.File(result.Content, result.ContentType, result.FileName);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
+
+        v1.MapGet("/wholesale/invoices/{txNumber}/returnable", async (
+            string txNumber, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetWholesaleReturnableQuery(txNumber), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .Produces<WholesaleReturnableInvoiceDto>();
+
+        v1.MapGet("/wholesale/returns/{txNumber}/render", async (
+            string txNumber, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetWholesaleReturnRenderQuery(txNumber), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .Produces<WholesaleReturnRenderDto>();
+
+        v1.MapPost("/wholesale/returns/{txNumber}/prints", async (
+            string txNumber, WholesaleReturnPrintRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new PrintWholesaleReturnCommand(
+                txNumber, request.Reprint, request.TerminalCode, request.Reason),
+                cancellationToken);
+            return Results.File(result.Content, result.ContentType, result.FileName);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}");
+
+        v1.MapGet("/wholesale/returns", async (
+            int? customerId, string? status, string? cursor, int? pageSize,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new ListWholesaleReturnsQuery(
+                customerId, status, cursor, pageSize ?? 25), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .Produces<PagedResult<WholesaleReturnDto>>();
+
+        v1.MapGet("/wholesale/returns/{txNumber}", async (
+            string txNumber, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetWholesaleReturnQuery(txNumber), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .Produces<WholesaleReturnDto>();
+
+        v1.MapPost("/wholesale/returns", async (
+            HttpContext http, WholesaleReturnWriteRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var key = http.Request.Headers["Idempotency-Key"].FirstOrDefault();
+            var result = await dispatcher.DispatchAsync(new CreateWholesaleReturnCommand(
+                request.OriginalInvoiceNumber, request.StaffCode, request.Lines,
+                request.Tenders, request.Reason, key), cancellationToken);
+            return Results.Created($"/api/v1/wholesale/returns/{result.TxNumber}", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .AddEndpointFilter<IdempotencyKeyFilter>()
+        .Produces<WholesaleReturnDto>(StatusCodes.Status201Created);
+
+        v1.MapPut("/wholesale/returns/{txNumber}", async (
+            string txNumber, WholesaleReturnWriteRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new UpdateWholesaleReturnCommand(
+                txNumber, request.OriginalInvoiceNumber, request.StaffCode, request.Lines,
+                request.Tenders, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .Produces<WholesaleReturnDto>();
+
+        v1.MapPost("/wholesale/returns/{txNumber}/post", async (
+            string txNumber, HttpContext http, WholesaleReturnPostRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var key = http.Request.Headers["Idempotency-Key"].FirstOrDefault();
+            var result = await dispatcher.DispatchAsync(new PostWholesaleReturnCommand(
+                txNumber, request.Tenders, request.Reason, key), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .AddEndpointFilter<IdempotencyKeyFilter>()
+        .Produces<WholesaleReturnDto>();
+
+        v1.MapGet("/wholesale/invoices", async (
+            int? customerId, string? status, string? cursor, int? pageSize,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new ListWholesaleInvoicesQuery(
+                customerId, status, cursor, pageSize ?? 25), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .Produces<PagedResult<WholesaleInvoiceDto>>();
+
+        v1.MapGet("/wholesale/invoices/{txNumber}", async (
+            string txNumber, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetWholesaleInvoiceQuery(txNumber), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .Produces<WholesaleInvoiceDto>();
+
+        v1.MapPost("/wholesale/invoices", async (
+            HttpContext http, WholesaleInvoiceWriteRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var key = http.Request.Headers["Idempotency-Key"].FirstOrDefault();
+            var result = await dispatcher.DispatchAsync(new CreateWholesaleInvoiceCommand(
+                request.CustomerId, request.StaffCode, request.Lines, request.Tenders,
+                request.Shipping, request.Reason, key), cancellationToken);
+            return Results.Created($"/api/v1/wholesale/invoices/{result.TxNumber}", result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .AddEndpointFilter<IdempotencyKeyFilter>()
+        .Produces<WholesaleInvoiceDto>(StatusCodes.Status201Created);
+
+        v1.MapGet("/wholesale/invoices/{txNumber}/backorders", async (
+            string txNumber, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetWholesaleBackordersQuery(txNumber), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .Produces<IReadOnlyList<WholesaleBackorderDto>>();
+
+        v1.MapGet("/wholesale/invoices/{txNumber}/render", async (
+            string txNumber, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetWholesaleInvoiceRenderQuery(txNumber), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .Produces<WholesaleInvoiceRenderDto>();
+
+        v1.MapPost("/wholesale/invoices/{txNumber}/prints", async (
+            string txNumber, WholesaleInvoicePrintRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new PrintWholesaleInvoiceCommand(
+                txNumber, request.Reprint, request.TerminalCode, request.Reason),
+                cancellationToken);
+            return Results.File(result.Content, result.ContentType, result.FileName);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}");
+
+        v1.MapPost("/wholesale/invoices/{txNumber}/post", async (
+            string txNumber, HttpContext http, WholesaleInvoicePostRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var key = http.Request.Headers["Idempotency-Key"].FirstOrDefault();
+            var result = await dispatcher.DispatchAsync(new PostWholesaleInvoiceCommand(
+                txNumber, request.Tenders, request.Reason, key), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .AddEndpointFilter<IdempotencyKeyFilter>()
+        .Produces<WholesaleInvoiceDto>();
+
+        v1.MapPut("/wholesale/invoices/{txNumber}", async (
+            string txNumber, WholesaleInvoiceWriteRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new UpdateWholesaleInvoiceCommand(
+                txNumber, request.CustomerId, request.StaffCode, request.Lines,
+                request.Tenders, request.Shipping, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .Produces<WholesaleInvoiceDto>();
+
+        v1.MapGet("/wholesale/price-lists", async (
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ListWholesalePriceListsQuery(), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .Produces<IReadOnlyList<WholesalePriceListDto>>();
+
+        v1.MapPost("/wholesale/price-lists", async (
+            PublishWholesalePriceListRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new PublishWholesalePriceListCommand(request.Input, request.Reason),
+                cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<WholesalePriceListDto>();
+
+        v1.MapPost("/wholesale/price-lists/import-legacy", async (
+            ReasonRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ImportLegacyWholesalePricesCommand(request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<int>();
+
+        v1.MapGet("/wholesale/customers/{customerId:int}/price", async (
+            int customerId, string sku, decimal? unitPrice, string? overrideReason,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetWholesalePriceQuoteQuery(
+                customerId, sku, unitPrice, overrideReason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .Produces<WholesalePriceQuoteDto>();
+
+        v1.MapGet("/wholesale/documents/{txNumber}/lines", async (
+            string txNumber, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetWholesaleDocumentLinesQuery(txNumber), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .Produces<IReadOnlyList<WholesaleDocumentLineDto>>();
+
+        v1.MapGet("/wholesale/accounts/{customerId:int}", async (
+            int customerId, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetWholesaleAccountQuery(customerId), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
+        .Produces<WholesaleAccountDto>();
+
+        v1.MapPut("/wholesale/accounts/{customerId:int}", async (
+            int customerId, WholesaleAccountWriteRequest request,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new SaveWholesaleAccountCommand(
+                customerId, request.Input, request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<WholesaleAccountDto>();
 
         v1.MapGet("/claims/plans", async (
             bool? currentOnly, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
@@ -1600,6 +1924,40 @@ public sealed record ApproveStockTakeRequest(string Reason);
 public sealed record PostStockTakeRequest(string Reason);
 
 public sealed record ImportCountsRequest(string Csv, bool DryRun, string Reason);
+
+public sealed record WholesaleInvoicePrintRequest(
+    bool Reprint, string? TerminalCode, string Reason);
+
+public sealed record WholesaleInvoicePostRequest(
+    IReadOnlyList<WholesaleTenderInput>? Tenders, string Reason);
+
+public sealed record WholesalePackingListPrintRequest(
+    bool IncludePrices, bool Reprint, string? TerminalCode, string Reason);
+
+public sealed record WholesaleStatementPrintRequest(
+    DateOnly From, DateOnly To, bool Reprint, string? TerminalCode, string Reason);
+
+public sealed record WholesaleReturnPrintRequest(
+    bool Reprint, string? TerminalCode, string Reason);
+
+public sealed record WholesaleReturnWriteRequest(
+    string OriginalInvoiceNumber, string StaffCode,
+    IReadOnlyList<WholesaleReturnLineInput> Lines, IReadOnlyList<WholesaleTenderInput> Tenders,
+    string Reason);
+
+public sealed record WholesaleReturnPostRequest(
+    IReadOnlyList<WholesaleTenderInput>? Tenders, string Reason);
+
+public sealed record WholesaleInvoiceWriteRequest(
+    int CustomerId, string StaffCode, IReadOnlyList<WholesaleLineInput> Lines,
+    IReadOnlyList<WholesaleTenderInput> Tenders, WholesaleShippingInput Shipping,
+    string Reason);
+
+public sealed record PublishWholesalePriceListRequest(
+    PublishWholesalePriceListInput Input, string Reason);
+
+public sealed record WholesaleAccountWriteRequest(
+    WholesaleAccountInput Input, string Reason);
 
 public sealed record ClaimReceiptPrintRequest(
     bool Reprint, string? TerminalCode, string Reason);

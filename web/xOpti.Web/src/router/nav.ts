@@ -12,6 +12,24 @@ export interface NavItem {
 export const NAV_ITEMS: readonly NavItem[] = [
   { to: '/', title: 'Home', icon: 'mdi-home-outline' },
   {
+    to: '/admin/wholesale/returns',
+    title: 'Wholesale returns',
+    icon: 'mdi-keyboard-return',
+    permission: PermissionNames.WholesaleInvoicePost,
+  },
+  {
+    to: '/admin/wholesale/invoices',
+    title: 'Wholesale invoices',
+    icon: 'mdi-file-document-outline',
+    permission: PermissionNames.WholesaleInvoicePost,
+  },
+  {
+    to: '/admin/wholesale',
+    title: 'Wholesale',
+    icon: 'mdi-truck-fast-outline',
+    permission: PermissionNames.WholesaleInvoicePost,
+  },
+  {
     to: '/admin/claims',
     title: 'Claims',
     icon: 'mdi-shield-check-outline',

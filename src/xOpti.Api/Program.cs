@@ -38,6 +38,7 @@ builder.Services.AddXOptiInfrastructure(new InfrastructureOptions
     BlindCashCount = apiOptions.BlindCashCount,
     RequirePrescriptionVerification = apiOptions.RequirePrescriptionVerification,
     PrescriptionAttachmentMaxBytes = apiOptions.PrescriptionAttachmentMaxBytes,
+    WholesaleBackordersEnabled = apiOptions.WholesaleBackordersEnabled,
     PaymentTerminalMode = apiOptions.PaymentTerminalMode,
     FontDirectories = apiOptions.FontDirectories,
     MaterializedViewRefreshStatements = apiOptions.MaterializedViewRefreshStatements,
