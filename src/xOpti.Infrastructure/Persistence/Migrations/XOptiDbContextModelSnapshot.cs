@@ -341,6 +341,60 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                     b.ToTable("asp_net_users", (string)null);
                 });
 
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.AnalyticsSavedView", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("ConfigJson")
+                        .IsRequired()
+                        .HasMaxLength(20000)
+                        .HasColumnType("character varying(20000)")
+                        .HasColumnName("config_json");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("IsShared")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_shared");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("OwnerUserId")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("owner_user_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("ViewKey")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("view_key");
+
+                    b.HasKey("Id")
+                        .HasName("pk_analytics_saved_view");
+
+                    b.HasIndex("OwnerUserId", "ViewKey")
+                        .HasDatabaseName("ix_analytics_saved_view_owner_user_id_view_key");
+
+                    b.ToTable("analytics_saved_view", "reporting");
+                });
+
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.AuditLog", b =>
                 {
                     b.Property<long>("Id")
@@ -2761,6 +2815,96 @@ namespace xOpti.Infrastructure.Persistence.Migrations
                         {
                             t.ExcludeFromMigrations();
                         });
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.ReadModelState", b =>
+                {
+                    b.Property<string>("ModelKey")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("model_key");
+
+                    b.Property<DateTimeOffset?>("AsOf")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("as_of");
+
+                    b.Property<string>("LastError")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("last_error");
+
+                    b.Property<DateTimeOffset?>("RefreshCompletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("refresh_completed_at");
+
+                    b.Property<DateTimeOffset?>("RefreshStartedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("refresh_started_at");
+
+                    b.Property<long?>("RowCount")
+                        .HasColumnType("bigint")
+                        .HasColumnName("row_count");
+
+                    b.HasKey("ModelKey")
+                        .HasName("pk_read_model_state");
+
+                    b.ToTable("read_model_state", "reporting");
+                });
+
+            modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.ReportRun", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Actor")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("actor");
+
+                    b.Property<string>("Branch")
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("branch");
+
+                    b.Property<string>("CatalogueId")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("catalogue_id");
+
+                    b.Property<bool>("Duplicate")
+                        .HasColumnType("boolean")
+                        .HasColumnName("duplicate");
+
+                    b.Property<DateTimeOffset>("GeneratedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("generated_at");
+
+                    b.Property<string>("ParametersJson")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)")
+                        .HasColumnName("parameters_json");
+
+                    b.Property<int>("RowCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("row_count");
+
+                    b.Property<bool>("Truncated")
+                        .HasColumnType("boolean")
+                        .HasColumnName("truncated");
+
+                    b.HasKey("Id")
+                        .HasName("pk_report_run");
+
+                    b.HasIndex("CatalogueId", "GeneratedAt")
+                        .HasDatabaseName("ix_report_run_catalogue_id_generated_at");
+
+                    b.ToTable("report_run", "reporting");
                 });
 
             modelBuilder.Entity("xOpti.Infrastructure.Persistence.Entities.RetailPrice", b =>

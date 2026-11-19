@@ -6,6 +6,7 @@ import { mockState } from '../mocks/webpivottable'
 import { mountInApp } from './support'
 
 afterEach(() => {
+  vi.unstubAllGlobals()
   setRuntimeConfigForTests({ analyticsEnabled: false, wptLicenseKey: null })
   document.body.innerHTML = ''
 })
@@ -110,6 +111,75 @@ describe('analytics data source', () => {
     expect(error).toContain('Something went wrong')
     expect(error).toContain('Reference: corr-42')
     expect(document.querySelector('web-pivot-table')).toBeNull()
+    wrapper.unmount()
+  })
+})
+
+
+describe('analytics view selection, freshness, saved views and export', () => {
+  it('loads a stale feed, saves and opens a view, and exports CSV', async () => {
+    setRuntimeConfigForTests({ analyticsEnabled: true, wptLicenseKey: 'KEY' })
+    const calls: string[] = []
+    vi.stubGlobal('fetch', vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const request = input instanceof Request ? input : null
+      const url = request ? request.url : String(input)
+      const method = request ? request.method : (init?.method ?? 'GET')
+      calls.push(`${method} ${url}`)
+      const json = (body: unknown) => new Response(JSON.stringify(body), {
+        status: 200, headers: { 'content-type': 'application/json' },
+      })
+      if (url.includes('/auth/csrf-token')) return json({ token: 'csrf' })
+      if (url.includes('/analytics/views/sales_by_cost/export')) {
+        return new Response('Sales,Margin\n100,20', {
+          status: 200, headers: { 'content-type': 'text/csv' },
+        })
+      }
+      if (url.includes('/analytics/views/sales_by_cost')) {
+        return json({
+          viewKey: 'sales_by_cost', name: 'Sales by Cost',
+          fields: [{ key: 'period', label: 'Period', type: 'text', sensitive: false },
+            { key: 'sales', label: 'Sales', type: 'money', sensitive: false }],
+          data: [['2026-11', 100]], asOf: '2026-11-18T10:00:00Z',
+          stale: true, truncated: true, rowCap: 5000,
+        })
+      }
+      if (url.includes('/analytics/views')) {
+        return json([{ key: 'sales_by_cost', name: 'Sales by Cost', fields: [] }])
+      }
+      if (url.includes('/analytics/saved') && method === 'POST') {
+        return json({ id: 1, viewKey: 'sales_by_cost', name: 'Cost review',
+          isShared: true, ownerUserId: 'manager',
+          configJson: '{"viewKey":"sales_by_cost","filters":{}}',
+          createdAt: '2026-11-18T10:00:00Z', updatedAt: '2026-11-18T10:00:00Z',
+          canEdit: true })
+      }
+      if (url.includes('/analytics/saved/1')) {
+        return json({ id: 1, viewKey: 'sales_by_cost', name: 'Cost review',
+          isShared: true, ownerUserId: 'manager',
+          configJson: '{"viewKey":"sales_by_cost","filters":{"branch":"01"}}',
+          createdAt: '2026-11-18T10:00:00Z', updatedAt: '2026-11-18T10:00:00Z',
+          canEdit: true })
+      }
+      if (url.includes('/analytics/saved')) return json([])
+      return json({})
+    }))
+
+    const { wrapper } = await mountInApp(AnalyticsPage, { path: '/analytics' })
+    await flushPromises()
+    await flushPromises()
+    expect(wrapper.find('[data-testid="analytics-stale"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="analytics-truncated"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="wpt-view"]').exists()).toBe(true)
+
+    await wrapper.find('[data-testid="analytics-save-name"] input').setValue('Cost review')
+    await wrapper.find('[data-testid="analytics-save"]').trigger('click')
+    await flushPromises()
+    expect(wrapper.find('[data-testid="analytics-notice"]').text()).toContain('Saved analytics view')
+
+    await wrapper.find('[data-testid="analytics-export"]').trigger('click')
+    await flushPromises()
+    expect(wrapper.find('[data-testid="analytics-notice"]').text()).toContain('export generated')
+    expect(calls.some((call) => call.includes('/analytics/views/sales_by_cost/export'))).toBe(true)
     wrapper.unmount()
   })
 })

@@ -122,6 +122,17 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddScoped<xOpti.Application.Optical.IOpticalOrderStore,
             Repositories.EfOpticalOrderStore>();
         services.AddScoped<xOpti.Application.Claims.IClaimStore, Repositories.EfClaimStore>();
+        services.AddSingleton<xOpti.Application.Reporting.IReportCatalogue,
+            xOpti.Application.Reporting.ReportCatalogue>();
+        services.AddScoped<xOpti.Application.Reporting.IReportDataStore,
+            Repositories.EfReportDataStore>();
+        services.AddScoped<xOpti.Application.Reporting.IReportRunStore,
+            Repositories.EfReportRunStore>();
+        services.AddScoped<xOpti.Application.Analytics.IAnalyticsStore,
+            Repositories.EfAnalyticsStore>();
+        services.AddScoped<xOpti.Infrastructure.Jobs.ReportReadModelRefresher>();
+        services.AddScoped<xOpti.Application.Reporting.IReportReadModelRefresher>(sp =>
+            sp.GetRequiredService<xOpti.Infrastructure.Jobs.ReportReadModelRefresher>());
         services.AddScoped<xOpti.Application.Wholesale.IWholesaleAccountStore,
             Repositories.EfWholesaleAccountStore>();
         services.AddScoped<xOpti.Application.Wholesale.IWholesalePricingStore,

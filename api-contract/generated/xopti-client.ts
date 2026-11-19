@@ -2545,6 +2545,478 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/reports/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ReasonRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": boolean;
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ReportCatalogueDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/{reportId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    reportId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ReportCatalogueDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/{reportId}/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    reportId: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ReportParameterRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ReportPreviewDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/{reportId}/print": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    reportId: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ReportPrintRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/{reportId}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    reportId: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ReportExportRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/analytics/views": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AnalyticsViewDefinition"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/analytics/views/{viewKey}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                    branch?: string;
+                    staff?: string;
+                    department?: string;
+                    classCode?: string;
+                    category?: string;
+                };
+                header?: never;
+                path: {
+                    viewKey: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AnalyticsFeedDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/analytics/views/{viewKey}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    from?: string;
+                    to?: string;
+                    branch?: string;
+                    staff?: string;
+                    department?: string;
+                    classCode?: string;
+                    category?: string;
+                    reason?: string;
+                };
+                header?: never;
+                path: {
+                    viewKey: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/analytics/saved": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AnalyticsViewDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["SaveAnalyticsViewRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AnalyticsViewDto"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/analytics/saved/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["AnalyticsViewDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete: {
+            parameters: {
+                query?: {
+                    reason?: string;
+                };
+                header?: never;
+                path: {
+                    id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": boolean;
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/wholesale/accounts/{customerId}": {
         parameters: {
             query?: never;
@@ -5461,6 +5933,45 @@ export interface components {
             /** Format: int32 */
             newOnHand: number | string;
         };
+        AnalyticsFeedDto: {
+            viewKey: string;
+            name: string;
+            fields: components["schemas"]["AnalyticsField"][];
+            data: unknown[][];
+            /** Format: date-time */
+            asOf: string;
+            stale: boolean;
+            truncated: boolean;
+            /** Format: int32 */
+            rowCap: number | string;
+        };
+        AnalyticsField: {
+            key: string;
+            label: string;
+            type: string;
+            /** @default false */
+            sensitive: boolean;
+        };
+        AnalyticsViewDefinition: {
+            key: string;
+            name: string;
+            readModel: string;
+            fields: components["schemas"]["AnalyticsField"][];
+        };
+        AnalyticsViewDto: {
+            /** Format: int64 */
+            id: number | string;
+            viewKey: string;
+            name: string;
+            isShared: boolean;
+            ownerUserId: string;
+            configJson: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            canEdit: boolean;
+        };
         ApproveStockTakeRequest: {
             reason: string;
         };
@@ -6191,6 +6702,7 @@ export interface components {
             /** Format: double */
             closingBalance: number | string;
             items: components["schemas"]["CustomerPurchaseDto"][];
+            customerName?: null | string;
         };
         CustomerSummaryDto: {
             /** Format: int32 */
@@ -6910,6 +7422,66 @@ export interface components {
             name: string;
             expectedCurrentName?: null | string;
         };
+        ReportCatalogueDto: {
+            id: string;
+            logicalName: string;
+            title: string;
+            subject: string;
+            parameters: components["schemas"]["ReportParameterDefinition"][];
+            readModel: string;
+            layoutKey: string;
+            requiredPermissions: string[];
+            /** Format: int32 */
+            rowCap: number | string;
+            criticality: string;
+            criticalDocument: boolean;
+            inScope: string;
+            signoffStatus: string;
+        };
+        ReportColumn: {
+            key: string;
+            label: string;
+            type: string;
+        };
+        ReportExportRequest: {
+            parameters: {
+                [key: string]: string;
+            };
+            reason: string;
+        };
+        ReportParameterDefinition: {
+            name: string;
+            type: string;
+            required: boolean;
+        };
+        ReportParameterRequest: {
+            parameters: {
+                [key: string]: string;
+            };
+        };
+        ReportPreviewDto: {
+            reportId: string;
+            title: string;
+            columns: components["schemas"]["ReportColumn"][];
+            rows: unknown[][];
+            truncated: boolean;
+            /** Format: int32 */
+            appliedCap: number | string;
+            /** Format: date-time */
+            asOf: string;
+            stale: boolean;
+            parameters: {
+                [key: string]: string;
+            };
+        };
+        ReportPrintRequest: {
+            parameters: {
+                [key: string]: string;
+            };
+            duplicate: boolean;
+            terminalCode: null | string;
+            reason: string;
+        };
         ResubmitClaimRequest: {
             reason: string;
             reference: null | string;
@@ -7023,6 +7595,13 @@ export interface components {
             taxCode: null | string;
             /** Format: int32 */
             qtyOnHand: number | string;
+        };
+        SaveAnalyticsViewRequest: {
+            viewKey: string;
+            name: string;
+            isShared: boolean;
+            configJson: string;
+            reason: string;
         };
         SaveOpticalOrderRequest: {
             frames: components["schemas"]["FrameDetailInput"][];

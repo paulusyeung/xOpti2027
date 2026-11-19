@@ -111,7 +111,7 @@ public sealed record CustomerHistoryDto(
 public sealed record CustomerStatementDto(
     int CustomerId, DateOnly From, DateOnly To, decimal OpeningBalance,
     decimal Charges, decimal Payments, decimal Refunds, decimal ClosingBalance,
-    IReadOnlyList<CustomerPurchaseDto> Items);
+    IReadOnlyList<CustomerPurchaseDto> Items, string? CustomerName = null);
 
 public sealed record CustomerInput(
     string? VipCode, string? Salutation, string? FirstName, string? Initial,

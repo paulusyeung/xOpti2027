@@ -29,6 +29,12 @@ public class XOptiDbContext(DbContextOptions<XOptiDbContext> options)
 
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
+    public DbSet<ReadModelState> ReadModelStates => Set<ReadModelState>();
+
+    public DbSet<ReportRun> ReportRuns => Set<ReportRun>();
+
+    public DbSet<AnalyticsSavedView> AnalyticsSavedViews => Set<AnalyticsSavedView>();
+
     public DbSet<IdempotencyRecord> IdempotencyRecords => Set<IdempotencyRecord>();
 
     public DbSet<SchemaBaseline> SchemaBaselines => Set<SchemaBaseline>();

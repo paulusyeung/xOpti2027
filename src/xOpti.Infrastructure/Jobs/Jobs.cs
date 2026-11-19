@@ -87,6 +87,7 @@ public static class JobServiceCollectionExtensions
         }
 
         services.AddHostedService<MaterializedViewRefreshJob>();
+        services.AddHostedService<ReportingRefreshJob>();
         return services;
     }
 }

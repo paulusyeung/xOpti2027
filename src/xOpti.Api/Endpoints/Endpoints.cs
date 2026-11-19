@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using xOpti.Application.Authorization;
+using xOpti.Application.Analytics;
 using xOpti.Application.Cash;
 using xOpti.Application.Claims;
 using xOpti.Application.Customers;
@@ -31,6 +32,7 @@ using xOpti.Application.Sales.Documents;
 using xOpti.Application.Sales.OrderEntry;
 using xOpti.Application.Optical;
 using xOpti.Application.Payments;
+using xOpti.Application.Reporting;
 using xOpti.Application.Wholesale;
 using xOpti.Application.Prescriptions;
 using xOpti.Application.Sales.Retail;
@@ -926,6 +928,146 @@ public static class Endpoints
         })
         .RequireAuthorization($"perm:{PermissionNames.WholesaleInvoicePost}")
         .Produces<IReadOnlyList<WholesaleDocumentLineDto>>();
+
+        v1.MapPost("/reports/refresh", async (
+            ReasonRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new RefreshReportingReadModelsCommand(request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<bool>();
+
+        v1.MapGet("/reports", async (
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new ListReportsQuery(), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<IReadOnlyList<ReportCatalogueDto>>();
+
+        v1.MapGet("/reports/{reportId}", async (
+            string reportId, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetReportMetadataQuery(reportId), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<ReportCatalogueDto>();
+
+        v1.MapPost("/reports/{reportId}/preview", async (
+            string reportId, ReportParameterRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new PreviewReportQuery(
+                reportId, request.Parameters), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<ReportPreviewDto>();
+
+        v1.MapPost("/reports/{reportId}/print", async (
+            string reportId, ReportPrintRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GenerateReportCommand(
+                reportId, request.Parameters, request.Duplicate, request.TerminalCode,
+                request.Reason), cancellationToken);
+            return Results.File(result.Content, result.ContentType, result.FileName);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
+
+        v1.MapPost("/reports/{reportId}/export", async (
+            string reportId, ReportExportRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new ExportReportCommand(
+                reportId, request.Parameters, request.Reason), cancellationToken);
+            return Results.File(result.Content, result.ContentType, result.FileName);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
+
+        v1.MapGet("/analytics/views", async (
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ListAnalyticsViewsQuery(), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<IReadOnlyList<AnalyticsViewDefinition>>();
+
+        v1.MapGet("/analytics/views/{viewKey}", async (
+            string viewKey, string? from, string? to, string? branch, string? staff,
+            string? department, string? classCode, string? category,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new GetAnalyticsFeedQuery(
+                viewKey, from, to, branch, staff, department, classCode, category),
+                cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<AnalyticsFeedDto>();
+
+        v1.MapGet("/analytics/views/{viewKey}/export", async (
+            string viewKey, string? from, string? to, string? branch, string? staff,
+            string? department, string? classCode, string? category, string? reason,
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new ExportAnalyticsFeedQuery(
+                viewKey, from, to, branch, staff, department, classCode, category,
+                reason ?? "analytics export"), cancellationToken);
+            return Results.File(result.Content, result.ContentType, result.FileName);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
+
+        v1.MapGet("/analytics/saved", async (
+            IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new ListSavedAnalyticsViewsQuery(), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<IReadOnlyList<AnalyticsViewDto>>();
+
+        v1.MapGet("/analytics/saved/{id:long}", async (
+            long id, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new GetSavedAnalyticsViewQuery(id), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<AnalyticsViewDto>();
+
+        v1.MapPost("/analytics/saved", async (
+            SaveAnalyticsViewRequest request, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new SaveAnalyticsViewCommand(
+                request.ViewKey, request.Name, request.IsShared, request.ConfigJson,
+                request.Reason), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<AnalyticsViewDto>();
+
+        v1.MapDelete("/analytics/saved/{id:long}", async (
+            long id, string? reason, IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new DeleteAnalyticsViewCommand(
+                id, reason ?? "delete saved view"), cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}")
+        .Produces<bool>();
 
         v1.MapGet("/wholesale/accounts/{customerId:int}", async (
             int customerId, IRequestDispatcher dispatcher, CancellationToken cancellationToken) =>
@@ -1955,6 +2097,19 @@ public sealed record WholesaleInvoiceWriteRequest(
 
 public sealed record PublishWholesalePriceListRequest(
     PublishWholesalePriceListInput Input, string Reason);
+
+public sealed record ReportParameterRequest(
+    IReadOnlyDictionary<string, string?> Parameters);
+
+public sealed record ReportPrintRequest(
+    IReadOnlyDictionary<string, string?> Parameters, bool Duplicate,
+    string? TerminalCode, string Reason);
+
+public sealed record ReportExportRequest(
+    IReadOnlyDictionary<string, string?> Parameters, string Reason);
+
+public sealed record SaveAnalyticsViewRequest(
+    string ViewKey, string Name, bool IsShared, string ConfigJson, string Reason);
 
 public sealed record WholesaleAccountWriteRequest(
     WholesaleAccountInput Input, string Reason);

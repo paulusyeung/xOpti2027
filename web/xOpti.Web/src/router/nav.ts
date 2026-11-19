@@ -30,6 +30,12 @@ export const NAV_ITEMS: readonly NavItem[] = [
     permission: PermissionNames.WholesaleInvoicePost,
   },
   {
+    to: '/admin/reports',
+    title: 'Reports',
+    icon: 'mdi-file-chart-outline',
+    permission: PermissionNames.ReportFinancial,
+  },
+  {
     to: '/admin/claims',
     title: 'Claims',
     icon: 'mdi-shield-check-outline',

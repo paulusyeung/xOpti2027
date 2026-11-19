@@ -36,7 +36,7 @@ public sealed class PosFullDayRehearsalTests(ApiPostgresFixture fixture)
             VALUES ({sku}, '09', '09', '09', '0001', '0001', 'Rehearsal Frame', 20, 30.0000,
                 true, true, false);
             INSERT INTO public.branch_inventory (branch_code, sku, qty_on_hand)
-            VALUES ('01', {sku}, 20)
+            VALUES ('06', {sku}, 20)
             ON CONFLICT (branch_code, sku) DO UPDATE SET qty_on_hand = 20;
             """);
         seed.LotRecords.Add(new InvtLotRecord
@@ -81,7 +81,7 @@ public sealed class PosFullDayRehearsalTests(ApiPostgresFixture fixture)
         {
             var opened = await BodyAsync(await manager.PostAsync("/api/v1/cash/sessions", new
             {
-                branchCode = "01", terminalCode = terminal, openingFloat = 100m,
+                branchCode = "06", terminalCode = terminal, openingFloat = 100m,
                 reason = "rehearsal drawer",
             }), factory, HttpStatusCode.Created);
             sessionNumbers.Add(opened.GetProperty("id").GetInt64());
@@ -166,7 +166,7 @@ public sealed class PosFullDayRehearsalTests(ApiPostgresFixture fixture)
 
         var close = await BodyAsync(await manager.PostAsync("/api/v1/cash/daily-closes", new
         {
-            branchCode = "01", businessDate, reason = "full-day rehearsal",
+            branchCode = "06", businessDate, reason = "full-day rehearsal",
         }), factory, HttpStatusCode.OK);
 
         Assert.Equal(200m, close.GetProperty("totalSales").GetDecimal());
@@ -192,14 +192,14 @@ public sealed class PosFullDayRehearsalTests(ApiPostgresFixture fixture)
         Assert.Equal("final", close.GetProperty("status").GetString());
 
         var journal = await BodyAsync(await manager.GetAsync(
-            $"/api/v1/cash/journal?branchCode=01&businessDate={businessDate:yyyy-MM-dd}"),
+            $"/api/v1/cash/journal?branchCode=06&businessDate={businessDate:yyyy-MM-dd}"),
             factory, HttpStatusCode.OK);
         Assert.Equal(281m, journal.GetProperty("expectedCash").GetDecimal());
         Assert.Equal(3, journal.GetProperty("documents").GetArrayLength());
 
         var repeat = await manager.PostAsync("/api/v1/cash/daily-closes", new
         {
-            branchCode = "01", businessDate, reason = "rehearsal repeat",
+            branchCode = "06", businessDate, reason = "rehearsal repeat",
         });
         Assert.Equal(HttpStatusCode.BadRequest, repeat.StatusCode);
 

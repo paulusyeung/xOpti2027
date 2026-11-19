@@ -1,0 +1,1060 @@
+=== RPT-001 Add Code Listing ===
+xOpti report
+CUSTOMER COPY
+RPT-001 · Add Code Listing
+Title The Optical Centre, Richmond - Add Code Listing
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Kind | Code | Name | Detail
+value | value | value | value
+
+=== RPT-002 Back Order Listing ===
+xOpti report
+CUSTOMER COPY
+RPT-002 · Back Order Listing
+Title The Optical Centre - Back Order Listing
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Order | Date | Customer | Customer name | Status | Total | Paid | Balance | Age (days) | Invoice
+value | 2026-01-02 | 1 | value | value | 10.0000 | 10.0000 | 10.0000 | 1 | value
+
+=== RPT-003 Bar Code Tag ===
+xOpti report
+CUSTOMER COPY
+RPT-003 · Bar Code Tag
+Title The Optical Centre, Richmond - Bar Code Tag
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+SKU | Name | Dept | Class | Category | Supplier | Brand | On hand | Average cost | Retail | Wholesale A | Wholesale B | Wholesale C
+value | value | value | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-004 Bar Code Tag Old ===
+xOpti report
+CUSTOMER COPY
+RPT-004 · Bar Code Tag Old
+Title The Optical Centre, Richmond - Bar Code Tag
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+SKU | Name | Dept | Class | Category | Supplier | Brand | On hand | Average cost | Retail | Wholesale A | Wholesale B | Wholesale C
+value | value | value | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-005 Bar Code Tag s16 ===
+xOpti report
+CUSTOMER COPY
+RPT-005 · Bar Code Tag s16
+Title The Optical Centre, Richmond - Bar Code Tag
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+SKU | Name | Dept | Class | Category | Supplier | Brand | On hand | Average cost | Retail | Wholesale A | Wholesale B | Wholesale C
+value | value | value | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-006 Bar Code Tag sON ===
+xOpti report
+CUSTOMER COPY
+RPT-006 · Bar Code Tag sON
+Title The Optical Centre, Richmond - Bar Code Tag
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+SKU | Name | Dept | Class | Category | Supplier | Brand | On hand | Average cost | Retail | Wholesale A | Wholesale B | Wholesale C
+value | value | value | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-007 Birthday Reminder ===
+xOpti report
+CUSTOMER COPY
+RPT-007 · Birthday Reminder
+Title The Optical Centre, Richmond - Birthday Reminder
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Customer | Name | VIP | Phone | Email | City | Province | Credit limit | Total purchased | Last purchase
+1 | value | value | value | value | 1 | value | 10.0000 | 10.0000 | 2026-01-02
+
+=== RPT-008 Brand Code Listing ===
+xOpti report
+CUSTOMER COPY
+RPT-008 · Brand Code Listing
+Title The Optical Centre, Richmond - Brand Code Listing
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Kind | Code | Name | Detail
+value | value | value | value
+
+=== RPT-009 Category Code Listing ===
+xOpti report
+CUSTOMER COPY
+RPT-009 · Category Code Listing
+Title The Optical Centre, Richmond - Category Code Listing
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Kind | Code | Name | Detail
+value | value | value | value
+
+=== RPT-010 Claims Receipt ===
+xOpti report
+CUSTOMER COPY
+RPT-010 · Claims Receipt
+Title The Optical Centre, Richmond - Optical Claims Receipt
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Claim | Invoice | Customer | Customer name | Plan | Payer | Status | Created | Billed | Covered | Approved | Paid
+value | value | 1 | value | value | value | value | 2026-01-02 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-011 Class Code Listing ===
+xOpti report
+CUSTOMER COPY
+RPT-011 · Class Code Listing
+Title The Optical Centre, Richmond - Class Code Listing
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Kind | Code | Name | Detail
+value | value | value | value
+
+=== RPT-012 Copy of Sales Report ===
+xOpti report
+CUSTOMER COPY
+RPT-012 · Copy of Sales Report
+Title The Optical Centre, Richmond - Sales Report
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-013 Cost and Margin of Goods Sold ===
+xOpti report
+CUSTOMER COPY
+RPT-013 · Cost and Margin of Goods Sold
+Title The Optical Centre, Richmond - Cost and Margin of Goods Sold
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Customer | Customer name | Staff | SKU | Qty | Sales | Cost | Margin | Margin %
+value | 2026-01-02 | 1 | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000 | 1
+
+=== RPT-014 Customer Listing (Active) ===
+xOpti report
+CUSTOMER COPY
+RPT-014 · Customer Listing (Active)
+Title The Optical Centre, Richmond - Customer Listing (Active)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Customer | Name | VIP | Phone | Email | City | Province | Credit limit | Total purchased | Last purchase
+1 | value | value | value | value | 1 | value | 10.0000 | 10.0000 | 2026-01-02
+
+=== RPT-015 Customer Listing (General) ===
+xOpti report
+CUSTOMER COPY
+RPT-015 · Customer Listing (General)
+Title The Optical Centre, Richmond - Customer Listing (General)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Customer | Name | VIP | Phone | Email | City | Province | Credit limit | Total purchased | Last purchase
+1 | value | value | value | value | 1 | value | 10.0000 | 10.0000 | 2026-01-02
+
+=== RPT-016 Customer Listing (Inactive) ===
+xOpti report
+CUSTOMER COPY
+RPT-016 · Customer Listing (Inactive)
+Title The Optical Centre, Richmond - Customer Listing (Inactive)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Customer | Name | VIP | Phone | Email | City | Province | Credit limit | Total purchased | Last purchase
+1 | value | value | value | value | 1 | value | 10.0000 | 10.0000 | 2026-01-02
+
+=== RPT-017 Daily Cash Receipts ===
+xOpti report
+CUSTOMER COPY
+RPT-017 · Daily Cash Receipts
+Title The Optical Centre, Richmond - Daily cash receipts
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Business date | Branch | Terminal | Status | Opening float | Expected cash | Counted cash | Variance | Closed
+2026-01-02 | value | value | value | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 2026-01-02
+
+=== RPT-018 Daily Cash Receipts 2010 ===
+xOpti report
+CUSTOMER COPY
+RPT-018 · Daily Cash Receipts 2010
+Title The Optical Centre, Richmond - Daily cash receipts
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Business date | Branch | Terminal | Status | Opening float | Expected cash | Counted cash | Variance | Closed
+2026-01-02 | value | value | value | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 2026-01-02
+
+=== RPT-019 Department Code Listing ===
+xOpti report
+CUSTOMER COPY
+RPT-019 · Department Code Listing
+Title The Optical Centre, Richmond - Department Code Listing
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Kind | Code | Name | Detail
+value | value | value | value
+
+=== RPT-020 Employee Listing ===
+xOpti report
+CUSTOMER COPY
+RPT-020 · Employee Listing
+Title The Optical Centre, Richmond - Empolyee Listing
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Kind | Code | Name | Detail
+value | value | value | value
+
+=== RPT-021 Exceptional Sales Report ===
+xOpti report
+CUSTOMER COPY
+RPT-021 · Exceptional Sales Report
+Title The Optical Centre, Richmond - Exceptional Sales Report
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-022 Insufficient Stock Listing ===
+xOpti report
+CUSTOMER COPY
+RPT-022 · Insufficient Stock Listing
+Title The Optical Centre, Richmond - Insufficient Stock Listing
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+SKU | Name | Dept | Class | Category | Supplier | Brand | On hand | Average cost | Retail | Wholesale A | Wholesale B | Wholesale C
+value | value | value | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-023 Insurance Reminder ===
+xOpti report
+CUSTOMER COPY
+RPT-023 · Insurance Reminder
+Title The Optical Centre, Richmond - Insurance Reminder
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Customer | Name | VIP | Phone | Email | City | Province | Credit limit | Total purchased | Last purchase
+1 | value | value | value | value | 1 | value | 10.0000 | 10.0000 | 2026-01-02
+
+=== RPT-024 Inventory Ledger ===
+xOpti report
+CUSTOMER COPY
+RPT-024 · Inventory Ledger
+Title The Optical Centre, Richmond - Inventory Ledger
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+SKU | Name | Dept | Class | Category | Supplier | Brand | On hand | Average cost | Retail | Wholesale A | Wholesale B | Wholesale C
+value | value | value | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-025 Inventory Listing (By LSP) ===
+xOpti report
+CUSTOMER COPY
+RPT-025 · Inventory Listing (By LSP)
+Title The Optical Centre, Richmond - Inventory Listing (By LSP)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+SKU | Name | Dept | Class | Category | Supplier | Brand | On hand | Average cost | Retail | Wholesale A | Wholesale B | Wholesale C
+value | value | value | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-026 Inventory Listing (Short) ===
+xOpti report
+CUSTOMER COPY
+RPT-026 · Inventory Listing (Short)
+Title The Optical Centre, Richmond - Inventory Listing (Short)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+SKU | Name | Dept | Class | Category | Supplier | Brand | On hand | Average cost | Retail | Wholesale A | Wholesale B | Wholesale C
+value | value | value | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-027 Inventory On Hand by Category ===
+xOpti report
+CUSTOMER COPY
+RPT-027 · Inventory On Hand by Category
+Title The Optical Centre - Inventory On Hand by Category
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+SKU | Name | Dept | Class | Category | Supplier | Brand | On hand | Average cost | Retail | Wholesale A | Wholesale B | Wholesale C
+value | value | value | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-028 Inventory On Hand Summary ===
+xOpti report
+CUSTOMER COPY
+RPT-028 · Inventory On Hand Summary
+Title 
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+SKU | Name | Dept | Class | Category | Supplier | Brand | On hand | Average cost | Retail | Wholesale A | Wholesale B | Wholesale C
+value | value | value | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-029 Inventory Purchase ===
+xOpti report
+CUSTOMER COPY
+RPT-029 · Inventory Purchase
+Title The Optical Centre, Richmond - Inventory Purchase
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Supplier | Supplier name | SKU | Qty | Unit cost | Amount | Document total
+value | 2026-01-02 | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-030 Inventory Retail Price Listing ===
+xOpti report
+CUSTOMER COPY
+RPT-030 · Inventory Retail Price Listing
+Title The Optical Centre, Richmond - Inventory Retail Price Listing
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+SKU | Name | Dept | Class | Category | Supplier | Brand | On hand | Average cost | Retail | Wholesale A | Wholesale B | Wholesale C
+value | value | value | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-031 Inventory Special On Hand Analysis ===
+xOpti report
+CUSTOMER COPY
+RPT-031 · Inventory Special On Hand Analysis
+Title 
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+SKU | Name | Dept | Class | Category | Supplier | Brand | On hand | Average cost | Retail | Wholesale A | Wholesale B | Wholesale C
+value | value | value | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-032 Inventory Special Purchase Analysis ===
+xOpti report
+CUSTOMER COPY
+RPT-032 · Inventory Special Purchase Analysis
+Title The Optical Centre, Richmond - Inventory Special Purchase Analysis
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Supplier | Supplier name | SKU | Qty | Unit cost | Amount | Document total
+value | 2026-01-02 | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-033 Invoice ===
+xOpti report
+CUSTOMER COPY
+RPT-033 · Invoice
+Title The Optical Centre, Richmond - Invoice
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-034 Invoice 2010 ===
+xOpti report
+CUSTOMER COPY
+RPT-034 · Invoice 2010
+Title The Optical Centre, Richmond - Invoice
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-035 Invoice Analysis (By Date) ===
+xOpti report
+CUSTOMER COPY
+RPT-035 · Invoice Analysis (By Date)
+Title The Optical Centre, Richmond - Invoice List (By Date)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-036 Invoice List (By Date) ===
+xOpti report
+CUSTOMER COPY
+RPT-036 · Invoice List (By Date)
+Title The Optical Centre, Richmond - Invoice List (By Date)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-037 Invoice List (By Date) - Refund ===
+xOpti report
+CUSTOMER COPY
+RPT-037 · Invoice List (By Date) - Refund
+Title The Optical Centre, Richmond - Invoice List (By Date)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-038 Invoice List (By Date) 2010 ===
+xOpti report
+CUSTOMER COPY
+RPT-038 · Invoice List (By Date) 2010
+Title The Optical Centre, Richmond - Invoice List (By Date)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-039 Invoice List (By Invoice No.) ===
+xOpti report
+CUSTOMER COPY
+RPT-039 · Invoice List (By Invoice No.)
+Title The Optical Centre, Richmond - Invoice List (By Invoice No.)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-040 Invoice List (By Invoice No.) 2010 ===
+xOpti report
+CUSTOMER COPY
+RPT-040 · Invoice List (By Invoice No.) 2010
+Title The Optical Centre, Richmond - Invoice List (By Invoice No.)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-041 Invoice ON ===
+xOpti report
+CUSTOMER COPY
+RPT-041 · Invoice ON
+Title The Optical Centre, Richmond - Invoice
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-042 Invoice Summary (By Date) ===
+xOpti report
+CUSTOMER COPY
+RPT-042 · Invoice Summary (By Date)
+Title The Optical Centre, Richmond - Invoice Summary (By Date)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-043 Invoice Summary (By Invoice No.) ===
+xOpti report
+CUSTOMER COPY
+RPT-043 · Invoice Summary (By Invoice No.)
+Title The Optical Centre, Richmond - Invoice Summary (By Invoice No.)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-044 Lens and Contact Lens Summary ===
+xOpti report
+CUSTOMER COPY
+RPT-044 · Lens and Contact Lens Summary
+Title The Optical Centre, Richmond - Lens and Contact Lens On Hand Quantities
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Kind | Code | Name | Detail
+value | value | value | value
+
+=== RPT-045 Material Code Listing ===
+xOpti report
+CUSTOMER COPY
+RPT-045 · Material Code Listing
+Title The Optical Centre, Richmond - Material Code Listing
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Kind | Code | Name | Detail
+value | value | value | value
+
+=== RPT-046 Order ===
+xOpti report
+CUSTOMER COPY
+RPT-046 · Order
+Title The Optical Centre, Richmond - Order
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Order | Date | Customer | Customer name | Status | Total | Paid | Balance | Age (days) | Invoice
+value | 2026-01-02 | 1 | value | value | 10.0000 | 10.0000 | 10.0000 | 1 | value
+
+=== RPT-047 Order 2010 ===
+xOpti report
+CUSTOMER COPY
+RPT-047 · Order 2010
+Title The Optical Centre, Richmond - Order
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Order | Date | Customer | Customer name | Status | Total | Paid | Balance | Age (days) | Invoice
+value | 2026-01-02 | 1 | value | value | 10.0000 | 10.0000 | 10.0000 | 1 | value
+
+=== RPT-048 Order List (By Date) ===
+xOpti report
+CUSTOMER COPY
+RPT-048 · Order List (By Date)
+Title The Optical Centre, Richmond - Order List (By Date)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Order | Date | Customer | Customer name | Status | Total | Paid | Balance | Age (days) | Invoice
+value | 2026-01-02 | 1 | value | value | 10.0000 | 10.0000 | 10.0000 | 1 | value
+
+=== RPT-049 Order List (By Order No.) ===
+xOpti report
+CUSTOMER COPY
+RPT-049 · Order List (By Order No.)
+Title The Optical Centre, Richmond - Order List (By Order No.)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Order | Date | Customer | Customer name | Status | Total | Paid | Balance | Age (days) | Invoice
+value | 2026-01-02 | 1 | value | value | 10.0000 | 10.0000 | 10.0000 | 1 | value
+
+=== RPT-050 Order ON ===
+xOpti report
+CUSTOMER COPY
+RPT-050 · Order ON
+Title The Optical Centre, Richmond - Order
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Order | Date | Customer | Customer name | Status | Total | Paid | Balance | Age (days) | Invoice
+value | 2026-01-02 | 1 | value | value | 10.0000 | 10.0000 | 10.0000 | 1 | value
+
+=== RPT-051 Order.dao ===
+xOpti report
+CUSTOMER COPY
+RPT-051 · Order.dao
+Title The Optical Centre, Richmond - Order
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Order | Date | Customer | Customer name | Status | Total | Paid | Balance | Age (days) | Invoice
+value | 2026-01-02 | 1 | value | value | 10.0000 | 10.0000 | 10.0000 | 1 | value
+
+=== RPT-052 Orders History ===
+xOpti report
+CUSTOMER COPY
+RPT-052 · Orders History
+Title The Optical Centre, Richmond - Orders History
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Order | Date | Customer | Customer name | Status | Total | Paid | Balance | Age (days) | Invoice
+value | 2026-01-02 | 1 | value | value | 10.0000 | 10.0000 | 10.0000 | 1 | value
+
+=== RPT-053 Orders in Progress ===
+xOpti report
+CUSTOMER COPY
+RPT-053 · Orders in Progress
+Title The Optical Centre - Orders In Progress
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Order | Date | Customer | Customer name | Status | Total | Paid | Balance | Age (days) | Invoice
+value | 2026-01-02 | 1 | value | value | 10.0000 | 10.0000 | 10.0000 | 1 | value
+
+=== RPT-054 Orders Report (By Date) ===
+xOpti report
+CUSTOMER COPY
+RPT-054 · Orders Report (By Date)
+Title The Optical Centre, Richmond - Orders Report (By Date)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Order | Date | Customer | Customer name | Status | Total | Paid | Balance | Age (days) | Invoice
+value | 2026-01-02 | 1 | value | value | 10.0000 | 10.0000 | 10.0000 | 1 | value
+
+=== RPT-055 Orders Report (By Order No.) ===
+xOpti report
+CUSTOMER COPY
+RPT-055 · Orders Report (By Order No.)
+Title The Optical Centre, Richmond - Orders Report (By Order No.)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Order | Date | Customer | Customer name | Status | Total | Paid | Balance | Age (days) | Invoice
+value | 2026-01-02 | 1 | value | value | 10.0000 | 10.0000 | 10.0000 | 1 | value
+
+=== RPT-056 Orders Summary (By Date) ===
+xOpti report
+CUSTOMER COPY
+RPT-056 · Orders Summary (By Date)
+Title The Optical Centre - Orders Summary (By Date)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Order | Date | Customer | Customer name | Status | Total | Paid | Balance | Age (days) | Invoice
+value | 2026-01-02 | 1 | value | value | 10.0000 | 10.0000 | 10.0000 | 1 | value
+
+=== RPT-057 Orders Summary (By Order No.) ===
+xOpti report
+CUSTOMER COPY
+RPT-057 · Orders Summary (By Order No.)
+Title The Optical Centre - Orders Summary (By Order No.)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Order | Date | Customer | Customer name | Status | Total | Paid | Balance | Age (days) | Invoice
+value | 2026-01-02 | 1 | value | value | 10.0000 | 10.0000 | 10.0000 | 1 | value
+
+=== RPT-058 Outstanding Orders on hand ===
+xOpti report
+CUSTOMER COPY
+RPT-058 · Outstanding Orders on hand
+Title The Optical Centre, Richmond - Outstanding Orders on hand
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Order | Date | Customer | Customer name | Status | Total | Paid | Balance | Age (days) | Invoice
+value | 2026-01-02 | 1 | value | value | 10.0000 | 10.0000 | 10.0000 | 1 | value
+
+=== RPT-059 Payment Summary ===
+xOpti report
+CUSTOMER COPY
+RPT-059 · Payment Summary
+Title The Optical Centre - Payment Summary
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-060 Prescription ===
+xOpti report
+CUSTOMER COPY
+RPT-060 · Prescription
+Title 
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Customer | Customer name | Type | Version | Issued | Prescriber | R sphere | R cylinder | R axis | L sphere | L cylinder | L axis | Verified
+1 | value | value | 1 | 2026-01-02 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 2026-01-02
+
+=== RPT-061 Prescription reminder ===
+xOpti report
+CUSTOMER COPY
+RPT-061 · Prescription reminder
+Title The Optical Centre, Richmond - Prescription reminder
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Customer | Customer name | Type | Version | Issued | Prescriber | R sphere | R cylinder | R axis | L sphere | L cylinder | L axis | Verified
+1 | value | value | 1 | 2026-01-02 | 1 | 1 | 1 | 1 | 1 | 1 | 1 | 2026-01-02
+
+=== RPT-062 RBIC WorkBook ===
+xOpti report
+CUSTOMER COPY
+RPT-062 · RBIC WorkBook
+Title The Optical Centre, Richmond - RBIC Work Book
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Claim | Invoice | Customer | Customer name | Plan | Payer | Status | Created | Billed | Covered | Approved | Paid
+value | value | 1 | value | value | value | value | 2026-01-02 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-063 RBIC WorkBook Result ===
+xOpti report
+CUSTOMER COPY
+RPT-063 · RBIC WorkBook Result
+Title The Optical Centre, Richmond - RBIC WorkBook Result
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Claim | Invoice | Customer | Customer name | Plan | Payer | Status | Created | Billed | Covered | Approved | Paid
+value | value | 1 | value | value | value | value | 2026-01-02 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-064 Re-stocking Report ===
+xOpti report
+CUSTOMER COPY
+RPT-064 · Re-stocking Report
+Title The Optical Centre, Richmond - Re-stocking Report
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Supplier | Supplier name | SKU | Qty | Unit cost | Amount | Document total
+value | 2026-01-02 | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-065 Receipts Report ===
+xOpti report
+CUSTOMER COPY
+RPT-065 · Receipts Report
+Title The Optical Centre, Richmond - Receipts Report
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-066 Receipts Report.dao ===
+xOpti report
+CUSTOMER COPY
+RPT-066 · Receipts Report.dao
+Title The Optical Centre, Robson - Receipts Report
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-067 Reject to Supplier Journal ===
+xOpti report
+CUSTOMER COPY
+RPT-067 · Reject to Supplier Journal
+Title The Optical Centre, Richmond - Reject to Supplier Journal
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Business date | Branch | Terminal | Status | Opening float | Expected cash | Counted cash | Variance | Closed
+2026-01-02 | value | value | value | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 2026-01-02
+
+=== RPT-068 RxCust ===
+xOpti report
+CUSTOMER COPY
+RPT-068 · RxCust
+Title The Optical Centre, Richmond - Customer's Prescription
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Kind | Code | Name | Detail
+value | value | value | value
+
+=== RPT-069 RxTxNum ===
+xOpti report
+CUSTOMER COPY
+RPT-069 · RxTxNum
+Title The Optical Centre, Richmond - Customer's Prescription
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Kind | Code | Name | Detail
+value | value | value | value
+
+=== RPT-070 Sales by Category ===
+xOpti report
+CUSTOMER COPY
+RPT-070 · Sales by Category
+Title The Optical Centre, Richmond - Sales by Category
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-071 Sales Report ===
+xOpti report
+CUSTOMER COPY
+RPT-071 · Sales Report
+Title The Optical Centre, Richmond - Sales Report
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-072 Sales Report 2010 ===
+xOpti report
+CUSTOMER COPY
+RPT-072 · Sales Report 2010
+Title The Optical Centre, Richmond - Sales Report
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-073 Sales Return Journal ===
+xOpti report
+CUSTOMER COPY
+RPT-073 · Sales Return Journal
+Title The Optical Centre, Richmond - Void Orders and Refund Invoices Journal
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Business date | Branch | Terminal | Status | Opening float | Expected cash | Counted cash | Variance | Closed
+2026-01-02 | value | value | value | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 2026-01-02
+
+=== RPT-074 Sales Return Journal 2010 ===
+xOpti report
+CUSTOMER COPY
+RPT-074 · Sales Return Journal 2010
+Title The Optical Centre, Richmond - Void Orders and Refund Invoices Journal
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Business date | Branch | Terminal | Status | Opening float | Expected cash | Counted cash | Variance | Closed
+2026-01-02 | value | value | value | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 2026-01-02
+
+=== RPT-075 SKULedger ===
+xOpti report
+CUSTOMER COPY
+RPT-075 · SKULedger
+Title The Optical Centre, Richmond - SKU Year-to-date Transactions Summary
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Kind | Code | Name | Detail
+value | value | value | value
+
+=== RPT-076 Slow Movement Inventory Listing ===
+xOpti report
+CUSTOMER COPY
+RPT-076 · Slow Movement Inventory Listing
+Title The Optical Centre, Richmond - Slow Movement Inventory Listing
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+SKU | Name | Dept | Class | Category | Supplier | Brand | On hand | Average cost | Retail | Wholesale A | Wholesale B | Wholesale C
+value | value | value | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-077 ST Exceptional Report ===
+xOpti report
+CUSTOMER COPY
+RPT-077 · ST Exceptional Report
+Title The Optical Centre, Richmond - Stock Take Exceptional Report
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-078 ST Exceptional Report bk ===
+xOpti report
+CUSTOMER COPY
+RPT-078 · ST Exceptional Report bk
+Title The Optical Centre, Richmond - Stock Take Exceptional Report
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== RPT-079 ST Import Data ===
+xOpti report
+CUSTOMER COPY
+RPT-079 · ST Import Data
+Title The Optical Centre, Richmond - Stock Take Import Data
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Kind | Code | Name | Detail
+value | value | value | value
+
+=== RPT-080 ST Import Error ===
+xOpti report
+CUSTOMER COPY
+RPT-080 · ST Import Error
+Title The Optical Centre, Richmond - Stock Take Import Data Errors
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Kind | Code | Name | Detail
+value | value | value | value
+
+=== RPT-081 ST Journal ===
+xOpti report
+CUSTOMER COPY
+RPT-081 · ST Journal
+Title The Optical Centre, Richmond - Stock Take Journal
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Business date | Branch | Terminal | Status | Opening float | Expected cash | Counted cash | Variance | Closed
+2026-01-02 | value | value | value | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 2026-01-02
+
+=== RPT-082 ST Journal bk ===
+xOpti report
+CUSTOMER COPY
+RPT-082 · ST Journal bk
+Title The Optical Centre, Richmond - Stock Take Journal
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Business date | Branch | Terminal | Status | Opening float | Expected cash | Counted cash | Variance | Closed
+2026-01-02 | value | value | value | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 2026-01-02
+
+=== RPT-083 ST WorkBook ===
+xOpti report
+CUSTOMER COPY
+RPT-083 · ST WorkBook
+Title The Optical Centre, Richmond - Stock Take Work Book
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Kind | Code | Name | Detail
+value | value | value | value
+
+=== RPT-084 Stock Adjustment ===
+xOpti report
+CUSTOMER COPY
+RPT-084 · Stock Adjustment
+Title The Optical Centre, Richmond - Stock Adjustment
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+SKU | Name | Dept | Class | Category | Supplier | Brand | On hand | Average cost | Retail | Wholesale A | Wholesale B | Wholesale C
+value | value | value | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-085 Stock Adjustment00 ===
+xOpti report
+CUSTOMER COPY
+RPT-085 · Stock Adjustment00
+Title The Optical Centre, Richmond - Stock Adjustment Journal
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+SKU | Name | Dept | Class | Category | Supplier | Brand | On hand | Average cost | Retail | Wholesale A | Wholesale B | Wholesale C
+value | value | value | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-086 Stock Received ===
+xOpti report
+CUSTOMER COPY
+RPT-086 · Stock Received
+Title The Optical Centre, Richmond - Stock Received Journal
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Supplier | Supplier name | SKU | Qty | Unit cost | Amount | Document total
+value | 2026-01-02 | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-087 Stock Received (By Supplier) ===
+xOpti report
+CUSTOMER COPY
+RPT-087 · Stock Received (By Supplier)
+Title The Optical Centre, Richmond - Stock Received Report (By Supplier)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Supplier | Supplier name | SKU | Qty | Unit cost | Amount | Document total
+value | 2026-01-02 | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-088 Stock Received (By Supplier) Summary ===
+xOpti report
+CUSTOMER COPY
+RPT-088 · Stock Received (By Supplier) Summary
+Title The Optical Centre, Richmond - Stock Received Report (By Supplier) Summary
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Supplier | Supplier name | SKU | Qty | Unit cost | Amount | Document total
+value | 2026-01-02 | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-089 Stock Rejected ===
+xOpti report
+CUSTOMER COPY
+RPT-089 · Stock Rejected
+Title The Optical Centre, Richmond - Stock Rejected Journal
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+SKU | Name | Dept | Class | Category | Supplier | Brand | On hand | Average cost | Retail | Wholesale A | Wholesale B | Wholesale C
+value | value | value | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-090 Supplier Code Listing (Short) ===
+xOpti report
+CUSTOMER COPY
+RPT-090 · Supplier Code Listing (Short)
+Title The Optical Centre, Richmond - Supplier Code Listing (Short)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Supplier | Supplier name | SKU | Qty | Unit cost | Amount | Document total
+value | 2026-01-02 | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-091 Supplier Listing (Detailed) ===
+xOpti report
+CUSTOMER COPY
+RPT-091 · Supplier Listing (Detailed)
+Title The Optical Centre, Richmond - Supplier Listing (Detailed)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Supplier | Supplier name | SKU | Qty | Unit cost | Amount | Document total
+value | 2026-01-02 | value | value | value | value | 1 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-092 VIP listing (Inactive) ===
+xOpti report
+CUSTOMER COPY
+RPT-092 · VIP listing (Inactive)
+Title The Optical Centre, Richmond - VIP Listing (Inactive)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Kind | Code | Name | Detail
+value | value | value | value
+
+=== RPT-093 Wholesales Invoice ===
+xOpti report
+CUSTOMER COPY
+RPT-093 · Wholesales Invoice
+Title The Optical Centre, Richmond - Wholesales Invoice
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Status | Line | SKU | Qty | Unit price | Amount | Document total | Paid | Balance
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-094 Wholesales Packing List ===
+xOpti report
+CUSTOMER COPY
+RPT-094 · Wholesales Packing List
+Title The Optical Centre, Richmond - Wholesales Packing List
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Status | Line | SKU | Qty | Unit price | Amount | Document total | Paid | Balance
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-095 Wholesales Return ===
+xOpti report
+CUSTOMER COPY
+RPT-095 · Wholesales Return
+Title The Optical Centre, Richmond - Wholesales Return
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Status | Line | SKU | Qty | Unit price | Amount | Document total | Paid | Balance
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-096 Wholesales Summary (By Date) ===
+xOpti report
+CUSTOMER COPY
+RPT-096 · Wholesales Summary (By Date)
+Title The Optical Centre, Richmond - Wholesales Summary (By Date)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Status | Line | SKU | Qty | Unit price | Amount | Document total | Paid | Balance
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-097 Wholesales Summary (By No.) ===
+xOpti report
+CUSTOMER COPY
+RPT-097 · Wholesales Summary (By No.)
+Title The Optical Centre, Richmond - Wholesales Summary (By No.)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Status | Line | SKU | Qty | Unit price | Amount | Document total | Paid | Balance
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== RPT-098 Wholesales Summary (By Vendor) ===
+xOpti report
+CUSTOMER COPY
+RPT-098 · Wholesales Summary (By Vendor)
+Title The Optical Centre, Richmond - Wholesales Summary (By Vendor)
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Status | Line | SKU | Qty | Unit price | Amount | Document total | Paid | Balance
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== SYS-CUST-STATEMENT Customer statement ===
+xOpti report
+CUSTOMER COPY
+SYS-CUST-STATEMENT · Customer statement
+Title xOpti customer statement
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Customer | Name | VIP | Phone | Email | City | Province | Credit limit | Total purchased | Last purchase
+1 | value | value | value | value | 1 | value | 10.0000 | 10.0000 | 2026-01-02
+
+=== SYS-DAILY-CASH Daily cash receipts ===
+xOpti report
+CUSTOMER COPY
+SYS-DAILY-CASH · Daily cash receipts
+Title Daily cash receipts
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Business date | Branch | Terminal | Status | Opening float | Expected cash | Counted cash | Variance | Closed
+2026-01-02 | value | value | value | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 2026-01-02
+
+=== SYS-INVOICE Invoice ===
+xOpti report
+CUSTOMER COPY
+SYS-INVOICE · Invoice
+Title xOpti invoice
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== SYS-ORDER Order ===
+xOpti report
+CUSTOMER COPY
+SYS-ORDER · Order
+Title xOpti order
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== SYS-RECEIPT Receipt ===
+xOpti report
+CUSTOMER COPY
+SYS-RECEIPT · Receipt
+Title xOpti receipt
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== SYS-SALES-REPORT Sales report ===
+xOpti report
+CUSTOMER COPY
+SYS-SALES-REPORT · Sales report
+Title Sales report
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Staff | Line | SKU | Qty | Unit price | Amount | Tax | Unit cost | Margin
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | value | 10.0000 | 10.0000
+
+=== SYS-TAX-HST Tax/HST report ===
+xOpti report
+CUSTOMER COPY
+SYS-TAX-HST · Tax/HST report
+Title Tax/HST report
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Net sales | GST | PST | Total
+value | 2026-01-02 | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+
+=== SYS-WS-STATEMENT Wholesale statement ===
+xOpti report
+CUSTOMER COPY
+SYS-WS-STATEMENT · Wholesale statement
+Title xOpti wholesale statement
+As of 2026-01-02 00:00:00 UTC
+Parameter AskDateFrom=2026-01-01
+Document | Date | Type | Customer | Customer name | Status | Line | SKU | Qty | Unit price | Amount | Document total | Paid | Balance
+value | 2026-01-02 | value | 1 | value | value | 1 | value | 1 | 10.0000 | 10.0000 | 10.0000 | 10.0000 | 10.0000
+

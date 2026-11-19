@@ -74,6 +74,8 @@ public class TxDetail
 
     public Money UnitCost { get; set; }
 
+    public Money UnitLsp { get; set; }
+
     public double MarkDownPercent { get; set; }
 
     public Money MarkDownAmount { get; set; }

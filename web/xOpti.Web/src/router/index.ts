@@ -55,6 +55,12 @@ export const routes: RouteRecordRaw[] = [
     meta: { permission: PermissionNames.WholesaleInvoicePost, title: 'Wholesale' },
   },
   {
+    path: '/admin/reports',
+    name: 'reports',
+    component: () => import('@/features/reports/ReportsPage.vue'),
+    meta: { permission: PermissionNames.ReportFinancial, title: 'Reports' },
+  },
+  {
     path: '/admin/claims',
     name: 'claims',
     component: () => import('@/features/claims/ClaimsPage.vue'),

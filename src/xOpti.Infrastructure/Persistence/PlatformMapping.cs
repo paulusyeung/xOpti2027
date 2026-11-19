@@ -167,6 +167,49 @@ public static class PlatformMapping
             e.Property(x => x.UpdatedBy).HasMaxLength(64);
         });
 
+        mb.Entity<ReadModelState>(e =>
+        {
+            e.ToTable("read_model_state", "reporting");
+            e.HasKey(x => x.ModelKey);
+            e.Property(x => x.ModelKey).HasMaxLength(80);
+            e.Property(x => x.AsOf);
+            e.Property(x => x.RefreshStartedAt);
+            e.Property(x => x.RefreshCompletedAt);
+            e.Property(x => x.RowCount);
+            e.Property(x => x.LastError).HasMaxLength(1000);
+        });
+
+        mb.Entity<ReportRun>(e =>
+        {
+            e.ToTable("report_run", "reporting");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.CatalogueId).HasMaxLength(20).IsRequired();
+            e.HasIndex(x => new { x.CatalogueId, x.GeneratedAt });
+            e.Property(x => x.Actor).HasMaxLength(64);
+            e.Property(x => x.Branch).HasMaxLength(3);
+            e.Property(x => x.ParametersJson).HasMaxLength(4000).IsRequired();
+            e.Property(x => x.GeneratedAt);
+            e.Property(x => x.Duplicate);
+            e.Property(x => x.RowCount);
+            e.Property(x => x.Truncated);
+        });
+
+        mb.Entity<AnalyticsSavedView>(e =>
+        {
+            e.ToTable("analytics_saved_view", "reporting");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.Id).UseIdentityAlwaysColumn();
+            e.Property(x => x.ViewKey).HasMaxLength(40).IsRequired();
+            e.HasIndex(x => new { x.OwnerUserId, x.ViewKey });
+            e.Property(x => x.Name).HasMaxLength(120).IsRequired();
+            e.Property(x => x.OwnerUserId).HasMaxLength(64).IsRequired();
+            e.Property(x => x.IsShared);
+            e.Property(x => x.ConfigJson).HasMaxLength(20000).IsRequired();
+            e.Property(x => x.CreatedAt);
+            e.Property(x => x.UpdatedAt);
+        });
+
         mb.Entity<AuditLog>(e =>
         {
             e.ToTable("audit_log", "platform");

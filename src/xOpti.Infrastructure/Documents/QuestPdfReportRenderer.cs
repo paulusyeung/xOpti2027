@@ -1,6 +1,7 @@
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using xOpti.Application.Customers;
 using xOpti.Application.Reporting;
 using xOpti.Application.Sales.Documents;
 using xOpti.Application.Wholesale;
@@ -162,4 +163,118 @@ public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IRep
             $"wholesale-statement-{statement.CustomerId}"
             + $"{(duplicate ? "-duplicate" : string.Empty)}.pdf");
     }
+
+    public RenderedDocument RenderReport(ReportDocument document)
+    {
+        _ = new QuestPdfDocumentRenderer(options);
+        var pdf = Document.Create(container =>
+        {
+            container.Page(page =>
+            {
+                page.Size(PageSizes.A4);
+                page.Margin(16, Unit.Millimetre);
+                page.DefaultTextStyle(style => style.FontFamily("Lato").FontSize(9));
+                QuestPdfReportComponents.PageNumbers(page);
+                page.Content().Column(column =>
+                {
+                    QuestPdfReportComponents.Header(column, document.Entry.Title,
+                        document.Entry.LogicalName, document.AsOf, document.Duplicate);
+                    if (document.Parameters.Count > 0)
+                    {
+                        column.Item().PaddingTop(6).Text(string.Join(" · ",
+                            document.Parameters.OrderBy(pair => pair.Key)
+                                .Where(pair => pair.Value is not null)
+                                .Select(pair => $"{pair.Key}={pair.Value}"))).FontSize(8);
+                    }
+                    QuestPdfReportComponents.DataTable(column, document.Columns, document.Rows);
+                    if (document.Truncated)
+                        column.Item().PaddingTop(8).Background(Colors.Orange.Lighten3)
+                            .Padding(4).Text($"Truncated at {document.AppliedCap} rows; "
+                                + "narrow the parameters or export the underlying data.")
+                            .Bold();
+                    if (document.Stale)
+                        column.Item().PaddingTop(4).Text("Stale read model; refresh before relying on this output.")
+                            .FontColor(Colors.Red.Darken2).Bold();
+                });
+            });
+        })
+        .WithMetadata(new DocumentMetadata
+        {
+            Title = $"{document.Entry.Id} {document.Entry.LogicalName}",
+            Author = "xOpti",
+            Subject = document.Entry.Title,
+            Creator = "xOpti Reporting",
+            Producer = "QuestPDF",
+            CreationDate = document.AsOf.UtcDateTime,
+        })
+        .GeneratePdf();
+        return new RenderedDocument(pdf, "application/pdf",
+            $"{document.Entry.Id}{(document.Duplicate ? "-duplicate" : string.Empty)}.pdf");
+    }
+
+
+    public RenderedDocument RenderCustomerStatement(CustomerStatementDto statement, bool duplicate)
+    {
+        _ = new QuestPdfDocumentRenderer(options);
+        var pdf = Document.Create(container =>
+        {
+            container.Page(page =>
+            {
+                page.Size(PageSizes.A4);
+                page.Margin(16, Unit.Millimetre);
+                page.DefaultTextStyle(style => style.FontFamily("Lato").FontSize(9));
+                QuestPdfReportComponents.PageNumbers(page);
+                page.Content().Column(column =>
+                {
+                    QuestPdfReportComponents.Header(column, "Customer statement",
+                        $"Customer #{statement.CustomerId} {statement.CustomerName}", DateTimeOffset.UtcNow,
+                        duplicate);
+                    column.Item().PaddingTop(4).Text($"{statement.From:yyyy-MM-dd} to {statement.To:yyyy-MM-dd}");
+                    column.Item().Text($"Opening {statement.OpeningBalance:0.0000}");
+                    column.Item().Text($"Charges {statement.Charges:0.0000}");
+                    column.Item().Text($"Payments {statement.Payments:0.0000}");
+                    column.Item().Text($"Refunds {statement.Refunds:0.0000}");
+                    column.Item().Text($"Closing {statement.ClosingBalance:0.0000}").Bold();
+                    column.Item().PaddingTop(8).Table(table =>
+                    {
+                        table.ColumnsDefinition(columns =>
+                        {
+                            columns.ConstantColumn(60);
+                            columns.RelativeColumn(2);
+                            columns.ConstantColumn(50);
+                            columns.ConstantColumn(70);
+                        });
+                        table.Header(header =>
+                        {
+                            header.Cell().Text("Date").Bold();
+                            header.Cell().Text("Document").Bold();
+                            header.Cell().Text("Type").Bold();
+                            header.Cell().AlignRight().Text("Amount").Bold();
+                        });
+                        foreach (var item in statement.Items)
+                        {
+                            table.Cell().Text(item.DateOfEntry.UtcDateTime.ToString("yyyy-MM-dd"));
+                            table.Cell().Text(item.TxNumber);
+                            table.Cell().Text(item.TxType);
+                            table.Cell().AlignRight().Text(item.TotalAmount.ToString("0.0000"));
+                        }
+                    });
+                });
+            });
+        })
+        .WithMetadata(new DocumentMetadata
+        {
+            Title = $"Customer statement {statement.CustomerId}",
+            Author = "xOpti",
+            Subject = duplicate ? "Duplicate customer statement" : "Customer statement",
+            Creator = "xOpti Reporting",
+            Producer = "QuestPDF",
+            CreationDate = DateTime.UnixEpoch,
+        })
+        .GeneratePdf();
+        return new RenderedDocument(pdf, "application/pdf",
+            $"customer-statement-{statement.CustomerId}"
+            + $"{(duplicate ? "-duplicate" : string.Empty)}.pdf");
+    }
+
 }
