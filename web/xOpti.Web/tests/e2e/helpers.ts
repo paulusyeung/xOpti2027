@@ -22,6 +22,22 @@ export async function expectSignedIn(page: Page): Promise<void> {
 }
 
 /**
+ * Expands a collapsed sidebar group and opens one of its items. Only the
+ * Point-of-Service group is open on first sign-in.
+ */
+export async function clickNavItem(
+  page: Page,
+  groupSlug: string,
+  itemTestId: string,
+): Promise<void> {
+  const group = page.getByTestId(`nav-group-${groupSlug}`)
+  if ((await group.getAttribute('aria-expanded')) !== 'true') {
+    await group.click()
+  }
+  await page.getByTestId(itemTestId).click()
+}
+
+/**
  * Makes the server treat the current session as expired while the browser still
  * holds a session cookie. The API then answers with the session-expired problem.
  */

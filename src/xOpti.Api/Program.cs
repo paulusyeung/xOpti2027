@@ -44,15 +44,6 @@ builder.Services.AddXOptiInfrastructure(new InfrastructureOptions
     MaterializedViewRefreshStatements = apiOptions.MaterializedViewRefreshStatements,
 });
 
-// EF schema deployment runs ONLY as this one-shot job (docker compose run --rm api --migrate),
-// never at API startup.
-if (args.Contains("--migrate"))
-{
-    var runner = builder.Build();
-    await SchemaMigrationJob.MigrateAsync(runner.Services);
-    return 0;
-}
-
 builder.Services.AddXOptiApplication();
 builder.Services.AddXOptiIdentity(
     lockoutMaxFailedAccessAttempts: 5,
@@ -302,6 +293,15 @@ if (args.Contains("--schema-drift"))
 
     Console.Error.WriteLine($"{differences.Count} schema difference(s) between the database and xopti-schema.sql.");
     return 1;
+}
+
+// EF schema deployment runs ONLY as this one-shot job (docker compose run --rm api --migrate),
+// never at API startup.
+if (args.Contains("--migrate"))
+{
+    var runner = builder.Build();
+    await SchemaMigrationJob.MigrateAsync(runner.Services);
+    return 0;
 }
 
 var app = builder.Build();

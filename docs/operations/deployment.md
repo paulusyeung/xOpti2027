@@ -136,6 +136,27 @@ Also confirm one receipt and one label print on the approved printer, and one
 scanner read on the approved workstation. Device validation is recorded in
 `docs/parity/devices.csv`; tasks 4.2/4.3 must be signed before go-live.
 
+## 5a. Legacy staff sign-in
+
+Production sign-in authenticates against the migrated `public.staff` row:
+
+- username: `staff.staff_code`
+- password: `staff.password` (legacy plaintext credential, verified in memory)
+- role: `staff.job_title` mapped to the approved application role, falling back
+  to `staff.security_level` when the title is not mapped
+
+| `job_title` | Role |
+| --- | --- |
+| `101` | `admin` |
+| `300`, `302`, `303` | `manager` |
+| `200`, `202` | `optician` |
+| `100`, `102` | `clerk` |
+
+The plaintext password is never copied into the Identity password hash. Identity
+password sign-in remains available for non-staff administrative/reset accounts.
+
+Tests: `LegacyStaffAuthenticationTests`, `LegacyStaffRoleMapTests`.
+
 ## 6. Upgrades
 
 xOpti migrations are additive. Never run `--migrate` or `--bootstrap` at API

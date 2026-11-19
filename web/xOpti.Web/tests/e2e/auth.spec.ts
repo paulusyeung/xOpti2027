@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { expectSignedIn, expireSessionCookie, failNextAnalyticsCallAsExpired, signIn, trackForbiddenResponses } from './helpers'
+import { clickNavItem, expectSignedIn, expireSessionCookie, failNextAnalyticsCallAsExpired, signIn, trackForbiddenResponses } from './helpers'
 
 test('anonymous deep link returns to the requested screen after sign-in', async ({ page }) => {
   await page.goto('/analytics')
@@ -28,7 +28,7 @@ test('sign-out then browser back never shows protected content', async ({ page }
   await signIn(page, 'manager')
   await expectSignedIn(page)
   // Create a protected history entry so Back returns to a protected screen.
-  await page.getByTestId('nav-analytics').click()
+  await clickNavItem(page, 'reports-analytics', 'nav-analytics')
   await expect(page).toHaveURL(/\/analytics$/)
 
   await page.getByTestId('sign-out').click()
@@ -63,7 +63,7 @@ test('session expiry shows the sign-in dialog and keeps the route mounted; same 
 
   await failNextAnalyticsCallAsExpired(page)
   await expireSessionCookie(page)
-  await page.getByTestId('nav-analytics').click()
+  await clickNavItem(page, 'reports-analytics', 'nav-analytics')
 
   const dialog = page.getByTestId('session-expired-dialog')
   await expect(dialog).toBeVisible()
@@ -85,7 +85,7 @@ test('session expiry followed by a different user purges state and goes home', a
   await page.getByTestId('nav-home').click()
   await failNextAnalyticsCallAsExpired(page)
   await expireSessionCookie(page)
-  await page.getByTestId('nav-analytics').click()
+  await clickNavItem(page, 'reports-analytics', 'nav-analytics')
 
   const dialog = page.getByTestId('session-expired-dialog')
   await expect(dialog).toBeVisible()

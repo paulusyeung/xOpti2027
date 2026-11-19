@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { signIn } from './helpers'
+import { clickNavItem, signIn } from './helpers'
 
 // Analytics is enabled with a runtime licence key in the E2E stack. The route
 // loads the server feed and the self-hosted WebPivotTable component.
@@ -8,7 +8,7 @@ test('analytics screen opens for an authorised user and loads the server feed', 
   await signIn(page, 'manager')
   await expect(page.getByTestId('nav-menu')).toBeVisible()
 
-  await page.getByTestId('nav-analytics').click()
+  await clickNavItem(page, 'reports-analytics', 'nav-analytics')
   await expect(page).toHaveURL(/\/analytics$/)
   await expect(page.getByTestId('analytics-page')).toBeVisible()
   await expect(page.getByTestId('wpt-view')).toBeVisible()

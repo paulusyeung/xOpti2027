@@ -60,8 +60,78 @@ public static class Endpoints
         auth.MapPost("/sign-in", async (
             SignInRequest request,
             SignInManager<xOpti.Infrastructure.Identity.XoptiUser> signInManager,
-            UserManager<xOpti.Infrastructure.Identity.XoptiUser> users) =>
+            UserManager<xOpti.Infrastructure.Identity.XoptiUser> users,
+            xOpti.Application.Identity.ILegacyStaffAuthenticator legacyStaff,
+            CancellationToken cancellationToken) =>
         {
+            // Legacy staff authentication is the production path: staff_code +
+            // staff.password, with job_title mapped to the approved app role.
+            var staff = await legacyStaff.AuthenticateAsync(
+                request.Username ?? string.Empty, request.Password ?? string.Empty,
+                cancellationToken);
+            if (staff is not null)
+            {
+                if (staff.Role is null)
+                {
+                    return InvalidCredentials();
+                }
+
+                var staffUser = await users.FindByNameAsync(staff.StaffCode);
+                if (staffUser is null)
+                {
+                    staffUser = new xOpti.Infrastructure.Identity.XoptiUser
+                    {
+                        UserName = staff.StaffCode,
+                        DisplayName = staff.DisplayName,
+                        LegacyLevel = staff.SecurityLevel,
+                        ResetRequired = false,
+                        EmailConfirmed = false,
+                    };
+                    var created = await users.CreateAsync(staffUser);
+                    if (!created.Succeeded)
+                    {
+                        return InvalidCredentials();
+                    }
+                }
+
+                if (staffUser.Disabled)
+                {
+                    return InvalidCredentials();
+                }
+
+                staffUser.DisplayName = staff.DisplayName;
+                staffUser.LegacyLevel = staff.SecurityLevel;
+                staffUser.ResetRequired = false;
+                var updated = await users.UpdateAsync(staffUser);
+                if (!updated.Succeeded)
+                {
+                    return InvalidCredentials();
+                }
+
+                var roles = await users.GetRolesAsync(staffUser);
+                foreach (var existing in roles.Where(role => role != staff.Role))
+                {
+                    await users.RemoveFromRoleAsync(staffUser, existing);
+                }
+                if (!roles.Contains(staff.Role))
+                {
+                    var added = await users.AddToRoleAsync(staffUser, staff.Role);
+                    if (!added.Succeeded)
+                    {
+                        return InvalidCredentials();
+                    }
+                }
+
+                await signInManager.SignInAsync(staffUser, isPersistent: false);
+                return Results.Ok(new
+                {
+                    username = staffUser.UserName,
+                    displayName = staffUser.DisplayName,
+                });
+            }
+
+            // Non-staff application accounts (administrative/reset accounts)
+            // continue to use the Identity password path.
             var user = string.IsNullOrWhiteSpace(request.Username)
                 ? null
                 : await users.FindByNameAsync(request.Username!);

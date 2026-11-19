@@ -128,12 +128,19 @@ public sealed class LegacyUserSeeder(
     }
 }
 
-/// <summary>Read-only projection of migrated public.staff (no password column mapped).</summary>
+/// <summary>
+/// Read-only projection of migrated public.staff. Password is used only for
+/// legacy credential verification during sign-in; it is never copied to Identity.
+/// </summary>
 public class LegacyStaffRow
 {
     public string StaffCode { get; set; } = string.Empty;
 
     public string? StaffFullName { get; set; }
+
+    public string? JobTitle { get; set; }
+
+    public string? Password { get; set; }
 
     public int SecurityLevel { get; set; }
 }

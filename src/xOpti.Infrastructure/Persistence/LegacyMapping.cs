@@ -298,6 +298,8 @@ public static class LegacyMapping
             e.HasKey(x => x.StaffCode);
             e.Property(x => x.StaffCode).HasColumnName("staff_code");
             e.Property(x => x.StaffFullName).HasColumnName("staff_full_name");
+            e.Property(x => x.JobTitle).HasColumnName("job_title");
+            e.Property(x => x.Password).HasColumnName("password");
             e.Property(x => x.SecurityLevel).HasColumnName("security_level");
         });
 

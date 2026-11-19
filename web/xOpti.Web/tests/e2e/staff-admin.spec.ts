@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { signIn } from './helpers'
+import { clickNavItem, signIn } from './helpers'
 
 /**
  * Staff administration through the real stack: create, assign a role, force a
@@ -13,8 +13,7 @@ test('admin manages a staff account end to end', async ({ page, browser, request
 
   await page.goto('/sign-in')
   await signIn(page, 'admin')
-  await expect(page.getByTestId('nav-staff')).toBeVisible()
-  await page.getByTestId('nav-staff').click()
+  await clickNavItem(page, 'administration', 'nav-staff')
 
   await expect(page.getByTestId('staff-admin-page')).toBeVisible()
   await expect(page.getByTestId('roles-panel')).toContainText('Provisional matrix')

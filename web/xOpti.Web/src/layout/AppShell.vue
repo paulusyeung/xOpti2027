@@ -1,24 +1,46 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { computed, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useDisplay } from 'vuetify'
 import { useSessionStore } from '@/stores/session'
 import { useShellStore } from '@/stores/shell'
-import { getRuntimeConfig } from '@/runtime/config'
-import { NAV_ITEMS, isNavItemVisible } from '@/router/nav'
+import AppSidebar from './AppSidebar.vue'
+import AppTopbar from './AppTopbar.vue'
 
-const router = useRouter()
 const route = useRoute()
+const router = useRouter()
 const session = useSessionStore()
 const shell = useShellStore()
+const display = useDisplay()
 
-const drawer = ref(true)
-const config = getRuntimeConfig()
+const mobileNavOpen = ref(false)
+const desktopSidebarCollapsed = ref(false)
 
-const visibleItems = computed(() =>
-  NAV_ITEMS.filter((item) => isNavItemVisible(item, session, config)),
-)
-
+const isMobile = computed(() => display.smAndDown.value)
 const displayName = computed(() => session.identity?.displayName || session.identity?.username || '')
+
+watch(isMobile, (mobile) => {
+  if (!mobile) {
+    mobileNavOpen.value = false
+  }
+})
+
+// On small screens the drawer overlays the content; dismiss it after a
+// navigation so the destination is visible.
+watch(() => route.fullPath, () => {
+  if (isMobile.value) {
+    mobileNavOpen.value = false
+  }
+})
+
+function handleNavigationToggle(): void {
+  if (isMobile.value) {
+    mobileNavOpen.value = !mobileNavOpen.value
+    return
+  }
+
+  desktopSidebarCollapsed.value = !desktopSidebarCollapsed.value
+}
 
 async function retryChunk(): Promise<void> {
   const path = shell.chunkErrorPath
@@ -35,43 +57,38 @@ async function signOut(): Promise<void> {
 </script>
 
 <template>
-  <v-app-bar color="primary" density="comfortable">
-    <v-app-bar-nav-icon aria-label="Toggle navigation" @click="drawer = !drawer" />
-    <v-app-bar-title>xOpti</v-app-bar-title>
-    <v-spacer />
-    <span class="text-body-2 mr-3" data-testid="current-user">{{ displayName }}</span>
-    <v-btn variant="text" data-testid="sign-out" @click="signOut">Sign out</v-btn>
-  </v-app-bar>
+  <v-layout class="app-shell">
+    <AppSidebar
+      v-model="mobileNavOpen"
+      :is-mobile="isMobile"
+      :is-collapsed="desktopSidebarCollapsed"
+    />
 
-  <v-navigation-drawer v-model="drawer">
-    <v-list nav density="comfortable" data-testid="nav-menu">
-      <v-list-item
-        v-for="item in visibleItems"
-        :key="item.to"
-        :to="item.to"
-        :prepend-icon="item.icon"
-        :title="item.title"
-        :active="route.path === item.to"
-        :data-testid="`nav-${item.title.toLowerCase()}`"
-      />
-    </v-list>
-  </v-navigation-drawer>
+    <v-main>
+      <div class="app-frame">
+        <AppTopbar
+          :is-mobile="isMobile"
+          :is-sidebar-collapsed="desktopSidebarCollapsed"
+          :display-name="displayName"
+          @toggle-navigation="handleNavigationToggle"
+          @sign-out="signOut"
+        />
 
-  <v-main>
-    <v-container fluid>
-      <v-alert
-        v-if="shell.chunkErrorPath"
-        type="error"
-        variant="tonal"
-        class="mb-4"
-        data-testid="chunk-error"
-      >
-        This screen could not be loaded.
-        <template #append>
-          <v-btn variant="text" data-testid="chunk-retry" @click="retryChunk">Retry</v-btn>
-        </template>
-      </v-alert>
-      <slot />
-    </v-container>
-  </v-main>
+        <v-alert
+          v-if="shell.chunkErrorPath"
+          type="error"
+          variant="tonal"
+          class="mb-4"
+          data-testid="chunk-error"
+        >
+          This screen could not be loaded.
+          <template #append>
+            <v-btn variant="text" data-testid="chunk-retry" @click="retryChunk">Retry</v-btn>
+          </template>
+        </v-alert>
+
+        <slot />
+      </div>
+    </v-main>
+  </v-layout>
 </template>
