@@ -30,6 +30,9 @@ internal sealed record AggregateCheck(
 /// </summary>
 public sealed class ReconcileRunner(MigrationConfig config)
 {
+    public static readonly string[] RequiredControlFamilies =
+        ["RC", "RS", "SR", "RJ", "SJ", "WC", "WR", "SA"];
+
     private const int SampleLimit = 50;
     private string Tol => config.Tolerance.ToString("0.############", CultureInfo.InvariantCulture);
 
@@ -379,11 +382,32 @@ public sealed class ReconcileRunner(MigrationConfig config)
         return parts[^1].Trim('"');
     }
 
-    /// <summary>Control numbers must be strictly ahead of every migrated transaction number (task 6.2 evidence).</summary>
+    /// <summary>
+    /// Counter contract: tx_next_number stores the next number to allocate. Missing families,
+    /// duplicate transaction numbers, and counters at/below the migrated maximum fail the gate;
+    /// legacy numbering gaps and counters ahead of max+1 are reported for disposition.
+    /// </summary>
     private async Task ControlNumberChecksAsync(NpgsqlConnection conn, ReconcileReport report, CancellationToken ct)
     {
         if (!await TableExistsAsync(conn, "public", "pref_tx_number", ct))
+        {
+            report.Rows.Add(new CheckRow("control-number-table", "public.pref_tx_number",
+                "present", "missing", "FAIL", "required control-number families cannot be checked"));
             return;
+        }
+
+        var present = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        await using (var cmd = conn.CreateCommand())
+        {
+            cmd.CommandText = "SELECT BTRIM(tx_prefix) FROM public.pref_tx_number;";
+            await using var reader = await cmd.ExecuteReaderAsync(ct);
+            while (await reader.ReadAsync(ct)) present.Add(reader.GetString(0));
+        }
+        foreach (var family in RequiredControlFamilies.Where(f => !present.Contains(f)))
+        {
+            report.Rows.Add(new CheckRow("control-number-family", family, "present", "missing",
+                "FAIL", "add the pref_tx_number row before cutover; runtime allocation never falls back"));
+        }
 
         var sql =
             "WITH src AS (SELECT UPPER(LEFT(BTRIM(tx_number), 2)) AS pfx," +
@@ -393,6 +417,61 @@ public sealed class ReconcileRunner(MigrationConfig config)
             " LEFT JOIN src ON src.pfx = BTRIM(p.tx_prefix)" +
             " WHERE src.mx IS NOT NULL AND src.mx >= p.tx_next_number::bigint;";
         await GroupedCheckAsync(conn, report, "control numbers ahead of migrated data", sql, ct);
+
+        var duplicatesSql = """
+            SELECT pfx, tx_number, count(*)::text
+            FROM (
+                SELECT UPPER(LEFT(BTRIM(tx_number), 2)) AS pfx, BTRIM(tx_number) AS tx_number
+                FROM public.tx_header WHERE tx_number ~ '[0-9]+$'
+            ) rows
+            GROUP BY pfx, tx_number HAVING count(*) > 1
+            ORDER BY pfx, tx_number LIMIT 51;
+            """;
+        await using (var cmd = conn.CreateCommand())
+        {
+            cmd.CommandText = duplicatesSql;
+            await using var reader = await cmd.ExecuteReaderAsync(ct);
+            var count = 0;
+            while (await reader.ReadAsync(ct))
+            {
+                count++;
+                report.Rows.Add(new CheckRow("control-number-duplicate",
+                    $"{reader.GetString(0)} {reader.GetString(1)}", "1", reader.GetString(2),
+                    "FAIL", "duplicate transaction number"));
+            }
+            if (count == 0)
+                report.Rows.Add(new CheckRow("control-number-duplicate", "tx_header",
+                    "none", "none", "PASS", null));
+        }
+
+        var gapsSql = """
+            WITH numbers AS (
+                SELECT UPPER(LEFT(BTRIM(tx_number), 2)) AS pfx,
+                       (SUBSTRING(BTRIM(tx_number) FROM '([0-9]+)$'))::bigint AS number
+                FROM public.tx_header WHERE tx_number ~ '[0-9]+$'
+            ), stats AS (
+                SELECT pfx, count(*) AS rows, min(number) AS lo, max(number) AS hi
+                FROM numbers GROUP BY pfx
+            )
+            SELECT pfx, (hi - lo + 1 - rows)::text, lo::text, hi::text
+            FROM stats WHERE hi - lo + 1 - rows > 0 ORDER BY pfx;
+            """;
+        await using (var cmd = conn.CreateCommand())
+        {
+            cmd.CommandText = gapsSql;
+            await using var reader = await cmd.ExecuteReaderAsync(ct);
+            var gaps = 0;
+            while (await reader.ReadAsync(ct))
+            {
+                gaps++;
+                report.Rows.Add(new CheckRow("control-number-gaps", reader.GetString(0),
+                    "0", reader.GetString(1), "INFO",
+                    $"legacy numbers {reader.GetString(2)}..{reader.GetString(3)}; gaps are historical and do not affect the next allocation"));
+            }
+            if (gaps == 0)
+                report.Rows.Add(new CheckRow("control-number-gaps", "tx_header",
+                    "0", "0", "PASS", null));
+        }
     }
 
     private async Task AnomalySummaryAsync(NpgsqlConnection conn, ReconcileReport report, CancellationToken ct)

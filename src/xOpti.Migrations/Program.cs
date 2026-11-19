@@ -45,6 +45,16 @@ public static class Program
         Console.WriteLine($"target:  xOpti  mode: {(options.DryRun ? "DRY RUN (rollback)" : "WRITE")}");
         Console.WriteLine();
 
+        SourceBaseline.Verify(source, config, allowMissing: options.DryRun && options.Command != "source-verify");
+        if (options.Command == "source-verify")
+        {
+            var path = Path.Combine(config.ReportsDirectory, "source-verification.json");
+            Directory.CreateDirectory(config.ReportsDirectory);
+            await File.WriteAllTextAsync(path, SourceBaseline.Evidence(source, config));
+            Console.WriteLine($"source verified; evidence -> {Path.GetRelativePath(config.RepositoryRoot, path)}");
+            return 0;
+        }
+
         var only = options.OnlyTables is null
             ? null
             : new HashSet<string>(options.OnlyTables.Select(NameNormalizer.Canonical), StringComparer.OrdinalIgnoreCase);
@@ -60,7 +70,7 @@ public static class Program
         try
         {
             int exit;
-        if (options.Command is "sync" or "cutover")
+        if (options.Command is "sync" or "final-sync" or "cutover")
         {
             var (syncExit, syncBlocked) = await SyncAsync(
                 conn, config, only, source, options.DryRun, gate: options.Command == "cutover");
@@ -71,10 +81,12 @@ public static class Program
         {
             exit = options.Command switch
             {
-                "extract" => await CommandExtractAsync(conn, config, only, source, options.DryRun),
+                "extract" or "stage-reload" => await CommandExtractAsync(conn, config, only, source, options.DryRun),
                 "stage" => await CommandStageAsync(conn, config),
                 "transform" => await CommandTransformAsync(conn, config, source, options.DryRun),
-                "reconcile" => await CommandReconcileAsync(conn, config, source, "reconcile", options.DryRun),
+                "reconcile" or "gate" => await CommandReconcileAsync(conn, config, source,
+                    options.Command, options.DryRun),
+                "post-sync" => await CommandReconcileAsync(conn, config, source, "post-sync", options.DryRun),
                 _ => throw new MigrationException($"Unknown command '{options.Command}'."),
             };
         }

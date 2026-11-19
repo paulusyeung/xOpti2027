@@ -8,15 +8,15 @@
 
 ## 2. Control-number correctness
 
-- [ ] 2.1 Choose and document the counter contract (`tx_next_number` means next or high-water) and make transform and allocator agree; verify the first allocation after migration equals the expected next number.
-- [ ] 2.2 Add and verify counters for every required family, including WR and SA; verify a missing family blocks cutover instead of falling back.
-- [ ] 2.3 Add reconciliation tests for duplicates, gaps, and counter-ahead/behind conditions; verify zero failures on the final snapshot.
+- [x] 2.1 Choose and document the counter contract (`tx_next_number` means next or high-water) and make transform and allocator agree; verify the first allocation after migration equals the expected next number.
+- [x] 2.2 Add and verify counters for every required family, including WR and SA; verify a missing family blocks cutover instead of falling back.
+- [x] 2.3 Add reconciliation tests for duplicates, gaps, and counter-ahead/behind conditions; verify zero failures on the final snapshot.
 
 ## 3. Current-state and summary rebuild
 
 - [ ] 3.1 Refresh inventory, lot, customer-account, and retail-price current state from the final source; verify row counts and values match the source within tolerance.
 - [ ] 3.2 Rebuild inventory/category/class/department/supplier/payment summaries from posted documents and lots; verify rebuilt totals against legacy totals.
-- [ ] 3.3 Remove summary tables from the application write path and expose them only as read models; verify posting does not dual-write.
+- [x] 3.3 Remove summary tables from the application write path and expose them only as read models; verify posting does not dual-write.
 - [ ] 3.4 Reconcile current-state and summary rebuilds against the final source; verify every difference is explained or signed off.
 
 ## 4. Known exception disposition
@@ -25,15 +25,15 @@
 - [ ] 4.2 Reconcile the 404 date-of-creation and 248 reference/second-date drifts; verify date-only or time-zone rules are documented and applied consistently.
 - [ ] 4.3 Resolve the 478 orphaned TxSalePerson rows and 6 target-only TxDetails rows; verify quarantine or synthetic-parent dispositions are recorded.
 - [ ] 4.4 Reconcile target-only summary rows and corrupted summary dates; verify they are rebuilt, removed, or signed off.
-- [ ] 4.5 Generate the exception workbook with category, source key, expected, actual, cause, disposition, owner, approval, and evidence; verify every FAIL maps to an approved row.
+- [x] 4.5 Generate the exception workbook with category, source key, expected, actual, cause, disposition, owner, approval, and evidence; verify every FAIL maps to an approved row.
 
 ## 5. Cutover command hardening
 
 - [ ] 5.1 Implement source-verify, stage-reload, transform, rebuild, reconcile, and exception-gate commands with timing and evidence output; verify each can abort without switching traffic.
-- [ ] 5.2 Implement final-sync and post-sync reconciliation commands; verify a missing or short table aborts and preserves the prior target.
+- [x] 5.2 Implement final-sync and post-sync reconciliation commands; verify a missing or short table aborts and preserves the prior target.
 - [ ] 5.3 Implement pre-cutover backup, configuration capture, and rollback command; verify a rollback drill restores the prior database and application state.
-- [ ] 5.4 Make reconciliation emit a machine-readable release gate result; verify any unsigned failure exits non-zero and blocks go-live.
-- [ ] 5.5 Add cutover logging with no PII and retained evidence per run; verify logs and reports can be attached to the go/no-go record.
+- [x] 5.4 Make reconciliation emit a machine-readable release gate result; verify any unsigned failure exits non-zero and blocks go-live.
+- [x] 5.5 Add cutover logging with no PII and retained evidence per run; verify logs and reports can be attached to the go/no-go record.
 
 ## 6. Rehearsals
 

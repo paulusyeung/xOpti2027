@@ -98,3 +98,35 @@ public static class MigrationJournal
         await cmd.ExecuteNonQueryAsync(ct);
     }
 }
+
+public static class SourceBaseline
+{
+    public static void Verify(SourceFingerprint source, MigrationConfig config, bool allowMissing)
+    {
+        var expectedHash = config.ExpectedSourceSha256?.Trim().ToLowerInvariant();
+        if (string.IsNullOrWhiteSpace(expectedHash))
+        {
+            if (allowMissing) return;
+            throw new MigrationException(
+                "Approved source fingerprint is missing. Set MIGRATION_EXPECTED_SHA256 " +
+                "(and MIGRATION_EXPECTED_TABLES) after customer approval; cutover aborts without it.");
+        }
+        if (!string.Equals(source.Sha256, expectedHash, StringComparison.OrdinalIgnoreCase))
+            throw new MigrationException(
+                $"Source SHA-256 mismatch: approved {expectedHash}, actual {source.Sha256}. Cutover aborted.");
+        if (config.ExpectedSourceTables is { } expectedTables && source.TableCount != expectedTables)
+            throw new MigrationException(
+                $"Source table inventory mismatch: approved {expectedTables}, actual {source.TableCount}. Cutover aborted.");
+    }
+
+    public static string Evidence(SourceFingerprint source, MigrationConfig config) =>
+        System.Text.Json.JsonSerializer.Serialize(new
+        {
+            sourcePath = source.Path,
+            sha256 = source.Sha256,
+            tableCount = source.TableCount,
+            snapshotTime = config.SnapshotTime,
+            approvedBy = config.ApprovedBy,
+            verifiedAtUtc = DateTime.UtcNow.ToString("O"),
+        }, new System.Text.Json.JsonSerializerOptions { WriteIndented = true });
+}

@@ -40,6 +40,13 @@ public class ReconciliationFixtureTests
     }
 
     [Fact]
+    public void RequiredControlFamilies_CoverEveryPostingPrefix()
+    {
+        foreach (var prefix in new[] { "RC", "RS", "SR", "RJ", "SJ", "WC", "WR", "SA" })
+            Assert.Contains(prefix, ReconcileRunner.RequiredControlFamilies);
+    }
+
+    [Fact]
     public void Fixture_ReportsTheExpectedPassAndFailCounts()
     {
         var report = LoadReport();
@@ -82,6 +89,18 @@ public class ReconciliationFixtureTests
 
             // The CSV carries the same verdict the cutover gate reads.
             Assert.Equal(report.Rows.Count, csv.Length - 1);
+
+            var gatePath = Path.Combine(directory, "reconciliation-gate.json");
+            Assert.True(File.Exists(gatePath));
+            using var gate = JsonDocument.Parse(File.ReadAllText(gatePath));
+            Assert.Equal("FAIL", gate.RootElement.GetProperty("result").GetString());
+            Assert.Equal(1, gate.RootElement.GetProperty("failing").GetInt32());
+            Assert.Equal("fixture.mdb", gate.RootElement.GetProperty("sourcePath").GetString());
+
+            var exceptions = File.ReadAllLines(Path.Combine(directory, "exception-workbook.csv"));
+            Assert.Equal("category,source_key,expected,actual,cause,disposition,owner,approval,evidence",
+                exceptions[0]);
+            Assert.Contains(exceptions, line => line.Contains("OPEN"));
         }
         finally
         {

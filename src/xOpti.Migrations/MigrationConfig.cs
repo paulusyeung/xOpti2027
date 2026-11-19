@@ -12,6 +12,11 @@ public sealed class MigrationConfig
     public decimal Tolerance { get; init; } = 0.005m;
     public required string ReportsDirectory { get; init; }
     public required string RepositoryRoot { get; init; }
+    public string? ExpectedSourceSha256 { get; init; }
+    public int? ExpectedSourceTables { get; init; }
+    public string? SnapshotTime { get; init; }
+    public string? ApprovedBy { get; init; }
+    public string BackupDirectory { get; init; } = "";
 
     public static MigrationConfig Load(string? envFile, decimal? toleranceOverride = null)
     {
@@ -59,6 +64,13 @@ public sealed class MigrationConfig
             Tolerance = tolerance,
             ReportsDirectory = Path.Combine(root, "tools", "legacy-migration", "reports"),
             RepositoryRoot = root,
+            ExpectedSourceSha256 = Get("MIGRATION_EXPECTED_SHA256"),
+            ExpectedSourceTables = int.TryParse(Get("MIGRATION_EXPECTED_TABLES"), out var tables)
+                ? tables : null,
+            SnapshotTime = Get("MIGRATION_SNAPSHOT_TIME"),
+            ApprovedBy = Get("MIGRATION_APPROVED_BY"),
+            BackupDirectory = Get("MIGRATION_BACKUP_DIR")
+                ?? Path.Combine(root, "tools", "legacy-migration", "backups"),
         };
     }
 
@@ -96,12 +108,17 @@ public static class CommandLine
         Usage: xOpti.Migrations <command> [options]
 
         Commands:
-          extract     Stream every MDB table into the PostgreSQL legacy staging schema
-          stage       Validate the staged snapshot (counts vs. reference mirror)
-          transform   Set-based idempotent upserts from legacy into the target schema
-          reconcile   Row-count, aggregate, sequence, and anomaly checks; writes reports
-          sync        extract + transform (freeze-window refresh, captures in-place edits)
-          cutover     sync + reconcile; fails unless every reconciliation check passes
+          source-verify Verify source checksum/table inventory against the approved baseline
+          extract       Stream every MDB table into the PostgreSQL legacy staging schema
+          stage-reload  Alias for extract: drops and reloads the complete staging schema
+          stage         Validate the staged snapshot (counts vs. reference mirror)
+          transform     Set-based idempotent upserts from legacy into the target schema
+          reconcile     Row-count, aggregate, sequence, and anomaly checks; writes reports
+          gate          Reconcile and emit the machine-readable release gate
+          sync          extract + transform (freeze-window refresh, captures in-place edits)
+          final-sync    Alias for sync in the final freeze window
+          post-sync     Reconcile after final sync
+          cutover       sync + reconcile; fails unless every reconciliation check passes
 
         Options:
           --dry-run           Execute staging, transforms, and checks, then roll back
@@ -114,6 +131,11 @@ public static class CommandLine
           SYNERGY_MDB          Path to the legacy Access database
           XOPTI_DATABASE_URL   Target PostgreSQL connection string
           DATABASE_URL         Optional read-only reference (Synergy5 mirror) for stage validation
+          MIGRATION_EXPECTED_SHA256  Approved final-source SHA-256 (required for source-verify and non-dry cutover)
+          MIGRATION_EXPECTED_TABLES  Approved final-source table count
+          MIGRATION_SNAPSHOT_TIME    Approved snapshot timestamp
+          MIGRATION_APPROVED_BY      Approver recorded with the baseline
+          MIGRATION_BACKUP_DIR       Pre-cutover backup directory
         """;
 
     public static Options Parse(string[] args)
@@ -121,7 +143,8 @@ public static class CommandLine
         if (args.Length == 0 || args[0] is "-h" or "--help" or "help")
             return new Options("", true, null, null, null, ShowHelp: true);
 
-        var known = new[] { "extract", "stage", "transform", "reconcile", "sync", "cutover" };
+        var known = new[] { "source-verify", "extract", "stage-reload", "stage", "transform",
+            "reconcile", "gate", "sync", "final-sync", "post-sync", "cutover" };
         var command = args[0].ToLowerInvariant();
         if (!known.Contains(command))
             throw new MigrationException($"Unknown command '{args[0]}'. Try --help.");
