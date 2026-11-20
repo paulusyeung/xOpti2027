@@ -229,9 +229,9 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     items: [
       { to: '/admin/reference', title: 'City', icon: 'mdi-map-marker-outline', permission: PermissionNames.MasterDataMaintain },
       { to: '/admin/reference', title: 'Province', icon: 'mdi-map-outline', permission: PermissionNames.MasterDataMaintain },
-      { to: '/admin/reference', title: 'Country', icon: 'mdi-earth-outline', permission: PermissionNames.MasterDataMaintain },
+      { to: '/admin/reference', title: 'Country', icon: 'mdi-earth', permission: PermissionNames.MasterDataMaintain },
       { to: '/admin/reference', title: 'Job Title', icon: 'mdi-briefcase-outline', permission: PermissionNames.MasterDataMaintain },
-      { to: '/admin/reference', title: 'Job Nature', icon: 'mdi-worker-outline', permission: PermissionNames.MasterDataMaintain },
+      { to: '/admin/reference', title: 'Job Nature', icon: 'mdi-account-hard-hat-outline', permission: PermissionNames.MasterDataMaintain },
       { to: '/admin/reference', title: 'Salutation', icon: 'mdi-handshake-outline', permission: PermissionNames.MasterDataMaintain },
       { to: '/admin/staff', title: 'Security', icon: 'mdi-shield-key-outline', permission: PermissionNames.MasterDataMaintain },
       { to: '/admin/reports', title: 'Special Report', icon: 'mdi-file-document-outline', permission: PermissionNames.ReportFinancial },
