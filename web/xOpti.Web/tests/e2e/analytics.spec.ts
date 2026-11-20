@@ -8,7 +8,7 @@ test('analytics screen opens for an authorised user and loads the server feed', 
   await signIn(page, 'manager')
   await expect(page.getByTestId('nav-menu')).toBeVisible()
 
-  await clickNavItem(page, 'reports-analytics', 'nav-analytics')
+  await clickNavItem(page, 'olap', 'nav-analytics')
   await expect(page).toHaveURL(/\/analytics$/)
   await expect(page.getByTestId('analytics-page')).toBeVisible()
   await expect(page.getByTestId('wpt-view')).toBeVisible()

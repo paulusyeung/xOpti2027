@@ -12,6 +12,36 @@
   background: rgb(var(--v-theme-surface));
 }
 
+.sidebar-resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 8px;
+  cursor: col-resize;
+  z-index: 3;
+  touch-action: none;
+  user-select: none;
+}
+
+.sidebar-resize-handle::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 3px;
+  width: 2px;
+  background: rgb(var(--v-theme-primary));
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.sidebar-resize-handle:hover::after,
+.sidebar-resize-handle:focus-visible::after,
+.sidebar-resize-handle--active::after {
+  opacity: 0.8;
+}
+
 .brand-lockup {
   display: flex;
   align-items: center;

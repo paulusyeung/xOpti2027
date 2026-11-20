@@ -6,7 +6,7 @@ import { useSessionStore } from '@/stores/session'
 import { useShellStore } from '@/stores/shell'
 import { useThemeStore } from '@/stores/theme'
 import { setRuntimeConfigForTests } from '@/runtime/config'
-import { isNavItemVisible, NAV_ITEMS } from '@/router/nav'
+import { isNavItemVisible, NAV_GROUPS, NAV_ITEMS } from '@/router/nav'
 import { mountInApp } from './support'
 import { createPinia, setActivePinia } from 'pinia'
 
@@ -60,7 +60,7 @@ describe('AppShell', () => {
     const { wrapper } = await mountInApp(AppShell, { path: '/', pinia })
     await flushPromises()
 
-    expect(wrapper.find('[data-testid="nav-menu"]').text()).toContain('Analytics')
+    expect(wrapper.find('[data-testid="nav-analytics"]').exists()).toBe(true)
     wrapper.unmount()
   })
 
@@ -76,13 +76,56 @@ describe('AppShell', () => {
 
     const text = wrapper.find('[data-testid="nav-menu"]').text()
     for (const group of [
-      'Point-of-Service', 'Inventory Control', 'Coding',
-      'Information Centre', 'Reports & Analytics', 'Administration',
+      'Point-of-Sale', 'Inventory Control', 'OLAP', 'Information Centre',
+      'Coding', 'Report', 'Preference',
     ]) {
       expect(text).toContain(group)
     }
-    expect(wrapper.find('[data-testid="nav-group-point-of-service"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="nav-group-point-of-sale"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="nav-group-inventory-control"]').exists()).toBe(true)
+    wrapper.unmount()
+  })
+
+  it('orders the Report section like the legacy switchboard', () => {
+    const report = NAV_GROUPS.find((group) => group.title === 'Report')!
+    expect(report.items.map((item) => item.title)).toEqual([
+      'Coding',
+      'Customer',
+      'Employee',
+      'Inventory',
+      'Sales',
+      'Various Special Reports',
+      'WholeSales',
+    ])
+  })
+
+  it('mirrors the legacy Report Centre tree', async () => {
+    const { pinia } = signedInSession([
+      'sales:order-create', 'sales:invoice-post', 'inventory:adjust',
+      'inventory:receive', 'wholesale:invoice-post', 'master-data:maintain',
+      'report:financial', 'cost:view',
+    ])
+    const { wrapper } = await mountInApp(AppShell, { path: '/', pinia })
+    await flushPromises()
+
+    const text = wrapper.find('[data-testid="nav-menu"]').text()
+    for (const label of [
+      'Sales', 'Customer', 'Inventory', 'Employee',
+      'Coding', 'WholeSales', 'Various Special Reports',
+    ]) {
+      expect(text).toContain(label)
+    }
+
+    for (const testId of [
+      'nav-report-sales', 'nav-report-customer', 'nav-report-inventory',
+      'nav-report-employee', 'nav-report-coding', 'nav-report-wholesales',
+      'nav-report-special',
+      'nav-cost-and-margin-of-goods-sold', 'nav-birthday-reminder',
+      'nav-insufficient-stock-listing', 'nav-employee-listing',
+      'nav-wholesales-summary-by-date', 'nav-report-special-leaf',
+    ]) {
+      expect(wrapper.find(`[data-testid="${testId}"]`).exists(), testId).toBe(true)
+    }
     wrapper.unmount()
   })
 
@@ -103,7 +146,7 @@ describe('AppShell', () => {
     wrapper.unmount()
   })
 
-  it('opens only Point-of-Service by default', async () => {
+  it('opens only Point-of-Sale by default', async () => {
     const { pinia } = signedInSession([
       'sales:order-create', 'sales:invoice-post', 'inventory:adjust',
       'inventory:receive', 'wholesale:invoice-post', 'master-data:maintain',
@@ -115,10 +158,10 @@ describe('AppShell', () => {
     const expanded = (slug: string) =>
       wrapper.get(`[data-testid="nav-group-${slug}"]`).attributes('aria-expanded')
 
-    expect(expanded('point-of-service')).toBe('true')
+    expect(expanded('point-of-sale')).toBe('true')
     expect(expanded('inventory-control')).toBe('false')
     expect(expanded('coding')).toBe('false')
-    expect(expanded('reports-analytics')).toBe('false')
+    expect(expanded('report')).toBe('false')
     wrapper.unmount()
   })
 
@@ -133,19 +176,19 @@ describe('AppShell', () => {
     const expanded = (slug: string) =>
       wrapper.get(`[data-testid="nav-group-${slug}"]`).attributes('aria-expanded')
 
-    expect(expanded('point-of-service')).toBe('true')
+    expect(expanded('point-of-sale')).toBe('true')
 
     await wrapper.get('[data-testid="nav-group-inventory-control"]').trigger('click')
     await nextTick()
 
-    expect(expanded('point-of-service')).toBe('false')
+    expect(expanded('point-of-sale')).toBe('false')
     expect(expanded('inventory-control')).toBe('true')
 
-    await wrapper.get('[data-testid="nav-group-reports-analytics"]').trigger('click')
+    await wrapper.get('[data-testid="nav-group-report"]').trigger('click')
     await nextTick()
 
     expect(expanded('inventory-control')).toBe('false')
-    expect(expanded('reports-analytics')).toBe('true')
+    expect(expanded('report')).toBe('true')
     wrapper.unmount()
   })
 
@@ -154,7 +197,7 @@ describe('AppShell', () => {
     const { wrapper } = await mountInApp(AppShell, { path: '/', pinia })
     await flushPromises()
 
-    const activator = wrapper.get('[data-testid="nav-group-point-of-service"]')
+    const activator = wrapper.get('[data-testid="nav-group-point-of-sale"]')
     expect(activator.attributes('aria-expanded')).toBe('true')
 
     await activator.trigger('click')
@@ -164,6 +207,17 @@ describe('AppShell', () => {
     await activator.trigger('click')
     await nextTick()
     expect(activator.attributes('aria-expanded')).toBe('true')
+    wrapper.unmount()
+  })
+
+  it('offers a resize handle on the desktop sidebar', async () => {
+    const { pinia } = signedInSession([])
+    const { wrapper } = await mountInApp(AppShell, { path: '/', pinia })
+    await flushPromises()
+
+    const handle = wrapper.get('.sidebar-resize-handle')
+    expect(handle.attributes('role')).toBe('separator')
+    expect(handle.attributes('aria-valuemin')).toBe('220')
     wrapper.unmount()
   })
 

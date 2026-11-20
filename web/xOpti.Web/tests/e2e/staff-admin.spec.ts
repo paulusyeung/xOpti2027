@@ -13,7 +13,7 @@ test('admin manages a staff account end to end', async ({ page, browser, request
 
   await page.goto('/sign-in')
   await signIn(page, 'admin')
-  await clickNavItem(page, 'administration', 'nav-staff')
+  await clickNavItem(page, 'coding', 'nav-staff')
 
   await expect(page.getByTestId('staff-admin-page')).toBeVisible()
   await expect(page.getByTestId('roles-panel')).toContainText('Provisional matrix')
