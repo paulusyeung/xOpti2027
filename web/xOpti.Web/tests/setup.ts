@@ -23,6 +23,24 @@ if (typeof window.matchMedia === 'undefined') {
     }) as MediaQueryList
 }
 
+// Vuetify's overlay positioning reads visualViewport, which jsdom omits.
+if (typeof window.visualViewport === 'undefined') {
+  Object.defineProperty(window, 'visualViewport', {
+    configurable: true,
+    value: {
+      width: 1024,
+      height: 768,
+      offsetLeft: 0,
+      offsetTop: 0,
+      pageLeft: 0,
+      pageTop: 0,
+      scale: 1,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    },
+  })
+}
+
 afterEach(() => {
   vi.restoreAllMocks()
   vi.unstubAllGlobals()

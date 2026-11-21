@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { flushPromises } from '@vue/test-utils'
+import { DOMWrapper, flushPromises } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import ReferenceAdminPage from '@/features/admin/ReferenceAdminPage.vue'
 import { useSessionStore } from '@/stores/session'
@@ -36,7 +36,31 @@ function stubApi(handler: (url: string, method: string) => Response | undefined 
   return fetchMock
 }
 
-afterEach(() => vi.unstubAllGlobals())
+afterEach(() => {
+  vi.unstubAllGlobals()
+  localStorage.clear()
+})
+
+function dialogWrapper(): DOMWrapper<Element> {
+  const element = document.body.querySelector(
+    '[data-testid^="reference-form-"], [data-testid="reference-retire-form"]',
+  )
+  if (!element) throw new Error('Reference dialog was not rendered')
+  return new DOMWrapper(element)
+}
+
+function authenticatedPinia() {
+  const pinia = createPinia()
+  setActivePinia(pinia)
+  const session = useSessionStore(pinia)
+  session.status = 'authenticated'
+  session.identity = {
+    username: 'admin',
+    displayName: 'Admin',
+    permissions: ['master-data:maintain'],
+  }
+  return pinia
+}
 
 describe('ReferenceAdminPage', () => {
   it('loads the directory and exposes create/edit/retire actions', async () => {
@@ -44,8 +68,8 @@ describe('ReferenceAdminPage', () => {
     const { wrapper } = await mountInApp(ReferenceAdminPage, { path: '/' })
     await flushPromises()
 
-    expect(wrapper.find('[data-testid="reference-table"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="reference-row-B1"]').text()).toContain('Beta Brand')
+    expect(wrapper.find('[data-testid="grid-table"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="grid-row-B1"]').text()).toContain('Beta Brand')
     expect(wrapper.find('[data-testid="reference-edit-B1"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="reference-retire-B1"]').exists()).toBe(true)
     wrapper.unmount()
@@ -64,8 +88,6 @@ describe('ReferenceAdminPage', () => {
     })
     await flushPromises()
 
-    expect(wrapper.get('[data-testid="reference-title"]').text()).toBe('Countries')
-    expect(wrapper.get('[data-testid="reference-subtitle"]').text()).toContain('countries')
     const headers = wrapper.findAll('thead th').map((th) => th.text())
     expect(headers).toEqual(['Code', 'Country', 'Actions'])
     expect(wrapper.find('[data-testid="reference-kind"]').exists()).toBe(false)
@@ -75,6 +97,74 @@ describe('ReferenceAdminPage', () => {
       return request ? request.url : String(input)
     })
     expect(urls.some((url) => url.includes('/api/v1/admin/reference/Country')), urls.join('\n')).toBe(true)
+    wrapper.unmount()
+  })
+
+  it('shows the grid toolbar with the four customisation controls', async () => {
+    stubApi()
+    const pinia = authenticatedPinia()
+    const { wrapper } = await mountInApp(ReferenceAdminPage, {
+      path: '/admin/reference/countries',
+      pinia,
+    })
+    await flushPromises()
+
+    for (const testId of [
+      'grid-columns-button', 'grid-sort-button', 'grid-checkbox-button', 'grid-views-button',
+    ]) {
+      expect(wrapper.find(`[data-testid="${testId}"]`).exists(), testId).toBe(true)
+    }
+    expect(wrapper.find('[data-testid="grid-style-button"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="grid-color-button"]').exists()).toBe(false)
+    wrapper.unmount()
+  })
+
+  it('persists checkbox mode and the selected view', async () => {
+    stubApi()
+    const pinia = authenticatedPinia()
+    const { wrapper } = await mountInApp(ReferenceAdminPage, {
+      path: '/admin/reference/countries',
+      pinia,
+    })
+    await flushPromises()
+
+    expect(wrapper.find('[data-testid="grid-reset-button"]').exists()).toBe(false)
+    await wrapper.get('[data-testid="grid-checkbox-button"]').trigger('click')
+    await flushPromises()
+    expect(document.querySelector('[data-testid="grid-row-checkbox"]')).not.toBeNull()
+
+    await wrapper.get('[data-testid="grid-views-button"]').trigger('click')
+    await flushPromises()
+    const resetOption = document.querySelector('[data-testid="grid-reset-button"]')
+    expect(resetOption).not.toBeNull()
+    const cardOption = document.querySelector('[data-testid="grid-view-card"]')
+    expect(cardOption).not.toBeNull()
+    cardOption!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    await flushPromises()
+    expect(document.querySelector('[data-testid="grid-card-B1"]')).not.toBeNull()
+
+    const stored = JSON.parse(localStorage.getItem('xopti.grid.view.countries') ?? '{}')
+    expect(stored.checkboxMode).toBe(true)
+    expect(stored.viewMode).toBe('card')
+    wrapper.unmount()
+  })
+
+  it('opens a dialog with the complete record when Edit is clicked', async () => {
+    stubApi()
+    const pinia = authenticatedPinia()
+    const { wrapper } = await mountInApp(ReferenceAdminPage, {
+      path: '/admin/reference/countries',
+      pinia,
+    })
+    await flushPromises()
+
+    await wrapper.get('[data-testid="reference-edit-B1"]').trigger('click')
+    await flushPromises()
+
+    const dialog = dialogWrapper()
+    expect(dialog.find('[data-testid="reference-key"]').exists()).toBe(true)
+    expect(dialog.find('[data-testid="reference-name"]').exists()).toBe(true)
+    expect(dialog.text()).toContain('Countries')
     wrapper.unmount()
   })
 
@@ -91,7 +181,6 @@ describe('ReferenceAdminPage', () => {
     })
     await flushPromises()
 
-    expect(wrapper.get('[data-testid="reference-title"]').text()).toBe('Doctors')
     expect(wrapper.findAll('thead th').map((th) => th.text()))
       .toEqual(['ID', 'Doctor', 'Address', 'Actions'])
     wrapper.unmount()
@@ -104,7 +193,7 @@ describe('ReferenceAdminPage', () => {
     await flushPromises()
 
     expect(wrapper.find('[data-testid="reference-forbidden"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="reference-table"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="grid-table"]').exists()).toBe(false)
     wrapper.unmount()
   })
 
@@ -123,13 +212,13 @@ describe('ReferenceAdminPage', () => {
     await flushPromises()
 
     await wrapper.find('[data-testid="reference-create-open"]').trigger('click')
-    await wrapper.find('[data-testid="reference-key"] input').setValue('B1')
-    await wrapper.find('[data-testid="reference-name"] input').setValue('Duplicate')
-    await wrapper.find('[data-testid="reference-reason"] input').setValue('duplicate probe')
-    await wrapper.find('[data-testid="reference-submit"]').trigger('click')
+    await dialogWrapper().find('[data-testid="reference-key"] input').setValue('B1')
+    await dialogWrapper().find('[data-testid="reference-name"] input').setValue('Duplicate')
+    await dialogWrapper().find('[data-testid="reference-reason"] input').setValue('duplicate probe')
+    await dialogWrapper().find('[data-testid="reference-submit"]').trigger('click')
     await flushPromises()
 
-    const form = wrapper.find('[data-testid="reference-form-create"]')
+    const form = dialogWrapper()
     expect(form.exists()).toBe(true)
     expect(form.text()).toContain("Brand key 'B1' already exists.")
     wrapper.unmount()
@@ -145,10 +234,10 @@ describe('ReferenceAdminPage', () => {
     await flushPromises()
 
     await wrapper.find('[data-testid="reference-create-open"]').trigger('click')
-    await wrapper.find('[data-testid="reference-key"] input').setValue('B1')
-    await wrapper.find('[data-testid="reference-name"] input').setValue('Created Brand')
-    await wrapper.find('[data-testid="reference-reason"] input').setValue('new brand')
-    await wrapper.find('[data-testid="reference-submit"]').trigger('click')
+    await dialogWrapper().find('[data-testid="reference-key"] input').setValue('B1')
+    await dialogWrapper().find('[data-testid="reference-name"] input').setValue('Created Brand')
+    await dialogWrapper().find('[data-testid="reference-reason"] input').setValue('new brand')
+    await dialogWrapper().find('[data-testid="reference-submit"]').trigger('click')
     await flushPromises()
 
     expect(wrapper.find('[data-testid="reference-notice"]').text()).toContain("'B1' created")
@@ -178,12 +267,12 @@ describe('ReferenceAdminPage', () => {
     await flushPromises()
 
     await wrapper.find('[data-testid="reference-retire-B1"]').trigger('click')
-    await wrapper.find('[data-testid="reference-reason"] input').setValue('obsolete')
-    await wrapper.find('[data-testid="reference-submit"]').trigger('click')
+    await dialogWrapper().find('[data-testid="reference-reason"] input').setValue('obsolete')
+    await dialogWrapper().find('[data-testid="reference-submit"]').trigger('click')
     await flushPromises()
 
-    expect(wrapper.find('[data-testid="reference-referenced-hint"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="reference-retire-form"]').text()).toContain('referenced by 2 record')
+    expect(dialogWrapper().find('[data-testid="reference-referenced-hint"]').exists()).toBe(true)
+    expect(dialogWrapper().text()).toContain('referenced by 2 record')
     wrapper.unmount()
   })
 })
