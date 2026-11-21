@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { api, unwrap } from '@/api/client'
 import { AppError } from '@/api/problems'
 
@@ -14,9 +15,20 @@ interface ReferenceItem {
 const kinds = [
   'City', 'Province', 'Country', 'Department', 'Class', 'Category',
   'Brand', 'Material', 'TaxMethod', 'PaymentMethod',
+  'Add', 'Doctor', 'Branch', 'JobTitle', 'JobNature', 'Salutation',
 ] as const
 
-const kind = ref<(typeof kinds)[number]>('Brand')
+type ReferenceKind = (typeof kinds)[number]
+
+const route = useRoute()
+
+function kindFromQuery(value: unknown): ReferenceKind | null {
+  return typeof value === 'string' && (kinds as readonly string[]).includes(value)
+    ? value as ReferenceKind
+    : null
+}
+
+const kind = ref<ReferenceKind>(kindFromQuery(route.query.kind) ?? 'Brand')
 const search = ref('')
 const loading = ref(true)
 const saving = ref(false)
@@ -199,6 +211,13 @@ async function submit(): Promise<void> {
     saving.value = false
   }
 }
+
+watch(() => route.query.kind, (value) => {
+  const requested = kindFromQuery(value)
+  if (requested) {
+    kind.value = requested
+  }
+})
 
 watch(kind, () => {
   clearForm()

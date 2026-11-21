@@ -93,9 +93,32 @@ public sealed class ReferenceMutationValidator : AbstractValidator<ReferenceMuta
             RuleFor(x => x.Name).MaximumLength(40));
         When(x => x.Kind is ReferenceKind.TaxMethod or ReferenceKind.PaymentMethod, () =>
             RuleFor(x => x.Name).MaximumLength(20));
+        When(x => x.Kind is ReferenceKind.Add, () =>
+            RuleFor(x => x.Key).MaximumLength(2));
+        When(x => x.Kind is ReferenceKind.Department or ReferenceKind.Class or ReferenceKind.Category
+            or ReferenceKind.JobTitle, () =>
+            RuleFor(x => x.Name).MaximumLength(30));
+        When(x => x.Kind is ReferenceKind.Branch, () =>
+        {
+            RuleFor(x => x.Key).MaximumLength(3);
+            RuleFor(x => x.Name).MaximumLength(40);
+        });
+        When(x => x.Kind is ReferenceKind.JobNature, () =>
+        {
+            RuleFor(x => x.Key).MaximumLength(1);
+            RuleFor(x => x.Name).MaximumLength(20);
+        });
+        When(x => x.Kind is ReferenceKind.Salutation, () =>
+        {
+            RuleFor(x => x.Key).MaximumLength(6);
+            RuleFor(x => x.Name).MaximumLength(6);
+        });
 
         When(x => x.Kind == ReferenceKind.City, () =>
             RuleFor(x => x.Key).Must(key => int.TryParse(key, out _)).WithMessage("City key must be numeric."));
+
+        When(x => x.Kind == ReferenceKind.Doctor, () =>
+            RuleFor(x => x.Key).Must(key => int.TryParse(key, out _)).WithMessage("Doctor key must be numeric."));
 
         When(x => x.Kind == ReferenceKind.Class, () =>
             RuleFor(x => x.Key).Must(key => key.Split('/').Length == 2)

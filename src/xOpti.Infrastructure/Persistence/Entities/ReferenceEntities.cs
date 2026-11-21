@@ -104,6 +104,32 @@ public class PaymentMethod
     public double ExchangeRate { get; set; }
 }
 
+public class AddCode
+{
+    public string AddCodeValue { get; set; } = string.Empty;
+
+    public string? AddDescription { get; set; }
+}
+
+public class JobTitle
+{
+    public string JobTitleCode { get; set; } = string.Empty;
+
+    public string JobTitleName { get; set; } = string.Empty;
+}
+
+public class JobNature
+{
+    public string Code { get; set; } = string.Empty;
+
+    public string Name { get; set; } = string.Empty;
+}
+
+public class Salutation
+{
+    public string Value { get; set; } = string.Empty;
+}
+
 public class Supplier
 {
     public string SupplierCode { get; set; } = string.Empty;

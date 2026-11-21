@@ -17,6 +17,12 @@ public enum ReferenceKind
     Material,
     TaxMethod,
     PaymentMethod,
+    Add,
+    Doctor,
+    Branch,
+    JobTitle,
+    JobNature,
+    Salutation,
 }
 
 /// <summary>

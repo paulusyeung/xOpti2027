@@ -18,6 +18,16 @@ export interface NavGroup {
   items: readonly NavItem[]
 }
 
+/** Builds a unique reference-screen URL so each legacy label highlights on its own. */
+function referenceLink(legacy: string, kind?: string): string {
+  const params = new URLSearchParams()
+  params.set('legacy', legacy)
+  if (kind) {
+    params.set('kind', kind)
+  }
+  return `/admin/reference?${params.toString()}`
+}
+
 /** Builds the leaf nodes of a legacy Report Centre tree node. */
 function reportLeaves(
   titles: readonly string[],
@@ -93,19 +103,19 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     title: 'Coding',
     icon: 'mdi-format-list-bulleted-square',
     items: [
-      { to: '/admin/reference', title: 'Department', icon: 'mdi-sitemap-outline', permission: PermissionNames.MasterDataMaintain },
-      { to: '/admin/reference', title: 'Class', icon: 'mdi-shape-outline', permission: PermissionNames.MasterDataMaintain },
-      { to: '/admin/reference', title: 'Category', icon: 'mdi-tag-multiple-outline', permission: PermissionNames.MasterDataMaintain },
+      { title: 'Department', icon: 'mdi-sitemap-outline', permission: PermissionNames.MasterDataMaintain, to: referenceLink('Department', 'Department') },
+      { title: 'Class', icon: 'mdi-shape-outline', permission: PermissionNames.MasterDataMaintain, to: referenceLink('Class', 'Class') },
+      { title: 'Category', icon: 'mdi-tag-multiple-outline', permission: PermissionNames.MasterDataMaintain, to: referenceLink('Category', 'Category') },
       { to: '/admin/inventory', title: 'Inventory', icon: 'mdi-warehouse', permission: PermissionNames.InventoryAdjust },
-      { to: '/admin/reference', title: 'Brand', icon: 'mdi-label-outline', permission: PermissionNames.MasterDataMaintain },
-      { to: '/admin/reference', title: 'Add', icon: 'mdi-plus-box-outline', permission: PermissionNames.MasterDataMaintain },
-      { to: '/admin/reference', title: 'Material', icon: 'mdi-layers-outline', permission: PermissionNames.MasterDataMaintain },
-      { to: '/admin/reference', title: 'Doctor', icon: 'mdi-stethoscope', permission: PermissionNames.MasterDataMaintain },
+      { title: 'Brand', icon: 'mdi-label-outline', permission: PermissionNames.MasterDataMaintain, to: referenceLink('Brand', 'Brand') },
+      { title: 'Add', icon: 'mdi-plus-box-outline', permission: PermissionNames.MasterDataMaintain, to: referenceLink('Add', 'Add') },
+      { title: 'Material', icon: 'mdi-layers-outline', permission: PermissionNames.MasterDataMaintain, to: referenceLink('Material', 'Material') },
+      { title: 'Doctor', icon: 'mdi-stethoscope', permission: PermissionNames.MasterDataMaintain, to: referenceLink('Doctor', 'Doctor') },
       { to: '/admin/supplier-activity', title: 'Supplier', icon: 'mdi-truck-outline', permission: PermissionNames.InventoryReceive },
       { to: '/admin/customers', title: 'Customer', icon: 'mdi-account-group-outline', permission: PermissionNames.SalesOrderCreate },
       { to: '/admin/staff', title: 'Staff', icon: 'mdi-account-cog-outline', permission: PermissionNames.MasterDataMaintain, testId: 'nav-staff' },
-      { to: '/admin/reference', title: 'Branch', icon: 'mdi-store-outline', permission: PermissionNames.MasterDataMaintain },
-      { to: '/admin/reference', title: 'Payment', icon: 'mdi-credit-card-outline', permission: PermissionNames.MasterDataMaintain },
+      { title: 'Branch', icon: 'mdi-store-outline', permission: PermissionNames.MasterDataMaintain, to: referenceLink('Branch', 'Branch') },
+      { title: 'Payment', icon: 'mdi-credit-card-outline', permission: PermissionNames.MasterDataMaintain, to: referenceLink('Payment', 'PaymentMethod') },
     ],
   },
   {
@@ -118,14 +128,14 @@ export const NAV_GROUPS: readonly NavGroup[] = [
         icon: 'mdi-format-list-bulleted-square',
         permission: PermissionNames.MasterDataMaintain,
         testId: 'nav-report-coding',
-        children: reportLeaves([
-          'Add Code Listing',
-          'Brand Code Listing',
-          'Category Code Listing',
-          'Class Code Listing',
-          'Department Code Listing',
-          'Material Code Listing',
-        ], '/admin/reference', PermissionNames.MasterDataMaintain),
+        children: [
+          { to: referenceLink('Add Code Listing', 'Add'), title: 'Add Code Listing', icon: 'mdi-file-document-outline', permission: PermissionNames.MasterDataMaintain },
+          { to: referenceLink('Brand Code Listing', 'Brand'), title: 'Brand Code Listing', icon: 'mdi-file-document-outline', permission: PermissionNames.MasterDataMaintain },
+          { to: referenceLink('Category Code Listing', 'Category'), title: 'Category Code Listing', icon: 'mdi-file-document-outline', permission: PermissionNames.MasterDataMaintain },
+          { to: referenceLink('Class Code Listing', 'Class'), title: 'Class Code Listing', icon: 'mdi-file-document-outline', permission: PermissionNames.MasterDataMaintain },
+          { to: referenceLink('Department Code Listing', 'Department'), title: 'Department Code Listing', icon: 'mdi-file-document-outline', permission: PermissionNames.MasterDataMaintain },
+          { to: referenceLink('Material Code Listing', 'Material'), title: 'Material Code Listing', icon: 'mdi-file-document-outline', permission: PermissionNames.MasterDataMaintain },
+        ],
       },
       {
         to: '/admin/customers',
@@ -227,12 +237,12 @@ export const NAV_GROUPS: readonly NavGroup[] = [
     title: 'Preference',
     icon: 'mdi-cog-outline',
     items: [
-      { to: '/admin/reference', title: 'City', icon: 'mdi-map-marker-outline', permission: PermissionNames.MasterDataMaintain },
-      { to: '/admin/reference', title: 'Province', icon: 'mdi-map-outline', permission: PermissionNames.MasterDataMaintain },
-      { to: '/admin/reference', title: 'Country', icon: 'mdi-earth', permission: PermissionNames.MasterDataMaintain },
-      { to: '/admin/reference', title: 'Job Title', icon: 'mdi-briefcase-outline', permission: PermissionNames.MasterDataMaintain },
-      { to: '/admin/reference', title: 'Job Nature', icon: 'mdi-account-hard-hat-outline', permission: PermissionNames.MasterDataMaintain },
-      { to: '/admin/reference', title: 'Salutation', icon: 'mdi-handshake-outline', permission: PermissionNames.MasterDataMaintain },
+      { title: 'City', icon: 'mdi-map-marker-outline', permission: PermissionNames.MasterDataMaintain, to: referenceLink('City', 'City') },
+      { title: 'Province', icon: 'mdi-map-outline', permission: PermissionNames.MasterDataMaintain, to: referenceLink('Province', 'Province') },
+      { title: 'Country', icon: 'mdi-earth', permission: PermissionNames.MasterDataMaintain, to: referenceLink('Country', 'Country') },
+      { title: 'Job Title', icon: 'mdi-briefcase-outline', permission: PermissionNames.MasterDataMaintain, to: referenceLink('Job Title', 'JobTitle') },
+      { title: 'Job Nature', icon: 'mdi-account-hard-hat-outline', permission: PermissionNames.MasterDataMaintain, to: referenceLink('Job Nature', 'JobNature') },
+      { title: 'Salutation', icon: 'mdi-handshake-outline', permission: PermissionNames.MasterDataMaintain, to: referenceLink('Salutation', 'Salutation') },
       { to: '/admin/staff', title: 'Security', icon: 'mdi-shield-key-outline', permission: PermissionNames.MasterDataMaintain },
       { to: '/admin/reports', title: 'Special Report', icon: 'mdi-file-document-outline', permission: PermissionNames.ReportFinancial },
     ],

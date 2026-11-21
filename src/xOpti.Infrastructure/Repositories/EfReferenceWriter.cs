@@ -62,6 +62,31 @@ public sealed class EfReferenceWriter(XOptiDbContext context) : IReferenceWriter
                 var payment = await context.PaymentMethods.AsNoTracking().SingleOrDefaultAsync(x => x.PaymentCode == key, ct);
                 return payment is null ? null : new ReferenceRecord(kind, key, payment.PaymentNameLong,
                     null, null, null, null, null, payment.PaymentNameShort, payment.ExchangeRate);
+            case ReferenceKind.Add:
+                var add = await context.AddCodes.AsNoTracking().SingleOrDefaultAsync(x => x.AddCodeValue == key, ct);
+                return add is null ? null : new ReferenceRecord(kind, key, add.AddDescription ?? key,
+                    null, null, null, null, null, null, null);
+            case ReferenceKind.Doctor:
+                if (!int.TryParse(key, out var doctorId)) return null;
+                var doctor = await context.Doctors.AsNoTracking().SingleOrDefaultAsync(x => x.Id == doctorId, ct);
+                return doctor is null ? null : new ReferenceRecord(kind, key,
+                    doctor.DoctorName ?? key, null, null, null, null, null, null, null);
+            case ReferenceKind.Branch:
+                var branch = await context.Branches.AsNoTracking().SingleOrDefaultAsync(x => x.BranchCode == key, ct);
+                return branch is null ? null : new ReferenceRecord(kind, key, branch.BranchName,
+                    branch.City, null, null, null, null, null, null);
+            case ReferenceKind.JobTitle:
+                var jobTitle = await context.JobTitles.AsNoTracking().SingleOrDefaultAsync(x => x.JobTitleCode == key, ct);
+                return jobTitle is null ? null : new ReferenceRecord(kind, key, jobTitle.JobTitleName,
+                    null, null, null, null, null, null, null);
+            case ReferenceKind.JobNature:
+                var jobNature = await context.JobNatures.AsNoTracking().SingleOrDefaultAsync(x => x.Code == key, ct);
+                return jobNature is null ? null : new ReferenceRecord(kind, key, jobNature.Name,
+                    null, null, null, null, null, null, null);
+            case ReferenceKind.Salutation:
+                var salutation = await context.Salutations.AsNoTracking().SingleOrDefaultAsync(x => x.Value == key, ct);
+                return salutation is null ? null : new ReferenceRecord(kind, key, salutation.Value,
+                    null, null, null, null, null, null, null);
             default:
                 return null;
         }
@@ -94,6 +119,18 @@ public sealed class EfReferenceWriter(XOptiDbContext context) : IReferenceWriter
                 return await context.TaxMethods.AnyAsync(x => x.TaxCode == key, ct);
             case ReferenceKind.PaymentMethod:
                 return await context.PaymentMethods.AnyAsync(x => x.PaymentCode == key, ct);
+            case ReferenceKind.Add:
+                return await context.AddCodes.AnyAsync(x => x.AddCodeValue == key, ct);
+            case ReferenceKind.Doctor:
+                return int.TryParse(key, out var doctorId) && await context.Doctors.AnyAsync(x => x.Id == doctorId, ct);
+            case ReferenceKind.Branch:
+                return await context.Branches.AnyAsync(x => x.BranchCode == key, ct);
+            case ReferenceKind.JobTitle:
+                return await context.JobTitles.AnyAsync(x => x.JobTitleCode == key, ct);
+            case ReferenceKind.JobNature:
+                return await context.JobNatures.AnyAsync(x => x.Code == key, ct);
+            case ReferenceKind.Salutation:
+                return await context.Salutations.AnyAsync(x => x.Value == key, ct);
             default:
                 return false;
         }
@@ -126,6 +163,10 @@ public sealed class EfReferenceWriter(XOptiDbContext context) : IReferenceWriter
             case ReferenceKind.PaymentMethod:
                 var paymentCode = key.Length > 0 ? key[..1] : key;
                 return await context.TxPayments.CountAsync(x => x.Type == paymentCode, ct);
+            case ReferenceKind.Branch:
+                return await context.BranchInventory.CountAsync(x => x.BranchCode == key, ct);
+            // Doctor, Add, JobTitle, JobNature and Salutation have no enforcing
+            // foreign keys in the migrated schema, so no blocking references.
             // City/province/country references live in the supplier/doctor
             // directories added by task 3.4; until then no blocking references.
             default:
@@ -191,6 +232,27 @@ public sealed class EfReferenceWriter(XOptiDbContext context) : IReferenceWriter
                     PaymentNameLong = m.Name, ExchangeRate = m.ExchangeRate ?? 1,
                 });
                 break;
+            case ReferenceKind.Add:
+                context.AddCodes.Add(new AddCode { AddCodeValue = m.Key, AddDescription = m.Name });
+                break;
+            case ReferenceKind.Doctor:
+                context.Doctors.Add(new Doctor { Id = int.Parse(m.Key), DoctorName = m.Name });
+                break;
+            case ReferenceKind.Branch:
+                context.Branches.Add(new Branch
+                {
+                    BranchCode = m.Key, BranchName = m.Name, City = m.Parent,
+                });
+                break;
+            case ReferenceKind.JobTitle:
+                context.JobTitles.Add(new JobTitle { JobTitleCode = m.Key, JobTitleName = m.Name });
+                break;
+            case ReferenceKind.JobNature:
+                context.JobNatures.Add(new JobNature { Code = m.Key, Name = m.Name });
+                break;
+            case ReferenceKind.Salutation:
+                context.Salutations.Add(new Salutation { Value = m.Key });
+                break;
         }
 
         await context.SaveChangesAsync(ct);
@@ -247,6 +309,25 @@ public sealed class EfReferenceWriter(XOptiDbContext context) : IReferenceWriter
                 payment.PaymentNameShort = m.PaymentNameShort ?? payment.PaymentNameShort;
                 payment.ExchangeRate = m.ExchangeRate ?? payment.ExchangeRate;
                 break;
+            case ReferenceKind.Add:
+                (await context.AddCodes.SingleAsync(x => x.AddCodeValue == m.Key, ct)).AddDescription = m.Name;
+                break;
+            case ReferenceKind.Doctor when int.TryParse(m.Key, out var doctorId):
+                (await context.Doctors.SingleAsync(x => x.Id == doctorId, ct)).DoctorName = m.Name;
+                break;
+            case ReferenceKind.Branch:
+                var branch = await context.Branches.SingleAsync(x => x.BranchCode == m.Key, ct);
+                branch.BranchName = m.Name;
+                if (m.Parent is not null) branch.City = m.Parent;
+                break;
+            case ReferenceKind.JobTitle:
+                (await context.JobTitles.SingleAsync(x => x.JobTitleCode == m.Key, ct)).JobTitleName = m.Name;
+                break;
+            case ReferenceKind.JobNature:
+                (await context.JobNatures.SingleAsync(x => x.Code == m.Key, ct)).Name = m.Name;
+                break;
+            // Salutation is a single-column table; the key is the value and is
+            // immutable, so updates intentionally leave the row unchanged.
         }
 
         await context.SaveChangesAsync(ct);

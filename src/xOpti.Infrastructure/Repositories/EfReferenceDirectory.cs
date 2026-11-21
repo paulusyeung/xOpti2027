@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using xOpti.Application.Reference;
 using xOpti.Infrastructure.Persistence;
+using xOpti.Infrastructure.Persistence.Entities;
 
 namespace xOpti.Infrastructure.Repositories;
 
@@ -43,6 +44,12 @@ public sealed class EfReferenceDirectory(XOptiDbContext context) : IReferenceDir
             ReferenceKind.Material => MaterialsAsync(search, afterKey, limit, cancellationToken),
             ReferenceKind.TaxMethod => TaxMethodsAsync(search, afterKey, limit, cancellationToken),
             ReferenceKind.PaymentMethod => PaymentMethodsAsync(search, afterKey, limit, cancellationToken),
+            ReferenceKind.Add => AddCodesAsync(search, afterKey, limit, cancellationToken),
+            ReferenceKind.Doctor => DoctorsAsync(search, afterKey, limit, cancellationToken),
+            ReferenceKind.Branch => BranchesAsync(search, afterKey, limit, cancellationToken),
+            ReferenceKind.JobTitle => JobTitlesAsync(search, afterKey, limit, cancellationToken),
+            ReferenceKind.JobNature => JobNaturesAsync(search, afterKey, limit, cancellationToken),
+            ReferenceKind.Salutation => SalutationsAsync(search, afterKey, limit, cancellationToken),
             _ => Task.FromResult<IReadOnlyList<ReferenceItemDto>>(Array.Empty<ReferenceItemDto>()),
         };
 
@@ -275,6 +282,128 @@ public sealed class EfReferenceDirectory(XOptiDbContext context) : IReferenceDir
             row.PaymentCode,
             row.PaymentNameLong,
             Detail: $"{row.PaymentNameShort} rate {row.ExchangeRate}")).ToList();
+    }
+
+    private async Task<IReadOnlyList<ReferenceItemDto>> AddCodesAsync(
+        string? search, string? afterKey, int limit, CancellationToken ct)
+    {
+        var query = context.AddCodes.AsNoTracking();
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var term = $"%{search.Trim()}%";
+            query = query.Where(row => EF.Functions.ILike(row.AddDescription ?? string.Empty, term));
+        }
+
+        if (!string.IsNullOrEmpty(afterKey))
+        {
+            query = query.Where(row => row.AddCodeValue.CompareTo(afterKey) > 0);
+        }
+
+        var rows = await query.OrderBy(row => row.AddCodeValue).Take(limit).ToListAsync(ct);
+        return rows.Select(row => new ReferenceItemDto(
+            nameof(ReferenceKind.Add), row.AddCodeValue, row.AddDescription ?? row.AddCodeValue)).ToList();
+    }
+
+    private async Task<IReadOnlyList<ReferenceItemDto>> DoctorsAsync(
+        string? search, string? afterKey, int limit, CancellationToken ct)
+    {
+        var query = context.Doctors.AsNoTracking();
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var term = $"%{search.Trim()}%";
+            query = query.Where(row => EF.Functions.ILike(row.DoctorName ?? string.Empty, term));
+        }
+
+        if (int.TryParse(afterKey, out var afterId))
+        {
+            query = query.Where(row => row.Id > afterId);
+        }
+
+        var rows = await query.OrderBy(row => row.Id).Take(limit).ToListAsync(ct);
+        return rows.Select(row => new ReferenceItemDto(
+            nameof(ReferenceKind.Doctor), row.Id.ToString(),
+            row.DoctorName ?? row.Id.ToString(), Detail: row.Address)).ToList();
+    }
+
+    private async Task<IReadOnlyList<ReferenceItemDto>> BranchesAsync(
+        string? search, string? afterKey, int limit, CancellationToken ct)
+    {
+        var query = context.Branches.AsNoTracking();
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var term = $"%{search.Trim()}%";
+            query = query.Where(row => EF.Functions.ILike(row.BranchName, term));
+        }
+
+        if (!string.IsNullOrEmpty(afterKey))
+        {
+            query = query.Where(row => row.BranchCode.CompareTo(afterKey) > 0);
+        }
+
+        var rows = await query.OrderBy(row => row.BranchCode).Take(limit).ToListAsync(ct);
+        return rows.Select(row => new ReferenceItemDto(
+            nameof(ReferenceKind.Branch), row.BranchCode, row.BranchName,
+            row.City, row.Phone)).ToList();
+    }
+
+    private async Task<IReadOnlyList<ReferenceItemDto>> JobTitlesAsync(
+        string? search, string? afterKey, int limit, CancellationToken ct)
+    {
+        var query = context.JobTitles.AsNoTracking();
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var term = $"%{search.Trim()}%";
+            query = query.Where(row => EF.Functions.ILike(row.JobTitleName, term));
+        }
+
+        if (!string.IsNullOrEmpty(afterKey))
+        {
+            query = query.Where(row => row.JobTitleCode.CompareTo(afterKey) > 0);
+        }
+
+        var rows = await query.OrderBy(row => row.JobTitleCode).Take(limit).ToListAsync(ct);
+        return rows.Select(row => new ReferenceItemDto(
+            nameof(ReferenceKind.JobTitle), row.JobTitleCode, row.JobTitleName)).ToList();
+    }
+
+    private async Task<IReadOnlyList<ReferenceItemDto>> JobNaturesAsync(
+        string? search, string? afterKey, int limit, CancellationToken ct)
+    {
+        var query = context.JobNatures.AsNoTracking();
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var term = $"%{search.Trim()}%";
+            query = query.Where(row => EF.Functions.ILike(row.Name, term));
+        }
+
+        if (!string.IsNullOrEmpty(afterKey))
+        {
+            query = query.Where(row => row.Code.CompareTo(afterKey) > 0);
+        }
+
+        var rows = await query.OrderBy(row => row.Code).Take(limit).ToListAsync(ct);
+        return rows.Select(row => new ReferenceItemDto(
+            nameof(ReferenceKind.JobNature), row.Code, row.Name)).ToList();
+    }
+
+    private async Task<IReadOnlyList<ReferenceItemDto>> SalutationsAsync(
+        string? search, string? afterKey, int limit, CancellationToken ct)
+    {
+        var query = context.Salutations.AsNoTracking();
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var term = $"%{search.Trim()}%";
+            query = query.Where(row => EF.Functions.ILike(row.Value, term));
+        }
+
+        if (!string.IsNullOrEmpty(afterKey))
+        {
+            query = query.Where(row => row.Value.CompareTo(afterKey) > 0);
+        }
+
+        var rows = await query.OrderBy(row => row.Value).Take(limit).ToListAsync(ct);
+        return rows.Select(row => new ReferenceItemDto(
+            nameof(ReferenceKind.Salutation), row.Value, row.Value)).ToList();
     }
 
     private static (string? Department, string Class) Split(string? key)

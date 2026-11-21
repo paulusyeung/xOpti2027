@@ -119,6 +119,14 @@ public class XOptiDbContext(DbContextOptions<XOptiDbContext> options)
 
     public DbSet<PaymentMethod> PaymentMethods => Set<PaymentMethod>();
 
+    public DbSet<AddCode> AddCodes => Set<AddCode>();
+
+    public DbSet<JobTitle> JobTitles => Set<JobTitle>();
+
+    public DbSet<JobNature> JobNatures => Set<JobNature>();
+
+    public DbSet<Salutation> Salutations => Set<Salutation>();
+
     public DbSet<Supplier> Suppliers => Set<Supplier>();
 
     public DbSet<SupplierContact> SupplierContacts => Set<SupplierContact>();

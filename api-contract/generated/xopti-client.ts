@@ -7310,7 +7310,7 @@ export interface components {
             detail?: null | string;
         };
         /** @enum {unknown} */
-        ReferenceKind: "City" | "Province" | "Country" | "Department" | "Class" | "Category" | "Brand" | "Material" | "TaxMethod" | "PaymentMethod";
+        ReferenceKind: "City" | "Province" | "Country" | "Department" | "Class" | "Category" | "Brand" | "Material" | "TaxMethod" | "PaymentMethod" | "Add" | "Doctor" | "Branch" | "JobTitle" | "JobNature" | "Salutation";
         ReferenceMutationRequest: {
             key: string;
             name: string;

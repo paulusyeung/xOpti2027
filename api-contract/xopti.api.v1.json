@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost/"
+      "url": "http://127.0.0.1:5200/"
     }
   ],
   "paths": {
@@ -12312,7 +12312,13 @@
           "Brand",
           "Material",
           "TaxMethod",
-          "PaymentMethod"
+          "PaymentMethod",
+          "Add",
+          "Doctor",
+          "Branch",
+          "JobTitle",
+          "JobNature",
+          "Salutation"
         ]
       },
       "ReferenceMutationRequest": {

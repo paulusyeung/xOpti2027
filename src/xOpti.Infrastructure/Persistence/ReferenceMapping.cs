@@ -96,6 +96,37 @@ public static class ReferenceMapping
             e.Property(x => x.TaxName).HasColumnName("tax_name");
         });
 
+        mb.Entity<AddCode>(e =>
+        {
+            e.ToTable("add", t => t.ExcludeFromMigrations());
+            e.HasKey(x => x.AddCodeValue);
+            e.Property(x => x.AddCodeValue).HasColumnName("add_code");
+            e.Property(x => x.AddDescription).HasColumnName("add_description");
+        });
+
+        mb.Entity<JobTitle>(e =>
+        {
+            e.ToTable("job_title", t => t.ExcludeFromMigrations());
+            e.HasKey(x => x.JobTitleCode);
+            e.Property(x => x.JobTitleCode).HasColumnName("job_title_code");
+            e.Property(x => x.JobTitleName).HasColumnName("job_title");
+        });
+
+        mb.Entity<JobNature>(e =>
+        {
+            e.ToTable("job_nature", t => t.ExcludeFromMigrations());
+            e.HasKey(x => x.Code);
+            e.Property(x => x.Code).HasColumnName("code");
+            e.Property(x => x.Name).HasColumnName("name");
+        });
+
+        mb.Entity<Salutation>(e =>
+        {
+            e.ToTable("salutation", t => t.ExcludeFromMigrations());
+            e.HasKey(x => x.Value);
+            e.Property(x => x.Value).HasColumnName("salutation");
+        });
+
         mb.Entity<Supplier>(e =>
         {
             e.ToTable("supplier", t => t.ExcludeFromMigrations());

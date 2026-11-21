@@ -90,6 +90,12 @@ public sealed class ReferenceMutationTests(ApiPostgresFixture fixture)
     [InlineData("Material")]
     [InlineData("TaxMethod")]
     [InlineData("PaymentMethod")]
+    [InlineData("Add")]
+    [InlineData("Doctor")]
+    [InlineData("Branch")]
+    [InlineData("JobTitle")]
+    [InlineData("JobNature")]
+    [InlineData("Salutation")]
     public async Task EveryReferenceKind_CreatesUpdatesAndRetires(string kind)
     {
         using var manager = await SignInAsync("manager");
@@ -112,6 +118,12 @@ public sealed class ReferenceMutationTests(ApiPostgresFixture fixture)
             // hex alphabet so it cannot collide with payment types posted by POS
             // tests ("C" cash, "D" deposit).
             "PaymentMethod" => (((char)('G' + suffix[0] % 20)).ToString(), (string?)null),
+            "Add" => (suffix[..2], (string?)null),
+            "Doctor" => ((900000 + Random.Shared.Next(100000)).ToString(), (string?)null),
+            "Branch" => (suffix[..3], (string?)null),
+            "JobTitle" => (suffix[..4], (string?)null),
+            "JobNature" => (suffix[..1], (string?)null),
+            "Salutation" => (suffix[..6], (string?)null),
             _ => (suffix[..1], (string?)null),
         };
 

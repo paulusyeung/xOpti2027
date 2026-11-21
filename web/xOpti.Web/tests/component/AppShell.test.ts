@@ -35,6 +35,14 @@ describe('navigation visibility', () => {
     expect(isNavItemVisible(analytics, without, { analyticsEnabled: true, wptLicenseKey: 'k' })).toBe(false)
   })
 
+  it('gives each reference-backed legacy item a unique destination', () => {
+    const links = NAV_ITEMS
+      .map((item) => item.to)
+      .filter((to) => to.startsWith('/admin/reference'))
+    expect(links.length).toBeGreaterThan(1)
+    expect(new Set(links).size).toBe(links.length)
+  })
+
   it('always shows the home entry', () => {
     const home = NAV_ITEMS.find((i) => i.to === '/')!
     expect(isNavItemVisible(home, without, { analyticsEnabled: false, wptLicenseKey: null })).toBe(true)

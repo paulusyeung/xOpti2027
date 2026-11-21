@@ -1,6 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
 import ReferenceAdminPage from '@/features/admin/ReferenceAdminPage.vue'
+import { useSessionStore } from '@/stores/session'
 import { mountInApp } from './support'
 
 const page = {
@@ -40,6 +42,27 @@ describe('ReferenceAdminPage', () => {
     expect(wrapper.find('[data-testid="reference-row-B1"]').text()).toContain('Beta Brand')
     expect(wrapper.find('[data-testid="reference-edit-B1"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="reference-retire-B1"]').exists()).toBe(true)
+    wrapper.unmount()
+  })
+
+  it('opens the reference kind requested by the route query', async () => {
+    const fetchMock = stubApi()
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const session = useSessionStore(pinia)
+    session.status = 'authenticated'
+    session.identity = { username: 'admin', displayName: 'Admin', permissions: ['master-data:maintain'] }
+    const { wrapper } = await mountInApp(ReferenceAdminPage, {
+      path: '/admin/reference?kind=Country',
+      pinia,
+    })
+    await flushPromises()
+
+    const urls = fetchMock.mock.calls.map(([input]) => {
+      const request = input instanceof Request ? input : null
+      return request ? request.url : String(input)
+    })
+    expect(urls.some((url) => url.includes('/api/v1/admin/reference/Country')), urls.join('\n')).toBe(true)
     wrapper.unmount()
   })
 

@@ -91,6 +91,12 @@ public sealed class ReferenceDirectoryTests(ApiPostgresFixture fixture)
     [InlineData("Material")]
     [InlineData("TaxMethod")]
     [InlineData("PaymentMethod")]
+    [InlineData("Add")]
+    [InlineData("Doctor")]
+    [InlineData("Branch")]
+    [InlineData("JobTitle")]
+    [InlineData("JobNature")]
+    [InlineData("Salutation")]
     public async Task EveryKind_IsQueryable(string kind)
     {
         using var manager = await SignInAsync("manager");
