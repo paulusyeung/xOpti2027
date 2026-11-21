@@ -81,10 +81,10 @@ export default defineConfig(({ mode }) => {
     },
     test: {
       environment: 'jsdom',
-      // Vuetify component mounts are slow under containerized CI; the default
-      // 5 s timeout produced spurious failures during the image build.
-      testTimeout: 15_000,
-      hookTimeout: 15_000,
+      // Vuetify component mounts are slow under containerized CI; 15 s still
+      // produced spurious timeouts when the whole suite ran on a busy host.
+      testTimeout: 30_000,
+      hookTimeout: 30_000,
       server: {
         // Vuetify ships CSS imports that Node cannot load; let Vite transform them.
         deps: { inline: [/vuetify/] },

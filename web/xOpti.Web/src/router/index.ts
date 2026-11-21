@@ -3,7 +3,10 @@ import { getRuntimeConfig } from '@/runtime/config'
 import { useSessionStore } from '@/stores/session'
 import { useShellStore } from '@/stores/shell'
 import { isFeatureEnabled } from './nav'
+import { REFERENCE_PAGES, referencePath } from './referencePages'
 import { PermissionNames } from '@/security/permissions'
+
+const referenceAdminPage = () => import('@/features/admin/ReferenceAdminPage.vue')
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -116,10 +119,17 @@ export const routes: RouteRecordRaw[] = [
   },
   {
     path: '/admin/reference',
-    name: 'reference-admin',
-    component: () => import('@/features/admin/ReferenceAdminPage.vue'),
-    meta: { permission: PermissionNames.MasterDataMaintain, title: 'References' },
+    redirect: referencePath(REFERENCE_PAGES[0]!),
   },
+  ...REFERENCE_PAGES.map((page) => ({
+    path: referencePath(page),
+    name: `reference-${page.id}`,
+    component: referenceAdminPage,
+    meta: {
+      permission: PermissionNames.MasterDataMaintain,
+      title: page.title,
+    },
+  })),
   {
     path: '/admin/catalogue',
     name: 'catalogue-admin',

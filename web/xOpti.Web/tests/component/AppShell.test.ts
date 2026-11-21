@@ -38,7 +38,7 @@ describe('navigation visibility', () => {
   it('gives each reference-backed legacy item a unique destination', () => {
     const links = NAV_ITEMS
       .map((item) => item.to)
-      .filter((to) => to.startsWith('/admin/reference'))
+      .filter((to): to is string => to?.startsWith('/admin/reference') === true)
     expect(links.length).toBeGreaterThan(1)
     expect(new Set(links).size).toBe(links.length)
   })

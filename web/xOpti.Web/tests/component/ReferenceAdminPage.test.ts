@@ -4,6 +4,12 @@ import { createPinia, setActivePinia } from 'pinia'
 import ReferenceAdminPage from '@/features/admin/ReferenceAdminPage.vue'
 import { useSessionStore } from '@/stores/session'
 import { mountInApp } from './support'
+import {
+  REFERENCE_PAGES,
+  referencePageByLabel,
+  referencePageByPath,
+  referencePath,
+} from '@/router/referencePages'
 
 const page = {
   items: [{ kind: 'Brand', key: 'B1', name: 'Beta Brand', parent: null, detail: null }],
@@ -45,7 +51,7 @@ describe('ReferenceAdminPage', () => {
     wrapper.unmount()
   })
 
-  it('opens the reference kind requested by the route query', async () => {
+  it('uses the page configuration for the route', async () => {
     const fetchMock = stubApi()
     const pinia = createPinia()
     setActivePinia(pinia)
@@ -53,16 +59,41 @@ describe('ReferenceAdminPage', () => {
     session.status = 'authenticated'
     session.identity = { username: 'admin', displayName: 'Admin', permissions: ['master-data:maintain'] }
     const { wrapper } = await mountInApp(ReferenceAdminPage, {
-      path: '/admin/reference?kind=Country',
+      path: '/admin/reference/countries',
       pinia,
     })
     await flushPromises()
+
+    expect(wrapper.get('[data-testid="reference-title"]').text()).toBe('Countries')
+    expect(wrapper.get('[data-testid="reference-subtitle"]').text()).toContain('countries')
+    const headers = wrapper.findAll('thead th').map((th) => th.text())
+    expect(headers).toEqual(['Code', 'Country', 'Actions'])
+    expect(wrapper.find('[data-testid="reference-kind"]').exists()).toBe(false)
 
     const urls = fetchMock.mock.calls.map(([input]) => {
       const request = input instanceof Request ? input : null
       return request ? request.url : String(input)
     })
     expect(urls.some((url) => url.includes('/api/v1/admin/reference/Country')), urls.join('\n')).toBe(true)
+    wrapper.unmount()
+  })
+
+  it('shows kind-specific headers and subtitle for doctors', async () => {
+    stubApi()
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const session = useSessionStore(pinia)
+    session.status = 'authenticated'
+    session.identity = { username: 'admin', displayName: 'Admin', permissions: ['master-data:maintain'] }
+    const { wrapper } = await mountInApp(ReferenceAdminPage, {
+      path: '/admin/reference/doctors',
+      pinia,
+    })
+    await flushPromises()
+
+    expect(wrapper.get('[data-testid="reference-title"]').text()).toBe('Doctors')
+    expect(wrapper.findAll('thead th').map((th) => th.text()))
+      .toEqual(['ID', 'Doctor', 'Address', 'Actions'])
     wrapper.unmount()
   })
 
@@ -154,5 +185,30 @@ describe('ReferenceAdminPage', () => {
     expect(wrapper.find('[data-testid="reference-referenced-hint"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="reference-retire-form"]').text()).toContain('referenced by 2 record')
     wrapper.unmount()
+  })
+})
+
+describe('reference pages', () => {
+  it('gives every legacy menu label its own page', () => {
+    const labels = REFERENCE_PAGES.map((page) => page.label)
+    expect(new Set(labels).size).toBe(labels.length)
+  })
+
+  it('uses unique paths and route ids', () => {
+    const ids = REFERENCE_PAGES.map((page) => page.id)
+    const paths = REFERENCE_PAGES.map(referencePath)
+    expect(new Set(ids).size).toBe(ids.length)
+    expect(new Set(paths).size).toBe(paths.length)
+  })
+
+  it('provides a title, subtitle and column labels for every page', () => {
+    for (const page of REFERENCE_PAGES) {
+      expect(page.title.length, page.id).toBeGreaterThan(0)
+      expect(page.subtitle.length, page.id).toBeGreaterThan(0)
+      expect(page.keyLabel.length, page.id).toBeGreaterThan(0)
+      expect(page.nameLabel.length, page.id).toBeGreaterThan(0)
+      expect(referencePageByLabel(page.label)).toBe(page)
+      expect(referencePageByPath(referencePath(page))).toBe(page)
+    }
   })
 })

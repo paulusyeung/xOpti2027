@@ -3,6 +3,7 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { api, unwrap } from '@/api/client'
 import { AppError } from '@/api/problems'
+import { DEFAULT_REFERENCE_PAGE, referencePageByPath } from '@/router/referencePages'
 
 interface ReferenceItem {
   kind: string
@@ -12,23 +13,11 @@ interface ReferenceItem {
   detail?: string | null
 }
 
-const kinds = [
-  'City', 'Province', 'Country', 'Department', 'Class', 'Category',
-  'Brand', 'Material', 'TaxMethod', 'PaymentMethod',
-  'Add', 'Doctor', 'Branch', 'JobTitle', 'JobNature', 'Salutation',
-] as const
-
-type ReferenceKind = (typeof kinds)[number]
-
 const route = useRoute()
 
-function kindFromQuery(value: unknown): ReferenceKind | null {
-  return typeof value === 'string' && (kinds as readonly string[]).includes(value)
-    ? value as ReferenceKind
-    : null
-}
+const page = computed(() => referencePageByPath(route.path) ?? DEFAULT_REFERENCE_PAGE)
+const kind = computed(() => page.value.kind)
 
-const kind = ref<ReferenceKind>(kindFromQuery(route.query.kind) ?? 'Brand')
 const search = ref('')
 const loading = ref(true)
 const saving = ref(false)
@@ -168,7 +157,7 @@ async function submit(): Promise<void> {
           },
         }),
       )
-      notice.value = `${kind.value} '${created.key}' created.`
+      notice.value = `${page.value.nameLabel} '${created.key}' created.`
     } else if (mode.value === 'edit') {
       await unwrap(
         await api.client.PUT('/api/v1/admin/reference/{kind}', {
@@ -187,7 +176,7 @@ async function submit(): Promise<void> {
           },
         }),
       )
-      notice.value = `${kind.value} '${form.key}' updated.`
+      notice.value = `${page.value.nameLabel} '${form.key}' updated.`
     } else if (retireTarget.value) {
       await unwrap(
         await api.client.POST('/api/v1/admin/reference/{kind}/retire', {
@@ -199,7 +188,7 @@ async function submit(): Promise<void> {
           },
         }),
       )
-      notice.value = `${kind.value} '${retireTarget.value.key}' retired.`
+      notice.value = `${page.value.nameLabel} '${retireTarget.value.key}' retired.`
     }
 
     mode.value = null
@@ -212,20 +201,14 @@ async function submit(): Promise<void> {
   }
 }
 
-watch(() => route.query.kind, (value) => {
-  const requested = kindFromQuery(value)
-  if (requested) {
-    kind.value = requested
-  }
-})
-
-watch(kind, () => {
+watch(() => route.fullPath, () => {
   clearForm()
   mode.value = null
   retireTarget.value = null
   items.value = []
   nextCursor.value = null
   notice.value = null
+  errorMessage.value = null
   void load()
 })
 
@@ -235,25 +218,22 @@ onMounted(() => load())
 <template>
   <div data-testid="reference-admin-page">
     <div class="d-flex align-center flex-wrap ga-3 mb-4">
-      <h1 class="text-h5">Reference data</h1>
+      <div>
+        <h1 class="text-h5" data-testid="reference-title">{{ page.title }}</h1>
+        <p class="text-subtitle-2 text-medium-emphasis mb-0" data-testid="reference-subtitle">
+          {{ page.subtitle }}
+        </p>
+      </div>
       <v-spacer />
       <v-btn color="primary" data-testid="reference-create-open" :disabled="forbidden" @click="openCreate">
-        New {{ kind }}
+        New {{ page.nameLabel }}
       </v-btn>
     </div>
 
     <div class="d-flex flex-wrap ga-3 mb-4">
-      <v-select
-        v-model="kind"
-        :items="kinds"
-        label="Type"
-        density="compact"
-        style="max-width: 220px"
-        data-testid="reference-kind"
-      />
       <v-text-field
         v-model="search"
-        label="Search name"
+        :label="`Search ${page.nameLabel.toLowerCase()}`"
         density="compact"
         clearable
         style="max-width: 300px"
@@ -281,10 +261,10 @@ onMounted(() => load())
       <v-table data-testid="reference-table" density="comfortable">
         <thead>
           <tr>
-            <th>Key</th>
-            <th>Name</th>
-            <th>Parent</th>
-            <th>Detail</th>
+            <th>{{ page.keyLabel }}</th>
+            <th>{{ page.nameLabel }}</th>
+            <th v-if="page.parentLabel">{{ page.parentLabel }}</th>
+            <th v-if="page.detailLabel">{{ page.detailLabel }}</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -292,8 +272,8 @@ onMounted(() => load())
           <tr v-for="item in items" :key="item.key" :data-testid="`reference-row-${item.key}`">
             <td>{{ item.key }}</td>
             <td>{{ item.name }}</td>
-            <td>{{ item.parent || '—' }}</td>
-            <td>{{ item.detail || '—' }}</td>
+            <td v-if="page.parentLabel">{{ item.parent || '—' }}</td>
+            <td v-if="page.detailLabel">{{ item.detail || '—' }}</td>
             <td class="d-flex ga-1">
               <v-btn size="small" variant="text" :data-testid="`reference-edit-${item.key}`" @click="openEdit(item)">
                 Edit
@@ -310,7 +290,9 @@ onMounted(() => load())
             </td>
           </tr>
           <tr v-if="items.length === 0">
-            <td colspan="5" class="text-medium-emphasis">No {{ kind }} records.</td>
+            <td :colspan="3 + (page.parentLabel ? 1 : 0) + (page.detailLabel ? 1 : 0)" class="text-medium-emphasis">
+              No {{ page.title.toLowerCase() }} records.
+            </td>
           </tr>
         </tbody>
       </v-table>
@@ -321,13 +303,13 @@ onMounted(() => load())
     </template>
 
     <v-card v-if="mode" class="mt-6" variant="outlined" :data-testid="`reference-form-${mode}`">
-      <v-card-title>{{ mode === 'create' ? `New ${kind}` : `Edit ${kind}` }}</v-card-title>
+      <v-card-title>{{ mode === 'create' ? `New ${page.nameLabel}` : `Edit ${page.nameLabel}` }}</v-card-title>
       <v-card-text>
-        <v-text-field v-model="form.key" label="Key" :disabled="mode === 'edit'" data-testid="reference-key"
+        <v-text-field v-model="form.key" :label="page.keyLabel" :disabled="mode === 'edit'" data-testid="reference-key"
           :error-messages="errorFor('Key')" />
-        <v-text-field v-model="form.name" label="Name" data-testid="reference-name"
+        <v-text-field v-model="form.name" :label="page.nameLabel" data-testid="reference-name"
           :error-messages="errorFor('Name')" />
-        <v-text-field v-model="form.parent" label="Parent (province/country or dept/class)"
+        <v-text-field v-if="page.parentLabel" v-model="form.parent" :label="page.parentLabel"
           data-testid="reference-parent" :error-messages="errorFor('Parent')" />
         <template v-if="isCategory">
           <v-text-field v-model="form.costingMethod" label="Costing method 1=FIFO 2=LIFO"
