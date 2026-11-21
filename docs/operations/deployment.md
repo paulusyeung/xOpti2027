@@ -5,8 +5,8 @@ Compose, PostgreSQL 17, the ASP.NET Core API, the nginx-served SPA, and an
 optional Caddy TLS edge. Following it in order produces a working stack from an
 empty host; every step names its verification.
 
-Related: [`secrets.md`](secrets.md), [`recovery.md`](recovery.md),
-[`support.md`](support.md).
+Related: [`databases.md`](databases.md), [`secrets.md`](secrets.md),
+[`recovery.md`](recovery.md), [`support.md`](support.md).
 
 ## 1. Host prerequisites
 
