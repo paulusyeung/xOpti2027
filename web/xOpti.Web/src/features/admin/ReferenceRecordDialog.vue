@@ -34,6 +34,7 @@ const emit = defineEmits<{
     confirmReferenced: boolean
   }]
   edit: []
+  retire: []
 }>()
 
 let dragCard: HTMLElement | null = null
@@ -207,6 +208,17 @@ function submit(): void {
       </v-card-text>
 
       <v-card-actions>
+        <v-btn
+          v-if="mode === 'edit' || mode === 'view'"
+          color="error"
+          variant="text"
+          class="mr-auto"
+          prepend-icon="mdi-delete-outline"
+          data-testid="reference-retire"
+          @click="emit('retire')"
+        >
+          Retire
+        </v-btn>
         <v-spacer />
         <v-btn v-if="mode === 'view'" variant="text" data-testid="reference-cancel" @click="close">
           Close

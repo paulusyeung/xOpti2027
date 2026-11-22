@@ -18,18 +18,21 @@ const props = withDefaults(defineProps<{
   itemKey?: string
   loading?: boolean
   hideSearch?: boolean
+  linkKey?: string
 }>(), {
   searchLabel: 'Search',
   emptyText: 'No records.',
   itemKey: 'key',
   loading: false,
   hideSearch: false,
+  linkKey: 'key',
 })
 
 const emit = defineEmits<{
   'update:search': [value: string]
   search: [value: string]
   refresh: []
+  open: [item: Record<string, unknown>]
 }>()
 
 const view: GridView = useGridView(props.viewId, {
@@ -336,7 +339,17 @@ function cardValue(item: Record<string, unknown>, column: GridColumn): string {
                   data-testid="grid-row-checkbox"
                   @click.stop="toggleSelected(rowKey(item))"
                 />
-                <slot v-else-if="column.key === 'actions'" name="actions" :item="item" />
+                <v-btn
+                  v-else-if="column.key === linkKey"
+                  variant="text"
+                  color="primary"
+                  density="comfortable"
+                  class="px-0 text-none text-decoration-underline"
+                  :data-testid="`grid-link-${item[itemKey]}`"
+                  @click.stop="emit('open', item)"
+                >
+                  {{ item[column.key] }}
+                </v-btn>
                 <template v-else>{{ item[column.key] ?? '—' }}</template>
               </td>
             </tr>
@@ -372,7 +385,20 @@ function cardValue(item: Record<string, unknown>, column: GridColumn): string {
                   <div class="font-weight-semibold">{{ cardValue(item, detailColumns[0] ?? columns[0]!) }}</div>
                   <div class="text-caption text-medium-emphasis">{{ rowKey(item) }}</div>
                 </div>
-                <slot name="actions" :item="item" />
+                <v-tooltip location="top" text="Edit">
+                  <template #activator="{ props: tooltipProps }">
+                    <v-btn
+                      v-bind="tooltipProps"
+                      class="grid-card-edit"
+                      variant="text"
+                      color="primary"
+                      :data-testid="`grid-card-edit-${rowKey(item)}`"
+                      @click.stop="emit('open', item)"
+                    >
+                      <v-icon icon="mdi-pencil" size="18" />
+                    </v-btn>
+                  </template>
+                </v-tooltip>
               </div>
               <div class="mt-3">
                 <div
@@ -418,6 +444,14 @@ function cardValue(item: Record<string, unknown>, column: GridColumn): string {
   display: grid;
   gap: 12px;
   justify-content: start;
+}
+
+.grid-card-edit {
+  width: 18px !important;
+  min-width: 18px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  padding: 0 !important;
 }
 </style>
 

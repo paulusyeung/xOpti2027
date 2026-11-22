@@ -33,7 +33,6 @@ const columns = computed<GridColumn[]>(() => [
   { key: 'name', title: page.value.nameLabel, sortable: true },
   ...(page.value.parentLabel ? [{ key: 'parent', title: page.value.parentLabel, sortable: true }] : []),
   ...(page.value.detailLabel ? [{ key: 'detail', title: page.value.detailLabel, sortable: true }] : []),
-  { key: 'actions', title: 'Actions', sortable: false },
 ])
 
 const search = ref('')
@@ -117,13 +116,6 @@ function openCreate(): void {
   clearMessages()
   dialogMode.value = 'create'
   dialogRecord.value = null
-  dialogOpen.value = true
-}
-
-function openView(item: ReferenceItem): void {
-  clearMessages()
-  dialogMode.value = 'view'
-  dialogRecord.value = item
   dialogOpen.value = true
 }
 
@@ -237,6 +229,7 @@ onMounted(() => load())
       data-testid="reference-grid"
       @search="load()"
       @refresh="load()"
+      @open="openEdit($event as unknown as ReferenceItem)"
     >
       <template #toolbar-actions>
         <v-btn
@@ -248,35 +241,6 @@ onMounted(() => load())
           @click="openCreate"
         >
           New {{ page.nameLabel }}
-        </v-btn>
-      </template>
-
-      <template #actions="{ item }">
-        <v-btn
-          size="small"
-          variant="text"
-          :data-testid="`reference-view-${(item as unknown as ReferenceItem).key}`"
-          @click="openView(item as unknown as ReferenceItem)"
-        >
-          View
-        </v-btn>
-        <v-btn
-          size="small"
-          variant="text"
-          color="primary"
-          :data-testid="`reference-edit-${(item as unknown as ReferenceItem).key}`"
-          @click="openEdit(item as unknown as ReferenceItem)"
-        >
-          Edit
-        </v-btn>
-        <v-btn
-          size="small"
-          variant="text"
-          color="error"
-          :data-testid="`reference-retire-${(item as unknown as ReferenceItem).key}`"
-          @click="openRetire(item as unknown as ReferenceItem)"
-        >
-          Retire
         </v-btn>
       </template>
     </DataGridPanel>
@@ -291,6 +255,7 @@ onMounted(() => load())
       :error-message="errorMessage"
       @save="submit"
       @edit="dialogMode = 'edit'"
+      @retire="openRetire(dialogRecord!)"
     />
   </div>
 </template>

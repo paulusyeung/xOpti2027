@@ -70,8 +70,7 @@ describe('ReferenceAdminPage', () => {
 
     expect(wrapper.find('[data-testid="grid-table"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="grid-row-B1"]').text()).toContain('Beta Brand')
-    expect(wrapper.find('[data-testid="reference-edit-B1"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="reference-retire-B1"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="grid-link-B1"]').exists()).toBe(true)
     wrapper.unmount()
   })
 
@@ -89,7 +88,7 @@ describe('ReferenceAdminPage', () => {
     await flushPromises()
 
     const headers = wrapper.findAll('thead th').map((th) => th.text())
-    expect(headers).toEqual(['Code', 'Country', 'Actions'])
+    expect(headers).toEqual(['Code', 'Country'])
     expect(wrapper.find('[data-testid="reference-kind"]').exists()).toBe(false)
 
     const urls = fetchMock.mock.calls.map(([input]) => {
@@ -142,6 +141,7 @@ describe('ReferenceAdminPage', () => {
     cardOption!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     await flushPromises()
     expect(document.querySelector('[data-testid="grid-card-B1"]')).not.toBeNull()
+    expect(document.querySelector('[data-testid="grid-card-edit-B1"]')).not.toBeNull()
 
     const stored = JSON.parse(localStorage.getItem('xopti.grid.view.countries') ?? '{}')
     expect(stored.checkboxMode).toBe(true)
@@ -158,7 +158,7 @@ describe('ReferenceAdminPage', () => {
     })
     await flushPromises()
 
-    await wrapper.get('[data-testid="reference-edit-B1"]').trigger('click')
+    await wrapper.get('[data-testid="grid-link-B1"]').trigger('click')
     await flushPromises()
 
     const dialog = dialogWrapper()
@@ -182,7 +182,7 @@ describe('ReferenceAdminPage', () => {
     await flushPromises()
 
     expect(wrapper.findAll('thead th').map((th) => th.text()))
-      .toEqual(['ID', 'Doctor', 'Address', 'Actions'])
+      .toEqual(['ID', 'Doctor', 'Address'])
     wrapper.unmount()
   })
 
@@ -266,7 +266,8 @@ describe('ReferenceAdminPage', () => {
     const { wrapper } = await mountInApp(ReferenceAdminPage, { path: '/' })
     await flushPromises()
 
-    await wrapper.find('[data-testid="reference-retire-B1"]').trigger('click')
+    await wrapper.get('[data-testid="grid-link-B1"]').trigger('click')
+    await dialogWrapper().get('[data-testid="reference-retire"]').trigger('click')
     await dialogWrapper().find('[data-testid="reference-reason"] input').setValue('obsolete')
     await dialogWrapper().find('[data-testid="reference-submit"]').trigger('click')
     await flushPromises()
