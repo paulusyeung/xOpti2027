@@ -60,7 +60,10 @@ public sealed class EfReferenceDirectory(XOptiDbContext context) : IReferenceDir
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = $"%{search.Trim()}%";
-            query = query.Where(city => EF.Functions.ILike(city.CityName, term));
+            query = query.Where(city => EF.Functions.ILike(city.CityName, term)
+                || EF.Functions.ILike(city.Code.ToString(), term)
+                || EF.Functions.ILike(city.ProvinceCode, term)
+                || EF.Functions.ILike(city.CountryCode, term));
         }
 
         if (int.TryParse(afterKey, out var afterCode))
@@ -83,7 +86,8 @@ public sealed class EfReferenceDirectory(XOptiDbContext context) : IReferenceDir
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = $"%{search.Trim()}%";
-            query = query.Where(row => EF.Functions.ILike(row.ProvinceName, term));
+            query = query.Where(row => EF.Functions.ILike(row.ProvinceName, term)
+                || EF.Functions.ILike(row.ProvinceCode, term));
         }
 
         if (!string.IsNullOrEmpty(afterKey))
@@ -103,7 +107,8 @@ public sealed class EfReferenceDirectory(XOptiDbContext context) : IReferenceDir
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = $"%{search.Trim()}%";
-            query = query.Where(row => EF.Functions.ILike(row.CountryName, term));
+            query = query.Where(row => EF.Functions.ILike(row.CountryName, term)
+                || EF.Functions.ILike(row.CountryCode, term));
         }
 
         if (!string.IsNullOrEmpty(afterKey))
@@ -123,7 +128,8 @@ public sealed class EfReferenceDirectory(XOptiDbContext context) : IReferenceDir
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = $"%{search.Trim()}%";
-            query = query.Where(row => EF.Functions.ILike(row.DepartmentName ?? string.Empty, term));
+            query = query.Where(row => EF.Functions.ILike(row.DepartmentName ?? string.Empty, term)
+                || EF.Functions.ILike(row.DepartmentCode, term));
         }
 
         if (!string.IsNullOrEmpty(afterKey))
@@ -144,7 +150,9 @@ public sealed class EfReferenceDirectory(XOptiDbContext context) : IReferenceDir
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = $"%{search.Trim()}%";
-            query = query.Where(row => EF.Functions.ILike(row.ClassName ?? string.Empty, term));
+            query = query.Where(row => EF.Functions.ILike(row.ClassName ?? string.Empty, term)
+                || EF.Functions.ILike(row.ClassCode, term)
+                || EF.Functions.ILike(row.Department, term));
         }
 
         if (afterDepartment is not null)
@@ -176,7 +184,10 @@ public sealed class EfReferenceDirectory(XOptiDbContext context) : IReferenceDir
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = $"%{search.Trim()}%";
-            query = query.Where(row => EF.Functions.ILike(row.CategoryName ?? string.Empty, term));
+            query = query.Where(row => EF.Functions.ILike(row.CategoryName ?? string.Empty, term)
+                || EF.Functions.ILike(row.CategoryCode, term)
+                || EF.Functions.ILike(row.DepartmentCode, term)
+                || EF.Functions.ILike(row.ClassCode, term));
         }
 
         if (afterDepartment is not null)
@@ -206,7 +217,8 @@ public sealed class EfReferenceDirectory(XOptiDbContext context) : IReferenceDir
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = $"%{search.Trim()}%";
-            query = query.Where(row => EF.Functions.ILike(row.BrandDescription ?? string.Empty, term));
+            query = query.Where(row => EF.Functions.ILike(row.BrandDescription ?? string.Empty, term)
+                || EF.Functions.ILike(row.BrandCode, term));
         }
 
         if (!string.IsNullOrEmpty(afterKey))
@@ -226,7 +238,8 @@ public sealed class EfReferenceDirectory(XOptiDbContext context) : IReferenceDir
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = $"%{search.Trim()}%";
-            query = query.Where(row => EF.Functions.ILike(row.MaterialDescription ?? string.Empty, term));
+            query = query.Where(row => EF.Functions.ILike(row.MaterialDescription ?? string.Empty, term)
+                || EF.Functions.ILike(row.MaterialCode, term));
         }
 
         if (!string.IsNullOrEmpty(afterKey))
@@ -246,7 +259,8 @@ public sealed class EfReferenceDirectory(XOptiDbContext context) : IReferenceDir
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = $"%{search.Trim()}%";
-            query = query.Where(row => EF.Functions.ILike(row.TaxName, term));
+            query = query.Where(row => EF.Functions.ILike(row.TaxName, term)
+                || EF.Functions.ILike(row.TaxCode, term));
         }
 
         if (!string.IsNullOrEmpty(afterKey))
@@ -268,7 +282,8 @@ public sealed class EfReferenceDirectory(XOptiDbContext context) : IReferenceDir
             var term = $"%{search.Trim()}%";
             query = query.Where(row =>
                 EF.Functions.ILike(row.PaymentNameLong, term)
-                || EF.Functions.ILike(row.PaymentNameShort, term));
+                || EF.Functions.ILike(row.PaymentNameShort, term)
+                || EF.Functions.ILike(row.PaymentCode, term));
         }
 
         if (!string.IsNullOrEmpty(afterKey))
@@ -291,7 +306,8 @@ public sealed class EfReferenceDirectory(XOptiDbContext context) : IReferenceDir
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = $"%{search.Trim()}%";
-            query = query.Where(row => EF.Functions.ILike(row.AddDescription ?? string.Empty, term));
+            query = query.Where(row => EF.Functions.ILike(row.AddDescription ?? string.Empty, term)
+                || EF.Functions.ILike(row.AddCodeValue, term));
         }
 
         if (!string.IsNullOrEmpty(afterKey))
@@ -311,7 +327,9 @@ public sealed class EfReferenceDirectory(XOptiDbContext context) : IReferenceDir
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = $"%{search.Trim()}%";
-            query = query.Where(row => EF.Functions.ILike(row.DoctorName ?? string.Empty, term));
+            query = query.Where(row => EF.Functions.ILike(row.DoctorName ?? string.Empty, term)
+                || EF.Functions.ILike(row.Id.ToString(), term)
+                || EF.Functions.ILike(row.Address ?? string.Empty, term));
         }
 
         if (int.TryParse(afterKey, out var afterId))
@@ -332,7 +350,10 @@ public sealed class EfReferenceDirectory(XOptiDbContext context) : IReferenceDir
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = $"%{search.Trim()}%";
-            query = query.Where(row => EF.Functions.ILike(row.BranchName, term));
+            query = query.Where(row => EF.Functions.ILike(row.BranchName, term)
+                || EF.Functions.ILike(row.BranchCode, term)
+                || EF.Functions.ILike(row.City ?? string.Empty, term)
+                || EF.Functions.ILike(row.Phone ?? string.Empty, term));
         }
 
         if (!string.IsNullOrEmpty(afterKey))
@@ -353,7 +374,8 @@ public sealed class EfReferenceDirectory(XOptiDbContext context) : IReferenceDir
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = $"%{search.Trim()}%";
-            query = query.Where(row => EF.Functions.ILike(row.JobTitleName, term));
+            query = query.Where(row => EF.Functions.ILike(row.JobTitleName, term)
+                || EF.Functions.ILike(row.JobTitleCode, term));
         }
 
         if (!string.IsNullOrEmpty(afterKey))
@@ -373,7 +395,8 @@ public sealed class EfReferenceDirectory(XOptiDbContext context) : IReferenceDir
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = $"%{search.Trim()}%";
-            query = query.Where(row => EF.Functions.ILike(row.Name, term));
+            query = query.Where(row => EF.Functions.ILike(row.Name, term)
+                || EF.Functions.ILike(row.Code, term));
         }
 
         if (!string.IsNullOrEmpty(afterKey))

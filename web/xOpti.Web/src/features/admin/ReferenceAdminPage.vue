@@ -94,7 +94,7 @@ async function load(reset = true): Promise<void> {
         params: {
           path: { kind: kind.value },
           query: {
-            search: search.value.trim() || undefined,
+            search: (search.value ?? '').trim() || undefined,
             cursor: reset ? undefined : (nextCursor.value ?? undefined),
             pageSize: 50,
           },
@@ -194,6 +194,7 @@ async function submit(payload: DialogPayload): Promise<void> {
 watch(() => route.fullPath, () => {
   dialogOpen.value = false
   dialogRecord.value = null
+  search.value = ''
   items.value = []
   nextCursor.value = null
   notice.value = null

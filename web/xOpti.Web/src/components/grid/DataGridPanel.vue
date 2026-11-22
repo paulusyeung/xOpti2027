@@ -47,14 +47,30 @@ const view: GridView = useGridView(props.viewId, {
 
 const searchModel = computed({
   get: () => props.search,
-  set: (value: string) => emit('update:search', value),
+  set: (value: string | null) => emit('update:search', value ?? ''),
 })
 
 const sortableColumns = computed(() => props.columns.filter((column) => column.sortable !== false))
 
 const headers = computed(() => props.columns
   .filter((column) => view.visibleColumns.value.includes(column.key))
-  .map((column) => ({ ...column, sortable: false })))
+  .map((column) => ({ ...column, sortable: column.sortable !== false })))
+
+const sortBy = computed(() => {
+  const key = view.sortKey.value
+  return key ? [{ key, order: view.sortDirection.value }] : []
+})
+
+function onSortByUpdate(value: unknown): void {
+  const first = Array.isArray(value)
+    ? value[0] as { key?: string; order?: string | boolean } | undefined
+    : undefined
+  if (!first?.key || !first.order) {
+    view.setSort(null)
+    return
+  }
+  view.setSort(first.key, first.order === 'desc' ? 'desc' : 'asc')
+}
 
 const tableHeaders = computed(() => [
   ...(view.checkboxMode.value ? [{ key: '__checkbox', title: '', sortable: false }] : []),
@@ -91,33 +107,11 @@ onBeforeUnmount(() => cardObserver?.disconnect())
 const cardRows = computed(() => {
   const rows: Array<Array<Record<string, unknown>>> = []
   const size = cardColumns.value
-  for (let index = 0; index < sortedItems.value.length; index += size) {
-    const chunk = sortedItems.value.slice(index, index + size)
+  for (let index = 0; index < props.items.length; index += size) {
+    const chunk = props.items.slice(index, index + size)
     rows.push(index / size % 2 === 1 ? [...chunk].reverse() : chunk)
   }
   return rows
-})
-
-function cellValue(item: Record<string, unknown>, key: string): unknown {
-  return item[key]
-}
-
-const sortedItems = computed(() => {
-  const key = view.sortKey.value
-  if (!key || !sortableColumns.value.some((column) => column.key === key)) {
-    return [...props.items]
-  }
-
-  const direction = view.sortDirection.value === 'asc' ? 1 : -1
-  return [...props.items].sort((left, right) => {
-    const a = cellValue(left, key)
-    const b = cellValue(right, key)
-    if (a == null && b == null) return 0
-    if (a == null) return -direction
-    if (b == null) return direction
-    if (typeof a === 'number' && typeof b === 'number') return (a - b) * direction
-    return String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }) * direction
-  })
 })
 
 const selectedKeys = ref<string[]>([])
@@ -165,6 +159,7 @@ function cardValue(item: Record<string, unknown>, column: GridColumn): string {
             hide-details
             clearable
             data-testid="grid-search"
+            @click:clear="emit('search', '')"
             @keyup.enter="emit('search', searchModel)"
           />
           <slot name="filters" />
@@ -317,14 +312,16 @@ function cardValue(item: Record<string, unknown>, column: GridColumn): string {
           <span v-if="view.checkboxMode.value" class="text-caption text-medium-emphasis">
             {{ selectedKeys.length }} selected
           </span>
-          <span v-else class="text-caption text-medium-emphasis">{{ sortedItems.length }} records</span>
+          <span v-else class="text-caption text-medium-emphasis">{{ items.length }} records</span>
         </div>
 
         <v-data-table
           v-if="view.viewMode.value === 'table'"
           :headers="tableHeaders"
-          :items="sortedItems"
+          :items="items"
           :item-value="itemKey"
+          :sort-by="sortBy"
+          @update:sort-by="onSortByUpdate"
           :loading="loading"
           density="comfortable"
           :items-per-page="-1"
@@ -420,7 +417,7 @@ function cardValue(item: Record<string, unknown>, column: GridColumn): string {
               </div>
             </v-card>
           </div>
-          <div v-if="sortedItems.length === 0" class="pa-6 text-center text-medium-emphasis">
+          <div v-if="items.length === 0" class="pa-6 text-center text-medium-emphasis">
             {{ emptyText }}
           </div>
         </div>

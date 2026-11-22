@@ -65,6 +65,22 @@ public sealed class ReferenceDirectoryTests(ApiPostgresFixture fixture)
     }
 
     [Fact]
+    public async Task BrandDirectory_SearchesCodeAsWellAsDescription()
+    {
+        await SeedAsync();
+        using var manager = await SignInAsync("manager");
+
+        var response = await manager.GetAsync("/api/v1/admin/reference/Brand?search=Z2&pageSize=50");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        using var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        var keys = body.RootElement.GetProperty("items").EnumerateArray()
+            .Select(item => item.GetProperty("key").GetString())
+            .ToList();
+        Assert.Contains("Z2", keys);
+    }
+
+    [Fact]
     public async Task CompositeCategoryKey_IsExposedWithItsParent()
     {
         await SeedAsync();

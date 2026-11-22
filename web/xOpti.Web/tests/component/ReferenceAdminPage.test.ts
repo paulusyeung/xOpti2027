@@ -118,6 +118,50 @@ describe('ReferenceAdminPage', () => {
     wrapper.unmount()
   })
 
+  it('clears the search when navigating to another reference page', async () => {
+    stubApi()
+    const pinia = authenticatedPinia()
+    const { wrapper, router } = await mountInApp(ReferenceAdminPage, {
+      path: '/admin/reference/countries',
+      pinia,
+    })
+    await flushPromises()
+
+    const searchInput = wrapper.get('[data-testid="grid-search"] input')
+    await searchInput.setValue('FRANCE')
+    expect((searchInput.element as HTMLInputElement).value).toBe('FRANCE')
+
+    await router.push('/admin/reference/branches')
+    await flushPromises()
+
+    const nextSearchInput = wrapper.get('[data-testid="grid-search"] input')
+    expect((nextSearchInput.element as HTMLInputElement).value).toBe('')
+    wrapper.unmount()
+  })
+
+  it('sorts by clicking a table header', async () => {
+    stubApi()
+    const pinia = authenticatedPinia()
+    const { wrapper } = await mountInApp(ReferenceAdminPage, {
+      path: '/admin/reference/countries',
+      pinia,
+    })
+    await flushPromises()
+
+    const header = wrapper.findAll('thead th')[1]!
+    await header.trigger('click')
+    await flushPromises()
+    let stored = JSON.parse(localStorage.getItem('xopti.grid.view.countries') ?? '{}')
+    expect(stored.sortKey).toBe('name')
+    expect(stored.sortDirection).toBe('asc')
+
+    await header.trigger('click')
+    await flushPromises()
+    stored = JSON.parse(localStorage.getItem('xopti.grid.view.countries') ?? '{}')
+    expect(stored.sortDirection).toBe('desc')
+    wrapper.unmount()
+  })
+
   it('persists checkbox mode and the selected view', async () => {
     stubApi()
     const pinia = authenticatedPinia()
