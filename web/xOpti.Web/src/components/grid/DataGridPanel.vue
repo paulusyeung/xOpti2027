@@ -19,6 +19,7 @@ const props = withDefaults(defineProps<{
   loading?: boolean
   hideSearch?: boolean
   linkKey?: string
+  rowTestIdPrefix?: string
 }>(), {
   searchLabel: 'Search',
   emptyText: 'No records.',
@@ -26,6 +27,7 @@ const props = withDefaults(defineProps<{
   loading: false,
   hideSearch: false,
   linkKey: 'key',
+  rowTestIdPrefix: 'grid-row-',
 })
 
 const emit = defineEmits<{
@@ -331,13 +333,19 @@ function cardValue(item: Record<string, unknown>, column: GridColumn): string {
           data-testid="grid-table"
         >
           <template #item="{ item, props }">
-            <tr v-bind="props" :data-testid="`grid-row-${item[itemKey]}`">
+            <tr v-bind="props" :data-testid="`${rowTestIdPrefix}${item[itemKey]}`">
               <td v-for="column in tableHeaders" :key="column.key">
                 <v-checkbox-btn
                   v-if="column.key === '__checkbox'"
                   :model-value="isSelected(item)"
                   data-testid="grid-row-checkbox"
                   @click.stop="toggleSelected(rowKey(item))"
+                />
+                <slot
+                  v-else-if="$slots[`cell-${column.key}`]"
+                  :name="`cell-${column.key}`"
+                  :item="item"
+                  :value="item[column.key]"
                 />
                 <v-btn
                   v-else-if="column.key === linkKey"
@@ -416,6 +424,8 @@ function cardValue(item: Record<string, unknown>, column: GridColumn): string {
             {{ emptyText }}
           </div>
         </div>
+
+        <slot name="footer-actions" />
       </v-card-text>
     </v-card>
   </section>

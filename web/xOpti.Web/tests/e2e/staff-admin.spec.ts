@@ -16,7 +16,6 @@ test('admin manages a staff account end to end', async ({ page, browser, request
   await clickNavItem(page, 'coding', 'nav-staff')
 
   await expect(page.getByTestId('staff-admin-page')).toBeVisible()
-  await expect(page.getByTestId('roles-panel')).toContainText('Provisional matrix')
 
   // Create the account; no password is accepted, only a reset token is issued.
   await page.getByTestId('staff-create-open').click()
@@ -31,6 +30,7 @@ test('admin manages a staff account end to end', async ({ page, browser, request
   expect(createToken.length).toBeGreaterThan(10)
 
   // Assign a different role.
+  await page.getByTestId(`grid-link-${username}`).click()
   await page.getByTestId(`staff-role-${username}`).click()
   await page.getByTestId('staff-role-select').click()
   await page.locator('.v-overlay-container').getByText('optician', { exact: true }).first().click()
@@ -39,6 +39,7 @@ test('admin manages a staff account end to end', async ({ page, browser, request
   await expect(row).toContainText('optician')
 
   // Force a reset and use the token to activate the account.
+  await page.getByTestId(`grid-link-${username}`).click()
   await page.getByTestId(`staff-reset-${username}`).click()
   await page.getByTestId('staff-reason').locator('input').fill('e2e reset')
   await page.getByTestId('staff-dialog-submit').click()
@@ -64,6 +65,7 @@ test('admin manages a staff account end to end', async ({ page, browser, request
   await expect(userPage.getByTestId('nav-menu')).toBeVisible()
 
   // Disable the account; the existing session is rejected on the next request.
+  await page.getByTestId(`grid-link-${username}`).click()
   await page.getByTestId(`staff-disable-${username}`).click()
   await page.getByTestId('staff-reason').locator('input').fill('e2e disable')
   await page.getByTestId('staff-dialog-submit').click()

@@ -118,6 +118,12 @@ export const routes: RouteRecordRaw[] = [
     meta: { permission: PermissionNames.MasterDataMaintain, title: 'Staff' },
   },
   {
+    path: '/admin/security',
+    name: 'admin-security',
+    component: () => import('@/features/admin/SecurityPlaceholderPage.vue'),
+    meta: { permission: PermissionNames.MasterDataMaintain, title: 'Security' },
+  },
+  {
     path: '/admin/reference',
     redirect: referencePath(REFERENCE_PAGES[0]!),
   },

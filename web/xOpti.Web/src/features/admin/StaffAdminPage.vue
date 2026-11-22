@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { api, unwrap } from '@/api/client'
 import { AppError } from '@/api/problems'
+import DataGridPanel, { type GridColumn } from '@/components/grid/DataGridPanel.vue'
 
 interface StaffRow {
   id: string
@@ -27,7 +28,7 @@ interface RoleCatalogue {
   parityGaps: string[]
 }
 
-type DialogMode = 'create' | 'role' | 'branch' | 'reset' | 'disable' | 'enable' | null
+type DialogMode = 'view' | 'create' | 'role' | 'branch' | 'reset' | 'disable' | 'enable' | null
 
 const loading = ref(true)
 const saving = ref(false)
@@ -38,11 +39,13 @@ const fieldErrors = ref<Record<string, string[]>>({})
 const resetToken = ref<string | null>(null)
 
 const staff = ref<StaffRow[]>([])
+const search = ref('')
 const nextCursor = ref<string | null>(null)
 const catalogue = ref<RoleCatalogue | null>(null)
 const branches = ref<string[]>([])
 
 const dialog = ref<DialogMode>(null)
+const dialogVisible = ref(false)
 const selected = ref<StaffRow | null>(null)
 const form = reactive({
   userName: '',
@@ -50,6 +53,56 @@ const form = reactive({
   role: 'clerk',
   branchCode: '',
   reason: '',
+})
+
+const columns = computed<GridColumn[]>(() => [
+  { key: 'userName', title: 'Username', sortable: true },
+  { key: 'displayName', title: 'Display name', sortable: true },
+  { key: 'role', title: 'Role', sortable: true },
+  { key: 'branchCode', title: 'Branch', sortable: true },
+  { key: 'status', title: 'Status', sortable: false },
+])
+
+const roleOptions = computed(() => catalogue.value?.roles.map((grant) => grant.role) ?? [])
+
+let dragCard: HTMLElement | null = null
+let dragStartX = 0
+let dragStartY = 0
+let dragOffsetX = 0
+let dragOffsetY = 0
+
+function onDragMove(event: MouseEvent): void {
+  dragOffsetX = event.clientX - dragStartX
+  dragOffsetY = event.clientY - dragStartY
+  if (dragCard) {
+    dragCard.style.transform = `translate(${dragOffsetX}px, ${dragOffsetY}px)`
+  }
+}
+
+function onDragEnd(): void {
+  document.removeEventListener('mousemove', onDragMove)
+  document.removeEventListener('mouseup', onDragEnd)
+}
+
+function onDragStart(event: MouseEvent): void {
+  if ((event.target as HTMLElement).closest('button')) return
+  dragCard = (event.currentTarget as HTMLElement).closest<HTMLElement>(
+    '[data-testid^="staff-dialog-"]',
+  )
+  if (!dragCard) return
+  dragStartX = event.clientX - dragOffsetX
+  dragStartY = event.clientY - dragOffsetY
+  document.addEventListener('mousemove', onDragMove)
+  document.addEventListener('mouseup', onDragEnd)
+}
+
+onBeforeUnmount(onDragEnd)
+
+watch(dialogVisible, (open) => {
+  if (!open) return
+  dragOffsetX = 0
+  dragOffsetY = 0
+  if (dragCard) dragCard.style.transform = ''
 })
 
 function resetForm(): void {
@@ -123,15 +176,20 @@ async function loadMore(): Promise<void> {
 function openCreate(): void {
   resetForm()
   form.role = catalogue.value?.roles[0]?.role ?? 'clerk'
+  selected.value = null
   dialog.value = 'create'
+  dialogVisible.value = true
 }
 
 function openFor(mode: Exclude<DialogMode, 'create' | null>, row: StaffRow): void {
   resetForm()
   selected.value = row
+  form.userName = row.userName
+  form.displayName = row.displayName ?? ''
   form.role = row.roles[0] ?? catalogue.value?.roles[0]?.role ?? 'clerk'
   form.branchCode = row.branchCode ?? ''
   dialog.value = mode
+  dialogVisible.value = true
 }
 
 async function submit(): Promise<void> {
@@ -197,13 +255,19 @@ async function submit(): Promise<void> {
       notice.value = `'${selected.value.userName}' was re-enabled.`
     }
 
-    dialog.value = null
+    dialogVisible.value = false
     await load()
   } catch (error) {
     handleError(error)
   } finally {
     saving.value = false
   }
+}
+
+function statusOf(row: StaffRow): string {
+  if (row.disabled) return 'Disabled'
+  if (row.resetRequired) return 'Reset required'
+  return 'Active'
 }
 
 function errorFor(field: string): string | null {
@@ -216,19 +280,6 @@ onMounted(load)
 
 <template>
   <div data-testid="staff-admin-page">
-    <div class="d-flex align-center mb-4">
-      <h1 class="text-h5">Staff administration</h1>
-      <v-spacer />
-      <v-btn
-        color="primary"
-        data-testid="staff-create-open"
-        :disabled="forbidden"
-        @click="openCreate"
-      >
-        New staff
-      </v-btn>
-    </div>
-
     <v-alert v-if="forbidden" type="error" variant="tonal" data-testid="staff-forbidden">
       You do not have permission to administer staff accounts.
     </v-alert>
@@ -242,128 +293,108 @@ onMounted(load)
       Reset token: <code>{{ resetToken }}</code>
     </v-alert>
 
-    <div v-if="loading" class="d-flex justify-center pa-8" data-testid="staff-loading">
-      <v-progress-circular indeterminate />
-    </div>
+    <DataGridPanel
+      v-if="!forbidden"
+      view-id="staff"
+      :columns="columns"
+      :items="staff"
+      v-model:search="search"
+      :loading="loading"
+      :item-key="'userName'"
+      link-key="userName"
+      row-test-id-prefix="staff-row-"
+      empty-text="No staff accounts."
+      search-label="Search staff"
+      @refresh="load()"
+      @open="openFor('view', $event as unknown as StaffRow)"
+    >
+      <template #toolbar-actions>
+        <v-btn
+          color="primary"
+          size="small"
+          prepend-icon="mdi-plus"
+          data-testid="staff-create-open"
+          @click="openCreate"
+        >
+          New staff
+        </v-btn>
+      </template>
 
-    <template v-else-if="!forbidden">
-      <v-table data-testid="staff-table" density="comfortable">
-        <thead>
-          <tr>
-            <th>Username</th>
-            <th>Display name</th>
-            <th>Role</th>
-            <th>Branch</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="row in staff" :key="row.id" :data-testid="`staff-row-${row.userName}`">
-            <td>{{ row.userName }}</td>
-            <td>{{ row.displayName }}</td>
-            <td>{{ row.roles.join(', ') || 'No role (denied)' }}</td>
-            <td>{{ row.branchCode || '—' }}</td>
-            <td>
-              <v-chip v-if="row.disabled" color="error" size="small" data-testid="staff-status-disabled">
-                Disabled
-              </v-chip>
-              <v-chip v-else-if="row.resetRequired" color="warning" size="small">
-                Reset required
-              </v-chip>
-              <v-chip v-else color="success" size="small">Active</v-chip>
-            </td>
-            <td class="d-flex flex-wrap ga-1">
-              <v-btn
-                size="small"
-                variant="text"
-                :data-testid="`staff-role-${row.userName}`"
-                @click="openFor('role', row)"
-              >
-                Role
-              </v-btn>
-              <v-btn
-                size="small"
-                variant="text"
-                :data-testid="`staff-branch-${row.userName}`"
-                @click="openFor('branch', row)"
-              >
-                Branch
-              </v-btn>
-              <v-btn
-                size="small"
-                variant="text"
-                :data-testid="`staff-reset-${row.userName}`"
-                @click="openFor('reset', row)"
-              >
-                Force reset
-              </v-btn>
-              <v-btn
-                v-if="row.disabled"
-                size="small"
-                variant="text"
-                :data-testid="`staff-enable-${row.userName}`"
-                @click="openFor('enable', row)"
-              >
-                Enable
-              </v-btn>
-              <v-btn
-                v-else
-                size="small"
-                variant="text"
-                color="error"
-                :data-testid="`staff-disable-${row.userName}`"
-                @click="openFor('disable', row)"
-              >
-                Disable
-              </v-btn>
-            </td>
-          </tr>
-          <tr v-if="staff.length === 0">
-            <td colspan="6" class="text-medium-emphasis">No staff accounts.</td>
-          </tr>
-        </tbody>
-      </v-table>
+      <template #cell-role="{ item }">
+        {{ (item as unknown as StaffRow).roles.join(', ') || 'No role (denied)' }}
+      </template>
 
-      <div v-if="nextCursor" class="mt-4">
-        <v-btn variant="text" data-testid="staff-load-more" @click="loadMore">Load more</v-btn>
-      </div>
+      <template #cell-branchCode="{ item }">
+        {{ (item as unknown as StaffRow).branchCode || '—' }}
+      </template>
 
-      <v-card v-if="catalogue" class="mt-6" variant="outlined" data-testid="roles-panel">
-        <v-card-title class="text-subtitle-1">
-          Roles and permissions
-          <v-chip
-            class="ml-2"
-            size="small"
-            :color="catalogue.signed ? 'success' : 'warning'"
-            data-testid="matrix-signed-state"
-          >
-            {{ catalogue.signed ? 'Signed' : 'Provisional matrix' }}
-          </v-chip>
-        </v-card-title>
-        <v-card-text>
-          <div v-for="grant in catalogue.roles" :key="grant.role" class="mb-2">
-            <strong>{{ grant.role }}</strong>:
-            <span>{{ grant.permissions.join(', ') || 'no permissions' }}</span>
-          </div>
-          <div v-if="catalogue.unassignedPermissions.length" class="text-medium-emphasis mt-2">
-            Unassigned: {{ catalogue.unassignedPermissions.join(', ') }}
-          </div>
-        </v-card-text>
-      </v-card>
-    </template>
+      <template #cell-status="{ item }">
+        <v-chip
+          :color="(item as unknown as StaffRow).disabled ? 'error' : (item as unknown as StaffRow).resetRequired ? 'warning' : 'success'"
+          size="small"
+        >
+          {{ statusOf(item as unknown as StaffRow) }}
+        </v-chip>
+      </template>
 
-    <v-card v-if="dialog" class="mt-6" variant="outlined" :data-testid="`staff-dialog-${dialog}`">
-        <v-card-title>
+      <template #footer-actions>
+        <div v-if="nextCursor" class="mt-4">
+          <v-btn variant="text" data-testid="staff-load-more" @click="loadMore">Load more</v-btn>
+        </div>
+      </template>
+    </DataGridPanel>
+
+    <v-dialog
+      v-model="dialogVisible"
+      max-width="min(100%, 680px)"
+      scrollable
+      @after-leave="dialog = null"
+    >
+      <v-card rounded="xl" elevation="6" :data-testid="`staff-dialog-${dialog}`">
+        <v-card-title class="dialog-drag-handle d-flex align-center ga-2" @mousedown="onDragStart">
           <template v-if="dialog === 'create'">New staff account</template>
+          <template v-else-if="dialog === 'view'">Staff account — {{ selected?.userName }}</template>
           <template v-else-if="dialog === 'role'">Change role — {{ selected?.userName }}</template>
           <template v-else-if="dialog === 'branch'">Branch scope — {{ selected?.userName }}</template>
           <template v-else-if="dialog === 'reset'">Force password reset — {{ selected?.userName }}</template>
           <template v-else-if="dialog === 'disable'">Disable account — {{ selected?.userName }}</template>
           <template v-else>Enable account — {{ selected?.userName }}</template>
+          <v-spacer />
+          <v-btn
+            icon="mdi-close"
+            variant="text"
+            density="compact"
+            aria-label="Close"
+            data-testid="staff-dialog-close"
+            @click="dialogVisible = false"
+          />
         </v-card-title>
+
         <v-card-text>
-          <template v-if="dialog === 'create'">
+          <template v-if="dialog === 'view'">
+            <v-row dense>
+              <v-col cols="12" sm="6">
+                <v-text-field label="Username" :model-value="selected?.userName" readonly />
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-text-field label="Display name" :model-value="selected?.displayName ?? ''" readonly />
+              </v-col>
+              <v-col cols="12" sm="4">
+                <v-text-field label="Role" :model-value="selected?.roles.join(', ') || 'No role (denied)'" readonly />
+              </v-col>
+              <v-col cols="12" sm="4">
+                <v-text-field label="Branch" :model-value="selected?.branchCode || '—'" readonly />
+              </v-col>
+              <v-col cols="12" sm="4">
+                <v-text-field label="Status" :model-value="statusOf(selected!)" readonly />
+              </v-col>
+              <v-col cols="12">
+                <v-text-field label="Legacy security level" :model-value="selected?.legacyLevel" readonly />
+              </v-col>
+            </v-row>
+          </template>
+
+          <template v-else-if="dialog === 'create'">
             <v-text-field
               v-model="form.userName"
               label="Username"
@@ -373,7 +404,7 @@ onMounted(load)
             <v-text-field v-model="form.displayName" label="Display name" data-testid="staff-display-name" />
             <v-select
               v-model="form.role"
-              :items="catalogue?.roles.map((grant) => grant.role) ?? []"
+              :items="roleOptions"
               label="Role"
               data-testid="staff-role-select"
               :error-messages="errorFor('Role')"
@@ -386,15 +417,17 @@ onMounted(load)
               data-testid="staff-branch-select"
             />
           </template>
+
           <template v-else-if="dialog === 'role'">
             <v-select
               v-model="form.role"
-              :items="catalogue?.roles.map((grant) => grant.role) ?? []"
+              :items="roleOptions"
               label="Role"
               data-testid="staff-role-select"
               :error-messages="errorFor('Role')"
             />
           </template>
+
           <template v-else-if="dialog === 'branch'">
             <v-select
               v-model="form.branchCode"
@@ -404,7 +437,9 @@ onMounted(load)
               data-testid="staff-branch-select"
             />
           </template>
+
           <v-text-field
+            v-if="dialog !== 'view'"
             v-model="form.reason"
             label="Reason (recorded in the audit trail)"
             data-testid="staff-reason"
@@ -414,18 +449,79 @@ onMounted(load)
             {{ errorMessage }}
           </v-alert>
         </v-card-text>
+
         <v-card-actions>
-          <v-spacer />
-          <v-btn variant="text" data-testid="staff-dialog-cancel" @click="dialog = null">Cancel</v-btn>
-          <v-btn
-            color="primary"
-            data-testid="staff-dialog-submit"
-            :loading="saving"
-            @click="submit"
-          >
-            Save
-          </v-btn>
+          <template v-if="dialog === 'view' && selected">
+            <v-btn
+              size="small"
+              variant="text"
+              color="primary"
+              :data-testid="`staff-role-${selected.userName}`"
+              @click="openFor('role', selected)"
+            >
+              Change role
+            </v-btn>
+            <v-btn
+              size="small"
+              variant="text"
+              :data-testid="`staff-branch-${selected.userName}`"
+              @click="openFor('branch', selected)"
+            >
+              Branch
+            </v-btn>
+            <v-btn
+              size="small"
+              variant="text"
+              :data-testid="`staff-reset-${selected.userName}`"
+              @click="openFor('reset', selected)"
+            >
+              Force reset
+            </v-btn>
+            <v-btn
+              v-if="selected.disabled"
+              size="small"
+              variant="text"
+              :data-testid="`staff-enable-${selected.userName}`"
+              @click="openFor('enable', selected)"
+            >
+              Enable
+            </v-btn>
+            <v-btn
+              v-else
+              size="small"
+              variant="text"
+              color="error"
+              :data-testid="`staff-disable-${selected.userName}`"
+              @click="openFor('disable', selected)"
+            >
+              Disable
+            </v-btn>
+            <v-spacer />
+            <v-btn variant="text" data-testid="staff-dialog-cancel" @click="dialogVisible = false">
+              Close
+            </v-btn>
+          </template>
+          <template v-else>
+            <v-spacer />
+            <v-btn variant="text" data-testid="staff-dialog-cancel" @click="dialogVisible = false">Cancel</v-btn>
+            <v-btn
+              color="primary"
+              data-testid="staff-dialog-submit"
+              :loading="saving"
+              @click="submit"
+            >
+              Save
+            </v-btn>
+          </template>
         </v-card-actions>
-    </v-card>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
+
+<style scoped>
+.dialog-drag-handle {
+  cursor: move;
+  user-select: none;
+}
+</style>

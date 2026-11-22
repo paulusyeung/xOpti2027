@@ -47,6 +47,11 @@ describe('navigation visibility', () => {
     const home = NAV_ITEMS.find((i) => i.to === '/')!
     expect(isNavItemVisible(home, without, { analyticsEnabled: false, wptLicenseKey: null })).toBe(true)
   })
+
+  it('points Preference > Security at the RBAC placeholder', () => {
+    const security = NAV_ITEMS.find((item) => item.title === 'Security')!
+    expect(security.to).toBe('/admin/security')
+  })
 })
 
 describe('AppShell', () => {

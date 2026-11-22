@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { flushPromises } from '@vue/test-utils'
+import { DOMWrapper, flushPromises } from '@vue/test-utils'
 import StaffAdminPage from '@/features/admin/StaffAdminPage.vue'
 import { mountInApp } from './support'
 
@@ -93,17 +93,20 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
+function dialogWrapper(): DOMWrapper<Element> {
+  const element = document.body.querySelector('[data-testid^="staff-dialog-"]')
+  if (!element) throw new Error('Staff dialog was not rendered')
+  return new DOMWrapper(element)
+}
+
 describe('StaffAdminPage', () => {
-  it('loads the staff table and the provisional role matrix', async () => {
+  it('loads the staff table', async () => {
     stubApi()
     const { wrapper } = await mountInApp(StaffAdminPage, { path: '/' })
     await flushPromises()
 
-    expect(wrapper.find('[data-testid="staff-table"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="grid-table"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="staff-row-manager"]').text()).toContain('manager')
-    expect(wrapper.find('[data-testid="roles-panel"]').text()).toContain('Provisional matrix')
-    expect(wrapper.find('[data-testid="roles-panel"]').text()).toContain('master-data:maintain')
-    expect(wrapper.text()).toContain('customer:pii')
     wrapper.unmount()
   })
 
@@ -114,7 +117,7 @@ describe('StaffAdminPage', () => {
     await flushPromises()
 
     expect(wrapper.find('[data-testid="staff-forbidden"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="staff-table"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="grid-table"]').exists()).toBe(false)
     wrapper.unmount()
   })
 
@@ -135,11 +138,11 @@ describe('StaffAdminPage', () => {
     await flushPromises()
 
     await wrapper.find('[data-testid="staff-create-open"]').trigger('click')
-    await wrapper.find('[data-testid="staff-reason"] input').setValue('new hire')
-    await wrapper.find('[data-testid="staff-dialog-submit"]').trigger('click')
+    await dialogWrapper().find('[data-testid="staff-reason"] input').setValue('new hire')
+    await dialogWrapper().find('[data-testid="staff-dialog-submit"]').trigger('click')
     await flushPromises()
 
-    const dialog = wrapper.find('[data-testid="staff-dialog-create"]')
+    const dialog = dialogWrapper()
     expect(dialog.exists()).toBe(true)
     expect(dialog.text()).toContain('Username is required.')
     wrapper.unmount()
@@ -152,9 +155,9 @@ describe('StaffAdminPage', () => {
     await flushPromises()
 
     await wrapper.find('[data-testid="staff-create-open"]').trigger('click')
-    await wrapper.find('[data-testid="staff-username"] input').setValue('new.user')
-    await wrapper.find('[data-testid="staff-reason"] input').setValue('new hire')
-    await wrapper.find('[data-testid="staff-dialog-submit"]').trigger('click')
+    await dialogWrapper().find('[data-testid="staff-username"] input').setValue('new.user')
+    await dialogWrapper().find('[data-testid="staff-reason"] input').setValue('new hire')
+    await dialogWrapper().find('[data-testid="staff-dialog-submit"]').trigger('click')
     await flushPromises()
 
     expect(wrapper.find('[data-testid="staff-reset-token"]').text()).toContain('TOKEN-123')
@@ -184,9 +187,10 @@ describe('StaffAdminPage', () => {
     const { wrapper } = await mountInApp(StaffAdminPage, { path: '/' })
     await flushPromises()
 
-    await wrapper.find('[data-testid="staff-disable-manager"]').trigger('click')
-    await wrapper.find('[data-testid="staff-reason"] input').setValue('left company')
-    await wrapper.find('[data-testid="staff-dialog-submit"]').trigger('click')
+    await wrapper.get('[data-testid="grid-link-manager"]').trigger('click')
+    await dialogWrapper().get('[data-testid="staff-disable-manager"]').trigger('click')
+    await dialogWrapper().find('[data-testid="staff-reason"] input').setValue('left company')
+    await dialogWrapper().find('[data-testid="staff-dialog-submit"]').trigger('click')
     await flushPromises()
 
     expect(wrapper.find('[data-testid="staff-notice"]').text()).toContain('disabled')
