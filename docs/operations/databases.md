@@ -70,6 +70,23 @@ Tables created and evolved by EF migrations. Notable ones:
 - `idempotency_record` — safe replay of unsafe API requests
 - POS, claim, prescription, optical-order and wholesale tables
 
+### Staff identity linkage
+
+A staff member can exist in two places:
+
+- `public.staff` — the migrated legacy HR row (`staff_code`, names, job title,
+  legacy password). Read by `GET /api/v1/admin/staff/directory`.
+- `public.asp_net_users` — the ASP.NET Identity account used for sign-in, role,
+  branch scope and reset/disable state. Read/written by
+  `/api/v1/admin/staff*`.
+
+The accounts are linked by username = `staff.staff_code`. The first successful
+legacy sign-in creates the Identity account automatically. Until then, the Staff
+directory shows the legacy names and job title but no application role or
+status, and management actions are unavailable. Admin-created accounts are
+Identity-only and do not insert a `public.staff` row; the directory merges both
+sources.
+
 ### `migration` — migration runner bookkeeping
 
 Only `xOpti.Migrations` writes here. `run_log` records each extract/transform/

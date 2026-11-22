@@ -1425,6 +1425,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/staff/directory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    cursor?: string;
+                    pageSize?: number | string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["PagedResultOfLegacyStaffDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/inventory/{sku}": {
         parameters: {
             query?: never;
@@ -6876,6 +6914,13 @@ export interface components {
             deficitLotNo: null | string;
             consumptions: components["schemas"]["IssueConsumptionDto"][];
         };
+        LegacyStaffDto: {
+            code: string;
+            firstName: null | string;
+            lastName: null | string;
+            jobTitle: null | string;
+            jobTitleName: null | string;
+        };
         LensDetailDto: {
             /** Format: int32 */
             lineNumber: number | string;
@@ -7095,6 +7140,10 @@ export interface components {
         };
         PagedResultOfDoctorDto: {
             items: components["schemas"]["DoctorDto"][];
+            nextCursor: null | string;
+        };
+        PagedResultOfLegacyStaffDto: {
+            items: components["schemas"]["LegacyStaffDto"][];
             nextCursor: null | string;
         };
         PagedResultOfMovementDto: {

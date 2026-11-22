@@ -15,6 +15,22 @@ interface StaffRow {
   disabled: boolean
 }
 
+interface LegacyStaffRow {
+  code: string
+  firstName?: string | null
+  lastName?: string | null
+  jobTitle?: string | null
+  jobTitleName?: string | null
+}
+
+interface StaffGridRow {
+  code: string
+  firstName: string
+  lastName: string
+  jobTitleName: string
+  account?: StaffRow
+}
+
 interface RoleGrant {
   role: string
   permissions: string[]
@@ -38,9 +54,10 @@ const notice = ref<string | null>(null)
 const fieldErrors = ref<Record<string, string[]>>({})
 const resetToken = ref<string | null>(null)
 
-const staff = ref<StaffRow[]>([])
-const search = ref('')
+const staff = ref<StaffGridRow[]>([])
+const identityAccounts = ref<StaffRow[]>([])
 const nextCursor = ref<string | null>(null)
+const search = ref('')
 const catalogue = ref<RoleCatalogue | null>(null)
 const branches = ref<string[]>([])
 
@@ -50,17 +67,19 @@ const selected = ref<StaffRow | null>(null)
 const form = reactive({
   userName: '',
   displayName: '',
+  firstName: '',
+  lastName: '',
+  jobTitleName: '',
   role: 'clerk',
   branchCode: '',
   reason: '',
 })
 
 const columns = computed<GridColumn[]>(() => [
-  { key: 'userName', title: 'Username', sortable: true },
-  { key: 'displayName', title: 'Display name', sortable: true },
-  { key: 'role', title: 'Role', sortable: true },
-  { key: 'branchCode', title: 'Branch', sortable: true },
-  { key: 'status', title: 'Status', sortable: false },
+  { key: 'code', title: 'Code', sortable: true },
+  { key: 'firstName', title: 'First name', sortable: true },
+  { key: 'lastName', title: 'Last name', sortable: true },
+  { key: 'jobTitleName', title: 'Job title (role)', sortable: true },
 ])
 
 const roleOptions = computed(() => catalogue.value?.roles.map((grant) => grant.role) ?? [])
@@ -108,6 +127,9 @@ watch(dialogVisible, (open) => {
 function resetForm(): void {
   form.userName = ''
   form.displayName = ''
+  form.firstName = ''
+  form.lastName = ''
+  form.jobTitleName = ''
   form.role = catalogue.value?.roles[0]?.role ?? 'clerk'
   form.branchCode = ''
   form.reason = ''
@@ -135,18 +157,46 @@ function handleError(error: unknown): void {
   errorMessage.value = 'The request failed. Please try again.'
 }
 
+function mergeRows(legacy: LegacyStaffRow[], accounts: StaffRow[]): StaffGridRow[] {
+  const byCode = new Map(accounts.map((account) => [account.userName, account]))
+  const rows = legacy.map((row) => ({
+    code: row.code,
+    firstName: row.firstName ?? '',
+    lastName: row.lastName ?? '',
+    jobTitleName: row.jobTitleName ?? row.jobTitle ?? '',
+    account: byCode.get(row.code),
+  }))
+
+  const legacyCodes = new Set(legacy.map((row) => row.code))
+  for (const account of accounts) {
+    if (!legacyCodes.has(account.userName)) {
+      rows.push({
+        code: account.userName,
+        firstName: account.displayName ?? '',
+        lastName: '',
+        jobTitleName: account.roles.join(', ') || 'No role (denied)',
+        account,
+      })
+    }
+  }
+  return rows
+}
+
 async function load(): Promise<void> {
   loading.value = true
   errorMessage.value = null
   try {
-    const [staffResult, rolesResult, branchResult] = await Promise.all([
-      api.client.GET('/api/v1/admin/staff', { params: { query: { pageSize: 50 } } }),
+    const [legacyResult, staffResult, rolesResult, branchResult] = await Promise.all([
+      api.client.GET('/api/v1/admin/staff/directory', { params: { query: { pageSize: 50 } } }),
+      api.client.GET('/api/v1/admin/staff', { params: { query: { pageSize: 200 } } }),
       api.client.GET('/api/v1/admin/roles'),
       api.client.GET('/api/v1/branches', { params: { query: { pageSize: 20 } } }),
     ])
-    const page = await unwrap(staffResult)
-    staff.value = page.items as StaffRow[]
-    nextCursor.value = page.nextCursor ?? null
+    const legacyPage = await unwrap(legacyResult)
+    const accountPage = await unwrap(staffResult)
+    identityAccounts.value = accountPage.items as StaffRow[]
+    staff.value = mergeRows(legacyPage.items as LegacyStaffRow[], identityAccounts.value)
+    nextCursor.value = legacyPage.nextCursor ?? null
     catalogue.value = await unwrap(rolesResult) as RoleCatalogue
     branches.value = (await unwrap(branchResult)).items.map((branch) => branch.branchCode)
   } catch (error) {
@@ -162,11 +212,14 @@ async function loadMore(): Promise<void> {
   }
   try {
     const page = await unwrap(
-      await api.client.GET('/api/v1/admin/staff', {
+      await api.client.GET('/api/v1/admin/staff/directory', {
         params: { query: { pageSize: 50, cursor: nextCursor.value } },
       }),
     )
-    staff.value = [...staff.value, ...(page.items as StaffRow[])]
+    staff.value = [
+      ...staff.value,
+      ...mergeRows(page.items as LegacyStaffRow[], identityAccounts.value),
+    ]
     nextCursor.value = page.nextCursor ?? null
   } catch (error) {
     handleError(error)
@@ -181,13 +234,16 @@ function openCreate(): void {
   dialogVisible.value = true
 }
 
-function openFor(mode: Exclude<DialogMode, 'create' | null>, row: StaffRow): void {
+function openFor(mode: Exclude<DialogMode, 'create' | null>, row: StaffGridRow): void {
   resetForm()
-  selected.value = row
-  form.userName = row.userName
-  form.displayName = row.displayName ?? ''
-  form.role = row.roles[0] ?? catalogue.value?.roles[0]?.role ?? 'clerk'
-  form.branchCode = row.branchCode ?? ''
+  selected.value = row.account ?? null
+  form.userName = row.code
+  form.firstName = row.firstName
+  form.lastName = row.lastName
+  form.jobTitleName = row.jobTitleName
+  form.displayName = row.account?.displayName ?? ''
+  form.role = row.account?.roles[0] ?? catalogue.value?.roles[0]?.role ?? 'clerk'
+  form.branchCode = row.account?.branchCode ?? ''
   dialog.value = mode
   dialogVisible.value = true
 }
@@ -264,6 +320,16 @@ async function submit(): Promise<void> {
   }
 }
 
+function selectedGridRow(): StaffGridRow {
+  return {
+    code: selected.value?.userName ?? '',
+    firstName: form.firstName,
+    lastName: form.lastName,
+    jobTitleName: form.jobTitleName,
+    account: selected.value ?? undefined,
+  }
+}
+
 function statusOf(row: StaffRow): string {
   if (row.disabled) return 'Disabled'
   if (row.resetRequired) return 'Reset required'
@@ -300,13 +366,13 @@ onMounted(load)
       :items="staff"
       v-model:search="search"
       :loading="loading"
-      :item-key="'userName'"
-      link-key="userName"
+      :item-key="'code'"
+      link-key="code"
       row-test-id-prefix="staff-row-"
       empty-text="No staff accounts."
       search-label="Search staff"
       @refresh="load()"
-      @open="openFor('view', $event as unknown as StaffRow)"
+      @open="openFor('view', $event as unknown as StaffGridRow)"
     >
       <template #toolbar-actions>
         <v-btn
@@ -318,23 +384,6 @@ onMounted(load)
         >
           New staff
         </v-btn>
-      </template>
-
-      <template #cell-role="{ item }">
-        {{ (item as unknown as StaffRow).roles.join(', ') || 'No role (denied)' }}
-      </template>
-
-      <template #cell-branchCode="{ item }">
-        {{ (item as unknown as StaffRow).branchCode || '—' }}
-      </template>
-
-      <template #cell-status="{ item }">
-        <v-chip
-          :color="(item as unknown as StaffRow).disabled ? 'error' : (item as unknown as StaffRow).resetRequired ? 'warning' : 'success'"
-          size="small"
-        >
-          {{ statusOf(item as unknown as StaffRow) }}
-        </v-chip>
       </template>
 
       <template #footer-actions>
@@ -372,23 +421,36 @@ onMounted(load)
 
         <v-card-text>
           <template v-if="dialog === 'view'">
+            <v-alert v-if="!selected" type="info" variant="tonal" class="mb-4">
+              This staff code has no application account yet. Only legacy details are available.
+            </v-alert>
             <v-row dense>
-              <v-col cols="12" sm="6">
-                <v-text-field label="Username" :model-value="selected?.userName" readonly />
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-text-field label="Display name" :model-value="selected?.displayName ?? ''" readonly />
+              <v-col cols="12" sm="4">
+                <v-text-field label="Code" :model-value="form.userName" readonly />
               </v-col>
               <v-col cols="12" sm="4">
-                <v-text-field label="Role" :model-value="selected?.roles.join(', ') || 'No role (denied)'" readonly />
+                <v-text-field label="First name" :model-value="form.firstName || '—'" readonly />
+              </v-col>
+              <v-col cols="12" sm="4">
+                <v-text-field label="Last name" :model-value="form.lastName || '—'" readonly />
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-text-field label="Job title (role)" :model-value="form.jobTitleName || '—'" readonly />
+              </v-col>
+              <v-col cols="12" sm="6">
+                <v-text-field label="Application role" :model-value="selected?.roles.join(', ') || 'No role (denied)'" readonly />
               </v-col>
               <v-col cols="12" sm="4">
                 <v-text-field label="Branch" :model-value="selected?.branchCode || '—'" readonly />
               </v-col>
               <v-col cols="12" sm="4">
-                <v-text-field label="Status" :model-value="statusOf(selected!)" readonly />
+                <v-text-field
+                  label="Status"
+                  :model-value="selected ? statusOf(selected) : 'No application account'"
+                  readonly
+                />
               </v-col>
-              <v-col cols="12">
+              <v-col cols="12" sm="4">
                 <v-text-field label="Legacy security level" :model-value="selected?.legacyLevel" readonly />
               </v-col>
             </v-row>
@@ -451,21 +513,22 @@ onMounted(load)
         </v-card-text>
 
         <v-card-actions>
-          <template v-if="dialog === 'view' && selected">
-            <v-btn
-              size="small"
-              variant="text"
-              color="primary"
-              :data-testid="`staff-role-${selected.userName}`"
-              @click="openFor('role', selected)"
-            >
-              Change role
-            </v-btn>
+          <template v-if="dialog === 'view'">
+            <template v-if="selected">
+              <v-btn
+                size="small"
+                variant="text"
+                color="primary"
+                :data-testid="`staff-role-${selected.userName}`"
+                @click="openFor('role', selectedGridRow())"
+              >
+                Change role
+              </v-btn>
             <v-btn
               size="small"
               variant="text"
               :data-testid="`staff-branch-${selected.userName}`"
-              @click="openFor('branch', selected)"
+              @click="openFor('branch', selectedGridRow())"
             >
               Branch
             </v-btn>
@@ -473,7 +536,7 @@ onMounted(load)
               size="small"
               variant="text"
               :data-testid="`staff-reset-${selected.userName}`"
-              @click="openFor('reset', selected)"
+              @click="openFor('reset', selectedGridRow())"
             >
               Force reset
             </v-btn>
@@ -482,7 +545,7 @@ onMounted(load)
               size="small"
               variant="text"
               :data-testid="`staff-enable-${selected.userName}`"
-              @click="openFor('enable', selected)"
+              @click="openFor('enable', selectedGridRow())"
             >
               Enable
             </v-btn>
@@ -492,10 +555,11 @@ onMounted(load)
               variant="text"
               color="error"
               :data-testid="`staff-disable-${selected.userName}`"
-              @click="openFor('disable', selected)"
+              @click="openFor('disable', selectedGridRow())"
             >
               Disable
             </v-btn>
+            </template>
             <v-spacer />
             <v-btn variant="text" data-testid="staff-dialog-cancel" @click="dialogVisible = false">
               Close

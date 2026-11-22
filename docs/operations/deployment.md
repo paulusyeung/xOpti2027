@@ -155,6 +155,18 @@ Production sign-in authenticates against the migrated `public.staff` row:
 The plaintext password is never copied into the Identity password hash. Identity
 password sign-in remains available for non-staff administrative/reset accounts.
 
+**Account provisioning:** the first successful legacy sign-in creates and links
+an ASP.NET Identity account whose username is the `staff_code`. That account is
+what the Staff administration page manages — role, branch scope, forced reset,
+enable/disable. A `public.staff` row whose code has never signed in therefore has
+legacy details only: the Staff page shows its code, names and job title, but no
+application role, status or management actions. An administrator can also
+pre-create the account with **New staff**, using the staff code as the username.
+
+Conversely, an account created through **New staff** is Identity-only; it does
+not insert a row into `public.staff`. The Staff directory merges both sources so
+admin-created accounts remain manageable.
+
 Tests: `LegacyStaffAuthenticationTests`, `LegacyStaffRoleMapTests`.
 
 ## 6. Upgrades

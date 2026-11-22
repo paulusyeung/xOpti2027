@@ -69,7 +69,9 @@ test('admin manages a staff account end to end', async ({ page, browser, request
   await page.getByTestId(`staff-disable-${username}`).click()
   await page.getByTestId('staff-reason').locator('input').fill('e2e disable')
   await page.getByTestId('staff-dialog-submit').click()
-  await expect(page.getByTestId(`staff-row-${username}`)).toContainText('Disabled')
+  await page.getByTestId(`grid-link-${username}`).click()
+  await expect(page.getByTestId('staff-dialog-view').getByLabel('Status')).toHaveValue('Disabled')
+  await page.getByTestId('staff-dialog-close').click()
 
   await userPage.goto('/')
   await expect(userPage).toHaveURL(/\/sign-in/)

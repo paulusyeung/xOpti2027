@@ -1380,6 +1380,46 @@
         }
       }
     },
+    "/api/v1/admin/staff/directory": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "pattern": "^-?(?:0|[1-9]\\d*)$",
+              "type": [
+                "integer",
+                "string"
+              ],
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfLegacyStaffDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/inventory/{sku}": {
       "get": {
         "tags": [
@@ -10278,6 +10318,45 @@
           }
         }
       },
+      "LegacyStaffDto": {
+        "required": [
+          "code",
+          "firstName",
+          "lastName",
+          "jobTitle",
+          "jobTitleName"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "firstName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lastName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "jobTitle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "jobTitleName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "LensDetailDto": {
         "required": [
           "lineNumber",
@@ -11309,6 +11388,27 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/DoctorDto"
+            }
+          },
+          "nextCursor": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "PagedResultOfLegacyStaffDto": {
+        "required": [
+          "items",
+          "nextCursor"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LegacyStaffDto"
             }
           },
           "nextCursor": {

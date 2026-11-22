@@ -656,6 +656,20 @@ public static class Endpoints
         .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
         .Produces<PagedResult<StaffAccountDto>>();
 
+        v1.MapGet("/admin/staff/directory", async (
+            string? cursor,
+            int? pageSize,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(
+                new xOpti.Application.Identity.Staff.ListLegacyStaffQuery(cursor, pageSize ?? 50),
+                cancellationToken);
+            return Results.Json(result);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
+        .Produces<PagedResult<xOpti.Application.Identity.Staff.LegacyStaffDto>>();
+
         v1.MapGet("/inventory/{sku}", async (
             string sku,
             IRequestDispatcher dispatcher,

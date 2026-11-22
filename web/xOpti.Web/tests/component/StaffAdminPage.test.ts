@@ -19,6 +19,19 @@ const staffPage = {
   nextCursor: null,
 }
 
+const legacyDirectory = {
+  items: [
+    {
+      code: 'manager',
+      firstName: 'Application',
+      lastName: 'Manager',
+      jobTitle: '101',
+      jobTitleName: 'OWNER',
+    },
+  ],
+  nextCursor: null,
+}
+
 const roles = {
   version: '1.0.0-provisional.1',
   signed: false,
@@ -71,6 +84,9 @@ function stubApi(postResponse: () => Response = () => json(created, 201)) {
     if (url.includes('/api/v1/auth/csrf-token')) {
       return json({ token: 'csrf-token' })
     }
+    if (url.includes('/api/v1/admin/staff/directory')) {
+      return json(legacyDirectory)
+    }
     if (url.includes('/api/v1/admin/roles')) {
       return json(roles)
     }
@@ -106,7 +122,9 @@ describe('StaffAdminPage', () => {
     await flushPromises()
 
     expect(wrapper.find('[data-testid="grid-table"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="staff-row-manager"]').text()).toContain('manager')
+    expect(wrapper.findAll('thead th').map((th) => th.text()))
+      .toEqual(['Code', 'First name', 'Last name', 'Job title (role)'])
+    expect(wrapper.find('[data-testid="staff-row-manager"]').text()).toContain('OWNER')
     wrapper.unmount()
   })
 

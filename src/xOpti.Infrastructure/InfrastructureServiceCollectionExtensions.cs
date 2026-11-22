@@ -75,6 +75,8 @@ public static class InfrastructureServiceCollectionExtensions
         services.AddScoped<xOpti.Application.Identity.Staff.IStaffAccountStore, Identity.EfStaffAccountStore>();
         services.AddScoped<xOpti.Application.Identity.ILegacyStaffAuthenticator,
             Identity.LegacyStaffAuthenticator>();
+        services.AddScoped<xOpti.Application.Identity.Staff.ILegacyStaffDirectory,
+            Identity.EfLegacyStaffDirectory>();
         services.AddScoped<xOpti.Application.Inventory.GetInventorySummary.IInventorySummaryRepository,
             Repositories.EfInventorySummaryRepository>();
         services.AddScoped<xOpti.Application.Reference.IReferenceDirectory, Repositories.EfReferenceDirectory>();
