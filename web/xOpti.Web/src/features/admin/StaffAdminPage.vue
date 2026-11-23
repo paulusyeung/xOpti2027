@@ -182,12 +182,23 @@ function mergeRows(legacy: LegacyStaffRow[], accounts: StaffRow[]): StaffGridRow
   return rows
 }
 
+function matchesSearch(row: StaffGridRow, term: string): boolean {
+  if (!term) return true
+  const needle = term.trim().toLowerCase()
+  if (!needle) return true
+  return [row.code, row.firstName, row.lastName, row.jobTitleName]
+    .some((value) => value.toLowerCase().includes(needle))
+}
+
 async function load(): Promise<void> {
   loading.value = true
   errorMessage.value = null
   try {
+    const term = (search.value ?? '').trim()
     const [legacyResult, staffResult, rolesResult, branchResult] = await Promise.all([
-      api.client.GET('/api/v1/admin/staff/directory', { params: { query: { pageSize: 50 } } }),
+      api.client.GET('/api/v1/admin/staff/directory', {
+        params: { query: { search: term || undefined, pageSize: 50 } },
+      }),
       api.client.GET('/api/v1/admin/staff', { params: { query: { pageSize: 200 } } }),
       api.client.GET('/api/v1/admin/roles'),
       api.client.GET('/api/v1/branches', { params: { query: { pageSize: 20 } } }),
@@ -196,6 +207,7 @@ async function load(): Promise<void> {
     const accountPage = await unwrap(staffResult)
     identityAccounts.value = accountPage.items as StaffRow[]
     staff.value = mergeRows(legacyPage.items as LegacyStaffRow[], identityAccounts.value)
+      .filter((row) => matchesSearch(row, term))
     nextCursor.value = legacyPage.nextCursor ?? null
     catalogue.value = await unwrap(rolesResult) as RoleCatalogue
     branches.value = (await unwrap(branchResult)).items.map((branch) => branch.branchCode)
@@ -211,14 +223,16 @@ async function loadMore(): Promise<void> {
     return
   }
   try {
+    const term = (search.value ?? '').trim()
     const page = await unwrap(
       await api.client.GET('/api/v1/admin/staff/directory', {
-        params: { query: { pageSize: 50, cursor: nextCursor.value } },
+        params: { query: { search: term || undefined, pageSize: 50, cursor: nextCursor.value } },
       }),
     )
     staff.value = [
       ...staff.value,
-      ...mergeRows(page.items as LegacyStaffRow[], identityAccounts.value),
+      ...mergeRows(page.items as LegacyStaffRow[], identityAccounts.value)
+        .filter((row) => matchesSearch(row, term)),
     ]
     nextCursor.value = page.nextCursor ?? null
   } catch (error) {
@@ -371,6 +385,7 @@ onMounted(load)
       row-test-id-prefix="staff-row-"
       empty-text="No staff accounts."
       search-label="Search staff"
+      @search="load()"
       @refresh="load()"
       @open="openFor('view', $event as unknown as StaffGridRow)"
     >

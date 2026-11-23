@@ -55,4 +55,22 @@ public sealed class LegacyStaffDirectoryTests(ApiPostgresFixture fixture)
         Assert.Equal("T99", item.GetProperty("jobTitle").GetString());
         Assert.Equal("Test Role", item.GetProperty("jobTitleName").GetString());
     }
+
+    [Fact]
+    public async Task Directory_SearchesCodeAndNames()
+    {
+        await SeedAsync();
+        using var manager = await SignInAsync("manager");
+
+        foreach (var term in new[] { "T99", "Directory", "Probe", "Test Role" })
+        {
+            var response = await manager.GetAsync($"/api/v1/admin/staff/directory?search={term}&pageSize=50");
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            using var body = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+            Assert.Contains(
+                body.RootElement.GetProperty("items").EnumerateArray(),
+                row => row.GetProperty("code").GetString() == "T99");
+        }
+    }
 }

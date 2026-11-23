@@ -1435,6 +1435,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
+                    search?: string;
                     cursor?: string;
                     pageSize?: number | string;
                 };

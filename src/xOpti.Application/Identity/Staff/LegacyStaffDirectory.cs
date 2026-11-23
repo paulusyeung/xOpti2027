@@ -19,12 +19,13 @@ public sealed record LegacyStaffDto(
 public interface ILegacyStaffDirectory
 {
     Task<IReadOnlyList<LegacyStaffDto>> PageAsync(
+        string? search,
         string? afterCode,
         int limit,
         CancellationToken cancellationToken);
 }
 
-public sealed record ListLegacyStaffQuery(string? Cursor, int PageSize)
+public sealed record ListLegacyStaffQuery(string? Search, string? Cursor, int PageSize)
     : IQuery<PagedResult<LegacyStaffDto>>,
       IHasPermissions
 {
@@ -38,6 +39,7 @@ public sealed class ListLegacyStaffQueryValidator : AbstractValidator<ListLegacy
     public ListLegacyStaffQueryValidator()
     {
         RuleFor(x => x.PageSize).InclusiveBetween(1, 200);
+        RuleFor(x => x.Search).MaximumLength(60);
     }
 }
 
@@ -48,7 +50,8 @@ public sealed class ListLegacyStaffHandler(ILegacyStaffDirectory directory)
         ListLegacyStaffQuery request,
         CancellationToken cancellationToken)
     {
-        var rows = await directory.PageAsync(request.AfterCode, request.PageSize + 1, cancellationToken);
+        var rows = await directory.PageAsync(
+            request.Search, request.AfterCode, request.PageSize + 1, cancellationToken);
         var hasMore = rows.Count > request.PageSize;
         var page = hasMore ? rows.Take(request.PageSize).ToList() : rows.ToList();
         var nextCursor = hasMore ? KeysetCursor.Encode(page[^1].Code) : null;

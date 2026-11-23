@@ -657,13 +657,14 @@ public static class Endpoints
         .Produces<PagedResult<StaffAccountDto>>();
 
         v1.MapGet("/admin/staff/directory", async (
+            string? search,
             string? cursor,
             int? pageSize,
             IRequestDispatcher dispatcher,
             CancellationToken cancellationToken) =>
         {
             var result = await dispatcher.DispatchAsync(
-                new xOpti.Application.Identity.Staff.ListLegacyStaffQuery(cursor, pageSize ?? 50),
+                new xOpti.Application.Identity.Staff.ListLegacyStaffQuery(search, cursor, pageSize ?? 50),
                 cancellationToken);
             return Results.Json(result);
         })
