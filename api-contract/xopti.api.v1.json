@@ -5729,6 +5729,28 @@
           }
         }
       }
+    },
+    "/api/v1/special-reports/bar-code-tag/print": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BarCodeTagPrintRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -17341,6 +17363,32 @@
             ]
           }
         }
+      },
+      "BarCodeTagPrintRequest": {
+        "type": "object",
+        "properties": {
+          "fromNumber": {
+            "type": "string"
+          },
+          "toNumber": {
+            "type": "string"
+          },
+          "duplicate": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        },
+        "required": [
+          "fromNumber",
+          "toNumber",
+          "duplicate",
+          "reason"
+        ]
       }
     }
   },

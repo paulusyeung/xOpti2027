@@ -277,4 +277,108 @@ public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IRep
             + $"{(duplicate ? "-duplicate" : string.Empty)}.pdf");
     }
 
+    public RenderedDocument RenderBarCodeTags(BarCodeTagDocument document)
+    {
+        _ = new QuestPdfDocumentRenderer(options);
+
+        var pages = new List<List<BarCodeTagLabel>>();
+        for (var offset = 0; offset < document.Labels.Count; offset += 20)
+        {
+            // Legacy Crystal fills all 4 x 5 cells left-to-right, top-to-bottom.
+            pages.Add(document.Labels.Skip(offset).Take(20).ToList());
+        }
+
+        var pdf = Document.Create(container =>
+        {
+            foreach (var pageLabels in pages)
+            {
+                container.Page(page =>
+                {
+                    // Legacy Crystal output: US Letter, 4 x 5 labels, L-to-R rows.
+                    page.Size(PageSizes.Letter);
+                    page.MarginLeft(34.8f);
+                    page.MarginRight(22.8f);
+                    page.MarginTop(66f);
+                    page.MarginBottom(38.5f);
+                    page.DefaultTextStyle(style => style.FontSize(7));
+
+                    page.Content().Table(table =>
+                    {
+                        table.ColumnsDefinition(columns =>
+                        {
+                            for (var i = 0; i < 4; i++)
+                            {
+                                columns.ConstantColumn(138.6f);
+                            }
+                        });
+
+                        foreach (var label in pageLabels)
+                        {
+                            table.Cell().Height(137f)
+                                .Element(cell => ComposeBarCodeLabel(cell, label));
+                        }
+                    });
+                });
+            }
+        })
+        .WithMetadata(new DocumentMetadata
+        {
+            Title = $"Bar code tags {document.FromTxNumber}-{document.ToTxNumber}",
+            Author = "xOpti",
+            Subject = "Bar Code Tag",
+            Creator = "xOpti Reporting",
+            Producer = "QuestPDF",
+            CreationDate = DateTime.UtcNow,
+        })
+        .GeneratePdf();
+
+        return new RenderedDocument(pdf, "application/pdf",
+            $"{document.FromTxNumber}-{document.ToTxNumber}-barcode-tags"
+            + $"{(document.Duplicate ? "-duplicate" : string.Empty)}.pdf");
+    }
+
+    private static void ComposeBarCodeLabel(IContainer container, BarCodeTagLabel label)
+    {
+        container.Column(column =>
+        {
+            column.Item().Row(row =>
+            {
+                row.ConstantItem(2.2f);
+                row.ConstantItem(123f)
+                    .Border(1).BorderColor(Colors.Black)
+                    .Padding(2)
+                    .Border(1).BorderColor(Colors.Black)
+                    .Padding(2.5f)
+                    .AlignCenter()
+                    .Text("THE OPTICAL CENTRE").Bold().FontSize(10.5f);
+            });
+
+            column.Item().PaddingTop(6.2f).Row(row =>
+            {
+                row.ConstantItem(7.5f);
+                row.ConstantItem(108.6f).AlignCenter()
+                    .Text(label.Sku).Bold().FontSize(12.3f).LetterSpacing(0.11f);
+            });
+
+            column.Item().PaddingTop(20.9f)
+                .Element(cell => QuestPdfReportComponents.Barcode(cell, label.Sku));
+
+            column.Item().Row(row =>
+            {
+                row.ConstantItem(64).Column(left =>
+                {
+                    left.Item().Text(label.Sku).FontSize(7.3f).LineHeight(0.85f);
+                    left.Item().Text(label.ClassName ?? string.Empty).FontSize(7.3f).LineHeight(0.85f);
+                    left.Item().Text(label.Model ?? string.Empty).FontSize(7.3f).LineHeight(0.85f);
+                    left.Item().Text($"${label.RetailPrice ?? 0m:0.00}").FontSize(7.3f).LineHeight(0.85f);
+                });
+                row.ConstantItem(63).Column(right =>
+                {
+                    right.Item().AlignRight().Text(label.Brand ?? string.Empty).FontSize(7.3f).LineHeight(0.85f);
+                    right.Item().AlignRight().Text(label.Color ?? string.Empty).FontSize(7.3f).LineHeight(0.85f);
+                    right.Item().AlignRight().Text(label.Size ?? string.Empty).FontSize(7.3f).LineHeight(0.85f);
+                });
+            });
+        });
+    }
 }

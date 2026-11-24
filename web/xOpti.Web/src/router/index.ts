@@ -124,6 +124,12 @@ export const routes: RouteRecordRaw[] = [
     meta: { permission: PermissionNames.MasterDataMaintain, title: 'Security' },
   },
   {
+    path: '/admin/special-reports',
+    name: 'special-reports',
+    component: () => import('@/features/admin/SpecialReportsPage.vue'),
+    meta: { permission: PermissionNames.ReportFinancial, title: 'Special Report' },
+  },
+  {
     path: '/admin/reference',
     redirect: referencePath(REFERENCE_PAGES[0]!),
   },

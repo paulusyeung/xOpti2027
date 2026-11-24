@@ -18,6 +18,12 @@ public class Inventory
 
     public string? MaterialCode { get; set; }
 
+    public string? Model { get; set; }
+
+    public string? Color { get; set; }
+
+    public string? Size { get; set; }
+
     public string? Name { get; set; }
 
     public Money AverageCost { get; set; }

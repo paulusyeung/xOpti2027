@@ -77,6 +77,8 @@ public static class InfrastructureServiceCollectionExtensions
             Identity.LegacyStaffAuthenticator>();
         services.AddScoped<xOpti.Application.Identity.Staff.ILegacyStaffDirectory,
             Identity.EfLegacyStaffDirectory>();
+        services.AddScoped<xOpti.Application.Reporting.IBarCodeTagStore,
+            Repositories.EfBarCodeTagStore>();
         services.AddScoped<xOpti.Application.Inventory.GetInventorySummary.IInventorySummaryRepository,
             Repositories.EfInventorySummaryRepository>();
         services.AddScoped<xOpti.Application.Reference.IReferenceDirectory, Repositories.EfReferenceDirectory>();

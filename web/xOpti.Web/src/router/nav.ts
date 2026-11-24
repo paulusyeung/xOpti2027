@@ -239,7 +239,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       { title: 'Job Nature', icon: 'mdi-account-hard-hat-outline', permission: PermissionNames.MasterDataMaintain, to: referenceLink('Job Nature') },
       { title: 'Salutation', icon: 'mdi-handshake-outline', permission: PermissionNames.MasterDataMaintain, to: referenceLink('Salutation') },
       { to: '/admin/security', title: 'Security', icon: 'mdi-shield-key-outline', permission: PermissionNames.MasterDataMaintain },
-      { to: '/admin/reports', title: 'Special Report', icon: 'mdi-file-document-outline', permission: PermissionNames.ReportFinancial },
+      { to: '/admin/special-reports', title: 'Special Report', icon: 'mdi-file-document-outline', permission: PermissionNames.ReportFinancial },
     ],
   },
 ]

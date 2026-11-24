@@ -2,6 +2,9 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using xOpti.Application.Reporting;
+using ZXing;
+using ZXing.Common;
+using ZXing.OneD;
 
 namespace xOpti.Infrastructure.Documents;
 
@@ -88,11 +91,52 @@ public static class QuestPdfReportComponents
         });
     }
 
-    public static void Barcode(ColumnDescriptor column, string value)
+    public static void Barcode(IContainer container, string value)
     {
-        var family = QuestPdfDocumentRenderer.TryBarcodeFamily;
-        var text = column.Item().Text($"*{value}*").FontSize(20);
-        if (family is not null) text.FontFamily(family);
+        // Legacy Crystal renders "*SKU*" in 3of9.TTF: 115pt wide, 15pt tall,
+        // starting 6.7pt inside the label. ZXing adds the Code39 start/stop
+        // guards itself, so the raw SKU is encoded.
+        container.PaddingLeft(6.7f).PaddingBottom(5f)
+            .AlignLeft().Width(115).Height(15).Svg(_ =>
+        {
+            var hints = new Dictionary<EncodeHintType, object>
+            {
+                [EncodeHintType.MARGIN] = 0,
+            };
+            var matrix = new Code39Writer().encode(value, BarcodeFormat.CODE_39, 348, 66, hints);
+
+            // ZXing centres the pattern inside the requested matrix even with a
+            // zero margin. Crop to the ink box so the bars fill the viewBox.
+            var first = matrix.Width;
+            var last = -1;
+            for (var x = 0; x < matrix.Width; x++)
+            {
+                if (!matrix[x, 0]) continue;
+                first = Math.Min(first, x);
+                last = x;
+            }
+
+            var width = last - first + 1;
+            var svg = new System.Text.StringBuilder();
+            svg.Append("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ")
+                .Append(width).Append(' ').Append(matrix.Height)
+                .Append("' preserveAspectRatio='none'>");
+
+            // 1D barcodes repeat one pattern on every row, so one full-height
+            // rectangle per contiguous bar keeps the PDF small and sharp.
+            var x0 = first;
+            while (x0 <= last)
+            {
+                if (!matrix[x0, 0]) { x0++; continue; }
+                var x1 = x0;
+                while (x1 <= last && matrix[x1, 0]) x1++;
+                svg.Append("<rect x='").Append(x0 - first).Append("' y='0' width='")
+                    .Append(x1 - x0).Append("' height='").Append(matrix.Height).Append("'/>");
+                x0 = x1;
+            }
+            svg.Append("</svg>");
+            return svg.ToString();
+        });
     }
 
     public static void PageNumbers(PageDescriptor page)

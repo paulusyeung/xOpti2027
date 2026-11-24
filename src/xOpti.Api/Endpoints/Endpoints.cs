@@ -1066,6 +1066,18 @@ public static class Endpoints
         })
         .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
 
+        v1.MapPost("/special-reports/bar-code-tag/print", async (
+            BarCodeTagPrintRequest request,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new PrintBarCodeTagsCommand(
+                request.FromNumber, request.ToNumber, request.Duplicate, request.Reason ?? "bar code tag print"),
+                cancellationToken);
+            return Results.File(result.Content, result.ContentType, result.FileName);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
+
         v1.MapPost("/reports/{reportId}/export", async (
             string reportId, ReportExportRequest request, IRequestDispatcher dispatcher,
             CancellationToken cancellationToken) =>
@@ -2192,6 +2204,9 @@ public sealed record ReportPrintRequest(
 
 public sealed record ReportExportRequest(
     IReadOnlyDictionary<string, string?> Parameters, string Reason);
+
+public sealed record BarCodeTagPrintRequest(
+    string FromNumber, string ToNumber, bool Duplicate, string? Reason);
 
 public sealed record SaveAnalyticsViewRequest(
     string ViewKey, string Name, bool IsShared, string ConfigJson, string Reason);
