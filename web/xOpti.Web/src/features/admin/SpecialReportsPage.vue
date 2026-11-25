@@ -25,6 +25,10 @@ const fromNumber = ref('1')
 const toNumber = ref('99999999')
 const printing = ref(false)
 const error = ref<string | null>(null)
+const claimDialogOpen = ref(false)
+const orderInvoiceNumber = ref('')
+const claimPrinting = ref(false)
+const claimError = ref<string | null>(null)
 
 const selectedReport = computed(() => REPORTS.find((report) => report.title === selected.value))
 
@@ -43,8 +47,38 @@ function open(): void {
     txDialogOpen.value = true
     return
   }
+  if (selected.value === 'Claims Receipt') {
+    claimError.value = null
+    claimDialogOpen.value = true
+    return
+  }
   if (selectedReport.value) {
     void router.push(selectedReport.value.to)
+  }
+}
+
+/** Open the inline preview so the PDF viewer's Save button uses the report name. */
+function openPdfPreview(url: string): void {
+  const preview = window.open(url, '_blank')
+  if (preview) {
+    preview.opener = null
+    preview.focus()
+    return
+  }
+  // A pop-up blocker can reject a window opened after the await.
+  const link = document.createElement('a')
+  link.href = url
+  link.target = '_blank'
+  link.rel = 'noopener'
+  link.click()
+}
+
+async function problemMessage(response: Response, fallback: string): Promise<string> {
+  try {
+    const problem = await response.json() as { detail?: string; title?: string }
+    return problem.detail || problem.title || fallback
+  } catch {
+    return fallback
   }
 }
 
@@ -54,7 +88,7 @@ async function printBarCodeTags(): Promise<void> {
   if (!from || !to) return
   printing.value = true
   error.value = null
-  let message = 'The bar code tag report could not be generated.'
+  const fallback = 'The bar code tag report could not be generated.'
   try {
     const response = await api.request('/api/v1/special-reports/bar-code-tag/print', {
       method: 'POST',
@@ -66,40 +100,41 @@ async function printBarCodeTags(): Promise<void> {
         reason: 'bar code tag print',
       }),
     })
-    if (!response.ok) {
-      try {
-        const problem = await response.json() as { detail?: string; title?: string }
-        message = problem.detail || problem.title || message
-      } catch {
-        // Keep the generic message when the error body is not readable.
-      }
-      throw new Error(message)
-    }
+    if (!response.ok) throw new Error(await problemMessage(response, fallback))
     // The POST validates the range and keeps the spinner up until the report
-    // is rendered. Open the inline preview URL so the PDF viewer's Save button
-    // defaults to the report name instead of a blob UUID.
+    // is rendered; the GET preview serves it inline with a readable filename.
     await response.blob()
     const params = new URLSearchParams({ fromNumber: from, toNumber: to })
-    const previewUrl = `/api/v1/special-reports/bar-code-tag/preview?${params}`
-    const preview = window.open(previewUrl, '_blank')
-    if (preview) {
-      preview.opener = null
-      preview.focus()
-    } else {
-      // A pop-up blocker can reject a window opened after the await.
-      const link = document.createElement('a')
-      link.href = previewUrl
-      link.target = '_blank'
-      link.rel = 'noopener'
-      link.click()
-    }
+    openPdfPreview(`/api/v1/special-reports/bar-code-tag/preview?${params}`)
     txDialogOpen.value = false
   } catch (caught) {
-    error.value = caught instanceof Error && caught.message !== 'print failed'
-      ? caught.message
-      : message
+    error.value = caught instanceof Error ? caught.message : fallback
   } finally {
     printing.value = false
+  }
+}
+
+async function printClaimReceipt(): Promise<void> {
+  const orderInvoice = orderInvoiceNumber.value.trim()
+  if (!orderInvoice) return
+  claimPrinting.value = true
+  claimError.value = null
+  const fallback = 'The claims receipt could not be generated.'
+  try {
+    const response = await api.request('/api/v1/special-reports/claim-receipt/print', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ orderInvoiceNumber: orderInvoice, reason: 'claim receipt print' }),
+    })
+    if (!response.ok) throw new Error(await problemMessage(response, fallback))
+    await response.blob()
+    const params = new URLSearchParams({ orderInvoiceNumber: orderInvoice })
+    openPdfPreview(`/api/v1/special-reports/claim-receipt/preview?${params}`)
+    claimDialogOpen.value = false
+  } catch (caught) {
+    claimError.value = caught instanceof Error ? caught.message : fallback
+  } finally {
+    claimPrinting.value = false
   }
 }
 
@@ -181,6 +216,45 @@ function exit(): void {
             :loading="printing"
             data-testid="barcode-print-submit"
             @click="printBarCodeTags"
+          >
+            Print
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="claimDialogOpen" max-width="480">
+      <v-card rounded="xl" data-testid="claim-receipt-dialog">
+        <v-card-title>Order/Invoice Number</v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="orderInvoiceNumber"
+            label="Order/Invoice No."
+            data-testid="claim-order-invoice-number"
+            hide-details
+          />
+          <p class="text-caption text-medium-emphasis mt-3 mb-0">
+            Enter the RC order/invoice number printed on the claim, for example RC00023372.
+          </p>
+          <v-alert v-if="claimError" type="error" variant="tonal" class="mt-3">{{ claimError }}</v-alert>
+          <div
+            v-if="claimPrinting"
+            class="d-flex align-center justify-center py-4"
+            data-testid="claim-printing"
+          >
+            <v-progress-circular indeterminate color="primary" size="28" />
+            <span class="text-caption ml-3">Preparing PDF…</span>
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn variant="text" data-testid="claim-print-reset" @click="orderInvoiceNumber = ''">Reset</v-btn>
+          <v-spacer />
+          <v-btn variant="text" data-testid="claim-print-cancel" @click="claimDialogOpen = false">Cancel</v-btn>
+          <v-btn
+            color="primary"
+            :loading="claimPrinting"
+            data-testid="claim-print-submit"
+            @click="printClaimReceipt"
           >
             Print
           </v-btn>

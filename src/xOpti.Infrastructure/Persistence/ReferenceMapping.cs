@@ -255,6 +255,26 @@ public static class ReferenceMapping
             e.Property(x => x.Qty).HasColumnName("qty");
         });
 
+        mb.Entity<ClaimReceiptReportRow>(e =>
+        {
+            e.ToTable("rpt_claim_receipt", t => t.ExcludeFromMigrations());
+            e.HasNoKey();
+            e.Property(x => x.TxNumber).HasColumnName("tx_number");
+            e.Property(x => x.DateOfEntry).HasColumnName("date_of_entry");
+            e.Property(x => x.ClassName).HasColumnName("class_name");
+            e.Property(x => x.RowNo).HasColumnName("row_no");
+            e.Property(x => x.Price).HasColumnName("price");
+            e.Property(x => x.Discount).HasColumnName("discount");
+            e.Property(x => x.NetPaid).HasColumnName("net_paid");
+            e.Property(x => x.CategoryName).HasColumnName("category_name");
+            e.Property(x => x.LastName).HasColumnName("last_name");
+            e.Property(x => x.FirstName).HasColumnName("first_name");
+            e.Property(x => x.PaymentNameLong).HasColumnName("payment_name_long");
+            e.Property(x => x.PaymentLineNo).HasColumnName("payment_line_no");
+            e.Property(x => x.TotalThisPay).HasColumnName("total_this_pay");
+            e.Property(x => x.StaffCode).HasColumnName("staff_code");
+        });
+
         mb.Entity<BranchInventory>(e =>
         {
             e.ToTable("branch_inventory", t => t.ExcludeFromMigrations());

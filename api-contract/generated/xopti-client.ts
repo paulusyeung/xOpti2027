@@ -2848,6 +2848,78 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/special-reports/claim-receipt/print": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["ClaimReceiptReportPrintRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/special-reports/claim-receipt/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query: {
+                    orderInvoiceNumber: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/reports/{reportId}/export": {
         parameters: {
             query?: never;
@@ -6410,6 +6482,10 @@ export interface components {
             reprint: boolean;
             terminalCode: null | string;
             reason: string;
+        };
+        ClaimReceiptReportPrintRequest: {
+            orderInvoiceNumber: string;
+            reason: null | string;
         };
         ClaimReconciliationDto: {
             /** Format: int64 */

@@ -1095,6 +1095,31 @@ public static class Endpoints
         })
         .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
 
+        v1.MapPost("/special-reports/claim-receipt/print", async (
+            ClaimReceiptReportPrintRequest request,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new PrintClaimReceiptReportCommand(
+                request.OrderInvoiceNumber, request.Reason ?? "claim receipt print"),
+                cancellationToken);
+            return Results.File(result.Content, result.ContentType, result.FileName);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
+
+        v1.MapGet("/special-reports/claim-receipt/preview", async (
+            string orderInvoiceNumber,
+            IRequestDispatcher dispatcher,
+            HttpContext http,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new PrintClaimReceiptReportCommand(
+                orderInvoiceNumber, "claim receipt preview"), cancellationToken);
+            http.Response.Headers.ContentDisposition = $"inline; filename=\"{result.FileName}\"";
+            return Results.File(result.Content, result.ContentType, enableRangeProcessing: true);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
+
         v1.MapPost("/reports/{reportId}/export", async (
             string reportId, ReportExportRequest request, IRequestDispatcher dispatcher,
             CancellationToken cancellationToken) =>
@@ -2224,6 +2249,8 @@ public sealed record ReportExportRequest(
 
 public sealed record BarCodeTagPrintRequest(
     string FromNumber, string ToNumber, bool Duplicate, string? Reason);
+
+public sealed record ClaimReceiptReportPrintRequest(string OrderInvoiceNumber, string? Reason);
 
 public sealed record SaveAnalyticsViewRequest(
     string ViewKey, string Name, bool IsShared, string ConfigJson, string Reason);

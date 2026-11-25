@@ -19,4 +19,6 @@ public interface IReportRenderer
     RenderedDocument RenderCustomerStatement(CustomerStatementDto statement, bool duplicate);
 
     RenderedDocument RenderBarCodeTags(BarCodeTagDocument document);
+
+    RenderedDocument RenderClaimReceiptReport(ClaimReceiptReport report);
 }

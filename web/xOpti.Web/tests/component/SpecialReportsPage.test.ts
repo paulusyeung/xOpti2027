@@ -98,4 +98,52 @@ describe('SpecialReportsPage', () => {
     expect(document.body.querySelector('[data-testid="barcode-printing"]')).toBeNull()
     wrapper.unmount()
   })
+
+  it('opens the Order/Invoice Number prompt for Claims Receipt', async () => {
+    const { wrapper, router } = await mountInApp(SpecialReportsPage, {
+      path: '/admin/special-reports',
+      pinia: authenticatedPinia(),
+    })
+    await flushPromises()
+    const push = vi.spyOn(router, 'push')
+
+    await wrapper.findComponent({ name: 'VSelect' }).setValue('Claims Receipt')
+    await wrapper.get('[data-testid="special-report-ok"]').trigger('click')
+    expect(document.body.querySelector('[data-testid="claim-receipt-dialog"]')).not.toBeNull()
+    expect(push).not.toHaveBeenCalled()
+
+    wrapper.unmount()
+  })
+
+  it('opens the claims receipt in a new tab with the order number in the URL', async () => {
+    let resolveResponse!: (response: Response) => void
+    const pending = new Promise<Response>((resolve) => { resolveResponse = resolve })
+    vi.spyOn(api, 'request').mockReturnValue(pending)
+    const preview = { opener: window, focus: vi.fn() } as unknown as Window
+    const open = vi.spyOn(window, 'open').mockReturnValue(preview)
+
+    const { wrapper } = await mountInApp(SpecialReportsPage, {
+      path: '/admin/special-reports',
+      pinia: authenticatedPinia(),
+    })
+    await flushPromises()
+    await wrapper.findComponent({ name: 'VSelect' }).setValue('Claims Receipt')
+    await wrapper.get('[data-testid="special-report-ok"]').trigger('click')
+    await dialogField('claim-order-invoice-number').setValue('RC00023372')
+    await dialogField('claim-print-submit').trigger('click')
+    await flushPromises()
+
+    expect(document.body.querySelector('[data-testid="claim-printing"]')).not.toBeNull()
+    expect(open).not.toHaveBeenCalled()
+
+    resolveResponse(new Response(new Uint8Array([1, 2, 3]), { status: 200 }))
+    await flushPromises()
+
+    expect(open).toHaveBeenCalledWith(
+      '/api/v1/special-reports/claim-receipt/preview?orderInvoiceNumber=RC00023372',
+      '_blank',
+    )
+    expect(document.body.querySelector('[data-testid="claim-printing"]')).toBeNull()
+    wrapper.unmount()
+  })
 })

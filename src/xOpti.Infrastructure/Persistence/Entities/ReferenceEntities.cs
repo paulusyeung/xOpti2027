@@ -237,3 +237,35 @@ public class BarCodePool
 
     public int Qty { get; set; }
 }
+
+/// <summary>Keyless projection of the legacy RptClaimReceipt view.</summary>
+public class ClaimReceiptReportRow
+{
+    public string TxNumber { get; set; } = string.Empty;
+
+    public DateTime DateOfEntry { get; set; }
+
+    public string ClassName { get; set; } = string.Empty;
+
+    public double RowNo { get; set; }
+
+    public decimal Price { get; set; }
+
+    public decimal Discount { get; set; }
+
+    public decimal NetPaid { get; set; }
+
+    public string? CategoryName { get; set; }
+
+    public string? LastName { get; set; }
+
+    public string? FirstName { get; set; }
+
+    public string? PaymentNameLong { get; set; }
+
+    public double? PaymentLineNo { get; set; }
+
+    public decimal? TotalThisPay { get; set; }
+
+    public string? StaffCode { get; set; }
+}

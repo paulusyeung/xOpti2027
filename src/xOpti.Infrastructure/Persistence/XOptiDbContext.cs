@@ -157,6 +157,8 @@ public class XOptiDbContext(DbContextOptions<XOptiDbContext> options)
 
     public DbSet<BarCodePool> BarCodePool => Set<BarCodePool>();
 
+    public DbSet<ClaimReceiptReportRow> ClaimReceiptReportRows => Set<ClaimReceiptReportRow>();
+
     public DbSet<TxSalePerson> TxSalePersons => Set<TxSalePerson>();
 
     public DbSet<TxSOrderAdd> TxSOrderAdds => Set<TxSOrderAdd>();

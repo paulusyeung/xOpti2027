@@ -2736,6 +2736,50 @@
         }
       }
     },
+    "/api/v1/special-reports/claim-receipt/print": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClaimReceiptReportPrintRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/special-reports/claim-receipt/preview": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "orderInvoiceNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/v1/reports/{reportId}/export": {
       "post": {
         "tags": [
@@ -7521,6 +7565,24 @@
           },
           "reason": {
             "type": "string"
+          }
+        }
+      },
+      "ClaimReceiptReportPrintRequest": {
+        "required": [
+          "orderInvoiceNumber",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "orderInvoiceNumber": {
+            "type": "string"
+          },
+          "reason": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },

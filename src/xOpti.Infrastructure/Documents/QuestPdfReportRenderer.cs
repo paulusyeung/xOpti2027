@@ -10,6 +10,18 @@ namespace xOpti.Infrastructure.Documents;
 
 public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IReportRenderer
 {
+    private static readonly byte[] OpticalCentreLogo = LoadOpticalCentreLogo();
+
+    private static byte[] LoadOpticalCentreLogo()
+    {
+        using var stream = typeof(QuestPdfReportRenderer).Assembly.GetManifestResourceStream(
+            "xOpti.Infrastructure.Documents.Assets.optical-centre-logo.png")
+            ?? throw new InvalidOperationException("Embedded optical centre logo is missing.");
+        using var memory = new MemoryStream();
+        stream.CopyTo(memory);
+        return memory.ToArray();
+    }
+
     public RenderedDocument RenderPackingList(WholesalePackingListDto document, bool duplicate)
     {
         _ = new QuestPdfDocumentRenderer(options);
@@ -335,6 +347,193 @@ public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IRep
         return new RenderedDocument(pdf, "application/pdf",
             $"{document.FromTxNumber}-{document.ToTxNumber}-barcode-tags"
             + $"{(document.Duplicate ? "-duplicate" : string.Empty)}.pdf");
+    }
+
+    public RenderedDocument RenderClaimReceiptReport(ClaimReceiptReport report)
+    {
+        _ = new QuestPdfDocumentRenderer(options);
+
+        var pdf = Document.Create(container =>
+        {
+            container.Page(page =>
+            {
+                page.Size(PageSizes.Letter);
+                page.MarginLeft(54.8f);
+                page.MarginRight(39.6f);
+                page.MarginTop(57f);
+                page.MarginBottom(45f);
+                page.DefaultTextStyle(style => style.FontSize(8.5f));
+
+                page.Content().Column(column =>
+                {
+                    // Legacy reserves the left margin for the Chinese shop logo.
+                    column.Item().Row(row =>
+                    {
+                        row.ConstantItem(75f).PaddingLeft(6f).PaddingTop(4f).Column(logo =>
+                        {
+                            logo.Item().Width(60f).Height(56f).Image(OpticalCentreLogo);
+                            logo.Item().PaddingLeft(55f).Text("™").FontSize(8f);
+                        });
+                        row.RelativeItem().Column(header =>
+                        {
+                            header.Item().AlignCenter().Text("THE OPTICAL CENTRE ROBSON").Bold().FontSize(13f);
+                            header.Item().PaddingTop(2).AlignCenter()
+                                .Text("THE OPTICAL INTERNATIONAL INVESTMENT COMPANY LTD.")
+                                .FontSize(10f);
+                            header.Item().PaddingTop(6).AlignCenter()
+                                .Text("1190 ROBSON STREET, VANCOUVER, B.C. CANADA V6E 1B2")
+                                .FontSize(10f);
+                            header.Item().PaddingTop(2).Row(line =>
+                            {
+                                line.RelativeItem().AlignRight()
+                                    .Text("Phone: (604) 699-9368").FontSize(10f);
+                                line.ConstantItem(40f);
+                                line.RelativeItem().AlignLeft()
+                                    .Text("Fax: (604) 899-9367").FontSize(10f);
+                            });
+                            header.Item().PaddingTop(5).AlignCenter()
+                                .Text("G.S.T. No. R-896634235").FontSize(10f);
+                        });
+                    });
+
+                    column.Item().PaddingTop(11).AlignCenter()
+                        .Text("The Optical Centre, Richmond - Optical Claims Receipt")
+                        .Bold().FontSize(13f);
+
+                    column.Item().PaddingTop(17).Text(
+                        "This is to certify that our company has supplied the following "
+                        + "optical products or services to:");
+
+                    // The Crystal rule runs between the name and its LAST/FIRST
+                    // caption, across the full width of the body.
+                    column.Item().PaddingTop(31).Column(names =>
+                    {
+                        names.Item().Table(table =>
+                        {
+                            table.ColumnsDefinition(columns =>
+                            {
+                                columns.ConstantColumn(74f);
+                                columns.ConstantColumn(80f);
+                                columns.ConstantColumn(133.4f);
+                                columns.ConstantColumn(60f);
+                                columns.RelativeColumn();
+                            });
+                            table.Cell();
+                            table.Cell().Text(report.LastName).Bold().FontSize(10f);
+                            table.Cell();
+                            table.Cell().Text(report.FirstName).Bold().FontSize(10f);
+                            table.Cell();
+                        });
+                        names.Item().LineHorizontal(0.7f);
+                        names.Item().PaddingTop(1).Table(table =>
+                        {
+                            table.ColumnsDefinition(columns =>
+                            {
+                                columns.ConstantColumn(74f);
+                                columns.ConstantColumn(80f);
+                                columns.ConstantColumn(133.4f);
+                                columns.ConstantColumn(60f);
+                                columns.RelativeColumn();
+                            });
+                            table.Cell();
+                            table.Cell().Text("LAST").Bold().FontSize(10f);
+                            table.Cell();
+                            table.Cell().Text("FIRST").Bold().FontSize(10f);
+                            table.Cell();
+                        });
+                    });
+
+                    column.Item().PaddingTop(15).Text(
+                        "who should be reimbursed to the extent of the coverage "
+                        + "under their group health plan:");
+
+                    column.Item().PaddingTop(14).AlignCenter()
+                        .Text("DESCRIPTION OF MATERIAL AND/OR SERVICES SUPPLIED").FontSize(10f);
+
+                    column.Item().PaddingTop(35).Row(row =>
+                    {
+                        row.RelativeItem().Text("ITEMS").Bold();
+                        row.ConstantItem(100f).AlignRight().Text("PRICE").Bold();
+                    });
+
+                    foreach (var group in report.Classes)
+                        ClaimReceiptItemRow(column, 14, group.Name, $"${group.Amount:0.00}");
+
+                    ClaimReceiptItemRow(column, 13, "Other", string.Empty);
+
+                    ClaimReceiptTotalRow(column, 40, "DISCOUNT", $"${report.Discount:0.00}");
+                    ClaimReceiptTotalRow(column, 15, "TOTAL", $"${report.Total:0.00}");
+                    ClaimReceiptTotalRow(column, 14, "DEPOSIT", $"{report.Deposit:0.00}");
+                    ClaimReceiptTotalRow(column, 14, "BALANCE", $"${report.Total - report.Deposit:0.00}");
+
+                    column.Item().PaddingTop(70).Text(
+                        "INSURANCE COMPANY PLEASE NOTE: If we can be of any further "
+                        + "assistance in supplying information required to process any "
+                        + "claim, please call the above number.");
+
+                    column.Item().PaddingTop(74).Column(footer =>
+                    {
+                        footer.Item().Row(row =>
+                        {
+                            row.ConstantItem(120f).Text("Date items supplied:");
+                            row.ConstantItem(106f).Text(report.DateOfEntry.ToString("MMM dd, yyyy"));
+                            row.ConstantItem(12f);
+                            row.ConstantItem(100f).Text(
+                                string.IsNullOrWhiteSpace(report.StaffCode)
+                                    ? $"({report.TxNumber})"
+                                    : $"({report.TxNumber}/{report.StaffCode})");
+                            row.RelativeItem();
+                        });
+                        // Single continuous rule that runs to the right edge.
+                        footer.Item().PaddingTop(1).PaddingLeft(113).PaddingRight(2.4f)
+                            .LineHorizontal(0.8f);
+                        footer.Item().PaddingTop(4).PaddingRight(55).AlignRight()
+                            .Text("Signature of dispensing optician");
+                    });
+                });
+            });
+        })
+        .WithMetadata(new DocumentMetadata
+        {
+            Title = $"Claims receipt {report.TxNumber}",
+            Author = "xOpti",
+            Subject = "Optical Claims Receipt",
+            Creator = "xOpti Reporting",
+            Producer = "QuestPDF",
+            CreationDate = DateTime.UtcNow,
+        })
+        .GeneratePdf();
+
+        return new RenderedDocument(pdf, "application/pdf", $"{report.TxNumber}-claims-receipt.pdf");
+    }
+
+    private static void ClaimReceiptItemRow(
+        ColumnDescriptor column, float topPadding, string label, string amount)
+    {
+        column.Item().PaddingTop(topPadding).Row(row =>
+        {
+            row.RelativeItem().Text(label);
+            row.ConstantItem(100f).Column(value =>
+            {
+                value.Item().AlignRight().Text(amount);
+                value.Item().LineHorizontal(0.7f);
+            });
+        });
+    }
+
+    private static void ClaimReceiptTotalRow(
+        ColumnDescriptor column, float topPadding, string label, string amount)
+    {
+        column.Item().PaddingTop(topPadding).Row(row =>
+        {
+            row.RelativeItem();
+            row.ConstantItem(55f).AlignRight().Text(label).Bold();
+            row.ConstantItem(100f).Column(value =>
+            {
+                value.Item().AlignRight().Text(amount).Bold();
+                value.Item().LineHorizontal(0.7f);
+            });
+        });
     }
 
     private static void ComposeBarCodeLabel(IContainer container, BarCodeTagLabel label)
