@@ -75,13 +75,24 @@ async function printBarCodeTags(): Promise<void> {
       }
       throw new Error(message)
     }
-    const blob = await response.blob()
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = `SR${from.padStart(8, '0')}-SR${to.padStart(8, '0')}-barcode-tags.pdf`
-    link.click()
-    URL.revokeObjectURL(url)
+    // The POST validates the range and keeps the spinner up until the report
+    // is rendered. Open the inline preview URL so the PDF viewer's Save button
+    // defaults to the report name instead of a blob UUID.
+    await response.blob()
+    const params = new URLSearchParams({ fromNumber: from, toNumber: to })
+    const previewUrl = `/api/v1/special-reports/bar-code-tag/preview?${params}`
+    const preview = window.open(previewUrl, '_blank')
+    if (preview) {
+      preview.opener = null
+      preview.focus()
+    } else {
+      // A pop-up blocker can reject a window opened after the await.
+      const link = document.createElement('a')
+      link.href = previewUrl
+      link.target = '_blank'
+      link.rel = 'noopener'
+      link.click()
+    }
     txDialogOpen.value = false
   } catch (caught) {
     error.value = caught instanceof Error && caught.message !== 'print failed'
@@ -152,6 +163,14 @@ function exit(): void {
             Enter numbers between 1 and 99999999. The prefix is fixed at SR, as in the legacy report.
           </p>
           <v-alert v-if="error" type="error" variant="tonal" class="mt-3">{{ error }}</v-alert>
+          <div
+            v-if="printing"
+            class="d-flex align-center justify-center py-4"
+            data-testid="barcode-printing"
+          >
+            <v-progress-circular indeterminate color="primary" size="28" />
+            <span class="text-caption ml-3">Preparing PDF…</span>
+          </div>
         </v-card-text>
         <v-card-actions>
           <v-btn variant="text" data-testid="barcode-print-reset" @click="resetRange">Reset</v-btn>

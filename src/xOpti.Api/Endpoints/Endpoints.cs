@@ -1078,6 +1078,23 @@ public static class Endpoints
         })
         .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
 
+        v1.MapGet("/special-reports/bar-code-tag/preview", async (
+            string fromNumber,
+            string toNumber,
+            IRequestDispatcher dispatcher,
+            HttpContext http,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new PrintBarCodeTagsCommand(
+                fromNumber, toNumber, false, "bar code tag preview"), cancellationToken);
+            // Chromium names a PDF opened from a blob: URL with the blob UUID.
+            // Serving the same report inline over HTTP lets the viewer's Save
+            // button default to the descriptive report name instead.
+            http.Response.Headers.ContentDisposition = $"inline; filename=\"{result.FileName}\"";
+            return Results.File(result.Content, result.ContentType, enableRangeProcessing: true);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
+
         v1.MapPost("/reports/{reportId}/export", async (
             string reportId, ReportExportRequest request, IRequestDispatcher dispatcher,
             CancellationToken cancellationToken) =>

@@ -2684,6 +2684,58 @@
         }
       }
     },
+    "/api/v1/special-reports/bar-code-tag/print": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BarCodeTagPrintRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/special-reports/bar-code-tag/preview": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "fromNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "toNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/v1/reports/{reportId}/export": {
       "post": {
         "tags": [
@@ -5729,28 +5781,6 @@
           }
         }
       }
-    },
-    "/api/v1/special-reports/bar-code-tag/print": {
-      "post": {
-        "tags": [
-          "xOpti.Api"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/BarCodeTagPrintRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
     }
   },
   "components": {
@@ -6130,6 +6160,32 @@
           },
           "reprint": {
             "type": "boolean"
+          }
+        }
+      },
+      "BarCodeTagPrintRequest": {
+        "required": [
+          "fromNumber",
+          "toNumber",
+          "duplicate",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "fromNumber": {
+            "type": "string"
+          },
+          "toNumber": {
+            "type": "string"
+          },
+          "duplicate": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -17363,32 +17419,6 @@
             ]
           }
         }
-      },
-      "BarCodeTagPrintRequest": {
-        "type": "object",
-        "properties": {
-          "fromNumber": {
-            "type": "string"
-          },
-          "toNumber": {
-            "type": "string"
-          },
-          "duplicate": {
-            "type": "boolean"
-          },
-          "reason": {
-            "type": [
-              "null",
-              "string"
-            ]
-          }
-        },
-        "required": [
-          "fromNumber",
-          "toNumber",
-          "duplicate",
-          "reason"
-        ]
       }
     }
   },

@@ -79,4 +79,21 @@ public sealed class BarCodeTagReportTests(ApiPostgresFixture fixture)
         Assert.Equal("%PDF", Encoding.ASCII.GetString(bytes, 0, 4));
         Assert.True(bytes.Length > 1000, "PDF should contain two label pages");
     }
+
+    [Fact]
+    public async Task Preview_ReturnsPdfInlineWithDescriptiveFileName()
+    {
+        await SeedAsync();
+        using var manager = await SignInAsync("manager");
+
+        var response = await manager.GetAsync(
+            "/api/v1/special-reports/bar-code-tag/preview?fromNumber=2&toNumber=2");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("application/pdf", response.Content.Headers.ContentType?.MediaType);
+        var disposition = response.Content.Headers.ContentDisposition;
+        Assert.NotNull(disposition);
+        Assert.Equal("inline", disposition.DispositionType);
+        Assert.Contains("SR00000002-SR00000002-barcode-tags.pdf", disposition.ToString());
+    }
 }
