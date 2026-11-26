@@ -3,6 +3,7 @@ using xOpti.Application.Authorization;
 using xOpti.Application.Common;
 using xOpti.Application.Pipeline;
 using xOpti.Application.Sales.Documents;
+using xOpti.Application.Settings;
 
 namespace xOpti.Application.Reporting;
 
@@ -52,7 +53,8 @@ public sealed class PrintBarCodeTagsCommandValidator : AbstractValidator<PrintBa
 
 public sealed class PrintBarCodeTagsHandler(
     IBarCodeTagStore store,
-    IReportRenderer renderer)
+    IReportRenderer renderer,
+    IPreferencesStore preferences)
     : IRequestHandler<PrintBarCodeTagsCommand, RenderedDocument>
 {
     public async Task<RenderedDocument> Handle(
@@ -87,7 +89,8 @@ public sealed class PrintBarCodeTagsHandler(
                 $"No bar-code labels found between '{fromTxNumber}' and '{toTxNumber}'.");
         }
 
+        var letterhead = ReportLetterheadDto.From(await preferences.GetAsync(cancellationToken));
         return renderer.RenderBarCodeTags(
-            new BarCodeTagDocument(fromTxNumber, toTxNumber, labels, request.Duplicate));
+            new BarCodeTagDocument(fromTxNumber, toTxNumber, labels, request.Duplicate), letterhead);
     }
 }

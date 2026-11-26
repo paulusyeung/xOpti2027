@@ -363,7 +363,11 @@ public static class Endpoints
             var result = await dispatcher.DispatchAsync(new UpdatePreferencesCommand(
                 request.ProductName, request.UserName, request.UserAddress, request.OwnerName,
                 request.OwnerAddress, request.GstNumber, request.PstNumber,
-                request.TaxARate, request.TaxBRate, request.Reason), cancellationToken);
+                request.TaxARate, request.TaxBRate, request.Reason,
+                request.UserPhone, request.UserFax, request.OwnerPhone, request.OwnerFax,
+                request.UserCityCode, request.UserProvince,
+                request.UserPostalCode, request.UserCountryCode),
+                cancellationToken);
             return Results.Json(result);
         })
         .RequireAuthorization($"perm:{PermissionNames.MasterDataMaintain}")
@@ -2408,7 +2412,11 @@ public sealed record ImportRequest(ImportKind Kind, string Csv, bool DryRun, str
 
 public sealed record UpdatePreferencesRequest(
     string ProductName, string UserName, string? UserAddress, string OwnerName, string? OwnerAddress,
-    string? GstNumber, string? PstNumber, double TaxARate, double TaxBRate, string Reason);
+    string? GstNumber, string? PstNumber, double TaxARate, double TaxBRate, string Reason,
+    string? UserPhone = null, string? UserFax = null,
+    string? OwnerPhone = null, string? OwnerFax = null,
+    int? UserCityCode = null, string? UserProvince = null,
+    string? UserPostalCode = null, string? UserCountryCode = null);
 
 public sealed record SetPricesRequest(
     decimal? RetailPrice, decimal? LeastSellingPrice, decimal? RetailMarkdownAmount,

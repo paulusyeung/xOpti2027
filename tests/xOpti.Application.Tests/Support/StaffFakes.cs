@@ -48,6 +48,10 @@ public sealed class FakeStaffAccountStore : IStaffAccountStore
 
     public bool BranchExists { get; set; } = true;
 
+    public Task<PasswordResetOutcome> CompletePasswordResetAsync(
+        string userName, string token, string newPassword, CancellationToken cancellationToken) =>
+        Task.FromResult(new PasswordResetOutcome(false, true, Array.Empty<PasswordResetError>()));
+
     /// <summary>Number of mutations that must invalidate existing sessions.</summary>
     public int SecurityStampChanges { get; private set; }
 

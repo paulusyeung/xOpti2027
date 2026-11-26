@@ -7434,6 +7434,17 @@ export interface components {
             nextInvoiceNumber: number | string;
             /** Format: int32 */
             nextInvtControlNumber: number | string;
+            userPhone?: null | string;
+            userFax?: null | string;
+            ownerPhone?: null | string;
+            ownerFax?: null | string;
+            /** Format: int32 */
+            userCityCode?: null | number | string;
+            userCityName?: null | string;
+            userProvince?: null | string;
+            userPostalCode?: null | string;
+            userCountryCode?: null | string;
+            userCountryName?: null | string;
         };
         PreferenceSettingsDto: {
             preferences: components["schemas"]["PreferencesDto"];
@@ -8128,6 +8139,15 @@ export interface components {
             /** Format: double */
             taxBRate: number | string;
             reason: string;
+            userPhone?: null | string;
+            userFax?: null | string;
+            ownerPhone?: null | string;
+            ownerFax?: null | string;
+            /** Format: int32 */
+            userCityCode?: null | number | string;
+            userProvince?: null | string;
+            userPostalCode?: null | string;
+            userCountryCode?: null | string;
         };
         UpdateSkuRequest: {
             name: string;

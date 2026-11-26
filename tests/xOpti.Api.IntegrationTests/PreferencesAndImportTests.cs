@@ -35,6 +35,10 @@ public sealed class PreferencesAndImportTests(ApiPostgresFixture fixture)
                 ('QT', 1, 'Quotation', '+ve'), ('TN', 1, 'Transfer in', '+ve'),
                 ('TU', 1, 'Transfer out', '-ve')
             ON CONFLICT (tx_prefix) DO NOTHING;
+            INSERT INTO public.city (code, city_name, province_code, country_code)
+            VALUES (999, 'TESTVILLE', 'BC', 'CA') ON CONFLICT (code) DO NOTHING;
+            INSERT INTO public.country (country_code, country_name)
+            VALUES ('CA', 'CANADA') ON CONFLICT DO NOTHING;
             """);
     }
 
@@ -68,12 +72,29 @@ public sealed class PreferencesAndImportTests(ApiPostgresFixture fixture)
             ownerAddress = "2 Main St",
             gstNumber = "123456789",
             pstNumber = "987654321",
+            userPhone = "(604) 111-2222",
+            userFax = "(604) 333-4444",
+            ownerPhone = "(604) 555-6666",
+            ownerFax = "(604) 777-8888",
+            userCityCode = 999,
+            userProvince = "BC",
+            userPostalCode = "V6E 1B2",
+            userCountryCode = "CA",
             taxARate = 6.0,
             taxBRate = 8.0,
             reason = "rate change",
         });
         Assert.Equal(HttpStatusCode.OK, update.StatusCode);
-        Assert.Equal(6.0, (await BodyAsync(update)).GetProperty("taxARate").GetDouble());
+        var updated = await BodyAsync(update);
+        Assert.Equal(6.0, updated.GetProperty("taxARate").GetDouble());
+        Assert.Equal("(604) 111-2222", updated.GetProperty("userPhone").GetString());
+        Assert.Equal("(604) 333-4444", updated.GetProperty("userFax").GetString());
+        Assert.Equal(999, updated.GetProperty("userCityCode").GetInt32());
+
+        var reread = (await BodyAsync(await manager.GetAsync("/api/v1/admin/preferences")))
+            .GetProperty("preferences");
+        Assert.Equal("TESTVILLE", reread.GetProperty("userCityName").GetString());
+        Assert.Equal("CANADA", reread.GetProperty("userCountryName").GetString());
 
         await using (var context = fixture.NewContext())
         {

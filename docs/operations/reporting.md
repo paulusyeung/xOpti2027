@@ -80,6 +80,15 @@ Tests: `ReportingTests.CriticalOrderClaimsStatementsCashAndTaxReports_Render`,
 `ReportingTests.CriticalInvoiceAndAnalyticsFeedsSavedViewsAndExports_Work`,
 `WholesaleReportingTests.PackingList_HidesPricesByDefaultAndPrintsWithAudit`.
 
+## Report letterhead
+
+Shop name, owner/legal name, address, phone, fax and GST number printed by the
+Claims Receipt and Bar Code Tag reports are configuration, not source code.
+They are read from `public.preference` at generation time and edited through
+`GET/PUT /api/v1/admin/preferences`. See
+[report-letterhead.md](report-letterhead.md) for the field mapping, fallback
+rules and why the `branch` table was not used.
+
 ## Deterministic output and golden files
 
 Reports use bundled fonts, invariant formatting, fixed date formats, and

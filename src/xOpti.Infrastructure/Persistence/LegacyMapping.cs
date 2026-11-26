@@ -272,7 +272,15 @@ public static class LegacyMapping
             e.Property(x => x.UserName).HasColumnName("user_name");
             e.Property(x => x.OwnerName).HasColumnName("owner_name");
             e.Property(x => x.UserAddress).HasColumnName("user_address");
+            e.Property(x => x.UserCityCode).HasColumnName("user_city");
+            e.Property(x => x.UserProvince).HasColumnName("user_province");
+            e.Property(x => x.UserPostalCode).HasColumnName("user_postal_code");
+            e.Property(x => x.UserCountryCode).HasColumnName("user_country");
+            e.Property(x => x.UserPhone).HasColumnName("user_phone");
+            e.Property(x => x.UserFax).HasColumnName("user_fax");
             e.Property(x => x.OwnerAddress).HasColumnName("owner_address");
+            e.Property(x => x.OwnerPhone).HasColumnName("owner_phone");
+            e.Property(x => x.OwnerFax).HasColumnName("owner_fax");
             e.Property(x => x.GstNumber).HasColumnName("gst_number");
             e.Property(x => x.PstNumber).HasColumnName("pst_number");
             e.Property(x => x.TaxARate).HasColumnName("tax_a_rate");

@@ -12185,6 +12185,69 @@
               "string"
             ],
             "format": "int32"
+          },
+          "userPhone": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "userFax": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ownerPhone": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ownerFax": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "userCityCode": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "userCityName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "userProvince": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "userPostalCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "userCountryCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "userCountryName": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -15333,6 +15396,57 @@
           },
           "reason": {
             "type": "string"
+          },
+          "userPhone": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "userFax": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ownerPhone": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "ownerFax": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "userCityCode": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "userProvince": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "userPostalCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "userCountryCode": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },

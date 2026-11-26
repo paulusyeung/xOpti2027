@@ -18,7 +18,7 @@ public interface IReportRenderer
 
     RenderedDocument RenderCustomerStatement(CustomerStatementDto statement, bool duplicate);
 
-    RenderedDocument RenderBarCodeTags(BarCodeTagDocument document);
+    RenderedDocument RenderBarCodeTags(BarCodeTagDocument document, ReportLetterheadDto letterhead);
 
-    RenderedDocument RenderClaimReceiptReport(ClaimReceiptReport report);
+    RenderedDocument RenderClaimReceiptReport(ClaimReceiptReport report, ReportLetterheadDto letterhead);
 }

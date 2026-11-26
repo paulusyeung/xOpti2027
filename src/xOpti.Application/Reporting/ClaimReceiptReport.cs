@@ -3,6 +3,7 @@ using xOpti.Application.Authorization;
 using xOpti.Application.Common;
 using xOpti.Application.Pipeline;
 using xOpti.Application.Sales.Documents;
+using xOpti.Application.Settings;
 
 namespace xOpti.Application.Reporting;
 
@@ -62,7 +63,8 @@ public sealed class PrintClaimReceiptReportCommandValidator
 
 public sealed class PrintClaimReceiptReportHandler(
     IClaimReceiptReportStore store,
-    IReportRenderer renderer)
+    IReportRenderer renderer,
+    IPreferencesStore preferences)
     : IRequestHandler<PrintClaimReceiptReportCommand, RenderedDocument>
 {
     public async Task<RenderedDocument> Handle(
@@ -76,6 +78,7 @@ public sealed class PrintClaimReceiptReportHandler(
                 $"No claim receipt found for order/invoice '{txNumber}'.");
         }
 
-        return renderer.RenderClaimReceiptReport(report);
+        var letterhead = ReportLetterheadDto.From(await preferences.GetAsync(cancellationToken));
+        return renderer.RenderClaimReceiptReport(report, letterhead);
     }
 }

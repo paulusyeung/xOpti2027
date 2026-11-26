@@ -289,7 +289,8 @@ public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IRep
             + $"{(duplicate ? "-duplicate" : string.Empty)}.pdf");
     }
 
-    public RenderedDocument RenderBarCodeTags(BarCodeTagDocument document)
+    public RenderedDocument RenderBarCodeTags(
+        BarCodeTagDocument document, ReportLetterheadDto letterhead)
     {
         _ = new QuestPdfDocumentRenderer(options);
 
@@ -327,7 +328,7 @@ public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IRep
                         foreach (var label in pageLabels)
                         {
                             table.Cell().Height(137f)
-                                .Element(cell => ComposeBarCodeLabel(cell, label));
+                                .Element(cell => ComposeBarCodeLabel(cell, label, letterhead));
                         }
                     });
                 });
@@ -349,7 +350,8 @@ public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IRep
             + $"{(document.Duplicate ? "-duplicate" : string.Empty)}.pdf");
     }
 
-    public RenderedDocument RenderClaimReceiptReport(ClaimReceiptReport report)
+    public RenderedDocument RenderClaimReceiptReport(
+        ClaimReceiptReport report, ReportLetterheadDto letterhead)
     {
         _ = new QuestPdfDocumentRenderer(options);
 
@@ -362,7 +364,7 @@ public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IRep
                 page.MarginRight(39.6f);
                 page.MarginTop(57f);
                 page.MarginBottom(45f);
-                page.DefaultTextStyle(style => style.FontSize(8.5f));
+                page.DefaultTextStyle(style => style.FontSize(10f));
 
                 page.Content().Column(column =>
                 {
@@ -376,28 +378,27 @@ public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IRep
                         });
                         row.RelativeItem().Column(header =>
                         {
-                            header.Item().AlignCenter().Text("THE OPTICAL CENTRE ROBSON").Bold().FontSize(13f);
+                            header.Item().AlignCenter()
+                                .Text(letterhead.ShopName.ToUpperInvariant()).Bold().FontSize(13f);
                             header.Item().PaddingTop(2).AlignCenter()
-                                .Text("THE OPTICAL INTERNATIONAL INVESTMENT COMPANY LTD.")
-                                .FontSize(10f);
+                                .Text(letterhead.LegalName.ToUpperInvariant()).FontSize(10f);
                             header.Item().PaddingTop(6).AlignCenter()
-                                .Text("1190 ROBSON STREET, VANCOUVER, B.C. CANADA V6E 1B2")
-                                .FontSize(10f);
+                                .Text(letterhead.Address).FontSize(10f);
                             header.Item().PaddingTop(2).Row(line =>
                             {
                                 line.RelativeItem().AlignRight()
-                                    .Text("Phone: (604) 699-9368").FontSize(10f);
+                                    .Text($"Phone: {letterhead.Phone}").FontSize(10f);
                                 line.ConstantItem(40f);
                                 line.RelativeItem().AlignLeft()
-                                    .Text("Fax: (604) 899-9367").FontSize(10f);
+                                    .Text($"Fax: {letterhead.Fax}").FontSize(10f);
                             });
                             header.Item().PaddingTop(5).AlignCenter()
-                                .Text("G.S.T. No. R-896634235").FontSize(10f);
+                                .Text($"G.S.T. No. {letterhead.GstNumber}").FontSize(10f);
                         });
                     });
 
                     column.Item().PaddingTop(11).AlignCenter()
-                        .Text("The Optical Centre, Richmond - Optical Claims Receipt")
+                        .Text($"{letterhead.TitleName} - Optical Claims Receipt")
                         .Bold().FontSize(13f);
 
                     column.Item().PaddingTop(17).Text(
@@ -419,9 +420,9 @@ public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IRep
                                 columns.RelativeColumn();
                             });
                             table.Cell();
-                            table.Cell().Text(report.LastName).Bold().FontSize(10f);
+                            table.Cell().Text(report.LastName).FontSize(10f);
                             table.Cell();
-                            table.Cell().Text(report.FirstName).Bold().FontSize(10f);
+                            table.Cell().Text(report.FirstName).FontSize(10f);
                             table.Cell();
                         });
                         names.Item().LineHorizontal(0.7f);
@@ -466,18 +467,18 @@ public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IRep
                     ClaimReceiptTotalRow(column, 14, "DEPOSIT", $"{report.Deposit:0.00}");
                     ClaimReceiptTotalRow(column, 14, "BALANCE", $"${report.Total - report.Deposit:0.00}");
 
-                    column.Item().PaddingTop(70).Text(
+                    column.Item().PaddingTop(60).Text(
                         "INSURANCE COMPANY PLEASE NOTE: If we can be of any further "
                         + "assistance in supplying information required to process any "
                         + "claim, please call the above number.");
 
-                    column.Item().PaddingTop(74).Column(footer =>
+                    column.Item().PaddingTop(64).Column(footer =>
                     {
                         footer.Item().Row(row =>
                         {
                             row.ConstantItem(120f).Text("Date items supplied:");
                             row.ConstantItem(106f).Text(report.DateOfEntry.ToString("MMM dd, yyyy"));
-                            row.ConstantItem(12f);
+                            // row.ConstantItem(12f);
                             row.ConstantItem(100f).Text(
                                 string.IsNullOrWhiteSpace(report.StaffCode)
                                     ? $"({report.TxNumber})"
@@ -536,7 +537,8 @@ public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IRep
         });
     }
 
-    private static void ComposeBarCodeLabel(IContainer container, BarCodeTagLabel label)
+    private static void ComposeBarCodeLabel(
+        IContainer container, BarCodeTagLabel label, ReportLetterheadDto letterhead)
     {
         container.Column(column =>
         {
@@ -549,7 +551,7 @@ public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IRep
                     .Border(1).BorderColor(Colors.Black)
                     .Padding(2.5f)
                     .AlignCenter()
-                    .Text("THE OPTICAL CENTRE").Bold().FontSize(10.5f);
+                    .Text(letterhead.ShopName.ToUpperInvariant()).Bold().FontSize(10.5f);
             });
 
             column.Item().PaddingTop(6.2f).Row(row =>

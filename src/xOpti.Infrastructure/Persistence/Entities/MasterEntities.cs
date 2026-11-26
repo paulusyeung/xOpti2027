@@ -152,9 +152,25 @@ public class Preference
 
     public string? UserAddress { get; set; }
 
+    public int? UserCityCode { get; set; }
+
+    public string? UserProvince { get; set; }
+
+    public string? UserPostalCode { get; set; }
+
+    public string? UserCountryCode { get; set; }
+
+    public string? UserPhone { get; set; }
+
+    public string? UserFax { get; set; }
+
     public string OwnerName { get; set; } = string.Empty;
 
     public string? OwnerAddress { get; set; }
+
+    public string? OwnerPhone { get; set; }
+
+    public string? OwnerFax { get; set; }
 
     public string? GstNumber { get; set; }
 

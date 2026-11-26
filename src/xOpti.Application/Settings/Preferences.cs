@@ -19,7 +19,17 @@ public sealed record PreferencesDto(
     double TaxARate,
     double TaxBRate,
     int NextInvoiceNumber,
-    int NextInvtControlNumber);
+    int NextInvtControlNumber,
+    string? UserPhone = null,
+    string? UserFax = null,
+    string? OwnerPhone = null,
+    string? OwnerFax = null,
+    int? UserCityCode = null,
+    string? UserCityName = null,
+    string? UserProvince = null,
+    string? UserPostalCode = null,
+    string? UserCountryCode = null,
+    string? UserCountryName = null);
 
 public sealed record CounterDto(string Prefix, int NextNumber, string Description, string? Value);
 
@@ -75,7 +85,15 @@ public sealed record UpdatePreferencesCommand(
     string? PstNumber,
     double TaxARate,
     double TaxBRate,
-    string Reason)
+    string Reason,
+    string? UserPhone = null,
+    string? UserFax = null,
+    string? OwnerPhone = null,
+    string? OwnerFax = null,
+    int? UserCityCode = null,
+    string? UserProvince = null,
+    string? UserPostalCode = null,
+    string? UserCountryCode = null)
     : ICommand<PreferencesDto>, IHasPermissions
 {
     public IReadOnlyList<string> RequiredPermissions => new[] { PermissionNames.MasterDataMaintain };
@@ -90,6 +108,13 @@ public sealed class UpdatePreferencesCommandValidator : AbstractValidator<Update
         RuleFor(x => x.OwnerName).NotEmpty().MaximumLength(40);
         RuleFor(x => x.UserAddress).MaximumLength(128);
         RuleFor(x => x.OwnerAddress).MaximumLength(128);
+        RuleFor(x => x.UserPhone).MaximumLength(15);
+        RuleFor(x => x.UserFax).MaximumLength(15);
+        RuleFor(x => x.OwnerPhone).MaximumLength(15);
+        RuleFor(x => x.OwnerFax).MaximumLength(15);
+        RuleFor(x => x.UserProvince).MaximumLength(20);
+        RuleFor(x => x.UserPostalCode).MaximumLength(8);
+        RuleFor(x => x.UserCountryCode).MaximumLength(3);
         RuleFor(x => x.GstNumber).MaximumLength(10);
         RuleFor(x => x.PstNumber).MaximumLength(10);
         RuleFor(x => x.TaxARate).InclusiveBetween(0, 100);
@@ -115,6 +140,14 @@ public sealed class UpdatePreferencesHandler(
                 UserAddress = request.UserAddress,
                 OwnerName = request.OwnerName,
                 OwnerAddress = request.OwnerAddress,
+                UserPhone = request.UserPhone,
+                UserFax = request.UserFax,
+                OwnerPhone = request.OwnerPhone,
+                OwnerFax = request.OwnerFax,
+                UserCityCode = request.UserCityCode,
+                UserProvince = request.UserProvince,
+                UserPostalCode = request.UserPostalCode,
+                UserCountryCode = request.UserCountryCode,
                 GstNumber = request.GstNumber,
                 PstNumber = request.PstNumber,
                 TaxARate = request.TaxARate,

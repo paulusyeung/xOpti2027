@@ -24,6 +24,7 @@ public class ArchitectureTests
     {
         "Sales", "Inventory", "Purchasing", "Customers",
         "Prescriptions", "Wholesale", "Reporting", "Identity",
+        "Analytics", "Cash", "Claims", "Optical", "Payments", "Reference", "Settings",
     };
 
     private static readonly string[] TechnicalFolders = { "Common", "Pipeline", "Ports", "Authorization" };
