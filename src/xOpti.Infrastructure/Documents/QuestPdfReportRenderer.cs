@@ -539,9 +539,9 @@ public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IRep
                                     .BorderBottom(1).BorderColor(Colors.Black);
                             });
 
-                        row.ConstantItem(118).Table(table =>
+                        row.ConstantItem(124).Table(table =>
                         {
-                            InvoiceColumns(table, 68, 52);
+                            InvoiceColumns(table, 68, 56);
                             InvoiceTotalRow(table, "Net Sales:", InvoiceMoney(report.NetSales),
                                 topBorder: true);
                             InvoiceTotalRow(table, report.TaxALabel, InvoiceMoney(report.TaxAAmount));

@@ -39,9 +39,21 @@ public sealed record InvoiceReport(
     decimal Deposit,
     decimal Change)
 {
-    private static readonly DateTime HstCutoff = new(2010, 7, 1);
+    // BC HST applied from 2010-07-01 until 2015-03-31. The legacy Crystal
+    // report only encoded the start date; end it here so post-2015 invoices
+    // print GST and PST again.
+    private static readonly DateTime HstStart = new(2010, 7, 1);
 
-    public bool UsesHst => DateOfEntry.UtcDateTime >= HstCutoff;
+    private static readonly DateTime HstEnd = new(2015, 4, 1);
+
+    public bool UsesHst
+    {
+        get
+        {
+            var date = DateOfEntry.UtcDateTime;
+            return date >= HstStart && date < HstEnd;
+        }
+    }
 
     public string TaxALabel => UsesHst ? "H.S.T.:" : "G.S.T.:";
 
