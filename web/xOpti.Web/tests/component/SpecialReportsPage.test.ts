@@ -146,4 +146,52 @@ describe('SpecialReportsPage', () => {
     expect(document.body.querySelector('[data-testid="claim-printing"]')).toBeNull()
     wrapper.unmount()
   })
+
+  it('opens the Invoice Number prompt for Invoice', async () => {
+    const { wrapper, router } = await mountInApp(SpecialReportsPage, {
+      path: '/admin/special-reports',
+      pinia: authenticatedPinia(),
+    })
+    await flushPromises()
+    const push = vi.spyOn(router, 'push')
+
+    await wrapper.findComponent({ name: 'VSelect' }).setValue('Invoice')
+    await wrapper.get('[data-testid="special-report-ok"]').trigger('click')
+    expect(document.body.querySelector('[data-testid="invoice-print-dialog"]')).not.toBeNull()
+    expect(push).not.toHaveBeenCalled()
+
+    wrapper.unmount()
+  })
+
+  it('opens the invoice in a new tab with the invoice number in the URL', async () => {
+    let resolveResponse!: (response: Response) => void
+    const pending = new Promise<Response>((resolve) => { resolveResponse = resolve })
+    vi.spyOn(api, 'request').mockReturnValue(pending)
+    const preview = { opener: window, focus: vi.fn() } as unknown as Window
+    const open = vi.spyOn(window, 'open').mockReturnValue(preview)
+
+    const { wrapper } = await mountInApp(SpecialReportsPage, {
+      path: '/admin/special-reports',
+      pinia: authenticatedPinia(),
+    })
+    await flushPromises()
+    await wrapper.findComponent({ name: 'VSelect' }).setValue('Invoice')
+    await wrapper.get('[data-testid="special-report-ok"]').trigger('click')
+    await dialogField('invoice-number').setValue('RC00038263')
+    await dialogField('invoice-print-submit').trigger('click')
+    await flushPromises()
+
+    expect(document.body.querySelector('[data-testid="invoice-printing"]')).not.toBeNull()
+    expect(open).not.toHaveBeenCalled()
+
+    resolveResponse(new Response(new Uint8Array([1, 2, 3]), { status: 200 }))
+    await flushPromises()
+
+    expect(open).toHaveBeenCalledWith(
+      '/api/v1/special-reports/invoice/preview?invoiceNumber=RC00038263',
+      '_blank',
+    )
+    expect(document.body.querySelector('[data-testid="invoice-printing"]')).toBeNull()
+    wrapper.unmount()
+  })
 })

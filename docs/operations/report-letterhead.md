@@ -88,6 +88,7 @@ database still produces a usable document. The fallbacks live in
 
 - **Claims Receipt** (Special Reports) — all header lines and report title.
 - **Bar Code Tag** (Special Reports) — the `THE OPTICAL CENTRE` label header.
+- **Invoice** (Special Reports) — header line, report title, footer identity, phone/fax and GST number.
 
 Other documents (invoice, order, POS receipt, statements, packing lists) print
 customer, supplier or shipping addresses supplied by their own data, not the

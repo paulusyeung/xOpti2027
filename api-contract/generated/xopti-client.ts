@@ -2920,6 +2920,78 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/special-reports/invoice/print": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["InvoiceReportPrintRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/special-reports/invoice/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query: {
+                    invoiceNumber: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/reports/{reportId}/export": {
         parameters: {
             query?: never;
@@ -7043,6 +7115,10 @@ export interface components {
             lots: components["schemas"]["LotValuationDto"][];
             averageCost: null | components["schemas"]["Money"];
             extendedCost: null | components["schemas"]["Money"];
+        };
+        InvoiceReportPrintRequest: {
+            invoiceNumber: string;
+            reason: null | string;
         };
         IssueConsumptionDto: {
             lotNo: string;

@@ -29,6 +29,10 @@ const claimDialogOpen = ref(false)
 const orderInvoiceNumber = ref('')
 const claimPrinting = ref(false)
 const claimError = ref<string | null>(null)
+const invoiceDialogOpen = ref(false)
+const invoiceNumber = ref('')
+const invoicePrinting = ref(false)
+const invoiceError = ref<string | null>(null)
 
 const selectedReport = computed(() => REPORTS.find((report) => report.title === selected.value))
 
@@ -50,6 +54,11 @@ function open(): void {
   if (selected.value === 'Claims Receipt') {
     claimError.value = null
     claimDialogOpen.value = true
+    return
+  }
+  if (selected.value === 'Invoice') {
+    invoiceError.value = null
+    invoiceDialogOpen.value = true
     return
   }
   if (selectedReport.value) {
@@ -135,6 +144,30 @@ async function printClaimReceipt(): Promise<void> {
     claimError.value = caught instanceof Error ? caught.message : fallback
   } finally {
     claimPrinting.value = false
+  }
+}
+
+async function printInvoice(): Promise<void> {
+  const invoice = invoiceNumber.value.trim()
+  if (!invoice) return
+  invoicePrinting.value = true
+  invoiceError.value = null
+  const fallback = 'The invoice could not be generated.'
+  try {
+    const response = await api.request('/api/v1/special-reports/invoice/print', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ invoiceNumber: invoice, reason: 'invoice print' }),
+    })
+    if (!response.ok) throw new Error(await problemMessage(response, fallback))
+    await response.blob()
+    const params = new URLSearchParams({ invoiceNumber: invoice })
+    openPdfPreview(`/api/v1/special-reports/invoice/preview?${params}`)
+    invoiceDialogOpen.value = false
+  } catch (caught) {
+    invoiceError.value = caught instanceof Error ? caught.message : fallback
+  } finally {
+    invoicePrinting.value = false
   }
 }
 
@@ -255,6 +288,45 @@ function exit(): void {
             :loading="claimPrinting"
             data-testid="claim-print-submit"
             @click="printClaimReceipt"
+          >
+            Print
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="invoiceDialogOpen" max-width="480">
+      <v-card rounded="xl" data-testid="invoice-print-dialog">
+        <v-card-title>Invoice Number</v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="invoiceNumber"
+            label="Enter Invoice No."
+            data-testid="invoice-number"
+            hide-details
+          />
+          <p class="text-caption text-medium-emphasis mt-3 mb-0">
+            Enter the RC invoice number, for example RC00038263.
+          </p>
+          <v-alert v-if="invoiceError" type="error" variant="tonal" class="mt-3">{{ invoiceError }}</v-alert>
+          <div
+            v-if="invoicePrinting"
+            class="d-flex align-center justify-center py-4"
+            data-testid="invoice-printing"
+          >
+            <v-progress-circular indeterminate color="primary" size="28" />
+            <span class="text-caption ml-3">Preparing PDF…</span>
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn variant="text" data-testid="invoice-print-reset" @click="invoiceNumber = ''">Reset</v-btn>
+          <v-spacer />
+          <v-btn variant="text" data-testid="invoice-print-cancel" @click="invoiceDialogOpen = false">Cancel</v-btn>
+          <v-btn
+            color="primary"
+            :loading="invoicePrinting"
+            data-testid="invoice-print-submit"
+            @click="printInvoice"
           >
             Print
           </v-btn>

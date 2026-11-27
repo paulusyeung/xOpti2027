@@ -29,6 +29,10 @@
 
     <!-- Legacy logo used by the Crystal-compatible claims receipt. -->
     <EmbeddedResource Include="Documents/Assets/optical-centre-logo.png" />
+
+    <!-- Arial/Helvetica-metric font used by the Special Reports layouts. -->
+    <EmbeddedResource Include="Documents/Assets/LiberationSans-Regular.ttf" />
+    <EmbeddedResource Include="Documents/Assets/LiberationSans-Bold.ttf" />
   </ItemGroup>
 
   <ItemGroup>

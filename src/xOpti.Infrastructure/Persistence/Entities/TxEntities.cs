@@ -15,6 +15,8 @@ public class TxHeader
 
     public DateTimeOffset? DateOfCreation { get; set; }
 
+    public DateTimeOffset? SecondDate { get; set; }
+
     public string? RefNumber { get; set; }
 
     public string? TrackingNumber { get; set; }
@@ -44,6 +46,8 @@ public class TxHeader
     public int TotalQty { get; set; }
 
     public Money ThisPaid { get; set; }
+
+    public Money PreviousPaid { get; set; }
 
     public Money Change { get; set; }
 
@@ -100,6 +104,8 @@ public class TxPayment
     public Money AmountTender { get; set; }
 
     public Money EqAmount { get; set; }
+
+    public double ExchangeRate { get; set; }
 
     public Money TotalThisPay { get; set; }
 }

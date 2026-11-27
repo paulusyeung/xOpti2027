@@ -2780,6 +2780,50 @@
         }
       }
     },
+    "/api/v1/special-reports/invoice/print": {
+      "post": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InvoiceReportPrintRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/v1/special-reports/invoice/preview": {
+      "get": {
+        "tags": [
+          "xOpti.Api"
+        ],
+        "parameters": [
+          {
+            "name": "invoiceNumber",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/v1/reports/{reportId}/export": {
       "post": {
         "tags": [
@@ -10348,6 +10392,24 @@
               {
                 "$ref": "#/components/schemas/Money"
               }
+            ]
+          }
+        }
+      },
+      "InvoiceReportPrintRequest": {
+        "required": [
+          "invoiceNumber",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "invoiceNumber": {
+            "type": "string"
+          },
+          "reason": {
+            "type": [
+              "null",
+              "string"
             ]
           }
         }

@@ -1124,6 +1124,30 @@ public static class Endpoints
         })
         .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
 
+        v1.MapPost("/special-reports/invoice/print", async (
+            InvoiceReportPrintRequest request,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new PrintInvoiceReportCommand(
+                request.InvoiceNumber, request.Reason ?? "invoice print"), cancellationToken);
+            return Results.File(result.Content, result.ContentType, result.FileName);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
+
+        v1.MapGet("/special-reports/invoice/preview", async (
+            string invoiceNumber,
+            IRequestDispatcher dispatcher,
+            HttpContext http,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new PrintInvoiceReportCommand(
+                invoiceNumber, "invoice preview"), cancellationToken);
+            http.Response.Headers.ContentDisposition = $"inline; filename=\"{result.FileName}\"";
+            return Results.File(result.Content, result.ContentType, enableRangeProcessing: true);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
+
         v1.MapPost("/reports/{reportId}/export", async (
             string reportId, ReportExportRequest request, IRequestDispatcher dispatcher,
             CancellationToken cancellationToken) =>
@@ -2255,6 +2279,8 @@ public sealed record BarCodeTagPrintRequest(
     string FromNumber, string ToNumber, bool Duplicate, string? Reason);
 
 public sealed record ClaimReceiptReportPrintRequest(string OrderInvoiceNumber, string? Reason);
+
+public sealed record InvoiceReportPrintRequest(string InvoiceNumber, string? Reason);
 
 public sealed record SaveAnalyticsViewRequest(
     string ViewKey, string Name, bool IsShared, string ConfigJson, string Reason);

@@ -24,6 +24,7 @@ public static class LegacyMapping
             e.Property(x => x.TxType).HasColumnName("tx_type").HasConversion(Converters.TxTypeCode);
             e.Property(x => x.DateOfEntry).HasColumnName("date_of_entry").HasConversion(Converters.UtcTimestamp);
             e.Property(x => x.DateOfCreation).HasColumnName("date_of_creation").HasConversion(Converters.UtcTimestampNullable);
+            e.Property(x => x.SecondDate).HasColumnName("second_date").HasConversion(Converters.UtcTimestampNullable);
             e.Property(x => x.RefNumber).HasColumnName("ref_number");
             e.Property(x => x.TrackingNumber).HasColumnName("tracking_number");
             e.Property(x => x.CustomerId).HasColumnName("customer_id");
@@ -39,6 +40,7 @@ public static class LegacyMapping
             MoneyProp(e, x => x.TotalAmount, "total_amount");
             e.Property(x => x.TotalQty).HasColumnName("total_qty");
             MoneyProp(e, x => x.ThisPaid, "this_paid");
+            MoneyProp(e, x => x.PreviousPaid, "previous_paid");
             MoneyProp(e, x => x.Change, "change");
             e.Property(x => x.Status).HasColumnName("status");
             e.HasMany(x => x.Details)
@@ -80,6 +82,7 @@ public static class LegacyMapping
             e.Property(x => x.AuthorizationCode).HasColumnName("authorization_code");
             MoneyProp(e, x => x.AmountTender, "amount_tender");
             MoneyProp(e, x => x.EqAmount, "eq_amount");
+            e.Property(x => x.ExchangeRate).HasColumnName("exchange_rate");
             MoneyProp(e, x => x.TotalThisPay, "total_this_pay");
         });
 

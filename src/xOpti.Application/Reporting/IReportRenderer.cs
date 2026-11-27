@@ -21,4 +21,6 @@ public interface IReportRenderer
     RenderedDocument RenderBarCodeTags(BarCodeTagDocument document, ReportLetterheadDto letterhead);
 
     RenderedDocument RenderClaimReceiptReport(ClaimReceiptReport report, ReportLetterheadDto letterhead);
+
+    RenderedDocument RenderInvoiceReport(InvoiceReport report, ReportLetterheadDto letterhead);
 }

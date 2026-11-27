@@ -10,7 +10,22 @@ namespace xOpti.Infrastructure.Documents;
 
 public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IReportRenderer
 {
+    private const string ReportFontFamily = "Liberation Sans";
+
     private static readonly byte[] OpticalCentreLogo = LoadOpticalCentreLogo();
+
+    static QuestPdfReportRenderer()
+    {
+        RegisterReportFont("xOpti.Infrastructure.Documents.Assets.LiberationSans-Regular.ttf");
+        RegisterReportFont("xOpti.Infrastructure.Documents.Assets.LiberationSans-Bold.ttf");
+    }
+
+    private static void RegisterReportFont(string resourceName)
+    {
+        using var stream = typeof(QuestPdfReportRenderer).Assembly.GetManifestResourceStream(resourceName)
+            ?? throw new InvalidOperationException($"Embedded font is missing: {resourceName}");
+        QuestPDF.Drawing.FontManager.RegisterFontFromStream(stream);
+    }
 
     private static byte[] LoadOpticalCentreLogo()
     {
@@ -313,7 +328,7 @@ public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IRep
                     page.MarginRight(22.8f);
                     page.MarginTop(66f);
                     page.MarginBottom(38.5f);
-                    page.DefaultTextStyle(style => style.FontSize(7));
+                    page.DefaultTextStyle(style => style.FontFamily(ReportFontFamily).FontSize(7));
 
                     page.Content().Table(table =>
                     {
@@ -350,6 +365,305 @@ public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IRep
             + $"{(document.Duplicate ? "-duplicate" : string.Empty)}.pdf");
     }
 
+    public RenderedDocument RenderInvoiceReport(InvoiceReport report, ReportLetterheadDto letterhead)
+    {
+        _ = new QuestPdfDocumentRenderer(options);
+
+        var pdf = Document.Create(container =>
+        {
+            container.Page(page =>
+            {
+                page.Size(PageSizes.Letter);
+                page.MarginLeft(54f);
+                page.MarginRight(32f);
+                page.MarginTop(59f);
+                page.MarginBottom(42f);
+                page.DefaultTextStyle(style => style.FontFamily(ReportFontFamily).FontSize(8.5f));
+
+                page.Content().Column(column =>
+                {
+                    // Title block and the legacy Chinese shop logo.
+                    column.Item().Row(row =>
+                    {
+                        row.RelativeItem().Column(title =>
+                        {
+                            title.Item().Text("Invoice").Bold().FontSize(28);
+                            title.Item().PaddingTop(1).Width(168).BorderBottom(1)
+                                .Height(1);
+                            title.Item().PaddingTop(4).Row(meta =>
+                            {
+                                meta.ConstantItem(70).Text("Date:").Bold().FontSize(9.5f);
+                                meta.RelativeItem().Text(report.DateOfEntry.ToString("MMMM dd, yyyy"))
+                                    .FontSize(9.5f);
+                            });
+                            title.Item().PaddingTop(2).Row(meta =>
+                            {
+                                meta.ConstantItem(70).Text("Invoice No.:").Bold().FontSize(9.5f);
+                                meta.RelativeItem().Text(report.TxNumber).FontSize(9.5f);
+                            });
+                        });
+                        row.ConstantItem(160).Column(logo =>
+                        {
+                            logo.Item().AlignRight().Width(60).Height(60).Image(OpticalCentreLogo);
+                            logo.Item().AlignRight().PaddingRight(2).Text("TM").FontSize(6);
+                        });
+                    });
+
+                    // Sold To / Ship To.
+                    column.Item().PaddingTop(44).Row(row =>
+                    {
+                        row.RelativeItem().Column(party =>
+                        {
+                            party.Item().Row(label =>
+                            {
+                                label.ConstantItem(55).Text("Sold To:").Bold().FontSize(9.5f);
+                                label.RelativeItem().AlignMiddle().LineHorizontal(1);
+                            });
+                            party.Item().PaddingTop(4).PaddingLeft(18)
+                                .Text(report.CustomerName).Bold().FontSize(9.5f);
+                            party.Item().PaddingTop(42).PaddingLeft(18)
+                                .Text(report.CustomerPhone ?? string.Empty).Bold().FontSize(9.5f);
+                        });
+                        row.ConstantItem(10);
+                        row.RelativeItem().Column(party =>
+                        {
+                            party.Item().Row(label =>
+                            {
+                                label.ConstantItem(55).Text("Ship To:").Bold().FontSize(9.5f);
+                                label.RelativeItem().AlignMiddle().LineHorizontal(1);
+                            });
+                            party.Item().PaddingTop(4).PaddingLeft(18)
+                                .Text(report.CustomerName).Bold().FontSize(9.5f);
+                            party.Item().PaddingTop(42).PaddingLeft(18)
+                                .Text(report.CustomerPhone ?? string.Empty).Bold().FontSize(9.5f);
+                        });
+                    });
+
+                    // Order information grid.
+                    column.Item()
+                    .PaddingTop(20)
+                    .BorderTop(0.75f)
+                    .BorderLeft(0.75f)
+                    .BorderColor(Colors.Black)
+                    .Table(table =>
+                    {
+                        InvoiceColumns(table, 72, 95, 117, 113, 90, 39);
+
+                        InvoiceGridRow(table, new[]
+                        {
+                            "VIP No.", "Order No.", "Sales Person", "Order Date", "Shipped Date", "Terms",
+                        }, bold: true, fontSize: 8.5f, centered: true);
+
+                        InvoiceGridRow(table, new[]
+                        {
+                            report.VipCode ?? string.Empty,
+                            report.OrderNumber ?? string.Empty,
+                            report.SalesPerson ?? string.Empty,
+                            report.OrderDate is { } ordered ? FormatDate(ordered) : string.Empty,
+                            FormatDate(report.DateOfEntry),
+                            "C.O.D.",
+                        }, centered: true);
+                    });
+
+                    // Line items.
+                    column.Item()
+                    .PaddingTop(20)
+                    .BorderTop(0.75f)
+                    .BorderColor(Colors.Black)
+                    .Table(table =>
+                    {
+                        InvoiceColumns(table, 61, 29, 79, 35, 192, 33, 55, 42);
+                        InvoiceGridRow(table, new[]
+                        {
+                            "Line No.", "Qty", "SKU Code", "Type", "Description",
+                            "Tax", "Unit Price", "Amount",
+                        }, bold: true, fontSize: 8.5f, leftBorder: true);
+                        foreach (var line in report.Lines)
+                        {
+                            InvoiceGridRow(table, new[]
+                            {
+                                line.RowNo.ToString("0.0"),
+                                line.Qty.ToString(),
+                                line.Sku,
+                                string.Empty,
+                                line.Description ?? string.Empty,
+                                line.TaxCode ?? string.Empty,
+                                line.UnitPrice.ToString("0.00"),
+                                line.Amount.ToString("0.00"),
+                            }, boxed: false, rightAlignLastTwo: true);
+                        }
+                    });
+
+                    // Payment details and totals.
+                    column.Item().PaddingTop(22).Row(row =>
+                    {
+                        row.RelativeItem().PaddingLeft(4).Border(1).BorderColor(Colors.Black)
+                            .Padding(6).Column(payment =>
+                            {
+                                payment.Item().AlignCenter().Text("THIS PAYMENT DETAILS")
+                                    .Bold().FontSize(12);
+                                payment.Item().PaddingTop(5).Row(head =>
+                                {
+                                    head.RelativeItem();
+                                    head.ConstantItem(50).AlignRight().Text("Exchange").Bold().FontSize(8);
+                                    head.ConstantItem(72).AlignRight().Text("Canadian").Bold().FontSize(8);
+                                });
+                                payment.Item().Row(head =>
+                                {
+                                    head.ConstantItem(70).Text("Type").Bold().FontSize(8);
+                                    head.ConstantItem(110).Text("CardNumber/Authorization")
+                                        .Bold().FontSize(8);
+                                    head.RelativeItem().AlignRight().Text("Tender").Bold().FontSize(8);
+                                    head.ConstantItem(35).AlignRight().Text("Rate").Bold().FontSize(8);
+                                    head.ConstantItem(70).AlignRight().Text("Amounts").Bold().FontSize(8);
+                                });
+                                payment.Item().BorderBottom(1).BorderColor(Colors.Black).Height(1);
+                                foreach (var tender in report.Payments)
+                                {
+                                    payment.Item().PaddingTop(3).Row(line =>
+                                    {
+                                        line.ConstantItem(70).Text(tender.Type).FontSize(9.5f);
+                                        line.ConstantItem(100)
+                                            .Text(tender.CardAuthorization ?? string.Empty).FontSize(9.5f);
+                                        line.RelativeItem().AlignRight()
+                                            .Text(tender.AmountTender.ToString("0.00")).FontSize(9.5f);
+                                        line.ConstantItem(35).AlignRight()
+                                            .Text(tender.ExchangeRate.ToString("0.00")).FontSize(9.5f);
+                                        line.ConstantItem(70).AlignRight()
+                                            .Text(tender.EqAmount.ToString("0.00")).FontSize(9.5f);
+                                    });
+                                }
+                                payment.Item().PaddingTop(4).AlignRight().Width(70)
+                                    .BorderBottom(1).BorderColor(Colors.Black);
+                                payment.Item().PaddingTop(2).AlignRight().Width(70)
+                                    .BorderBottom(1).BorderColor(Colors.Black);
+                            });
+
+                        row.ConstantItem(118).Table(table =>
+                        {
+                            InvoiceColumns(table, 68, 52);
+                            InvoiceTotalRow(table, "Net Sales:", InvoiceMoney(report.NetSales),
+                                topBorder: true);
+                            InvoiceTotalRow(table, report.TaxALabel, InvoiceMoney(report.TaxAAmount));
+                            if (report.TaxBLabel.Length > 0)
+                                InvoiceTotalRow(table, report.TaxBLabel, InvoiceMoney(report.TaxBAmount));
+                            InvoiceTotalRow(table, "Gross Sales:", InvoiceMoney(report.GrossSales));
+                            InvoiceTotalRow(table, "Deposit:", InvoiceMoney(report.Deposit));
+                            InvoiceTotalRow(table, "Balance:", InvoiceMoney(report.Balance));
+                        });
+                    });
+
+                });
+
+                // Anchored to the page bottom so its position never depends on
+                // how many line items or payments the content area contains.
+                page.Footer().Column(footer =>
+                {
+                    footer.Item().Text(
+                        "30 DAYS WARRANTY ON CONTACT LENSES.  90 DAYS WARRANTY ON ALL OTHER "
+                        + "PRESCRIPTION ITEMS.").FontSize(9.5f);
+                    footer.Item().Text("NO CASH REFUNDS, EXCHANGES WITH RECEIPT ONLY.").FontSize(9.5f);
+                    footer.Item().Row(notice =>
+                    {
+                        notice.RelativeItem().Text($"G.S.T. NO. {letterhead.GstNumber}").FontSize(9.5f);
+                        notice.ConstantItem(130).AlignRight().Text(
+                            $"{DateTime.Now:MMM dd, yyyy}  {DateTime.Now:hh:mm:ss}AM").FontSize(8);
+                    });
+                    footer.Item().LineHorizontal(1);
+                    footer.Item().Column(identity =>
+                    {
+                        identity.Item().Text($"{letterhead.ShopName.ToUpperInvariant()}    "
+                            + letterhead.LegalName.ToUpperInvariant()).Bold().FontSize(9.5f);
+                        identity.Item().PaddingTop(2).Text(letterhead.Address).FontSize(9.5f);
+                        identity.Item().Text($"Phone: {letterhead.Phone}       Fax: {letterhead.Fax}")
+                            .FontSize(9.5f);
+                    });
+                });
+            });
+        })
+        .WithMetadata(new DocumentMetadata
+        {
+            Title = $"Invoice {report.TxNumber}",
+            Author = "xOpti",
+            Subject = "Invoice",
+            Creator = "xOpti Reporting",
+            Producer = "QuestPDF",
+            CreationDate = DateTime.UtcNow,
+        })
+        .GeneratePdf();
+
+        return new RenderedDocument(pdf, "application/pdf", $"{report.TxNumber}-invoice.pdf");
+    }
+
+    private static void InvoiceGridRow(TableDescriptor table, string[] cells,
+        bool bold = false, float fontSize = 8.5f, bool centered = false, bool leftBorder = false)
+    {
+        foreach (var text in cells)
+        {
+            var container = table.Cell()
+                .BorderBottom(0.75f)          // Bottom line of each cell
+                .BorderRight(0.75f)           // Right line of each cell
+                .BorderColor(Colors.Black);
+            if (leftBorder) container = container.BorderLeft(0.75f).BorderColor(Colors.Black);
+            container = container
+                .PaddingVertical(3)           // Inner spacing (MUST be after Border)
+                .PaddingHorizontal(4)
+                .AlignMiddle();
+            if (centered) container = container.AlignCenter();
+            container.Text(t =>
+            {
+                var span = t.Span(text).FontSize(fontSize);
+                if (bold)
+                    span.Bold();
+            });
+        }
+    }
+
+    private static string FormatDate(DateTimeOffset value) => value.ToString("MMMM dd, yyyy");
+
+    private static string InvoiceMoney(decimal value) =>
+        value.ToString("#,##0.00", System.Globalization.CultureInfo.InvariantCulture);
+
+    private static void InvoiceColumns(TableDescriptor table, params float[] widths)
+    {
+        table.ColumnsDefinition(columns =>
+        {
+            foreach (var width in widths) columns.ConstantColumn(width);
+        });
+    }
+
+    private static void InvoiceGridRow(TableDescriptor table, IReadOnlyList<string> cells,
+        bool bold = false, bool boxed = true, float fontSize = 9.5f,
+        bool rightAlignLastTwo = false)
+    {
+        for (var index = 0; index < cells.Count; index++)
+        {
+            var container = table.Cell().PaddingHorizontal(4).PaddingVertical(3);
+            if (boxed) container = container.Border(0.6f).BorderColor(Colors.Black);
+            if (rightAlignLastTwo && index >= cells.Count - 2) container = container.AlignRight();
+            var text = container.Text(cells[index]).FontSize(fontSize);
+            if (bold) text.Bold();
+        }
+    }
+
+    private static void InvoiceGridSeparator(TableDescriptor table, int cellCount)
+    {
+        for (var i = 0; i < cellCount; i++)
+            table.Cell().BorderBottom(0.6f).BorderColor(Colors.Black).Height(1);
+    }
+
+    private static void InvoiceTotalRow(TableDescriptor table, string label, string amount,
+        bool topBorder = false)
+    {
+        var labelCell = table.Cell().BorderBottom(1).BorderColor(Colors.Black);
+        if (topBorder) labelCell = labelCell.BorderTop(1).BorderColor(Colors.Black);
+        labelCell.PaddingHorizontal(4).PaddingVertical(3).Text(label).Bold().FontSize(9.5f);
+
+        var valueCell = table.Cell().BorderBottom(1).BorderRight(1).BorderColor(Colors.Black);
+        if (topBorder) valueCell = valueCell.BorderTop(1).BorderColor(Colors.Black);
+        valueCell.PaddingHorizontal(4).PaddingVertical(3).AlignRight().Text(amount).FontSize(9.5f);
+    }
+
     public RenderedDocument RenderClaimReceiptReport(
         ClaimReceiptReport report, ReportLetterheadDto letterhead)
     {
@@ -364,7 +678,7 @@ public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IRep
                 page.MarginRight(39.6f);
                 page.MarginTop(57f);
                 page.MarginBottom(45f);
-                page.DefaultTextStyle(style => style.FontSize(10f));
+                page.DefaultTextStyle(style => style.FontFamily(ReportFontFamily).FontSize(10f));
 
                 page.Content().Column(column =>
                 {
@@ -551,33 +865,33 @@ public sealed class QuestPdfReportRenderer(InfrastructureOptions options) : IRep
                     .Border(1).BorderColor(Colors.Black)
                     .Padding(2.5f)
                     .AlignCenter()
-                    .Text(letterhead.ShopName.ToUpperInvariant()).Bold().FontSize(10.5f);
+                    .Text(letterhead.ShopName.ToUpperInvariant()).Bold().FontSize(8.5f).LetterSpacing(0.09f);
             });
 
-            column.Item().PaddingTop(6.2f).Row(row =>
+            column.Item().PaddingTop(11.8f).Row(row =>
             {
                 row.ConstantItem(7.5f);
                 row.ConstantItem(108.6f).AlignCenter()
-                    .Text(label.Sku).Bold().FontSize(12.3f).LetterSpacing(0.11f);
+                    .Text(label.Sku).Bold().FontSize(9.7f).LetterSpacing(0.37f);
             });
 
-            column.Item().PaddingTop(20.9f)
+            column.Item().PaddingTop(23f)
                 .Element(cell => QuestPdfReportComponents.Barcode(cell, label.Sku));
 
             column.Item().Row(row =>
             {
                 row.ConstantItem(64).Column(left =>
                 {
-                    left.Item().Text(label.Sku).FontSize(7.3f).LineHeight(0.85f);
-                    left.Item().Text(label.ClassName ?? string.Empty).FontSize(7.3f).LineHeight(0.85f);
-                    left.Item().Text(label.Model ?? string.Empty).FontSize(7.3f).LineHeight(0.85f);
-                    left.Item().Text($"${label.RetailPrice ?? 0m:0.00}").FontSize(7.3f).LineHeight(0.85f);
+                    left.Item().Text(label.Sku).FontSize(6.1f).LineHeight(0.85f);
+                    left.Item().Text(label.ClassName ?? string.Empty).FontSize(6.1f).LineHeight(0.85f);
+                    left.Item().Text(label.Model ?? string.Empty).FontSize(6.1f).LineHeight(0.85f);
+                    left.Item().Text($"${label.RetailPrice ?? 0m:0.00}").FontSize(6.1f).LineHeight(0.85f);
                 });
                 row.ConstantItem(63).Column(right =>
                 {
-                    right.Item().AlignRight().Text(label.Brand ?? string.Empty).FontSize(7.3f).LineHeight(0.85f);
-                    right.Item().AlignRight().Text(label.Color ?? string.Empty).FontSize(7.3f).LineHeight(0.85f);
-                    right.Item().AlignRight().Text(label.Size ?? string.Empty).FontSize(7.3f).LineHeight(0.85f);
+                    right.Item().AlignRight().Text(label.Brand ?? string.Empty).FontSize(6.1f).LineHeight(0.85f);
+                    right.Item().AlignRight().Text(label.Color ?? string.Empty).FontSize(6.1f).LineHeight(0.85f);
+                    right.Item().AlignRight().Text(label.Size ?? string.Empty).FontSize(6.1f).LineHeight(0.85f);
                 });
             });
         });
