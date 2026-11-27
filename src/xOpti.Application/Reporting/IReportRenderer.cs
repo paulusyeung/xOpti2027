@@ -23,4 +23,6 @@ public interface IReportRenderer
     RenderedDocument RenderClaimReceiptReport(ClaimReceiptReport report, ReportLetterheadDto letterhead);
 
     RenderedDocument RenderInvoiceReport(InvoiceReport report, ReportLetterheadDto letterhead);
+
+    RenderedDocument RenderOrderReport(OrderReport report, ReportLetterheadDto letterhead);
 }

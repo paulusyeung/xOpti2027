@@ -1148,6 +1148,30 @@ public static class Endpoints
         })
         .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
 
+        v1.MapPost("/special-reports/order/print", async (
+            OrderReportPrintRequest request,
+            IRequestDispatcher dispatcher,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new PrintOrderReportCommand(
+                request.OrderNumber, request.Reason ?? "order print"), cancellationToken);
+            return Results.File(result.Content, result.ContentType, result.FileName);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
+
+        v1.MapGet("/special-reports/order/preview", async (
+            string orderNumber,
+            IRequestDispatcher dispatcher,
+            HttpContext http,
+            CancellationToken cancellationToken) =>
+        {
+            var result = await dispatcher.DispatchAsync(new PrintOrderReportCommand(
+                orderNumber, "order preview"), cancellationToken);
+            http.Response.Headers.ContentDisposition = $"inline; filename=\"{result.FileName}\"";
+            return Results.File(result.Content, result.ContentType, enableRangeProcessing: true);
+        })
+        .RequireAuthorization($"perm:{PermissionNames.ReportFinancial}");
+
         v1.MapPost("/reports/{reportId}/export", async (
             string reportId, ReportExportRequest request, IRequestDispatcher dispatcher,
             CancellationToken cancellationToken) =>
@@ -2281,6 +2305,8 @@ public sealed record BarCodeTagPrintRequest(
 public sealed record ClaimReceiptReportPrintRequest(string OrderInvoiceNumber, string? Reason);
 
 public sealed record InvoiceReportPrintRequest(string InvoiceNumber, string? Reason);
+
+public sealed record OrderReportPrintRequest(string OrderNumber, string? Reason);
 
 public sealed record SaveAnalyticsViewRequest(
     string ViewKey, string Name, bool IsShared, string ConfigJson, string Reason);

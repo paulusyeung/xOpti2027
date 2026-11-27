@@ -33,6 +33,10 @@ const invoiceDialogOpen = ref(false)
 const invoiceNumber = ref('')
 const invoicePrinting = ref(false)
 const invoiceError = ref<string | null>(null)
+const orderDialogOpen = ref(false)
+const orderNumber = ref('')
+const orderPrinting = ref(false)
+const orderError = ref<string | null>(null)
 
 const selectedReport = computed(() => REPORTS.find((report) => report.title === selected.value))
 
@@ -59,6 +63,11 @@ function open(): void {
   if (selected.value === 'Invoice') {
     invoiceError.value = null
     invoiceDialogOpen.value = true
+    return
+  }
+  if (selected.value === 'Order') {
+    orderError.value = null
+    orderDialogOpen.value = true
     return
   }
   if (selectedReport.value) {
@@ -168,6 +177,30 @@ async function printInvoice(): Promise<void> {
     invoiceError.value = caught instanceof Error ? caught.message : fallback
   } finally {
     invoicePrinting.value = false
+  }
+}
+
+async function printOrder(): Promise<void> {
+  const order = orderNumber.value.trim()
+  if (!order) return
+  orderPrinting.value = true
+  orderError.value = null
+  const fallback = 'The order could not be generated.'
+  try {
+    const response = await api.request('/api/v1/special-reports/order/print', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ orderNumber: order, reason: 'order print' }),
+    })
+    if (!response.ok) throw new Error(await problemMessage(response, fallback))
+    await response.blob()
+    const params = new URLSearchParams({ orderNumber: order })
+    openPdfPreview(`/api/v1/special-reports/order/preview?${params}`)
+    orderDialogOpen.value = false
+  } catch (caught) {
+    orderError.value = caught instanceof Error ? caught.message : fallback
+  } finally {
+    orderPrinting.value = false
   }
 }
 
@@ -327,6 +360,45 @@ function exit(): void {
             :loading="invoicePrinting"
             data-testid="invoice-print-submit"
             @click="printInvoice"
+          >
+            Print
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="orderDialogOpen" max-width="480">
+      <v-card rounded="xl" data-testid="order-print-dialog">
+        <v-card-title>Order Number</v-card-title>
+        <v-card-text>
+          <v-text-field
+            v-model="orderNumber"
+            label="Enter Order No."
+            data-testid="order-number"
+            hide-details
+          />
+          <p class="text-caption text-medium-emphasis mt-3 mb-0">
+            Enter the SA order number, for example SA370151B.
+          </p>
+          <v-alert v-if="orderError" type="error" variant="tonal" class="mt-3">{{ orderError }}</v-alert>
+          <div
+            v-if="orderPrinting"
+            class="d-flex align-center justify-center py-4"
+            data-testid="order-printing"
+          >
+            <v-progress-circular indeterminate color="primary" size="28" />
+            <span class="text-caption ml-3">Preparing PDF…</span>
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn variant="text" data-testid="order-print-reset" @click="orderNumber = ''">Reset</v-btn>
+          <v-spacer />
+          <v-btn variant="text" data-testid="order-print-cancel" @click="orderDialogOpen = false">Cancel</v-btn>
+          <v-btn
+            color="primary"
+            :loading="orderPrinting"
+            data-testid="order-print-submit"
+            @click="printOrder"
           >
             Print
           </v-btn>

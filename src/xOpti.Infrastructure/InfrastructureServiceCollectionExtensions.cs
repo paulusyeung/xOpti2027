@@ -83,6 +83,8 @@ public static class InfrastructureServiceCollectionExtensions
             Repositories.EfClaimReceiptReportStore>();
         services.AddScoped<xOpti.Application.Reporting.IInvoiceReportStore,
             Repositories.EfInvoiceReportStore>();
+        services.AddScoped<xOpti.Application.Reporting.IOrderReportStore,
+            Repositories.EfOrderReportStore>();
         services.AddScoped<xOpti.Application.Inventory.GetInventorySummary.IInventorySummaryRepository,
             Repositories.EfInventorySummaryRepository>();
         services.AddScoped<xOpti.Application.Reference.IReferenceDirectory, Repositories.EfReferenceDirectory>();

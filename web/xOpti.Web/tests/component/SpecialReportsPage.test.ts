@@ -194,4 +194,52 @@ describe('SpecialReportsPage', () => {
     expect(document.body.querySelector('[data-testid="invoice-printing"]')).toBeNull()
     wrapper.unmount()
   })
+  it('opens the Order Number prompt for Order', async () => {
+    const { wrapper, router } = await mountInApp(SpecialReportsPage, {
+      path: '/admin/special-reports',
+      pinia: authenticatedPinia(),
+    })
+    await flushPromises()
+    const push = vi.spyOn(router, 'push')
+
+    await wrapper.findComponent({ name: 'VSelect' }).setValue('Order')
+    await wrapper.get('[data-testid="special-report-ok"]').trigger('click')
+    expect(document.body.querySelector('[data-testid="order-print-dialog"]')).not.toBeNull()
+    expect(push).not.toHaveBeenCalled()
+
+    wrapper.unmount()
+  })
+
+  it('opens the order in a new tab with the order number in the URL', async () => {
+    let resolveResponse!: (response: Response) => void
+    const pending = new Promise<Response>((resolve) => { resolveResponse = resolve })
+    vi.spyOn(api, 'request').mockReturnValue(pending)
+    const preview = { opener: window, focus: vi.fn() } as unknown as Window
+    const open = vi.spyOn(window, 'open').mockReturnValue(preview)
+
+    const { wrapper } = await mountInApp(SpecialReportsPage, {
+      path: '/admin/special-reports',
+      pinia: authenticatedPinia(),
+    })
+    await flushPromises()
+    await wrapper.findComponent({ name: 'VSelect' }).setValue('Order')
+    await wrapper.get('[data-testid="special-report-ok"]').trigger('click')
+    await dialogField('order-number').setValue('SA370151B')
+    await dialogField('order-print-submit').trigger('click')
+    await flushPromises()
+
+    expect(document.body.querySelector('[data-testid="order-printing"]')).not.toBeNull()
+    expect(open).not.toHaveBeenCalled()
+
+    resolveResponse(new Response(new Uint8Array([1, 2, 3]), { status: 200 }))
+    await flushPromises()
+
+    expect(open).toHaveBeenCalledWith(
+      '/api/v1/special-reports/order/preview?orderNumber=SA370151B',
+      '_blank',
+    )
+    expect(document.body.querySelector('[data-testid="order-printing"]')).toBeNull()
+    wrapper.unmount()
+  })
+
 })
